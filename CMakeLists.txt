@@ -8,8 +8,7 @@ set(BUILD_JAVA_LANGUAGE_PACKAGE OFF CACHE BOOL "Add Java support to the Sourcetr
 set(BUILD_PYTHON_LANGUAGE_PACKAGE OFF CACHE BOOL "Add Python support to the Sourcetrail indexer.")
 set(DOCKER_BUILD OFF CACHE BOOL "Build runs in Docker")
 set(TREAT_WARNINGS_AS_ERRORS ON CACHE BOOL "Treat compiler warnings as errors")
-
-#set (CMAKE_VERBOSE_MAKEFILE ON)
+set(BUILD_DOC OFF CACHE BOOL "Build documentation")
 
 include(cmake/add_files.cmake)
 include(cmake/create_source_groups.cmake)
@@ -32,6 +31,10 @@ if(NOT DEFINED CMAKE_CXX_COMPILER_LAUNCHER)
 		# Support Unix Makefiles and Ninja
 		set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}" CACHE STRING "Compiler launcher for CXX")
 	endif()
+endif()
+
+if(BUILD_DOC)
+  include(cmake/doxygen.cmake)
 endif()
 
 # Variables --------------------------------------------------------------------
