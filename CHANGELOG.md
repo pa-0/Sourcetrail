@@ -1,5 +1,12 @@
 ### Changelog
 
+#### WIP
+
+* Docs: Add doxygen support and awesome-doxygen-css.
+* C/C++: Migrate clang to v14.
+* Code: Update Catch to v2.13.10.
+* Build: Add Github action.
+
 #### 2021.4.19
 released 2021-11-30
 

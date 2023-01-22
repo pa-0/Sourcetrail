@@ -2,8 +2,10 @@
 
 Sourcetrail is a free and open-source cross-platform source explorer that helps you get productive on unfamiliar source code.
 
+[![Build](https://github.com/OpenSourceSourceTrail/Sourcetrail/actions/workflows/build.yml/badge.svg)](https://github.com/OpenSourceSourceTrail/Sourcetrail/actions/workflows/build.yml)
+
 __Links__
-* [Download](https://github.com/CoatiSoftware/Sourcetrail/releases)
+* [Download](https://github.com/OpenSourceSourceTrail/Sourcetrail/releases)
 * [Quick Start Guide](DOCUMENTATION.md#getting-started)
 * [Documentation](DOCUMENTATION.md)
 * [Changelog](CHANGELOG.md)
