@@ -1,35 +1,38 @@
 #include "ConsoleLogger.h"
-
-#include <iostream>
-
+// STL
+#include <fmt/core.h>
+#include <fmt/printf.h>
+// Internal
+#include "LogMessage.h"
 #include "utilityString.h"
 
-ConsoleLogger::ConsoleLogger(): Logger("ConsoleLogger") {}
+constexpr auto ASCII_BLUE = "\u001b[34m";
+constexpr auto ASCII_YELLOW = "\u001b[33m";
+constexpr auto ASCII_RED = "\u001b[31m";
+constexpr auto ASCII_RESET = "\u001b[0m";
 
-void ConsoleLogger::logInfo(const LogMessage& message)
-{
-	logMessage("INFO", message);
+ConsoleLogger::ConsoleLogger() noexcept : Logger("ConsoleLogger") {}
+
+ConsoleLogger::~ConsoleLogger() = default;
+
+void ConsoleLogger::logInfo(const LogMessage& message) {
+  logMessage(std::string {ASCII_BLUE} + "INFO" + ASCII_RESET, message);
 }
 
-void ConsoleLogger::logWarning(const LogMessage& message)
-{
-	logMessage("WARNING", message);
+void ConsoleLogger::logWarning(const LogMessage& message) {
+  logMessage(std::string {ASCII_YELLOW} + "WARNING" + ASCII_RESET, message);
 }
 
-void ConsoleLogger::logError(const LogMessage& message)
-{
-	logMessage("ERROR", message);
+void ConsoleLogger::logError(const LogMessage& message) {
+  logMessage(std::string {ASCII_RED} + "ERROR" + ASCII_RESET, message);
 }
 
-void ConsoleLogger::logMessage(const std::string& type, const LogMessage& message)
-{
-	std::cout << message.getTimeString("%H:%M:%S") << " | ";
+void ConsoleLogger::logMessage(const std::string& type, const LogMessage& message) {
+  fmt::print("{} | ", message.getTimeString("%H:%M:%S"));
 
-	if (!message.filePath.empty())
-	{
-		std::cout << message.getFileName() << ':' << message.line << ' ' << message.functionName
-				  << "() | ";
-	}
+  if(!message.filePath.empty()) {
+		fmt::print("{}:{} {}() | ", message.getFileName(), message.line, message.functionName);
+  }
 
-	std::cout << type << ": " << utility::encodeToUtf8(message.message) << std::endl;
+	fmt::print("{}: {}\n", type, utility::encodeToUtf8(message.message));
 }
