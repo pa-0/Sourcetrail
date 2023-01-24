@@ -425,6 +425,7 @@ add_files(
 	utility/logging/LogManagerImplementation.cpp
 	utility/logging/LogManagerImplementation.h
 	utility/logging/LogMessage.h
+	utility/logging/LogMessage.cpp
 
 	utility/math/Color.h
 	utility/math/MatrixBase.h
