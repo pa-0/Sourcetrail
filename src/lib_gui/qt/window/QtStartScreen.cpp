@@ -11,13 +11,10 @@
 #include "ApplicationSettings.h"
 #include "MessageLoadProject.h"
 #include "ProjectSettings.h"
-#include "QtContextMenu.h"
 #include "ResourcePaths.h"
 #include "Version.h"
-#include "logging.h"
+#include "globalStrings.h"
 #include "utilityQt.h"
-
-#define SOURCETRAIL_DEMO
 
 QtRecentProjectButton::QtRecentProjectButton(QWidget* parent) : QPushButton(parent) {}
 
@@ -169,8 +166,7 @@ void QtStartScreen::setupStartScreen() {
     githubButton->setIcon(m_githubIcon);
     githubButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(githubButton, &QPushButton::clicked, []() {
-      QDesktopServices::openUrl(
-          QUrl(QStringLiteral("https://github.com/CoatiSoftware/Sourcetrail"), QUrl::TolerantMode));
+      QDesktopServices::openUrl(QUrl("github"_g, QUrl::TolerantMode));
     });
     col->addWidget(githubButton);
 
