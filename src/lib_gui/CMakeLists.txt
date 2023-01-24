@@ -20,6 +20,8 @@ add_files(
 	qt/element/button/QtIconStateButton.h
 	qt/element/button/QtSelfRefreshIconButton.cpp
 	qt/element/button/QtSelfRefreshIconButton.h
+	qt/element/button/QtRecentProjectButton.cpp
+	qt/element/button/QtRecentProjectButton.h
 
 	qt/element/code/CodeFocusHandler.cpp
 	qt/element/code/CodeFocusHandler.h

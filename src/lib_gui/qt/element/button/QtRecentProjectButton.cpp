@@ -1,0 +1,111 @@
+#include "QtRecentProjectButton.h"
+// STL
+#include <algorithm>
+#include <iterator>
+// Boost
+#include <boost/filesystem/path.hpp>
+// Qt5
+#include <QAction>
+#include <QMessageBox>
+#include <QString>
+// internal
+#include "ApplicationSettings.h"
+#include "MessageLoadProject.h"
+#include "QtContextMenu.h"
+#include "UserPaths.h"
+#include "utilityQt.h"
+
+QtRecentProjectButton* QtRecentProjectButton::create(QWidget* pParent) {
+  auto* pButton = new QtRecentProjectButton(pParent);
+  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
+  pButton->setIcon(utility::toIcon(L"icon/empty_icon.png"));
+  pButton->setIconSize(QSize(30, 30));
+  pButton->setMinimumSize(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45, 40);
+  pButton->setObjectName(QStringLiteral("recentButtonMissing"));
+  pButton->minimumSizeHint();    // force font loading
+  return pButton;
+}
+
+QtRecentProjectButton::QtRecentProjectButton(QWidget* pParent) : QPushButton(pParent) {}
+
+bool QtRecentProjectButton::projectExists() const {
+  return m_projectExists;
+}
+
+void QtRecentProjectButton::setProjectPath(const FilePath& projectFilePath) {
+  m_projectFilePath = projectFilePath;
+  m_projectExists = projectFilePath.exists();
+  this->setText(QString::fromStdWString(m_projectFilePath.withoutExtension().fileName()));
+  if(m_projectExists) {
+    this->setToolTip(QString::fromStdWString(m_projectFilePath.wstr()));
+  } else {
+    const std::wstring missingFileText = L"Couldn't find " + m_projectFilePath.wstr() +
+        L" in your filesystem";
+    this->setToolTip(QString::fromStdWString(missingFileText));
+  }
+}
+
+void QtRecentProjectButton::handleButtonClick() {
+  if(m_projectExists) {
+    MessageLoadProject(m_projectFilePath).dispatch();
+  } else {
+    QMessageBox msgBox;
+    msgBox.setText(QStringLiteral("Missing Project File"));
+    msgBox.setInformativeText(QString::fromStdWString(
+        L"<p>Couldn't find \"" + m_projectFilePath.wstr() +
+        L"\" on your filesystem.</p><p>Do you want to remove it from recent project "
+        L"list?</p>"));
+    msgBox.addButton(QStringLiteral("Remove"), QMessageBox::ButtonRole::YesRole);
+    msgBox.addButton(QStringLiteral("Keep"), QMessageBox::ButtonRole::NoRole);
+    msgBox.setIcon(QMessageBox::Icon::Question);
+    const int ret = msgBox.exec();
+
+    // QMessageBox::Yes
+    if(ret == 0) {
+      auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
+      for(size_t i = 0; i < recentProjects.size(); ++i) {
+        if(recentProjects[i].wstr() == m_projectFilePath.wstr()) {
+          recentProjects.erase(recentProjects.begin() + i);
+          ApplicationSettings::getInstance()->setRecentProjects(recentProjects);
+          ApplicationSettings::getInstance()->save();
+          break;
+        }
+      }
+      emit updateButtons();
+    }
+  }
+}
+
+void QtRecentProjectButton::contextMenuEvent(QContextMenuEvent* pEvent) {
+  QtContextMenu menu(pEvent, this);
+
+  QAction deleteAction("delete");
+  connect(&deleteAction, &QAction::triggered, [this]() {
+    auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
+    // Remove the current project from RecentProjects
+    recentProjects.erase(
+        std::remove_if(std::begin(recentProjects),
+                       std::end(recentProjects),
+                       [projectExists = m_projectFilePath](const auto& currentProject) {
+                         return projectExists.getPath() == currentProject.getPath();
+                       }),
+        std::end(recentProjects));
+    recentProjects.erase(
+        std::remove_if(std::begin(recentProjects),
+                       std::end(recentProjects),
+                       [projectExists = m_projectFilePath](const auto& currentProject) {
+                         return projectExists.getPath() == currentProject.getPath();
+                       }),
+        std::end(recentProjects));
+    // Update RecentProjects
+    auto pApplicationSettings = ApplicationSettings::getInstance();
+    pApplicationSettings->setRecentProjects(recentProjects);
+    pApplicationSettings->save(UserPaths::getAppSettingsFilePath());
+    hide();
+
+    emit updateButtons();
+  });
+
+  menu.addAction(&deleteAction);
+  menu.show();
+}
