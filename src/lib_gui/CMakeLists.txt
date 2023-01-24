@@ -303,7 +303,7 @@ add_files(
 	utility/utilityApp.cpp
 	utility/utilityApp.h
 	utility/utilityPathDetection.cpp
-	utility/utilityPathDetection.h
+	utility/globalStrings.h
 )
 
 if (BUILD_CXX_LANGUAGE_PACKAGE)
