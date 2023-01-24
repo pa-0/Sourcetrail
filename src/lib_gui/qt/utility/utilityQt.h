@@ -13,6 +13,8 @@ class ViewLayout;
 
 namespace utility {
 
+QIcon toIcon(const std::wstring& path);
+
 void setWidgetBackgroundColor(QWidget* widget, const std::string& color);
 
 void setWidgetRetainsSpaceWhenHidden(QWidget* widget);

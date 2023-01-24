@@ -22,6 +22,10 @@
 
 namespace utility {
 
+QIcon toIcon(const std::wstring& path) {
+  return QIcon(QString::fromStdWString(ResourcePaths::getGuiDirectoryPath().concatenate(path).wstr()));
+}
+
 void setWidgetBackgroundColor(QWidget* widget, const std::string& color) {
   QPalette palette = widget->palette();
   palette.setColor(widget->backgroundRole(), QColor(color.c_str()));
