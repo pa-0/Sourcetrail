@@ -1,5 +1,13 @@
 #include "QtStartScreen.h"
+// STL
+#include <algorithm>
+#include <iterator>
+// Boost
+#include <boost/filesystem/path.hpp>
+// fmt
+#include <fmt/format.h>
 // Qt5
+#include <QAction>
 #include <QCheckBox>
 #include <QDesktopServices>
 #include <QHBoxLayout>
@@ -7,14 +15,62 @@
 #include <QMessageBox>
 #include <QString>
 #include <QVBoxLayout>
+#include <qicon.h>
 // internal
 #include "ApplicationSettings.h"
 #include "MessageLoadProject.h"
 #include "ProjectSettings.h"
+#include "QtContextMenu.h"
 #include "ResourcePaths.h"
+#include "UserPaths.h"
 #include "Version.h"
 #include "globalStrings.h"
 #include "utilityQt.h"
+
+namespace {
+QIcon toIcon(const std::wstring& path) {
+  return QIcon(QString::fromStdWString(ResourcePaths::getGuiDirectoryPath().concatenate(path).wstr()));
+}
+
+QIcon getProjectIcon(LanguageType lang) {
+  static const auto CppIcon = toIcon(L"icon/cpp_icon.png");
+  static const auto CIcon = toIcon(L"icon/c_icon.png");
+  static const auto PythonIcon = toIcon(L"icon/python_icon.png");
+  static const auto JavaIcon = toIcon(L"icon/java_icon.png");
+  static const auto ProjectIcon = toIcon(L"icon/empty_icon.png");
+
+  switch(lang) {
+#if BUILD_CXX_LANGUAGE_PACKAGE
+  case LanguageType::LANGUAGE_C:
+    return CIcon;
+  case LANGUAGE_CPP:
+    return CppIcon;
+#endif    // BUILD_CXX_LANGUAGE_PACKAGE
+#if BUILD_JAVA_LANGUAGE_PACKAGE
+  case LANGUAGE_JAVA:
+    return JavaIcon;
+#endif    // BUILD_JAVA_LANGUAGE_PACKAGE
+#if BUILD_PYTHON_LANGUAGE_PACKAGE
+  case LANGUAGE_PYTHON:
+    return PythonIcon;
+#endif    // BUILD_PYTHON_LANGUAGE_PACKAGE
+  case LANGUAGE_CUSTOM:
+  default:
+    return ProjectIcon;
+  }
+}
+}    // namespace
+
+QtRecentProjectButton* QtRecentProjectButton::create(QWidget* pParent) {
+  auto* pButton = new QtRecentProjectButton(pParent);
+  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
+  pButton->setIcon(toIcon(L"icon/empty_icon.png"));
+  pButton->setIconSize(QSize(30, 30));
+  pButton->setMinimumSize(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45, 40);
+  pButton->setObjectName(QStringLiteral("recentButtonMissing"));
+  pButton->minimumSizeHint();    // force font loading
+  return pButton;
+}
 
 QtRecentProjectButton::QtRecentProjectButton(QWidget* parent) : QPushButton(parent) {}
 
@@ -48,11 +104,11 @@ void QtRecentProjectButton::handleButtonClick() {
     msgBox.addButton(QStringLiteral("Remove"), QMessageBox::ButtonRole::YesRole);
     msgBox.addButton(QStringLiteral("Keep"), QMessageBox::ButtonRole::NoRole);
     msgBox.setIcon(QMessageBox::Icon::Question);
-    int ret = msgBox.exec();
+    const int ret = msgBox.exec();
 
-    if(ret == 0)    // QMessageBox::Yes
-    {
-      std::vector<FilePath> recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
+    // QMessageBox::Yes
+    if(ret == 0) {
+      auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
       for(size_t i = 0; i < recentProjects.size(); ++i) {
         if(recentProjects[i].wstr() == m_projectFilePath.wstr()) {
           recentProjects.erase(recentProjects.begin() + i);
@@ -66,72 +122,73 @@ void QtRecentProjectButton::handleButtonClick() {
   }
 }
 
-QtStartScreen::QtStartScreen(QWidget* parent)
-    : QtWindow(true, parent)
-    , m_cppIcon(QString::fromStdWString(
-          ResourcePaths::getGuiDirectoryPath().concatenate(L"icon/cpp_icon.png").wstr()))
-    , m_cIcon(QString::fromStdWString(
-          ResourcePaths::getGuiDirectoryPath().concatenate(L"icon/c_icon.png").wstr()))
-    , m_pythonIcon(QString::fromStdWString(
-          ResourcePaths::getGuiDirectoryPath().concatenate(L"icon/python_icon.png").wstr()))
-    , m_javaIcon(QString::fromStdWString(
-          ResourcePaths::getGuiDirectoryPath().concatenate(L"icon/java_icon.png").wstr()))
-    , m_projectIcon(QString::fromStdWString(
-          ResourcePaths::getGuiDirectoryPath().concatenate(L"icon/empty_icon.png").wstr()))
-    , m_githubIcon(QString::fromStdWString(
-          ResourcePaths::getGuiDirectoryPath().concatenate(L"startscreen/github_icon.png").wstr())) {
+void QtRecentProjectButton::contextMenuEvent(QContextMenuEvent* pEvent) {
+  QtContextMenu menu(pEvent, this);
+
+  QAction deleteAction("delete");
+  connect(&deleteAction, &QAction::triggered, [this]() {
+    auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
+    // Remove the current project from RecentProjects
+    recentProjects.erase(
+        std::remove_if(std::begin(recentProjects),
+                       std::end(recentProjects),
+                       [projectExists = m_projectFilePath](const auto& currentProject) {
+                         return projectExists.getPath() == currentProject.getPath();
+                       }),
+        std::end(recentProjects));
+    recentProjects.erase(
+        std::remove_if(std::begin(recentProjects),
+                       std::end(recentProjects),
+                       [projectExists = m_projectFilePath](const auto& currentProject) {
+                         return projectExists.getPath() == currentProject.getPath();
+                       }),
+        std::end(recentProjects));
+    // Update RecentProjects
+    auto pApplicationSettings = ApplicationSettings::getInstance();
+    pApplicationSettings->setRecentProjects(recentProjects);
+    pApplicationSettings->save(UserPaths::getAppSettingsFilePath());
+    hide();
+
+    emit updateButtons();
+  });
+
+  menu.addAction(&deleteAction);
+  menu.show();
 }
+
+QtStartScreen::QtStartScreen(QWidget* parent) : QtWindow(true, parent) {}
 
 QSize QtStartScreen::sizeHint() const {
   return QSize(600, 650);
 }
 
 void QtStartScreen::updateButtons() {
-  std::vector<FilePath> recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
-  size_t i = 0;
-  for(QtRecentProjectButton* button : m_recentProjectsButtons) {
-    button->disconnect();
-    if(i < recentProjects.size()) {
-      button->setProjectPath(recentProjects[i]);
-      LanguageType lang = ProjectSettings::getLanguageOfProject(recentProjects[i]);
-      switch(lang) {
-#if BUILD_CXX_LANGUAGE_PACKAGE
-      case LanguageType::LANGUAGE_C:
-        button->setIcon(m_cIcon);
-        break;
-      case LANGUAGE_CPP:
-        button->setIcon(m_cppIcon);
-        break;
-#endif    // BUILD_CXX_LANGUAGE_PACKAGE
-#if BUILD_JAVA_LANGUAGE_PACKAGE
-      case LANGUAGE_JAVA:
-        button->setIcon(m_javaIcon);
-        break;
-#endif    // BUILD_JAVA_LANGUAGE_PACKAGE
-#if BUILD_PYTHON_LANGUAGE_PACKAGE
-      case LANGUAGE_PYTHON:
-        button->setIcon(m_pythonIcon);
-        break;
-#endif    // BUILD_PYTHON_LANGUAGE_PACKAGE
-      case LANGUAGE_CUSTOM:
-      default:
-        button->setIcon(m_projectIcon);
-        break;
-      }
-      button->setFixedWidth(button->fontMetrics().boundingRect(button->text()).width() + 45);
-      connect(
-          button, &QtRecentProjectButton::clicked, button, &QtRecentProjectButton::handleButtonClick);
-      if(button->projectExists()) {
-        button->setObjectName(QStringLiteral("recentButton"));
-        connect(button, &QtRecentProjectButton::clicked, this, &QtStartScreen::handleRecentButton);
+  auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
+  size_t index = 0;
+  for(auto* pButton : m_recentProjectsButtons) {
+    pButton->disconnect();
+    if(index < recentProjects.size()) {
+      const auto recentProject = recentProjects[index];
+      pButton->setProjectPath(recentProject);
+      const auto lang = ProjectSettings::getLanguageOfProject(recentProject);
+      pButton->setIcon(getProjectIcon(lang));
+      pButton->setFixedWidth(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45);
+      // TODO(Hussien): Should be moved to QtRecentProjectButton constructor
+      connect(pButton,
+              &QtRecentProjectButton::clicked,
+              pButton,
+              &QtRecentProjectButton::handleButtonClick);
+      if(pButton->projectExists()) {
+        pButton->setObjectName(QStringLiteral("recentButton"));
+        connect(pButton, &QtRecentProjectButton::clicked, this, &QtStartScreen::handleRecentButton);
       } else {
-        connect(button, &QtRecentProjectButton::updateButtons, this, &QtStartScreen::updateButtons);
-        button->setObjectName(QStringLiteral("recentButtonMissing"));
+        connect(pButton, &QtRecentProjectButton::updateButtons, this, &QtStartScreen::updateButtons);
+        pButton->setObjectName(QStringLiteral("recentButtonMissing"));
       }
     } else {
-      button->hide();
+      pButton->hide();
     }
-    i++;
+    index++;
   }
   setStyleSheet(utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(
                                            L"startscreen/startscreen.css"))
@@ -144,84 +201,78 @@ void QtStartScreen::setupStartScreen() {
                     .c_str());
   addLogo();
 
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setContentsMargins(15, 170, 15, 0);
-  layout->setSpacing(1);
-  m_content->setLayout(layout);
+  auto* pLayout = new QHBoxLayout();
+  pLayout->setContentsMargins(15, 170, 15, 0);
+  pLayout->setSpacing(1);
+  m_content->setLayout(pLayout);
 
   {
-    QVBoxLayout* col = new QVBoxLayout();
-    layout->addLayout(col, 3);
+    auto* pVBoxLayout = new QVBoxLayout();
+    pLayout->addLayout(pVBoxLayout, 3);
 
-    QLabel* versionLabel = new QLabel(
-        ("Version " + Version::getApplicationVersion().toDisplayString()).c_str(), this);
-    versionLabel->setObjectName(QStringLiteral("boldLabel"));
-    col->addWidget(versionLabel);
+    auto* pVersionLabel = new QLabel(
+        fmt::format("Version {}", Version::getApplicationVersion().toDisplayString()).c_str(), this);
+    pVersionLabel->setObjectName(QStringLiteral("boldLabel"));
+    pVBoxLayout->addWidget(pVersionLabel);
 
-    col->addSpacing(20);
+    pVBoxLayout->addSpacing(20);
 
-    QPushButton* githubButton = new QPushButton(QStringLiteral("View on GitHub"), this);
-    githubButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-    githubButton->setObjectName(QStringLiteral("infoButton"));
-    githubButton->setIcon(m_githubIcon);
-    githubButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(githubButton, &QPushButton::clicked, []() {
+    auto* pGithubButton = new QPushButton(QStringLiteral("View on GitHub"), this);
+    pGithubButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
+    pGithubButton->setObjectName(QStringLiteral("infoButton"));
+    pGithubButton->setIcon(toIcon(L"startscreen/github_icon.png"));
+    pGithubButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(pGithubButton, &QPushButton::clicked, []() {
       QDesktopServices::openUrl(QUrl("github"_g, QUrl::TolerantMode));
     });
-    col->addWidget(githubButton);
+    pVBoxLayout->addWidget(pGithubButton);
 
-    col->addSpacing(35);
-    col->addStretch();
+    pVBoxLayout->addSpacing(35);
+    pVBoxLayout->addStretch();
 
-    QPushButton* newProjectButton = new QPushButton(QStringLiteral("New Project"), this);
-    newProjectButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-    newProjectButton->setObjectName(QStringLiteral("projectButton"));
-    newProjectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(newProjectButton, &QPushButton::clicked, this, &QtStartScreen::handleNewProjectButton);
-    col->addWidget(newProjectButton);
+    auto* pNewProjectButton = new QPushButton(QStringLiteral("New Project"), this);
+    pNewProjectButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
+    pNewProjectButton->setObjectName(QStringLiteral("projectButton"));
+    pNewProjectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(pNewProjectButton, &QPushButton::clicked, this, &QtStartScreen::handleNewProjectButton);
+    pVBoxLayout->addWidget(pNewProjectButton);
 
-    col->addSpacing(8);
+    pVBoxLayout->addSpacing(8);
 
-    QPushButton* openProjectButton = new QPushButton(QStringLiteral("Open Project"), this);
-    openProjectButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-    openProjectButton->setObjectName(QStringLiteral("projectButton"));
-    openProjectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(openProjectButton, &QPushButton::clicked, this, &QtStartScreen::handleOpenProjectButton);
-    col->addWidget(openProjectButton);
+    auto* pOpenProjectButton = new QPushButton(QStringLiteral("Open Project"), this);
+    pOpenProjectButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
+    pOpenProjectButton->setObjectName(QStringLiteral("projectButton"));
+    pOpenProjectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(pOpenProjectButton, &QPushButton::clicked, this, &QtStartScreen::handleOpenProjectButton);
+    pVBoxLayout->addWidget(pOpenProjectButton);
   }
 
-  layout->addSpacing(50);
+  pLayout->addSpacing(50);
 
-  {
-    QVBoxLayout* col = new QVBoxLayout();
-    layout->addLayout(col, 1);
+  { // Create Recent Projects
+    auto* pVBoxLayout = new QVBoxLayout();
+    pLayout->addLayout(pVBoxLayout, 1);
 
-    QLabel* recentProjectsLabel = new QLabel(QStringLiteral("Recent Projects: "), this);
-    recentProjectsLabel->setObjectName(QStringLiteral("titleLabel"));
-    col->addWidget(recentProjectsLabel);
+    auto* pRecentProjectsLabel = new QLabel(QStringLiteral("Recent Projects: "), this);
+    pRecentProjectsLabel->setObjectName(QStringLiteral("titleLabel"));
+    pVBoxLayout->addWidget(pRecentProjectsLabel);
 
-    col->addSpacing(20);
+    pVBoxLayout->addSpacing(20);
 
     for(size_t i = 0; i < ApplicationSettings::getInstance()->getMaxRecentProjectsCount(); ++i) {
-      QtRecentProjectButton* button = new QtRecentProjectButton(this);
-      button->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-      button->setIcon(m_projectIcon);
-      button->setIconSize(QSize(30, 30));
-      button->setMinimumSize(button->fontMetrics().boundingRect(button->text()).width() + 45, 40);
-      button->setObjectName(QStringLiteral("recentButtonMissing"));
-      button->minimumSizeHint();    // force font loading
-      m_recentProjectsButtons.push_back(button);
-      col->addWidget(button);
+      auto pButton = QtRecentProjectButton::create(this);
+      m_recentProjectsButtons.push_back(pButton);
+      pVBoxLayout->addWidget(pButton);
     }
 
-    col->addStretch();
+    pVBoxLayout->addStretch();
   }
 
-  layout->addStretch(1);
+  pLayout->addStretch(1);
 
   updateButtons();
 
-  QSize size = sizeHint();
+  const QSize size = sizeHint();
   move(parentWidget()->width() / 2 - size.width() / 2,
        parentWidget()->height() / 2 - size.height() / 2);
 }

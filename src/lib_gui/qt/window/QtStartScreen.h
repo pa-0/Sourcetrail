@@ -9,14 +9,22 @@ class QtRecentProjectButton : public QPushButton {
   Q_OBJECT
 
 public:
-  QtRecentProjectButton(QWidget* parent);
+  static QtRecentProjectButton* create(QWidget* pParent);
+
+  explicit QtRecentProjectButton(QWidget* parent);
+
   bool projectExists() const;
+
   void setProjectPath(const FilePath& projectFilePath);
+
 public slots:
   void handleButtonClick();
 
 signals:
   void updateButtons();
+
+protected:
+  void contextMenuEvent(QContextMenuEvent* pEvent) override;
 
 private:
   bool m_projectExists;
@@ -44,10 +52,4 @@ private slots:
 
 private:
   std::vector<QtRecentProjectButton*> m_recentProjectsButtons;
-  const QIcon m_cppIcon;
-  const QIcon m_cIcon;
-  const QIcon m_pythonIcon;
-  const QIcon m_javaIcon;
-  const QIcon m_projectIcon;
-  const QIcon m_githubIcon;
 };
