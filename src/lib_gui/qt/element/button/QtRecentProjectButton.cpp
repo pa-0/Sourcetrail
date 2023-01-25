@@ -13,18 +13,6 @@
 #include "MessageLoadProject.h"
 #include "QtContextMenu.h"
 #include "UserPaths.h"
-#include "utilityQt.h"
-
-QtRecentProjectButton* QtRecentProjectButton::create(QWidget* pParent) {
-  auto* pButton = new QtRecentProjectButton(pParent);
-  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-  pButton->setIcon(utility::toIcon(L"icon/empty_icon.png"));
-  pButton->setIconSize(QSize(30, 30));
-  pButton->setMinimumSize(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45, 40);
-  pButton->setObjectName(QStringLiteral("recentButtonMissing"));
-  pButton->minimumSizeHint();    // force font loading
-  return pButton;
-}
 
 QtRecentProjectButton::QtRecentProjectButton(QWidget* pParent) : QPushButton(pParent) {}
 
