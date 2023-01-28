@@ -616,6 +616,8 @@ add_files(
 	utility/utilityXml.h
 	utility/Version.cpp
 	utility/Version.h
+	utility/PluginManager.cpp
+	utility/PluginManager.h
 )
 
 if (WIN32)
