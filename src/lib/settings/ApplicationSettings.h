@@ -1,6 +1,6 @@
-#ifndef APPLICATION_SETTINGS_H
-#define APPLICATION_SETTINGS_H
+#pragma once
 
+#include <filesystem>
 #include <memory>
 
 #include "GroupType.h"
@@ -9,179 +9,226 @@
 class TimeStamp;
 class Version;
 
-class ApplicationSettings: public Settings
-{
+class ApplicationSettings : public Settings {
 public:
-	static std::shared_ptr<ApplicationSettings> getInstance();
+  static std::shared_ptr<ApplicationSettings> getInstance();
 
-	static const size_t VERSION;
+  static const size_t VERSION;
 
-	ApplicationSettings() = default;
+  ApplicationSettings();
 
-	bool load(const FilePath& filePath, bool readOnly = false);
+  ApplicationSettings& operator=(const ApplicationSettings&) = delete;
 
-	bool operator==(const ApplicationSettings& other) const;
+  bool load(const FilePath& filePath, bool readOnly = false);
 
-	size_t getMaxRecentProjectsCount() const;
+  bool operator==(const ApplicationSettings& other) const;
 
-	// application
-	std::string getFontName() const;
-	void setFontName(const std::string& fontName);
+  size_t getMaxRecentProjectsCount() const;
 
-	int getFontSize() const;
-	void setFontSize(int fontSize);
+  // application
+  std::string getFontName() const;
 
-	std::string getTextEncoding() const;
-	void setTextEncoding(const std::string& textEncoding);
+  void setFontName(const std::string& fontName);
 
-	std::wstring getColorSchemeName() const;
-	FilePath getColorSchemePath() const;
-	void setColorSchemeName(const std::wstring& colorSchemeName);
+  int getFontSize() const;
 
-	int getFontSizeMax() const;
-	void setFontSizeMax(const int fontSizeMax);
+  void setFontSize(int fontSize);
 
-	int getFontSizeMin() const;
-	void setFontSizeMin(const int fontSizeMin);
+  std::string getTextEncoding() const;
 
-	int getFontSizeStd() const;
-	void setFontSizeStd(const int fontSizeStd);
+  void setTextEncoding(const std::string& textEncoding);
 
-	bool getUseAnimations() const;
-	void setUseAnimations(bool useAnimations);
+  std::wstring getColorSchemeName() const;
 
-	bool getShowBuiltinTypesInGraph() const;
-	void setShowBuiltinTypesInGraph(bool showBuiltinTypes);
+  FilePath getColorSchemePath() const;
 
-	bool getShowDirectoryInCodeFileTitle() const;
-	void setShowDirectoryInCodeFileTitle(bool showDirectory);
+  void setColorSchemeName(const std::wstring& colorSchemeName);
 
-	int getWindowBaseWidth() const;
-	int getWindowBaseHeight() const;
+  int getFontSizeMax() const;
 
-	float getScrollSpeed() const;
-	void setScrollSpeed(float scrollSpeed);
+  void setFontSizeMax(const int fontSizeMax);
 
-	bool getGraphControlsVisible() const;
-	void setGraphControlsVisible(bool visible);
+  int getFontSizeMin() const;
 
-	GroupType getGraphGrouping() const;
-	void setGraphGrouping(GroupType type);
+  void setFontSizeMin(const int fontSizeMin);
 
-	// screen
-	int getScreenAutoScaling() const;
-	void setScreenAutoScaling(int autoScaling);
+  int getFontSizeStd() const;
 
-	float getScreenScaleFactor() const;
-	void setScreenScaleFactor(float scaleFactor);
+  void setFontSizeStd(const int fontSizeStd);
 
-	// logging
-	bool getLoggingEnabled() const;
-	void setLoggingEnabled(bool loggingEnabled);
+  bool getUseAnimations() const;
 
-	bool getVerboseIndexerLoggingEnabled() const;
-	void setVerboseIndexerLoggingEnabled(bool loggingEnabled);
+  void setUseAnimations(bool useAnimations);
 
-	FilePath getLogDirectoryPath() const;
-	void setLogDirectoryPath(const FilePath& path);
+  bool getShowBuiltinTypesInGraph() const;
 
-	int getLogFilter() const;
-	void setLogFilter(int mask);
+  void setShowBuiltinTypesInGraph(bool showBuiltinTypes);
 
-	int getStatusFilter() const;
-	void setStatusFilter(int mask);
+  bool getShowDirectoryInCodeFileTitle() const;
 
-	// indexing
-	int getIndexerThreadCount() const;
-	void setIndexerThreadCount(const int count);
+  void setShowDirectoryInCodeFileTitle(bool showDirectory);
 
-	bool getMultiProcessIndexingEnabled() const;
-	void setMultiProcessIndexingEnabled(bool enabled);
+  int getWindowBaseWidth() const;
 
-	FilePath getJavaPath() const;
-	void setJavaPath(const FilePath& path);
+  int getWindowBaseHeight() const;
 
-	bool getHasPrefilledJavaPath() const;
-	void setHasPrefilledJavaPath(bool v);
+  float getScrollSpeed() const;
 
-	int getJavaMaximumMemory() const;
-	void setJavaMaximumMemory(int size);
+  void setScrollSpeed(float scrollSpeed);
 
-	std::vector<FilePath> getJreSystemLibraryPaths() const;
-	std::vector<FilePath> getJreSystemLibraryPathsExpanded() const;
-	bool setJreSystemLibraryPaths(const std::vector<FilePath>& jreSystemLibraryPaths);
+  bool getGraphControlsVisible() const;
 
-	bool getHasPrefilledJreSystemLibraryPaths() const;
-	void setHasPrefilledJreSystemLibraryPaths(bool v);
+  void setGraphControlsVisible(bool visible);
 
-	FilePath getMavenPath() const;
-	void setMavenPath(const FilePath& path);
+  GroupType getGraphGrouping() const;
 
-	bool getHasPrefilledMavenPath() const;
-	void setHasPrefilledMavenPath(bool v);
+  void setGraphGrouping(GroupType type);
 
-	bool getPythonPostProcessingEnabled() const;
-	void setPythonPostProcessingEnabled(bool enabled);
+  // screen
+  int getScreenAutoScaling() const;
 
-	std::vector<FilePath> getHeaderSearchPaths() const;
-	std::vector<FilePath> getHeaderSearchPathsExpanded() const;
-	bool setHeaderSearchPaths(const std::vector<FilePath>& headerSearchPaths);
+  void setScreenAutoScaling(int autoScaling);
 
-	bool getHasPrefilledHeaderSearchPaths() const;
-	void setHasPrefilledHeaderSearchPaths(bool v);
+  float getScreenScaleFactor() const;
 
-	std::vector<FilePath> getFrameworkSearchPaths() const;
-	std::vector<FilePath> getFrameworkSearchPathsExpanded() const;
-	bool setFrameworkSearchPaths(const std::vector<FilePath>& frameworkSearchPaths);
+  void setScreenScaleFactor(float scaleFactor);
 
-	bool getHasPrefilledFrameworkSearchPaths() const;
-	void setHasPrefilledFrameworkSearchPaths(bool v);
+  // logging
+  bool getLoggingEnabled() const;
 
-	// code
-	int getCodeTabWidth() const;
-	void setCodeTabWidth(int codeTabWidth);
+  void setLoggingEnabled(bool loggingEnabled);
 
-	int getCodeSnippetSnapRange() const;
-	void setCodeSnippetSnapRange(int range);
+  bool getVerboseIndexerLoggingEnabled() const;
 
-	int getCodeSnippetExpandRange() const;
-	void setCodeSnippetExpandRange(int range);
+  void setVerboseIndexerLoggingEnabled(bool loggingEnabled);
 
-	bool getCodeViewModeSingle() const;
-	void setCodeViewModeSingle(bool enabled);
+  FilePath getLogDirectoryPath() const;
 
-	// user
-	std::vector<FilePath> getRecentProjects() const;
-	bool setRecentProjects(const std::vector<FilePath>& recentProjects);
+  void setLogDirectoryPath(const FilePath& path);
 
-	bool getSeenErrorHelpMessage() const;
-	void setSeenErrorHelpMessage(bool seen);
+  int getLogFilter() const;
 
-	FilePath getLastFilepickerLocation() const;
-	void setLastFilepickerLocation(const FilePath& path);
+  void setLogFilter(int mask);
 
-	float getGraphZoomLevel() const;
-	void setGraphZoomLevel(float zoomLevel);
+  int getStatusFilter() const;
 
-	// network
-	int getPluginPort() const;
-	void setPluginPort(const int pluginPort);
+  void setStatusFilter(int mask);
 
-	int getSourcetrailPort() const;
-	void setSourcetrailPort(const int sourcetrailPort);
+  // indexing
+  int getIndexerThreadCount() const;
 
-	// controls
-	int getControlsMouseBackButton() const;
-	int getControlsMouseForwardButton() const;
+  void setIndexerThreadCount(const int count);
 
-	bool getControlsGraphZoomOnMouseWheel() const;
-	void setControlsGraphZoomOnMouseWheel(bool zoomingDefault);
+  bool getMultiProcessIndexingEnabled() const;
+
+  void setMultiProcessIndexingEnabled(bool enabled);
+
+  FilePath getJavaPath() const;
+
+  void setJavaPath(const FilePath& path);
+
+  bool getHasPrefilledJavaPath() const;
+
+  void setHasPrefilledJavaPath(bool v);
+
+  std::vector<FilePath> getJreSystemLibraryPaths() const;
+
+  std::vector<FilePath> getJreSystemLibraryPathsExpanded() const;
+
+  bool setJreSystemLibraryPaths(const std::vector<FilePath>& jreSystemLibraryPaths);
+
+  bool getHasPrefilledJreSystemLibraryPaths() const;
+
+  void setHasPrefilledJreSystemLibraryPaths(bool v);
+
+  FilePath getMavenPath() const;
+
+  void setMavenPath(const FilePath& path);
+
+  bool getHasPrefilledMavenPath() const;
+
+  void setHasPrefilledMavenPath(bool v);
+
+  bool getPythonPostProcessingEnabled() const;
+
+  void setPythonPostProcessingEnabled(bool enabled);
+
+  std::vector<FilePath> getHeaderSearchPaths() const;
+
+  std::vector<FilePath> getHeaderSearchPathsExpanded() const;
+
+  bool setHeaderSearchPaths(const std::vector<FilePath>& headerSearchPaths);
+
+  bool getHasPrefilledHeaderSearchPaths() const;
+
+  void setHasPrefilledHeaderSearchPaths(bool v);
+
+  std::vector<FilePath> getFrameworkSearchPaths() const;
+
+  std::vector<FilePath> getFrameworkSearchPathsExpanded() const;
+
+  bool setFrameworkSearchPaths(const std::vector<FilePath>& frameworkSearchPaths);
+
+  bool getHasPrefilledFrameworkSearchPaths() const;
+
+  void setHasPrefilledFrameworkSearchPaths(bool v);
+
+  // code
+  int getCodeTabWidth() const;
+
+  void setCodeTabWidth(int codeTabWidth);
+
+  int getCodeSnippetSnapRange() const;
+
+  void setCodeSnippetSnapRange(int range);
+
+  int getCodeSnippetExpandRange() const;
+
+  void setCodeSnippetExpandRange(int range);
+
+  bool getCodeViewModeSingle() const;
+
+  void setCodeViewModeSingle(bool enabled);
+
+  // user
+  std::vector<FilePath> getRecentProjects() const;
+
+  bool setRecentProjects(const std::vector<FilePath>& recentProjects);
+
+  bool getSeenErrorHelpMessage() const;
+
+  void setSeenErrorHelpMessage(bool seen);
+
+  FilePath getLastFilepickerLocation() const;
+
+  void setLastFilepickerLocation(const FilePath& path);
+
+  float getGraphZoomLevel() const;
+
+  void setGraphZoomLevel(float zoomLevel);
+
+  // network
+  int getPluginPort() const;
+
+  void setPluginPort(const int pluginPort);
+
+  int getSourcetrailPort() const;
+
+  void setSourcetrailPort(const int sourcetrailPort);
+
+  // controls
+  int getControlsMouseBackButton() const;
+
+  int getControlsMouseForwardButton() const;
+
+  bool getControlsGraphZoomOnMouseWheel() const;
+
+  void setControlsGraphZoomOnMouseWheel(bool zoomingDefault);
+
+  std::filesystem::path getPluginDir() const;
 
 private:
-	ApplicationSettings(const ApplicationSettings&);
-	void operator=(const ApplicationSettings&);
+  ApplicationSettings(const ApplicationSettings&);
 
-	static std::shared_ptr<ApplicationSettings> s_instance;
+  static std::shared_ptr<ApplicationSettings> s_instance;
 };
-
-#endif	  // APPLICATION_SETTINGS_H
