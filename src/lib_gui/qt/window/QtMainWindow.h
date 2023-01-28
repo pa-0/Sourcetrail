@@ -102,6 +102,7 @@ public slots:
   void showKeyboardShortcuts();
   void showErrorHelpMessage();
   void showLicenses();
+  void showPlugins();
 
   void showDataFolder();
   void showLogFolder();

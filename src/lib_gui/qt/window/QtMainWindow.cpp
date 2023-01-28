@@ -48,6 +48,7 @@
 #include "QtProjectWizard.h"
 #include "QtStartScreen.h"
 #include "QtViewWidgetWrapper.h"
+#include "QtPluginsWindow.h"
 #include "ResourcePaths.h"
 #include "TabbedView.h"
 #include "UserPaths.h"
@@ -465,6 +466,11 @@ void QtMainWindow::showBugtracker() {
 void QtMainWindow::showLicenses() {
   QtLicenseWindow* licenseWindow = createWindow<QtLicenseWindow>();
   licenseWindow->setup();
+}
+
+void QtMainWindow::showPlugins() {
+  auto* pPluginsWindow = createWindow<QtPluginsWindow>();
+  pPluginsWindow->setup();
 }
 
 void QtMainWindow::showDataFolder() {
@@ -919,24 +925,27 @@ void QtMainWindow::setupBookmarksMenu() {
 }
 
 void QtMainWindow::setupHelpMenu() {
-  QMenu* menu = new QMenu(tr("&Help"), this);
-  menuBar()->addMenu(menu);
+  auto* pMenu = new QMenu(tr("&Help"), this);
+  menuBar()->addMenu(pMenu);
 
-  menu->addAction(tr("Keyboard Shortcuts"), this, &QtMainWindow::showKeyboardShortcuts);
-  menu->addAction(tr("Fixing Errors"), this, &QtMainWindow::showErrorHelpMessage);
-  menu->addAction(tr("Documentation"), this, &QtMainWindow::showDocumentation);
-  menu->addAction(tr("Changelog"), this, &QtMainWindow::showChangelog);
-  menu->addAction(tr("Bug Tracker"), this, &QtMainWindow::showBugtracker);
+  pMenu->addAction(tr("Keyboard Shortcuts"), this, &QtMainWindow::showKeyboardShortcuts);
+  pMenu->addAction(tr("Fixing Errors"), this, &QtMainWindow::showErrorHelpMessage);
+  pMenu->addAction(tr("Documentation"), this, &QtMainWindow::showDocumentation);
+  pMenu->addAction(tr("Changelog"), this, &QtMainWindow::showChangelog);
+  pMenu->addAction(tr("Bug Tracker"), this, &QtMainWindow::showBugtracker);
 
-  menu->addSeparator();
+  pMenu->addSeparator();
 
-  menu->addAction(tr("License"), this, &QtMainWindow::showLicenses);
-  menu->addAction(tr("&About Sourcetrail"), this, &QtMainWindow::about);
+  pMenu->addAction(tr("License"), this, &QtMainWindow::showLicenses);
+  pMenu->addAction(tr("&About Sourcetrail"), this, &QtMainWindow::about);
 
-  menu->addSeparator();
+  pMenu->addSeparator();
 
-  menu->addAction(tr("Show Data Folder"), this, &QtMainWindow::showDataFolder);
-  menu->addAction(tr("Show Log Folder"), this, &QtMainWindow::showLogFolder);
+  pMenu->addAction(tr("Show Data Folder"), this, &QtMainWindow::showDataFolder);
+  pMenu->addAction(tr("Show Log Folder"), this, &QtMainWindow::showLogFolder);
+
+  pMenu->addSeparator();
+  pMenu->addAction(tr("Plugins"), this, &QtMainWindow::showPlugins);
 }
 
 QtMainWindow::DockWidget* QtMainWindow::getDockWidgetForView(View* view) {
