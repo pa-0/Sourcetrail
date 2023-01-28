@@ -291,6 +291,8 @@ add_files(
 	qt/window/QtWindowBase.h
 	qt/window/QtWindowStack.cpp
 	qt/window/QtWindowStack.h
+	qt/window/QtPluginsWindow.h
+	qt/window/QtPluginsWindow.cpp
 
 	qt/QtApplication.cpp
 	qt/QtApplication.h
