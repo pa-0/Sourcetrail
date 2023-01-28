@@ -54,6 +54,8 @@ build-*
 *.VC.db
 *.timing
 
+.vs/*
+
 .clang_complete
 .ycm_extra_conf.py
 .ycm_extra_conf.pyc
@@ -61,6 +63,7 @@ build-*
 Sourcetrail.srctrlprj
 Sourcetrail_dev.srctrlprj
 
+CMakeSettings.json
 Makefile
 CMakeLists.txt.user*
 /__pycache__/
