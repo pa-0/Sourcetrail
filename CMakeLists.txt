@@ -375,10 +375,6 @@ configure_file(
 # Lib Cxx ----------------------------------------------------------------------
 
 if (BUILD_CXX_LANGUAGE_PACKAGE)
-
-	set(CAPTURED_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD})
-	set(CMAKE_CXX_STANDARD 14)
-	
 	add_library(${LIB_CXX_PROJECT_NAME} ${LIB_CXX_FILES})
 
 	create_source_groups(${LIB_CXX_FILES})
@@ -449,8 +445,6 @@ if (BUILD_CXX_LANGUAGE_PACKAGE)
 		target_compile_definitions(${LIB_CXX_PROJECT_NAME} PRIVATE _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS) # Due to Clang
 		target_link_libraries(${LIB_CXX_PROJECT_NAME} version)
 	endif()
-
-	set(CMAKE_CXX_STANDARD ${CAPTURED_CMAKE_CXX_STANDARD})
 else()
 
 	message(STATUS "Building the Cxx indexer will be skipped. You can enable building this target by setting 'BUILD_CXX_LANGUAGE_PACKAGE' to 'ON'.")

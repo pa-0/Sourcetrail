@@ -31,16 +31,16 @@ public:
 		clang::SrcMgr::CharacteristicKind,
 		clang::FileID) override;
 
-	void InclusionDirective(
+  void InclusionDirective(
 		clang::SourceLocation hashLocation,
 		const clang::Token& includeToken,
 		llvm::StringRef fileName,
 		bool isAngled,
 		clang::CharSourceRange fileNameRange,
-		const clang::FileEntry* fileEntry,
+		const clang::Optional<clang::FileEntryRef> fileEntry,
 		llvm::StringRef searchPath,
 		llvm::StringRef relativePath,
-		const clang::Module* imported,
+		const clang::Module *imported,
 		clang::SrcMgr::CharacteristicKind fileType) override;
 
 	void MacroDefined(
