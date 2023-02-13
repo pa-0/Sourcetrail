@@ -1,4 +1,4 @@
-# ${CMAKE_SOURCE_DIR}/CMakeLists.txt
+#VERSION_STRING ${CMAKE_SOURCE_DIR}/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 
 set(BUILD_CXX_LANGUAGE_PACKAGE          OFF CACHE BOOL "Add C and C++ support to the Sourcetrail indexer.")
@@ -29,13 +29,6 @@ include(cmake/set_alternate_linker.cmake)
 set(USE_ALTERNATE_LINKER "" CACHE STRING "Use alternate linker. Leave empty for system default; alternatives are 'gold', 'lld', 'bfd', 'mold'")
 if(NOT "${USE_ALTERNATE_LINKER}" STREQUAL "")
   set_alternate_linker(${USE_ALTERNATE_LINKER})
-endif()
-
-# prohibit in-source-builds
-if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-  message(STATUS "In-source-builds are not allowed")
-  message(STATUS "Clean your source directory (e.g. delete the CMakeCache.txt file)")
-  message(FATAL_ERROR "Please create a separate build directory and call CMake again")
 endif()
 
 if(BUILD_DOC)
@@ -81,7 +74,12 @@ message("bash: '${BASH}'")
 
 # Project ----------------------------------------------------------------------
 
-project(${PROJECT_NAME})
+project(
+  ${PROJECT_NAME}
+  VERSION ${VERSION_STRING}
+  DESCRIPTION ""
+  HOMEPAGE_URL "%%myurl%%"
+  LANGUAGES CXX C)
 
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
 
@@ -605,15 +603,15 @@ endif()
 target_link_libraries(
   ${APP_PROJECT_NAME}
   PUBLIC
-  ${LIB_GUI_PROJECT_NAME}
-  $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>
-  ${LIB_PROJECT_NAME}
-  Qt5::Widgets
-  Qt5::Network)
+    ${LIB_GUI_PROJECT_NAME}
+    $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>
+    ${LIB_PROJECT_NAME}
+    Qt5::Widgets
+    Qt5::Network)
 
-set_property(
-  TARGET ${APP_PROJECT_NAME}
-  PROPERTY INCLUDE_DIRECTORIES
+target_include_directories(
+  ${APP_PROJECT_NAME}
+  PRIVATE
     "${APP_INCLUDE_PATHS}"
     "${LIB_INCLUDE_PATHS}"
     "${LIB_UTILITY_INCLUDE_PATHS}"
@@ -624,10 +622,9 @@ set_property(
 
 target_include_directories(
   ${APP_PROJECT_NAME}
-  SYSTEM PUBLIC
+  SYSTEM PRIVATE
   ${Boost_INCLUDE_DIRS}
-  "${EXTERNAL_INCLUDE_PATHS}"
-  "${EXTERNAL_C_INCLUDE_PATHS}")
+  "${EXTERNAL_INCLUDE_PATHS}")
 
 # add platform specific libraries
 if(APPLE)
@@ -692,12 +689,27 @@ if(ENABLE_TEST)
   add_subdirectory(src/test)
 endif()
 
-# symlinks for data
-message(STATUS "create symlink: "
-  "${CMAKE_SOURCE_DIR}/bin/app/data -> "
-  "${CMAKE_BINARY_DIR}/app/data")
-
 execute_process(COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/app")
 execute_process(
   COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/data" "${CMAKE_BINARY_DIR}/app/data"
   COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/user" "${CMAKE_BINARY_DIR}/app/user")
+
+if(CMAKE_SKIP_INSTALL_RULES)
+  return()
+endif()
+
+# Add other targets that you want installed here, be default we just package the one executable
+# we know we want to ship
+package_project(TARGETS ${APP_PROJECT_NAME} ${APP_INDEXER_NAME}
+  # FIXME: this does not work! CK
+  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
+)
+
+# Experience shows that explicit package naming can help make it easier to sort
+# out potential ABI related issues before they start, while helping you
+# track a build to a specific GIT SHA
+set(CPACK_PACKAGE_FILE_NAME
+    "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
+)
+
+include(CPack)
