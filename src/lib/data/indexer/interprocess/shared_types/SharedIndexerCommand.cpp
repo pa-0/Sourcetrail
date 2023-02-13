@@ -1,7 +1,6 @@
 #include "SharedIndexerCommand.h"
 
 #include "IndexerCommandCxx.h"
-#include "IndexerCommandJava.h"
 
 #include "logging.h"
 #include "utilityString.h"
@@ -24,17 +23,6 @@ void SharedIndexerCommand::fromLocal(IndexerCommand* indexerCommand)
 		return;
 	}
 #endif	  // BUILD_CXX_LANGUAGE_PACKAGE
-#if BUILD_JAVA_LANGUAGE_PACKAGE
-	if (dynamic_cast<IndexerCommandJava*>(indexerCommand) != nullptr)
-	{
-		IndexerCommandJava* cmd = dynamic_cast<IndexerCommandJava*>(indexerCommand);
-
-		setType(JAVA);
-		setLanguageStandard(cmd->getLanguageStandard());
-		setClassPaths(cmd->getClassPath());
-		return;
-	}
-#endif	  // BUILD_JAVA_LANGUAGE_PACKAGE
 
 	LOG_ERROR(
 		L"Trying to push unhandled type of IndexerCommand for file: " +

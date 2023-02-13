@@ -1,24 +1,20 @@
-#ifndef INTERPROCESS_INDEXER_H
-#define INTERPROCESS_INDEXER_H
-
+#pragma once
+// internal
 #include "InterprocessIndexerCommandManager.h"
 #include "InterprocessIndexingStatusManager.h"
 #include "InterprocessIntermediateStorageManager.h"
 
-class InterprocessIndexer
-{
+class InterprocessIndexer final {
 public:
-	InterprocessIndexer(const std::string& uuid, Id processId);
+  InterprocessIndexer(const std::string& uuid, Id processId);
 
-	void work();
+  void work();
 
 private:
-	InterprocessIndexerCommandManager m_interprocessIndexerCommandManager;
-	InterprocessIndexingStatusManager m_interprocessIndexingStatusManager;
-	InterprocessIntermediateStorageManager m_interprocessIntermediateStorageManager;
+  InterprocessIndexerCommandManager m_interprocessIndexerCommandManager;
+  InterprocessIndexingStatusManager m_interprocessIndexingStatusManager;
+  InterprocessIntermediateStorageManager m_interprocessIntermediateStorageManager;
 
-	const std::string m_uuid;
-	const Id m_processId;
+  const std::string m_uuid;
+  const Id m_processId;
 };
-
-#endif	  // INTERPROCESS_INDEXER_H

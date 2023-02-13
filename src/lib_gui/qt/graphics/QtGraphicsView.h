@@ -1,13 +1,12 @@
-#ifndef QT_GRAPHICS_VIEW_H
-#define QT_GRAPHICS_VIEW_H
-
+#pragma once
+// STL
 #include <memory>
-
+// Qt
 #include <QGraphicsView>
-
-#include "types.h"
+// internal
 #include "MessageListener.h"
 #include "MessageSaveAsImage.h"
+#include "types.h"
 
 
 class GraphFocusHandler;
@@ -17,143 +16,157 @@ class QtGraphEdge;
 class QtGraphNode;
 class QtSelfRefreshIconButton;
 
-class QtGraphicsView: public QGraphicsView, public MessageListener<MessageSaveAsImage>
-{
-	Q_OBJECT
+class QtGraphicsView
+    : public QGraphicsView
+    , public MessageListener<MessageSaveAsImage> {
+  Q_OBJECT
 
 public:
-	QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent);
+  QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent);
 
-	float getZoomFactor() const;
-	void setAppZoomFactor(float appZoomFactor);
+  float getZoomFactor() const;
 
-	void setSceneRect(const QRectF& rect);
+  void setAppZoomFactor(float appZoomFactor);
 
-	QtGraphNode* getNodeAtCursorPosition() const;
-	QtGraphEdge* getEdgeAtCursorPosition() const;
+  void setSceneRect(const QRectF& rect);
 
-	void ensureVisibleAnimated(const QRectF& rect, int xmargin = 50, int ymargin = 50);
+  QtGraphNode* getNodeAtCursorPosition() const;
 
-	void updateZoom(float delta);
+  QtGraphEdge* getEdgeAtCursorPosition() const;
 
-	Id getSchedulerId() const override
-	{
-		return m_tabId;
-	}
+  void ensureVisibleAnimated(const QRectF& rect, int xmargin = 50, int ymargin = 50);
+
+  void updateZoom(float delta);
+
+  Id getSchedulerId() const override {
+    return m_tabId;
+  }
 
 protected:
-	void resizeEvent(QResizeEvent* event);
+  /**
+   * @brief Qt resize event
+   *
+   * @param pEvent recive event emmited by parent Qt
+   */
+  void resizeEvent(QResizeEvent* pEvent) override;
 
-	void mousePressEvent(QMouseEvent* event);
-	void mouseMoveEvent(QMouseEvent* event);
-	void mouseReleaseEvent(QMouseEvent* event);
+  /**
+   * @name mouse events
+   * @{ */
+  void mousePressEvent(QMouseEvent* event) override;
+  void mouseMoveEvent(QMouseEvent* event) override;
+  void mouseReleaseEvent(QMouseEvent* event) override;
+  void wheelEvent(QWheelEvent* event) override;
+  void contextMenuEvent(QContextMenuEvent* event) override;
+  /**  @} */
 
-	void keyPressEvent(QKeyEvent* event);
-	void keyReleaseEvent(QKeyEvent* event);
+  /**
+   * @name keyboard events
+   * @{ */
+  void keyPressEvent(QKeyEvent* event) override;
+  void keyReleaseEvent(QKeyEvent* event) override;
+  /**  @} */
 
-	void wheelEvent(QWheelEvent* event);
-
-	void contextMenuEvent(QContextMenuEvent* event);
-
-	void focusInEvent(QFocusEvent* event);
-	void focusOutEvent(QFocusEvent* event);
+  void focusInEvent(QFocusEvent* event) override;
+  void focusOutEvent(QFocusEvent* event) override;
 
 signals:
-	void emptySpaceClicked();
-	void resized();
+  void emptySpaceClicked();
+  void resized();
 
-	void focusIn();
-	void focusOut();
+  void focusIn();
+  void focusOut();
 
 private slots:
-	void updateTimer();
-	void stopTimer();
+  void updateTimer();
+  void stopTimer();
 
-	void openInTab();
+  void openInTab();
 
-	QImage toQImage();
-	void exportGraph();
-	void copyGraph();
-	void copyNodeName();
+  QImage toQImage();
+  void exportGraph();
+  void copyGraph();
+  void copyNodeName();
 
-	void collapseNode();
-	void expandNode();
+  void collapseNode();
+  void expandNode();
 
-	void showInIDE();
-	void showDefinition();
-	void hideNode();
-	void hideEdge();
-	void bookmarkNode();
+  void showInIDE();
+  void showDefinition();
+  void hideNode();
+  void hideEdge();
+  void bookmarkNode();
 
-	void zoomInPressed();
-	void zoomOutPressed();
+  void zoomInPressed();
+  void zoomOutPressed();
 
-	void hideZoomLabel();
+  void hideZoomLabel();
 
-	void legendClicked();
+  /**
+   * @brief Draw the graphs legend
+   */
+  void legendClicked() const;
 
 private:
-	bool moves() const;
+  bool moves() const;
 
-	void setZoomFactor(float zoomFactor);
-	void updateTransform();
+  void setZoomFactor(float zoomFactor);
+  void updateTransform();
 
-	void handleMessage(MessageSaveAsImage* message) override;
+  void handleMessage(MessageSaveAsImage* pMessage) override;
 
-	GraphFocusHandler* m_focusHandler;
+  GraphFocusHandler* m_focusHandler;
 
-	QPoint m_last;
+  QPoint m_last;
 
-	float m_zoomFactor;
-	float m_appZoomFactor;
+  float m_zoomFactor;
+  float m_appZoomFactor;
 
-	bool m_up = false;
-	bool m_down = false;
-	bool m_left = false;
-	bool m_right = false;
+  bool m_up = false;
+  bool m_down = false;
+  bool m_left = false;
+  bool m_right = false;
 
-	bool m_shift = false;
-	bool m_ctrl = false;
+  bool m_shift = false;
+  bool m_ctrl = false;
 
-	std::wstring m_clipboardNodeName;
-	Id m_openInTabNodeId;
-	Id m_hideNodeId;
-	Id m_hideEdgeId;
-	Id m_bookmarkNodeId;
-	Id m_collapseNodeId;
-	Id m_expandNodeId;
+  std::wstring m_clipboardNodeName;
+  Id m_openInTabNodeId;
+  Id m_hideNodeId;
+  Id m_hideEdgeId;
+  Id m_bookmarkNodeId;
+  Id m_collapseNodeId;
+  Id m_expandNodeId;
 
-	std::shared_ptr<QTimer> m_timer;
-	std::shared_ptr<QTimer> m_timerStopper;
-	std::shared_ptr<QTimer> m_zoomLabelTimer;
+  std::shared_ptr<QTimer> m_timer;
+  std::shared_ptr<QTimer> m_timerStopper;
+  std::shared_ptr<QTimer> m_zoomLabelTimer;
 
-	QAction* m_openInTabAction;
+  QAction* m_openInTabAction;
 
-	QAction* m_copyNodeNameAction;
-	QAction* m_collapseAction;
-	QAction* m_expandAction;
-	QAction* m_showInIDEAction;
-	QAction* m_showDefinitionAction;
-	QAction* m_hideNodeAction;
-	QAction* m_hideEdgeAction;
-	QAction* m_bookmarkNodeAction;
+  QAction* m_copyNodeNameAction;
+  QAction* m_collapseAction;
+  QAction* m_expandAction;
+  QAction* m_showInIDEAction;
+  QAction* m_showDefinitionAction;
+  QAction* m_hideNodeAction;
+  QAction* m_hideEdgeAction;
+  QAction* m_bookmarkNodeAction;
 
-	QAction* m_exportGraphAction;
-	QAction* m_copyGraphAction;
+  QAction* m_exportGraphAction;
+  QAction* m_copyGraphAction;
 
-	QWidget* m_focusIndicator;
+  QWidget* m_focusIndicator;
 
-	QPushButton* m_zoomState;
-	QtSelfRefreshIconButton* m_zoomInButton;
-	QtSelfRefreshIconButton* m_zoomOutButton;
+  QPushButton* m_zoomState;
+  QtSelfRefreshIconButton* m_zoomInButton;
+  QtSelfRefreshIconButton* m_zoomOutButton;
 
-	QtSelfRefreshIconButton* m_legendButton;
+  QtSelfRefreshIconButton* m_pLegendButton;
 
-	float m_zoomInButtonSpeed;
-	float m_zoomOutButtonSpeed;
+  float m_zoomInButtonSpeed;
+  float m_zoomOutButtonSpeed;
 
-	QImage m_imageCached;
-	Id m_tabId;
+  QImage m_imageCached;
+  Id m_tabId;
 };
-
-#endif	  // QT_GRAPHICS_VIEW_H
