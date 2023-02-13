@@ -1,9 +1,17 @@
 # ${CMAKE_SOURCE_DIR}/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 
-set(BUILD_CXX_LANGUAGE_PACKAGE OFF CACHE BOOL "Add C and C++ support to the Sourcetrail indexer.")
-set(BUILD_DOC                  OFF CACHE BOOL "Build documentation")
-set(ENABLE_TEST                OFF CACHE BOOL "Build tests")
+set(BUILD_CXX_LANGUAGE_PACKAGE          OFF CACHE BOOL "Add C and C++ support to the Sourcetrail indexer.")
+set(BUILD_DOC                           OFF CACHE BOOL "Build documentation")
+set(ENABLE_TEST                         OFF CACHE BOOL "Build tests")
+set(ENABLE_CLANG_TIDY                   OFF CACHE BOOL "")
+set(ENABLE_CPPCHECK                     OFF CACHE BOOL "")
+set(ENABLE_SANITIZER_ADDRESS            OFF CACHE BOOL "")
+set(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR OFF CACHE BOOL "")
+set(ENABLE_SANITIZER_THREAD             OFF CACHE BOOL "")
+set(ENABLE_SANITIZER_MEMORY             OFF CACHE BOOL "")
+set(ENABLE_COVERAGE                     OFF CACHE BOOL "")
+set(ENABLE_BUILD_WITH_TIME_TRACE        OFF CACHE BOOL "")
 
 include(cmake/add_files.cmake)
 include(cmake/version.cmake)
@@ -83,6 +91,22 @@ dynamic_project_options(
   # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
   # CLANG_WARNINGS   # Override the defaults for the CLANG warnings
   # GCC_WARNINGS     # Override the defaults for the GCC warnings
+  ${ENABLE_CPPCHECK}
+  ${ENABLE_CLANG_TIDY}
+  ENABLE_VS_ANALYSIS
+  # ENABLE_INTERPROCEDURAL_OPTIMIZATION
+  # ENABLE_NATIVE_OPTIMIZATION
+  ${ENABLE_DOXYGEN}
+  ${ENABLE_SANITIZER_ADDRESS}
+  ${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR}
+  ${ENABLE_SANITIZER_THREAD}
+  ${ENABLE_SANITIZER_MEMORY}
+  # ENABLE_PCH
+  # PCH_HEADERS
+  # WARNINGS_AS_ERRORS
+  # ENABLE_INCLUDE_WHAT_YOU_USE
+  # ENABLE_BUILD_WITH_TIME_TRACE
+  # ENABLE_UNITY
 )
 
 #RPATH
@@ -401,8 +425,6 @@ if (BUILD_CXX_LANGUAGE_PACKAGE)
     target_compile_definitions(${LIB_CXX_PROJECT_NAME} PRIVATE _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS) # Due to Clang
     target_link_libraries(${LIB_CXX_PROJECT_NAME} version)
   endif()
-else()
-  message(STATUS "Building the Cxx indexer will be skipped. You can enable building this target by setting 'BUILD_CXX_LANGUAGE_PACKAGE' to 'ON'.")
 endif()
 
 # Lib Gui ----------------------------------------------------------------------
