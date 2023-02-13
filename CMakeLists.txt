@@ -101,10 +101,11 @@ set(CMAKE_C_STANDARD              11)
 
 # Settings ---------------------------------------------------------------------
 
-find_package(fmt     REQUIRED)
-find_package(Tracy   REQUIRED)
-find_package(TinyXML REQUIRED)
-find_package(Catch2  REQUIRED)
+find_package(Catch2  CONFIG REQUIRED)
+find_package(SQLite3 CONFIG REQUIRED)
+find_package(TinyXML CONFIG REQUIRED)
+find_package(Tracy   CONFIG REQUIRED)
+find_package(fmt     CONFIG REQUIRED)
 
 # Clang ------------------------------------------------------------------------
 
@@ -326,6 +327,7 @@ target_link_libraries(
   ${Boost_LIBRARIES}
   fmt::fmt
   TinyXML::TinyXML
+  SQLite::SQLite3
   $<$<PLATFORM_ID:Windows>:bcrypt>)
 
 #configure language package defines
