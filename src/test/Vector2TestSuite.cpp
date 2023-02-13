@@ -1,4 +1,4 @@
-#include "catch.hpp"
+#include <catch2/catch_all.hpp>
 
 #include "Vector2.h"
 
@@ -54,12 +54,12 @@ TEST_CASE("vector2 normalization")
 
 	float targetXY = 1.0f / std::sqrt(2.0f);
 
-	REQUIRE(targetXY == Approx(vec0.normalized().x));
-	REQUIRE(targetXY == Approx(vec0.normalized().y));
+	REQUIRE(targetXY == Catch::Approx(vec0.normalized().x));
+	REQUIRE(targetXY == Catch::Approx(vec0.normalized().y));
 
 	vec0.normalize();
-	REQUIRE(targetXY == Approx(vec0.x));
-	REQUIRE(targetXY == Approx(vec0.y));
+	REQUIRE(targetXY == Catch::Approx(vec0.x));
+	REQUIRE(targetXY == Catch::Approx(vec0.y));
 
 	float x = 17.53f;
 	float y = 42.42f;
@@ -68,8 +68,8 @@ TEST_CASE("vector2 normalization")
 	float targetX = x / std::sqrt(x * x + y * y);
 	float targetY = y / std::sqrt(x * x + y * y);
 	vec0.normalize();
-	REQUIRE(targetX == Approx(vec0.x));
-	REQUIRE(targetY == Approx(vec0.y));
+	REQUIRE(targetX == Catch::Approx(vec0.x));
+	REQUIRE(targetY == Catch::Approx(vec0.y));
 }
 
 TEST_CASE("vector2 comparison")

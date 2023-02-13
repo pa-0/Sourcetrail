@@ -1,4 +1,4 @@
-#include "catch.hpp"
+#include <catch2/catch_all.hpp>
 
 #include "ConfigManager.h"
 #include "TextAccess.h"
@@ -68,7 +68,7 @@ TEST_CASE("config manager returns correct float for key")
 	float value;
 	config->getValue("path/to/single_value", value);
 
-	REQUIRE(value == Approx(42.0f));
+	REQUIRE(value == Catch::Approx(42.0f));
 }
 
 TEST_CASE("config manager returns correct bool for key if value is true")

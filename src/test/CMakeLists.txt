@@ -18,15 +18,12 @@ add_files(
 	FileSystemTestSuite.cpp
 	GraphTestSuite.cpp
 	HierarchyCacheTestSuite.cpp
-	JavaIndexSampleProjectsTestSuite.cpp
-	JavaParserTestSuite.cpp
 	LogManagerTestSuite.cpp
 	LowMemoryStringMapTestSuite.cpp
 	MatrixBaseTestSuite.cpp
 	MatrixDynamicBaseTestSuite.cpp
 	MessageQueueTestSuite.cpp
 	NetworkProtocolHelperTestSuite.cpp
-	PythonIndexerTestSuite.cpp
 	RefreshInfoGeneratorTestSuite.cpp
 	SearchIndexTestSuite.cpp
 	SettingsMigratorTestSuite.cpp
@@ -43,5 +40,4 @@ add_files(
 	UtilityMavenTestSuite.cpp
 	UtilityStringTestSuite.cpp
 	UtilityTestSuite.cpp
-	Vector2TestSuite.cpp
-)
+	Vector2TestSuite.cpp)

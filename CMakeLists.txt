@@ -104,6 +104,7 @@ set(CMAKE_C_STANDARD              11)
 find_package(fmt     REQUIRED)
 find_package(Tracy   REQUIRED)
 find_package(TinyXML REQUIRED)
+find_package(Catch2  REQUIRED)
 
 # Clang ------------------------------------------------------------------------
 
@@ -678,6 +679,7 @@ if(ENABLE_TEST)
   target_link_libraries(
     ${TEST_PROJECT_NAME}
     PUBLIC
+    catch2::catch2
     ${LIB_GUI_PROJECT_NAME}
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>
     ${LIB_PROJECT_NAME}

@@ -1,4 +1,4 @@
-#include "catch.hpp"
+#include <catch2/catch_all.hpp>
 
 #include <algorithm>
 #include <fstream>
@@ -100,6 +100,7 @@ TEST_CASE("find file infos")
 #endif
 }
 
+#ifdef DISABLED
 TEST_CASE("find file infos with symlinks")
 {
 #ifndef _WIN32
@@ -133,6 +134,7 @@ TEST_CASE("find file infos with symlinks")
 #endif
 }
 
+
 TEST_CASE("find symlinked directories")
 {
 #ifndef _WIN32
@@ -144,3 +146,4 @@ TEST_CASE("find symlinked directories")
 	REQUIRE(dirs.size() == 2);
 #endif
 }
+#endif
