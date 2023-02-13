@@ -1,6 +1,6 @@
 #include "CodeblocksProject.h"
 
-#include "tinyxml.h"
+#include <tinyxml.h>
 
 #include "ApplicationSettings.h"
 #include "CodeblocksCompiler.h"

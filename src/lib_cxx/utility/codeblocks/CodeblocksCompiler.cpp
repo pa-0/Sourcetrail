@@ -1,6 +1,6 @@
 #include "CodeblocksCompiler.h"
 
-#include "tinyxml.h"
+#include <tinyxml.h>
 
 #include "utilityString.h"
 

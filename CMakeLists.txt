@@ -101,8 +101,9 @@ set(CMAKE_C_STANDARD              11)
 
 # Settings ---------------------------------------------------------------------
 
-find_package(fmt REQUIRED)
-find_package(Tracy REQUIRED)
+find_package(fmt     REQUIRED)
+find_package(Tracy   REQUIRED)
+find_package(TinyXML REQUIRED)
 
 # Clang ------------------------------------------------------------------------
 
@@ -323,6 +324,7 @@ target_link_libraries(
   ${LIB_GUI_PROJECT_NAME}
   ${Boost_LIBRARIES}
   fmt::fmt
+  TinyXML::TinyXML
   $<$<PLATFORM_ID:Windows>:bcrypt>)
 
 #configure language package defines
@@ -394,7 +396,7 @@ if (BUILD_CXX_LANGUAGE_PACKAGE)
             clangBasic
         )
     endif()
-  target_link_libraries(${LIB_CXX_PROJECT_NAME} ${LIB_UTILITY_PROJECT_NAME} ${CLANG_LIBRARIES} ${REQ_LLVM_LIBS})
+  target_link_libraries(${LIB_CXX_PROJECT_NAME} ${LIB_UTILITY_PROJECT_NAME} ${CLANG_LIBRARIES} ${REQ_LLVM_LIBS} TinyXML::TinyXML)
 
   if (WIN32)
     target_compile_definitions(${LIB_CXX_PROJECT_NAME} PRIVATE _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS) # Due to Clang

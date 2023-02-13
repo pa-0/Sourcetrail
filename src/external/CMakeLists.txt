@@ -1,22 +1,13 @@
 add_files(
-	EXTERNAL
+  EXTERNAL
 
-	catch/catch.hpp
-	
-	sqlite/CppSQLite3.cpp
-	sqlite/CppSQLite3.h
+  catch/catch.hpp
 
-	tinyxml/tinystr.cpp
-	tinyxml/tinystr.h
-	tinyxml/tinyxml.cpp
-	tinyxml/tinyxml.h
-	tinyxml/tinyxmlerror.cpp
-	tinyxml/tinyxmlparser.cpp
-)
+  sqlite/CppSQLite3.cpp
+  sqlite/CppSQLite3.h)
 
 add_files(
-	EXTERNAL_C
+  EXTERNAL_C
 
-	sqlite/sqlite3.c
-	sqlite/sqlite3.h
-)
+  sqlite/sqlite3.c
+  sqlite/sqlite3.h)
