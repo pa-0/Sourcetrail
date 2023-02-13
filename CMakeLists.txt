@@ -8,7 +8,7 @@ set(BUILD_CXX_LANGUAGE_PACKAGE OFF CACHE BOOL "Add C and C++ support to the Sour
 set(BUILD_JAVA_LANGUAGE_PACKAGE OFF CACHE BOOL "Add Java support to the Sourcetrail indexer.")
 set(BUILD_PYTHON_LANGUAGE_PACKAGE OFF CACHE BOOL "Add Python support to the Sourcetrail indexer.")
 set(DOCKER_BUILD OFF CACHE BOOL "Build runs in Docker")
-set(TREAT_WARNINGS_AS_ERRORS ON CACHE BOOL "Treat compiler warnings as errors")
+set(ENABLE_TEST                OFF CACHE BOOL "Build tests")
 set(BUILD_DOC OFF CACHE BOOL "Build documentation")
 
 include(cmake/add_files.cmake)
@@ -817,74 +817,81 @@ endif ()
 
 
 # Test ----------------------------------------------------------------------
+if(ENABLE_TEST)
+  if (UNIX)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
+  else ()
+    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+      string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+      set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/test/")
+    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+  endif ()
 
-if (UNIX)
-	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
-else ()
-	foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-		string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-		set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/test/")
-	endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
-endif ()
+  add_executable(${TEST_PROJECT_NAME} ${TEST_FILES})
 
-add_executable (${TEST_PROJECT_NAME} ${TEST_FILES})
+  create_source_groups(${TEST_FILES})
 
-create_source_groups(${TEST_FILES})
-
-target_link_libraries(
-	${TEST_PROJECT_NAME}
-	${LIB_GUI_PROJECT_NAME}
-	$<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>
+  target_link_libraries(
+    ${TEST_PROJECT_NAME}
+    ${LIB_GUI_PROJECT_NAME}
+    $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>
 	$<$<BOOL:${BUILD_JAVA_LANGUAGE_PACKAGE}>:${LIB_JAVA_PROJECT_NAME}>
 	$<$<BOOL:${BUILD_PYTHON_LANGUAGE_PACKAGE}>:${LIB_PYTHON_PROJECT_NAME}>
-	${LIB_PROJECT_NAME}
-	${LIB_GUI_PROJECT_NAME}
-	$<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>
+    ${LIB_PROJECT_NAME}
+    ${LIB_GUI_PROJECT_NAME}
+    $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>)
 	$<$<BOOL:${BUILD_JAVA_LANGUAGE_PACKAGE}>:${LIB_JAVA_PROJECT_NAME}>
 	$<$<BOOL:${BUILD_PYTHON_LANGUAGE_PACKAGE}>:${LIB_PYTHON_PROJECT_NAME}>
 )
 
-set_property(
-	TARGET ${TEST_PROJECT_NAME}
-	PROPERTY INCLUDE_DIRECTORIES
-		"${TEST_INCLUDE_PATHS}"
-		"${LIB_INCLUDE_PATHS}"
-		"${LIB_UTILITY_INCLUDE_PATHS}"
-		"${LIB_GUI_INCLUDE_PATHS}"
-		"${EXTERNAL_INCLUDE_PATHS}"
-		"${EXTERNAL_C_INCLUDE_PATHS}"
-		"${Boost_INCLUDE_DIRS}"
-		"${CMAKE_BINARY_DIR}/src/lib"
-		$<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_INCLUDE_PATHS}>
+  set_property(
+    TARGET ${TEST_PROJECT_NAME}
+    PROPERTY INCLUDE_DIRECTORIES
+      "${TEST_INCLUDE_PATHS}"
+      "${LIB_INCLUDE_PATHS}"
+      "${LIB_UTILITY_INCLUDE_PATHS}"
+      "${LIB_GUI_INCLUDE_PATHS}"
+      "${EXTERNAL_INCLUDE_PATHS}"
+      "${EXTERNAL_C_INCLUDE_PATHS}"
+      "${Boost_INCLUDE_DIRS}"
+      "${CMAKE_BINARY_DIR}/src/lib"
+      $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_INCLUDE_PATHS}>)
 		$<$<BOOL:${BUILD_JAVA_LANGUAGE_PACKAGE}>:${LIB_JAVA_INCLUDE_PATHS}>
 		$<$<BOOL:${BUILD_PYTHON_LANGUAGE_PACKAGE}>:${LIB_PYTHON_INCLUDE_PATHS}>
 )
 
-if (WIN32)
-	set_target_properties(${TEST_PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/bigobj")
-	set_property(
-		TARGET ${TEST_PROJECT_NAME}
-			PROPERTY VS_DEBUGGER_WORKING_DIRECTORY
-			"${CMAKE_SOURCE_DIR}/bin/test")
-endif ()
+  if(WIN32)
+    set_target_properties(${TEST_PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/bigobj")
+    set_property(
+      TARGET ${TEST_PROJECT_NAME}
+        PROPERTY VS_DEBUGGER_WORKING_DIRECTORY
+        "${CMAKE_SOURCE_DIR}/bin/test")
+  endif()
 
+  execute_process(
+    COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/test"
+  )
+  execute_process(
+    COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/test/data" "${CMAKE_BINARY_DIR}/test/data"
+  )
+endif()
 
 # symlinks for data
 message(STATUS "create symlink: "
-	"${CMAKE_SOURCE_DIR}/bin/app/data -> "
-	"${CMAKE_BINARY_DIR}/app/data"
+  "${CMAKE_SOURCE_DIR}/bin/app/data -> "
+  "${CMAKE_BINARY_DIR}/app/data"
 )
 
 if (UNIX)
-	execute_process(
-		COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/app"
+execute_process(
+  COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/app"
 		COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/test"
-	)
-	execute_process(
-		COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/data" "${CMAKE_BINARY_DIR}/app/data"
-		COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/user" "${CMAKE_BINARY_DIR}/app/user"
+)
+execute_process(
+  COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/data" "${CMAKE_BINARY_DIR}/app/data"
+  COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/user" "${CMAKE_BINARY_DIR}/app/user"
 		COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/test/data" "${CMAKE_BINARY_DIR}/test/data"
-	)
+)
 elseif(WIN32)
 	foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 		if (EXISTS "${BACKSLASHED_CMAKE_BINARY_DIR}\\${OUTPUTCONFIG}")
