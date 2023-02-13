@@ -155,7 +155,7 @@ TEST_CASE("config manager loads special character")
 	REQUIRE(loadedSpecialCharacter.size() == 1);
 	REQUIRE(loadedSpecialCharacter[0] == wchar_t(252));
 	;	 // special character needs to be encoded as ASCII code because
-		 // otherwise python and cxx compiler may be complaining
+		 // otherwise cxx compiler may be complaining
 }
 
 TEST_CASE("config manager save and load special character and compare")
