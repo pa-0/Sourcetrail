@@ -1,32 +1,28 @@
 #include "QtCoreApplication.h"
-
+// STL
 #include <iostream>
 
-QtCoreApplication::QtCoreApplication(int argc, char** argv): QCoreApplication(argc, argv) {}
+QtCoreApplication::QtCoreApplication(int argc, char** argv) : QCoreApplication(argc, argv) {}
 
-void QtCoreApplication::handleMessage(MessageQuitApplication* message)
-{
-	std::cout << "Quitting" << std::endl;
-	emit quit();
+QtCoreApplication::~QtCoreApplication() = default;
+
+void QtCoreApplication::handleMessage([[maybe_unused]] MessageQuitApplication* pMessage) {
+  std::cout << "Quitting" << std::endl;
+  emit quit();
 }
 
-void QtCoreApplication::handleMessage(MessageIndexingStatus* message)
-{
-	if (message->showProgress)
-	{
-		std::cout << message->progressPercent << "% " << '\r' << std::flush;
-	}
+void QtCoreApplication::handleMessage(MessageIndexingStatus* pMessage) {
+  if(pMessage->showProgress) {
+    std::cout << pMessage->progressPercent << "% " << '\r' << std::flush;
+  }
 }
 
-void QtCoreApplication::handleMessage(MessageStatus* message)
-{
-	if (message->isError)
-	{
-		std::wcout << L"ERROR: ";
-	}
+void QtCoreApplication::handleMessage(MessageStatus* pMessage) {
+  if(pMessage->isError) {
+    std::wcout << L"ERROR: ";
+  }
 
-	for (const std::wstring& status: message->stati())
-	{
-		std::wcout << status << std::endl;
-	}
+  for(const std::wstring& status : pMessage->stati()) {
+    std::wcout << status << std::endl;
+  }
 }

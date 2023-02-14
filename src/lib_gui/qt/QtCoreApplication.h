@@ -1,29 +1,31 @@
-#ifndef QT_COREAPPLICATION_H
-#define QT_COREAPPLICATION_H
-
+#pragma once
+// Qt5
 #include <QCoreApplication>
-
+// internal
 #include "MessageIndexingStatus.h"
 #include "MessageListener.h"
 #include "MessageQuitApplication.h"
 #include "MessageStatus.h"
 
 class QtCoreApplication
-	: public QCoreApplication
-	, public MessageListener<MessageQuitApplication>
-	, public MessageListener<MessageIndexingStatus>
-	, public MessageListener<MessageStatus>
-{
-	Q_OBJECT
+    : public QCoreApplication
+    , public MessageListener<MessageQuitApplication>
+    , public MessageListener<MessageIndexingStatus>
+    , public MessageListener<MessageStatus> {
+  // NOLINTNEXTLINE(readability-identifier-length)
+  Q_OBJECT
 
 public:
-	QtCoreApplication(int argc, char** argv);
-	virtual ~QtCoreApplication() = default;
+  QtCoreApplication(int argc, char** argv);
+
+  Q_DISABLE_COPY_MOVE(QtCoreApplication)
+
+  ~QtCoreApplication() override;
 
 private:
-	virtual void handleMessage(MessageQuitApplication* message);
-	virtual void handleMessage(MessageIndexingStatus* message);
-	virtual void handleMessage(MessageStatus* message);
-};
+  void handleMessage(MessageQuitApplication* pMessage) override;
 
-#endif	  // QT_COREAPPLICATION
+  void handleMessage(MessageIndexingStatus* pMessage) override;
+
+  void handleMessage(MessageStatus* pMessage) override;
+};
