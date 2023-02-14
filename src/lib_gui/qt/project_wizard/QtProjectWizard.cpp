@@ -1,14 +1,14 @@
 #include "QtProjectWizard.h"
-
+// Qt5
 #include <QFileDialog>
 #include <QListWidget>
 #include <QMessageBox>
 #include <QScrollArea>
 #include <QSysInfo>
 #include <QTimer>
-
+//
 #include "language_packages.h"
-
+// internal
 #include "MessageLoadProject.h"
 #include "MessageStatus.h"
 #include "QtProjectWizardContent.h"
@@ -31,7 +31,7 @@
 #include "utilityPathDetection.h"
 #include "utilityString.h"
 #include "utilityUuid.h"
-
+//
 #include "Application.h"
 
 #if BUILD_CXX_LANGUAGE_PACKAGE
@@ -234,8 +234,8 @@ void addSourceGroupContents<SourceGroupSettingsUnloadable>(
 }
 }    // namespace
 
-QtProjectWizard::QtProjectWizard(QWidget* parent)
-    : QtProjectWizardWindow(parent, false)
+QtProjectWizard::QtProjectWizard(QWidget* pParent)
+    : QtProjectWizardWindow(pParent, false)
     , m_windowStack(this)
     , m_editing(false)
     , m_previouslySelectedIndex(-1)

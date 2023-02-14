@@ -1,8 +1,10 @@
 #include "QtProjectWizardContentPaths.h"
-
+// Qt5
 #include <QComboBox>
+#include <QGridLayout>
+#include <QLabel>
 #include <QMessageBox>
-
+// internal
 #include "SourceGroupSettings.h"
 #include "utility.h"
 

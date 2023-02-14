@@ -1,41 +1,38 @@
-#ifndef QT_PROJECT_WIZARD_CONTENT_SOURCE_GROUP_DATA_H
-#define QT_PROJECT_WIZARD_CONTENT_SOURCE_GROUP_DATA_H
+#pragma once
 
 #include "QtProjectWizardContent.h"
 #include "SourceGroupStatusType.h"
 
-class QCheckBox;
-class QLineEdit;
+QT_FORWARD_DECLARE_CLASS(QCheckBox);
+QT_FORWARD_DECLARE_CLASS(QLineEdit);
+
 class SourceGroupSettings;
 
-class QtProjectWizardContentSourceGroupData: public QtProjectWizardContent
-{
-	Q_OBJECT
+class QtProjectWizardContentSourceGroupData : public QtProjectWizardContent {
+  Q_OBJECT
 
 public:
-	QtProjectWizardContentSourceGroupData(
-		std::shared_ptr<SourceGroupSettings> settings, QtProjectWizardWindow* window);
+  QtProjectWizardContentSourceGroupData(std::shared_ptr<SourceGroupSettings> settings,
+                                        QtProjectWizardWindow* window);
 
-	// QtProjectWizardContent implementation
-	virtual void populate(QGridLayout* layout, int& row) override;
+  // QtProjectWizardContent implementation
+  virtual void populate(QGridLayout* layout, int& row) override;
 
-	virtual void load() override;
-	virtual void save() override;
-	virtual bool check() override;
+  virtual void load() override;
+  virtual void save() override;
+  virtual bool check() override;
 
 signals:
-	void nameUpdated(QString);
-	void statusUpdated(SourceGroupStatusType);
+  void nameUpdated(QString);
+  void statusUpdated(SourceGroupStatusType);
 
 private slots:
-	void editedName(QString name);
-	void changedStatus(bool checked);
+  void editedName(QString name);
+  void changedStatus(bool checked);
 
 private:
-	std::shared_ptr<SourceGroupSettings> m_settings;
+  std::shared_ptr<SourceGroupSettings> m_settings;
 
-	QLineEdit* m_name;
-	QCheckBox* m_status;
+  QLineEdit* m_name;
+  QCheckBox* m_status;
 };
-
-#endif	  // QT_PROJECT_WIZARD_CONTENT_SOURCE_GROUP_DATA_H

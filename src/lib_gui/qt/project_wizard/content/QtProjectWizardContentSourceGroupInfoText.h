@@ -1,17 +1,13 @@
-#ifndef QT_PROJECT_WIZARD_CONTENT_SOURCE_GROUP_INFO_TEXT_H
-#define QT_PROJECT_WIZARD_CONTENT_SOURCE_GROUP_INFO_TEXT_H
+#pragma once
 
 #include "QtProjectWizardContent.h"
 
-class QtProjectWizardContentSourceGroupInfoText: public QtProjectWizardContent
-{
-	Q_OBJECT
+class QtProjectWizardContentSourceGroupInfoText : public QtProjectWizardContent {
+  Q_OBJECT
 
 public:
-	QtProjectWizardContentSourceGroupInfoText(QtProjectWizardWindow* window);
+  QtProjectWizardContentSourceGroupInfoText(QtProjectWizardWindow* window);
 
-	// QtProjectWizardContent implementation
-	void populate(QGridLayout* layout, int& row) override;
+  // QtProjectWizardContent implementation
+  void populate(QGridLayout* layout, int& row) override;
 };
-
-#endif	  // QT_PROJECT_WIZARD_CONTENT_SOURCE_GROUP_INFO_TEXT_H

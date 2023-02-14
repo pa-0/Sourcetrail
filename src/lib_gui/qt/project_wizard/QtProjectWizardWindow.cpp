@@ -1,116 +1,98 @@
 #include "QtProjectWizardWindow.h"
-
+// Qt5
 #include <QFrame>
 #include <QGridLayout>
 #include <QPushButton>
 #include <QScrollArea>
-
+// internal
 #include "QtProjectWizardContent.h"
 #include "utilityQt.h"
 
-QtProjectWizardWindow::QtProjectWizardWindow(QWidget* parent, bool showSeparator)
-	: QtWindow(false, parent), m_content(nullptr), m_showSeparator(showSeparator)
-{
+QtProjectWizardWindow::QtProjectWizardWindow(QWidget* pParent, bool showSeparator)
+    : QtWindow(false, pParent), m_content(nullptr), m_showSeparator(showSeparator) {}
+
+QSize QtProjectWizardWindow::sizeHint() const {
+  if(m_preferredSize.width() <= 1) {
+    return m_preferredSize;
+  }
+  return QSize(750, 620);
 }
 
-QSize QtProjectWizardWindow::sizeHint() const
-{
-	if (m_preferredSize.width())
-	{
-		return m_preferredSize;
-	}
-	return QSize(750, 620);
+QtProjectWizardContent* QtProjectWizardWindow::content() const {
+  return m_content;
 }
 
-QtProjectWizardContent* QtProjectWizardWindow::content() const
-{
-	return m_content;
+void QtProjectWizardWindow::setContent(QtProjectWizardContent* pContent) {
+  m_content = pContent;
 }
 
-void QtProjectWizardWindow::setContent(QtProjectWizardContent* content)
-{
-	m_content = content;
+void QtProjectWizardWindow::setPreferredSize(QSize size) {
+  m_preferredSize = size;
 }
 
-void QtProjectWizardWindow::setPreferredSize(QSize size)
-{
-	m_preferredSize = size;
+void QtProjectWizardWindow::saveContent() {
+  m_content->save();
 }
 
-void QtProjectWizardWindow::saveContent()
-{
-	m_content->save();
+void QtProjectWizardWindow::loadContent() {
+  m_content->load();
 }
 
-void QtProjectWizardWindow::loadContent()
-{
-	m_content->load();
+void QtProjectWizardWindow::refreshContent() {
+  m_content->refresh();
 }
 
-void QtProjectWizardWindow::refreshContent()
-{
-	m_content->refresh();
+void QtProjectWizardWindow::populateWindow(QWidget* widget) {
+  auto* pLayout = new QGridLayout;
+  pLayout->setContentsMargins(0, 0, 0, 0);
+
+  pLayout->setColumnStretch(QtProjectWizardWindow::FRONT_COL, 1);
+  pLayout->setColumnStretch(QtProjectWizardWindow::BACK_COL, 3);
+
+  pLayout->setColumnStretch(HELP_COL, 0);
+  pLayout->setColumnStretch(LINE_COL, 0);
+
+  int row = 0;
+  m_content->populate(pLayout, row);
+
+  auto* pSeparator = new QFrame;
+  pSeparator->setFrameShape(QFrame::VLine);
+
+  QPalette palette = pSeparator->palette();
+  palette.setColor(QPalette::WindowText, m_showSeparator ? Qt::lightGray : Qt::transparent);
+  pSeparator->setPalette(palette);
+
+  pLayout->addWidget(pSeparator, 0, LINE_COL, -1, 1);
+
+  if(isScrollAble()) {
+    pLayout->setColumnMinimumWidth(BACK_COL + 1, 10);
+  }
+
+  widget->setLayout(pLayout);
 }
 
-void QtProjectWizardWindow::populateWindow(QWidget* widget)
-{
-	QGridLayout* layout = new QGridLayout();
-	layout->setContentsMargins(0, 0, 0, 0);
+void QtProjectWizardWindow::windowReady() {
+  updateTitle(QStringLiteral("NEW SOURCE GROUP"));
 
-	layout->setColumnStretch(QtProjectWizardWindow::FRONT_COL, 1);
-	layout->setColumnStretch(QtProjectWizardWindow::BACK_COL, 3);
-
-	layout->setColumnStretch(HELP_COL, 0);
-	layout->setColumnStretch(LINE_COL, 0);
-
-	int row = 0;
-	m_content->populate(layout, row);
-
-	QFrame* separator = new QFrame();
-	separator->setFrameShape(QFrame::VLine);
-
-	QPalette palette = separator->palette();
-	palette.setColor(QPalette::WindowText, m_showSeparator ? Qt::lightGray : Qt::transparent);
-	separator->setPalette(palette);
-
-	layout->addWidget(separator, 0, LINE_COL, -1, 1);
-
-	if (isScrollAble())
-	{
-		layout->setColumnMinimumWidth(BACK_COL + 1, 10);
-	}
-
-	widget->setLayout(layout);
+  m_content->windowReady();
 }
 
-void QtProjectWizardWindow::windowReady()
-{
-	updateTitle(QStringLiteral("NEW SOURCE GROUP"));
+void QtProjectWizardWindow::handleNext() {
+  if(m_content != nullptr) {
+    saveContent();
 
-	m_content->windowReady();
+    if(!m_content->check()) {
+      return;
+    }
+  }
+
+  emit next();
 }
 
-void QtProjectWizardWindow::handleNext()
-{
-	if (m_content)
-	{
-		saveContent();
+void QtProjectWizardWindow::handlePrevious() {
+  if(m_content != nullptr) {
+    m_content->save();
+  }
 
-		if (!m_content->check())
-		{
-			return;
-		}
-	}
-
-	emit next();
-}
-
-void QtProjectWizardWindow::handlePrevious()
-{
-	if (m_content)
-	{
-		m_content->save();
-	}
-
-	emit previous();
+  emit previous();
 }

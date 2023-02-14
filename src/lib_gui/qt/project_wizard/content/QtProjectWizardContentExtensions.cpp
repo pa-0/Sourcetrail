@@ -1,9 +1,11 @@
 #include "QtProjectWizardContentExtensions.h"
 
 #include "language_packages.h"
-
+// Qt5
 #include <QFormLayout>
-
+#include <QGridLayout>
+#include <QLabel>
+// internal
 #include "QtStringListBox.h"
 #include "SourceGroupSettingsWithSourceExtensions.h"
 

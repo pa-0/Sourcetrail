@@ -1,9 +1,11 @@
 #include "QtProjectWizardContentSourceGroupData.h"
-
+// Qt5
 #include <QCheckBox>
+#include <QGridLayout>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
-
+// internal
 #include "SourceGroupSettings.h"
 
 QtProjectWizardContentSourceGroupData::QtProjectWizardContentSourceGroupData(

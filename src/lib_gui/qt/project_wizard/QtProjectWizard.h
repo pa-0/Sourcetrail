@@ -1,9 +1,9 @@
 #pragma once
-
+// STL
 #include <functional>
-
+// Qt5
 #include <QWidget>
-
+// internal
 #include "ApplicationSettings.h"
 #include "ProjectSettings.h"
 #include "QtProjectWizardWindow.h"
@@ -19,7 +19,8 @@ class QtProjectWizard : public QtProjectWizardWindow {
   Q_OBJECT
 
 public:
-  QtProjectWizard(QWidget* parent = nullptr);
+  explicit QtProjectWizard(QWidget* pParent = nullptr);
+
   virtual QSize sizeHint() const override;
 
 public slots:

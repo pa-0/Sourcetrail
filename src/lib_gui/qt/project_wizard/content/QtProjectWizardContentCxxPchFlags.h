@@ -1,35 +1,31 @@
-#ifndef QT_PROJECT_WIZARD_CONTENT_CXX_PCH_FLAGS_H
-#define QT_PROJECT_WIZARD_CONTENT_CXX_PCH_FLAGS_H
+#pragma once
 
 #include "QtProjectWizardContent.h"
 
-class QCheckBox;
+QT_FORWARD_DECLARE_CLASS(QCheckBox);
+
 class QtStringListBox;
 class SourceGroupSettingsWithCxxPchOptions;
 
-class QtProjectWizardContentCxxPchFlags: public QtProjectWizardContent
-{
-	Q_OBJECT
+class QtProjectWizardContentCxxPchFlags : public QtProjectWizardContent {
+  Q_OBJECT
 
 public:
-	QtProjectWizardContentCxxPchFlags(
-		std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> settings,
-		QtProjectWizardWindow* window,
-		bool isCDB);
+  QtProjectWizardContentCxxPchFlags(std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> settings,
+                                    QtProjectWizardWindow* window,
+                                    bool isCDB);
 
-	// QtProjectWizardContent implementation
-	virtual void populate(QGridLayout* layout, int& row) override;
+  // QtProjectWizardContent implementation
+  virtual void populate(QGridLayout* layout, int& row) override;
 
-	virtual void load() override;
-	virtual void save() override;
-	virtual bool check() override;
+  virtual void load() override;
+  virtual void save() override;
+  virtual bool check() override;
 
 private:
-	std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> m_settings;
-	const bool m_isCDB;
+  std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> m_settings;
+  const bool m_isCDB;
 
-	QCheckBox* m_useCompilerFlags;
-	QtStringListBox* m_list;
+  QCheckBox* m_useCompilerFlags;
+  QtStringListBox* m_list;
 };
-
-#endif	  // QT_PROJECT_WIZARD_CONTENT_CXX_PCH_FLAGS_H
