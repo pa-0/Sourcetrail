@@ -24,8 +24,6 @@ namespace {
 QIcon getProjectIcon(LanguageType lang) {
   static const auto CppIcon = utility::toIcon(L"icon/cpp_icon.png");
   static const auto CIcon = utility::toIcon(L"icon/c_icon.png");
-  static const auto PythonIcon = utility::toIcon(L"icon/python_icon.png");
-  static const auto JavaIcon = utility::toIcon(L"icon/java_icon.png");
   static const auto ProjectIcon = utility::toIcon(L"icon/empty_icon.png");
 
   switch(lang) {
@@ -35,14 +33,6 @@ QIcon getProjectIcon(LanguageType lang) {
   case LANGUAGE_CPP:
     return CppIcon;
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
-#if BUILD_JAVA_LANGUAGE_PACKAGE
-  case LANGUAGE_JAVA:
-    return JavaIcon;
-#endif    // BUILD_JAVA_LANGUAGE_PACKAGE
-#if BUILD_PYTHON_LANGUAGE_PACKAGE
-  case LANGUAGE_PYTHON:
-    return PythonIcon;
-#endif    // BUILD_PYTHON_LANGUAGE_PACKAGE
   case LANGUAGE_CUSTOM:
   default:
     return ProjectIcon;

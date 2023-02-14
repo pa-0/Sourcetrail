@@ -1,5 +1,4 @@
-#ifndef SYMBOL_KIND_H
-#define SYMBOL_KIND_H
+#pragma once
 
 enum SymbolKind
 {	 // these values need to be the same as SymbolKind in Java code
@@ -25,6 +24,5 @@ enum SymbolKind
 };
 
 SymbolKind intToSymbolKind(int v);
-int symbolKindToInt(SymbolKind t);
 
-#endif	  // SYMBOL_KIND_H
+int symbolKindToInt(SymbolKind t);

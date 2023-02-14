@@ -1,8 +1,7 @@
-#ifndef TRACING_H
-#define TRACING_H
+#pragma once
 
 
-// #define TRACING_ENABLED
+#define TRACING_ENABLED
 // #define USE_ACCUMULATED_TRACING
 
 
@@ -151,5 +150,3 @@ ScopedTrace<TracerType>::~ScopedTrace()
 #	define TRACE(__name__)
 #	define PRINT_TRACES()
 #endif
-
-#endif	  // TRACING_H

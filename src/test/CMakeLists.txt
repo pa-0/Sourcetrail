@@ -49,8 +49,6 @@ set(
   StorageTestSuite
   TaskSchedulerTestSuite
   TextAccessTestSuite
-  UtilityGradleTestSuite
-  UtilityMavenTestSuite
   UtilityStringTestSuite
   UtilityTestSuite
   Vector2TestSuite)
