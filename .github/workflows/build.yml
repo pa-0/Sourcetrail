@@ -19,13 +19,13 @@ jobs:
       matrix:
         config:
         - {
-            name: "Ubuntu Latest GCC", artifact: "Linux.tar.xz",
-            os: ubuntu-latest,
+            name: "Ubuntu Latest GCC", artifact: "gcc.tar.xz",
+            os: Ubuntu-22.04,
             build_type: "Release", cc: "gcc", cxx: "g++"
           }
         - {
-            name: "Ubuntu Latest Clang", artifact: "macOS.tar.xz",
-            os: ubuntu-latest,
+            name: "Ubuntu Latest Clang", artifact: "clang.tar.xz",
+            os: Ubuntu-22.04,
             build_type: "Release", cc: "clang", cxx: "clang++"
           }
 
@@ -35,7 +35,10 @@ jobs:
         fetch-depth: 0
     
     - name: Install dependencies
-      run: sudo apt install -y clang libboost-all-dev qtbase5-dev ninja-build libqt5svg5-dev
+      run: sudo apt install -y clang libboost-all-dev qtbase5-dev ninja-build libqt5svg5-dev python3-pip
+
+    - name: Install conan
+      run: sudo pip install conan
 
     - name: Configure CMake
       run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
