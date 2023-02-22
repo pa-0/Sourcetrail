@@ -297,16 +297,6 @@ add_files(
   qt/QtApplication.h
   qt/QtCoreApplication.cpp
   qt/QtCoreApplication.h
-
-  utility/path_detector/CombinedPathDetector.cpp
-  utility/path_detector/CombinedPathDetector.h
-  utility/path_detector/PathDetector.cpp
-  utility/path_detector/PathDetector.h
-
-  utility/utilityApp.cpp
-  utility/utilityApp.h
-  utility/utilityPathDetection.cpp
-  utility/globalStrings.h
 )
 
 if(BUILD_CXX_LANGUAGE_PACKAGE)

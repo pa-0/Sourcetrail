@@ -251,6 +251,8 @@ target_include_directories(
   PUBLIC
     ${LIB_INCLUDE_PATHS}
     ${LIB_GUI_INCLUDE_PATHS}
+    ${CMAKE_SOURCE_DIR}/src/lib_gui/utility/
+    ${CMAKE_SOURCE_DIR}/src/lib_gui/utility/path_detector/
     ${CMAKE_BINARY_DIR}/src/lib)
 
 target_include_directories(
@@ -278,6 +280,30 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/language_packages.h.in"
                "${CMAKE_BINARY_DIR}/src/lib/language_packages.h")
 
 # Lib Gui ----------------------------------------------------------------------
+add_library(Sourcetrail_lib_gui_utility)
+add_library(Sourcetrail::lib_gui::utility ALIAS Sourcetrail_lib_gui_utility)
+
+target_sources(
+  Sourcetrail_lib_gui_utility
+  PRIVATE
+    src/lib_gui/utility/utilityApp.cpp
+    src/lib_gui/utility/utilityPathDetection.cpp
+    src/lib_gui/utility/path_detector/CombinedPathDetector.cpp
+    src/lib_gui/utility/path_detector/PathDetector.cpp)
+
+target_include_directories(
+  Sourcetrail_lib_gui_utility
+  PUBLIC
+    src/lib_gui/utility/
+    src/lib_gui/utility/path_detector/
+    src/lib_gui/utility/path_detector/cxx_header/)
+
+target_link_libraries(
+  Sourcetrail_lib_gui_utility
+  PRIVATE
+    Boost::system
+    Qt5::Core
+    ${LIB_PROJECT_NAME})
 
 # target for running versionnumber script
 # workaround for running customcommand (ninja dependency cycle)
@@ -297,6 +323,11 @@ target_link_libraries(
     Qt5::Network
     Qt5::Svg
     $<$<PLATFORM_ID:Windows>:Qt5::WinExtras>)
+
+target_link_libraries(
+  ${LIB_GUI_PROJECT_NAME}
+  PRIVATE
+    Sourcetrail::lib_gui::utility)
 
 # command for versioning script
 add_custom_command(
