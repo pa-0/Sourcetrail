@@ -2,16 +2,16 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(BUILD_CXX_LANGUAGE_PACKAGE          OFF CACHE BOOL "Add C and C++ support to the Sourcetrail indexer.")
-set(BUILD_DOC                           OFF CACHE BOOL "Build documentation")
-set(ENABLE_TEST                         OFF CACHE BOOL "Build tests")
-set(ENABLE_CLANG_TIDY                   OFF CACHE BOOL "")
-set(ENABLE_CPPCHECK                     OFF CACHE BOOL "")
-set(ENABLE_SANITIZER_ADDRESS            OFF CACHE BOOL "")
-set(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR OFF CACHE BOOL "")
-set(ENABLE_SANITIZER_THREAD             OFF CACHE BOOL "")
-set(ENABLE_SANITIZER_MEMORY             OFF CACHE BOOL "")
-set(ENABLE_COVERAGE                     OFF CACHE BOOL "")
-set(ENABLE_BUILD_WITH_TIME_TRACE        OFF CACHE BOOL "")
+set(BUILD_DOC                           OFF CACHE BOOL "Build documentation.")
+set(ENABLE_TEST                         OFF CACHE BOOL "Build tests.")
+set(ENABLE_CLANG_TIDY                   OFF CACHE BOOL "Run clang-tidy after building.")
+set(ENABLE_CPPCHECK                     OFF CACHE BOOL "Run cppcheck after building.")
+set(ENABLE_SANITIZER_ADDRESS            OFF CACHE BOOL "Inject address sanitizer.")
+set(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR OFF CACHE BOOL "Inject undefined behavior sanitizer.")
+set(ENABLE_SANITIZER_THREAD             OFF CACHE BOOL "Inject thread sanitizer.")
+set(ENABLE_SANITIZER_MEMORY             OFF CACHE BOOL "Inject memory sanitizer.")
+set(ENABLE_COVERAGE                     OFF CACHE BOOL "Build coverage report run `ninja coverage`.")
+set(ENABLE_BUILD_WITH_TIME_TRACE        OFF CACHE BOOL "Trace building time.")
 
 include(cmake/add_files.cmake)
 include(cmake/version.cmake)
@@ -48,7 +48,6 @@ set(PROJECT_NAME Sourcetrail)
 
 set(APP_PROJECT_NAME         "${PROJECT_NAME}")
 set(APP_INDEXER_NAME         "${PROJECT_NAME}_indexer")
-set(LIB_UTILITY_PROJECT_NAME "${PROJECT_NAME}_lib_utility")
 set(LIB_GUI_PROJECT_NAME     "${PROJECT_NAME}_lib_gui")
 set(LIB_CXX_PROJECT_NAME     "${PROJECT_NAME}_lib_cxx")
 set(LIB_JAVA_PROJECT_NAME    "${PROJECT_NAME}_lib_java")
@@ -83,7 +82,7 @@ project(
 
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
 
-dynamic_project_options(
+project_options(
   ENABLE_CONAN
   # CONAN_OPTIONS    # Extra options to pass to conan
   # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
@@ -91,6 +90,7 @@ dynamic_project_options(
   # GCC_WARNINGS     # Override the defaults for the GCC warnings
   ${ENABLE_CPPCHECK}
   ${ENABLE_CLANG_TIDY}
+  ${ENABLE_COVERAGE}
   ENABLE_VS_ANALYSIS
   # ENABLE_INTERPROCEDURAL_OPTIMIZATION
   # ENABLE_NATIVE_OPTIMIZATION
@@ -128,45 +128,44 @@ find_package(fmt     CONFIG REQUIRED)
 
 # Clang ------------------------------------------------------------------------
 
-if (BUILD_CXX_LANGUAGE_PACKAGE)
+if(BUILD_CXX_LANGUAGE_PACKAGE)
   find_package(Clang REQUIRED)
 
-  if (LLVM_FOUND)
+  if(LLVM_FOUND)
     message(STATUS "Found LLVM ${LLVM_VERSION}")
   endif()
 
-  if (UNIX)
+  if(UNIX)
     set(LLVM_CONFIGURATION_TYPES ".")
   endif()
 
-  set (CLANG_COMPILER_HEADER_SEARCH_PATH "")
-  foreach(LLVM_CONFIGURATION_TYPE ${LLVM_CONFIGURATION_TYPES})
-    if (CLANG_COMPILER_HEADER_SEARCH_PATH STREQUAL "")
-      set (_CLANG_HEADERS_SEARCH_LIST
+  set(CLANG_COMPILER_HEADER_SEARCH_PATH "")
+  foreach(LLVM_CONFIGURATION_TYPE IN LISTS LLVM_CONFIGURATION_TYPES)
+    if(CLANG_COMPILER_HEADER_SEARCH_PATH STREQUAL "")
+      set(_CLANG_HEADERS_SEARCH_LIST
         "${LLVM_BINARY_DIR}/${LLVM_CONFIGURATION_TYPE}/lib/clang/${LLVM_VERSION}/include"
-        "${LLVM_BINARY_DIR}/${LLVM_CONFIGURATION_TYPE}/lib64/clang/${LLVM_VERSION}/include"
-      )
-      foreach (_CLANG_HEADER_PATH ${_CLANG_HEADERS_SEARCH_LIST})
-        if (EXISTS ${_CLANG_HEADER_PATH})
-          set (CLANG_COMPILER_HEADER_SEARCH_PATH ${_CLANG_HEADER_PATH})
-          break ()
-        endif ()
+        "${LLVM_BINARY_DIR}/${LLVM_CONFIGURATION_TYPE}/lib64/clang/${LLVM_VERSION}/include")
+      foreach(_CLANG_HEADER_PATH IN LISTS _CLANG_HEADERS_SEARCH_LIST)
+        if(EXISTS ${_CLANG_HEADER_PATH})
+          set(CLANG_COMPILER_HEADER_SEARCH_PATH ${_CLANG_HEADER_PATH})
+          break()
+        endif()
       endforeach ()
 
-      message (STATUS "Trying to find Clang compiler headers in '${LLVM_CONFIGURATION_TYPE}' build config in directory '${CLANG_COMPILER_HEADER_SEARCH_PATH}'.")
-      if (EXISTS ${CLANG_COMPILER_HEADER_SEARCH_PATH})
-        message (STATUS "Found headers for '${LLVM_CONFIGURATION_TYPE}' build config.")
+      message(STATUS "Trying to find Clang compiler headers in '${LLVM_CONFIGURATION_TYPE}' build config in directory '${CLANG_COMPILER_HEADER_SEARCH_PATH}'.")
+      if(EXISTS ${CLANG_COMPILER_HEADER_SEARCH_PATH})
+        message(STATUS "Found headers for '${LLVM_CONFIGURATION_TYPE}' build config.")
         file(GLOB_RECURSE CLANG_COMPILER_HEADER_PATHS RELATIVE "${CLANG_COMPILER_HEADER_SEARCH_PATH}" "${CLANG_COMPILER_HEADER_SEARCH_PATH}/*")
-        foreach(CLANG_COMPILER_HEADER_PATH ${CLANG_COMPILER_HEADER_PATHS})
+        foreach(CLANG_COMPILER_HEADER_PATH IN LISTS CLANG_COMPILER_HEADER_PATHS)
           configure_file("${CLANG_COMPILER_HEADER_SEARCH_PATH}/${CLANG_COMPILER_HEADER_PATH}" "${CMAKE_SOURCE_DIR}/bin/app/data/cxx/include/${CLANG_COMPILER_HEADER_PATH}" COPYONLY)
         endforeach()
-      else ()
-        set (CLANG_COMPILER_HEADER_SEARCH_PATH "")
-      endif ()
-    endif ()
+      else()
+        set(CLANG_COMPILER_HEADER_SEARCH_PATH "")
+      endif()
+    endif()
   endforeach()
 
-  if (CLANG_COMPILER_HEADER_SEARCH_PATH STREQUAL "")
+  if(CLANG_COMPILER_HEADER_SEARCH_PATH STREQUAL "")
     message(FATAL_ERROR "Unable to copy Clang compiler headers from clang build dir.")
   endif()
 endif()
@@ -280,45 +279,17 @@ add_subdirectory(src/indexer)
 add_subdirectory(src/lib)
 add_subdirectory(src/lib_cxx)
 add_subdirectory(src/lib_gui)
-add_subdirectory(src/lib_utility)
 
 # Lib Utility ------------------------------------------------------------------
-
-add_library(${LIB_UTILITY_PROJECT_NAME} ${LIB_UTILITY_FILES})
-
-target_include_directories(
-  ${LIB_UTILITY_PROJECT_NAME}
-  PUBLIC
-  ${LIB_UTILITY_INCLUDE_PATHS})
-
-target_link_libraries(
-  ${LIB_UTILITY_PROJECT_NAME}
-  PUBLIC
-  Boost::system
-  Qt5::Widgets
-  Qt5::Network
-  $<$<PLATFORM_ID:Windows>:Qt5::WinExtras>)
-
-if(UNIX AND NOT APPLE)
-  find_package(Threads REQUIRED)
-  target_link_libraries(
-    ${LIB_UTILITY_PROJECT_NAME}
-    PUBLIC
-    ${CMAKE_DL_LIBS}
-    rt
-    Threads::Threads)
-endif()
-
+add_subdirectory(src/lib_utility)
 # Lib --------------------------------------------------------------------------
 
-set_source_files_properties(${EXTERNAL_FILES}   PROPERTIES COMPILE_FLAGS "-w")
-set_source_files_properties(${EXTERNAL_C_FILES} PROPERTIES COMPILE_FLAGS "-std=gnu89 -w")
+set_source_files_properties(${EXTERNAL_FILES} PROPERTIES COMPILE_FLAGS "-w")
 
 add_library(
   ${LIB_PROJECT_NAME}
   ${LIB_FILES}
-  ${EXTERNAL_FILES}
-  ${EXTERNAL_C_FILES})
+  ${EXTERNAL_FILES})
 
 target_include_directories(
   ${LIB_PROJECT_NAME}
@@ -333,20 +304,22 @@ target_include_directories(
 target_include_directories(
   ${LIB_PROJECT_NAME}
   SYSTEM PUBLIC
-    ${Boost_INCLUDE_DIR}
     ${EXTERNAL_INCLUDE_PATHS}
     ${EXTERNAL_C_INCLUDE_PATHS})
 
 target_link_libraries(
   ${LIB_PROJECT_NAME}
   PUBLIC
-  ${LIB_UTILITY_PROJECT_NAME}
-  ${LIB_GUI_PROJECT_NAME}
-  ${Boost_LIBRARIES}
-  fmt::fmt
-  TinyXML::TinyXML
-  SQLite::SQLite3
-  $<$<PLATFORM_ID:Windows>:bcrypt>)
+    Boost::program_options
+    Sourcetrail::lib_utility
+    ${LIB_GUI_PROJECT_NAME}
+    Boost::system
+    Boost::filesystem
+    Boost::date_time
+    fmt::fmt
+    TinyXML::TinyXML
+    SQLite::SQLite3
+    $<$<PLATFORM_ID:Windows>:bcrypt>)
 
 #configure language package defines
 configure_file("${CMAKE_SOURCE_DIR}/cmake/language_packages.h.in"
@@ -354,48 +327,42 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/language_packages.h.in"
 
 # Lib Cxx ----------------------------------------------------------------------
 
-if (BUILD_CXX_LANGUAGE_PACKAGE)
+if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_library(${LIB_CXX_PROJECT_NAME} ${LIB_CXX_FILES})
 
-  set_property(
-    TARGET ${LIB_CXX_PROJECT_NAME}
-    PROPERTY INCLUDE_DIRECTORIES
-      "${LIB_CXX_INCLUDE_PATHS}"
-      "${LIB_UTILITY_INCLUDE_PATHS}"
-      "${LIB_INCLUDE_PATHS}"
-      "${CMAKE_BINARY_DIR}/src/lib")
+  target_include_directories(
+    ${LIB_CXX_PROJECT_NAME}
+    PUBLIC
+      ${LIB_CXX_INCLUDE_PATHS}
+      ${LIB_UTILITY_INCLUDE_PATHS}
+      ${LIB_INCLUDE_PATHS}
+      ${CMAKE_BINARY_DIR}/src/lib)
 
-  target_include_directories(${LIB_CXX_PROJECT_NAME} SYSTEM
-    PUBLIC ${LLVM_INCLUDE_DIRS}
-    ${CLANG_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
-    "${EXTERNAL_INCLUDE_PATHS}"
-    "${EXTERNAL_C_INCLUDE_PATHS}")
-
-  link_directories(
-    ${LLVM_LIBRARY_DIRS}
-    ${CLANG_LIBRARY_DIRS}
-    ${Boost_LIBRARY_DIRS})
+  target_include_directories(
+    ${LIB_CXX_PROJECT_NAME}
+    SYSTEM PUBLIC
+      ${LLVM_INCLUDE_DIRS}
+      ${CLANG_INCLUDE_DIRS}
+      ${EXTERNAL_INCLUDE_PATHS})
 
     if(LLVM_LINK_LLVM_DYLIB)
         set(REQ_LLVM_LIBS LLVM)
     else()
-        llvm_map_components_to_libnames(REQ_LLVM_LIBS
-            support core libdriver passes option
-        )
-        foreach(LLVM_TARGET ${LLVM_TARGETS_TO_BUILD})
+        llvm_map_components_to_libnames(REQ_LLVM_LIBS support core libdriver passes option)
+        foreach(LLVM_TARGET IN LIST LLVM_TARGETS_TO_BUILD)
             get_property(lib_deps GLOBAL PROPERTY "LLVMBUILD_LIB_DEPS_LLVM${LLVM_TARGET}CodeGen")
             list(APPEND REQ_LLVM_LIBS "LLVM${LLVM_TARGET}CodeGen")
             list(APPEND REQ_LLVM_LIBS "${lib_deps}")
             get_property(lib_deps GLOBAL PROPERTY "LLVMBUILD_LIB_DEPS_LLVM${LLVM_TARGET}AsmParser")
-            if (NOT "${lib_deps}" STREQUAL "")
+            if(NOT "${lib_deps}" STREQUAL "")
                 list(APPEND REQ_LLVM_LIBS "LLVM${LLVM_TARGET}AsmParser")
                 list(APPEND REQ_LLVM_LIBS "${lib_deps}")
             endif()
         endforeach()
     endif()
 
-    if(LLVM_LINK_LLVM_DYLIB)  # Should be CLANG_LINK_CLANG_DYLIB in future LLVM release
+    # Should be CLANG_LINK_CLANG_DYLIB in future LLVM release
+    if(LLVM_LINK_LLVM_DYLIB)
         set(CLANG_LIBRARIES clang-cpp)
     else()
         set(CLANG_LIBRARIES
@@ -414,14 +381,20 @@ if (BUILD_CXX_LANGUAGE_PACKAGE)
             clangEdit
             clangAST
             clangLex
-            clangBasic
-        )
+            clangBasic)
     endif()
-  target_link_libraries(${LIB_CXX_PROJECT_NAME} ${LIB_UTILITY_PROJECT_NAME} ${CLANG_LIBRARIES} ${REQ_LLVM_LIBS} TinyXML::TinyXML)
+    target_link_libraries(
+      ${LIB_CXX_PROJECT_NAME}
+      PUBLIC
+        Sourcetrail::lib_utility
+        ${CLANG_LIBRARIES}
+        ${REQ_LLVM_LIBS}
+        TinyXML::TinyXML
+        Qt5::Core)
 
-  if (WIN32)
+  if(WIN32)
     target_compile_definitions(${LIB_CXX_PROJECT_NAME} PRIVATE _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS) # Due to Clang
-    target_link_libraries(${LIB_CXX_PROJECT_NAME} version)
+    target_link_libraries(${LIB_CXX_PROJECT_NAME} PUBLIC version)
   endif()
 endif()
 
@@ -439,12 +412,12 @@ add_library(
 target_link_libraries(
   ${LIB_GUI_PROJECT_NAME}
   PUBLIC
-  ${LIB_UTILITY_PROJECT_NAME}
-  ${LIB_PROJECT_NAME}
-  Qt5::Widgets
-  Qt5::Network
-  Qt5::Svg
-  $<$<PLATFORM_ID:Windows>:Qt5::WinExtras>)
+    Sourcetrail::lib_utility
+    ${LIB_PROJECT_NAME}
+    Qt5::Widgets
+    Qt5::Network
+    Qt5::Svg
+    $<$<PLATFORM_ID:Windows>:Qt5::WinExtras>)
 
 # command for versioning script
 add_custom_command(
@@ -473,7 +446,6 @@ target_include_directories(
 target_include_directories(
   ${LIB_GUI_PROJECT_NAME}
   SYSTEM PUBLIC
-    ${Boost_INCLUDE_DIRS}
     "${EXTERNAL_INCLUDE_PATHS}"
     "${EXTERNAL_C_INCLUDE_PATHS}")
 
@@ -623,7 +595,6 @@ target_include_directories(
 target_include_directories(
   ${APP_PROJECT_NAME}
   SYSTEM PRIVATE
-  ${Boost_INCLUDE_DIRS}
   "${EXTERNAL_INCLUDE_PATHS}")
 
 # add platform specific libraries
