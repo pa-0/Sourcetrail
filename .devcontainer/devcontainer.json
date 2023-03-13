@@ -1,0 +1,24 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+{
+	"name": "C++",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools",
+				"ms-vscode.cpptools-extension-pack",
+				"llvm-vs-code-extensions.vscode-clangd",
+				"twxs.cmake",
+				"ms-vscode.cmake-tools",
+				"cheshirekow.cmake-format",
+				"cschlosser.doxdocgen"
+			],
+			"settings": {
+				"cmake.buildDirectory": "/home/sourcetrail/build/Debug"
+			}
+		}
+	}
+}
