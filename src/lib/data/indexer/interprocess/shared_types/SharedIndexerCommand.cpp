@@ -1,6 +1,9 @@
 #include "SharedIndexerCommand.h"
-
+#if BUILD_CXX_LANGUAGE_PACKAGE
 #include "IndexerCommandCxx.h"
+#else
+#include "IndexerCommand.h"
+#endif
 
 #include "logging.h"
 #include "utilityString.h"

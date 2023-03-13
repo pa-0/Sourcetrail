@@ -7,6 +7,8 @@ target_include_directories(
   catch_main
   PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/helper
+    ${CMAKE_SOURCE_DIR}/src/lib_gui/utility/
+    ${CMAKE_SOURCE_DIR}/src/lib_gui/utility/path_detector/
     ${LIB_INCLUDE_PATHS}
     ${LIB_GUI_INCLUDE_PATHS}
     ${CMAKE_BINARY_DIR}/src/lib)
