@@ -82,6 +82,8 @@ if(ENABLE_COVERAGE)
   set(ENABLE_COVERAGE "ENABLE_COVERAGE")
   configure_file("${CMAKE_SOURCE_DIR}/cmake/coverage.sh.in"
                  "${CMAKE_BINARY_DIR}/coverage.sh")
+  file(CHMOD "${CMAKE_BINARY_DIR}/coverage.sh"
+       FILE_PERMISSIONS OWNER_EXECUTE)
 endif()
 
 project_options(
@@ -266,6 +268,8 @@ target_include_directories(
 target_link_libraries(
   ${LIB_PROJECT_NAME}
   PUBLIC
+    project_options
+    project_warnings
     Boost::program_options
     Sourcetrail::lib_utility
     ${LIB_GUI_PROJECT_NAME}
@@ -304,6 +308,8 @@ target_include_directories(
 target_link_libraries(
   Sourcetrail_lib_gui_utility
   PRIVATE
+    project_options
+    project_warnings
     Boost::system
     Qt5::Core
     ${LIB_PROJECT_NAME})

@@ -17,6 +17,8 @@ target_include_directories(
 target_link_libraries(
   Sourcetrail_lib_utility
   PRIVATE
+    project_options
+    project_warnings
     Boost::system
     Qt5::Core)
 
