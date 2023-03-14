@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+SOURCE_DIR=@CMAKE_SOURCE_DIR@
+BUILD_DIR=@CMAKE_BINARY_DIR@
+
+if [ ! -d $BUILD_DIR/coverage ]
+then
+    mkdir $BUILD_DIR/coverage
+fi
+
+ctest
+cd $BUILD_DIR/coverage
+gcovr -r $SOURCE_DIR/src/lib -e $SOURCE_DIR/src/external --html-details coverage.html -j 12 ..

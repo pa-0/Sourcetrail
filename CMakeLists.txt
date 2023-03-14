@@ -1,5 +1,11 @@
-#VERSION_STRING ${CMAKE_SOURCE_DIR}/CMakeLists.txt
+#${CMAKE_SOURCE_DIR}/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
+include(cmake/version.cmake)
+project(Sourcetrail
+        DESCRIPTION "interactive source explorer"
+        VERSION     ${VERSION_STRING}
+        HOMEPAGE_URL "opensourcesourcetrail.github.io"
+        LANGUAGES CXX)
 
 set(BUILD_CXX_LANGUAGE_PACKAGE          OFF CACHE BOOL "Add C and C++ support to the Sourcetrail indexer.")
 set(BUILD_DOC                           OFF CACHE BOOL "Build documentation.")
@@ -14,7 +20,6 @@ set(ENABLE_COVERAGE                     OFF CACHE BOOL "Build coverage report ru
 set(ENABLE_BUILD_WITH_TIME_TRACE        OFF CACHE BOOL "Trace building time.")
 
 include(cmake/add_files.cmake)
-include(cmake/version.cmake)
 include(cmake/version_setup.cmake)
 include(cmake/licenses.cmake)
 
@@ -29,10 +34,6 @@ include(cmake/set_alternate_linker.cmake)
 set(USE_ALTERNATE_LINKER "" CACHE STRING "Use alternate linker. Leave empty for system default; alternatives are 'gold', 'lld', 'bfd', 'mold'")
 if(NOT "${USE_ALTERNATE_LINKER}" STREQUAL "")
   set_alternate_linker(${USE_ALTERNATE_LINKER})
-endif()
-
-if(BUILD_DOC)
-  include(cmake/doxygen.cmake)
 endif()
 
 # Add project_options v0.26.3
@@ -52,10 +53,7 @@ set(PROJECT_NAME Sourcetrail)
 set(APP_PROJECT_NAME         "${PROJECT_NAME}")
 set(APP_INDEXER_NAME         "${PROJECT_NAME}_indexer")
 set(LIB_GUI_PROJECT_NAME     "${PROJECT_NAME}_lib_gui")
-set(LIB_JAVA_PROJECT_NAME    "${PROJECT_NAME}_lib_java")
-set(LIB_PYTHON_PROJECT_NAME  "${PROJECT_NAME}_lib_python")
 set(LIB_PROJECT_NAME         "${PROJECT_NAME}_lib")
-set(TEST_PROJECT_NAME        "${PROJECT_NAME}_test")
 
 if(WIN32)
   set(PLATFORM_INCLUDE "includesWindows.h")
@@ -69,20 +67,22 @@ set(BASH "")
 if(WIN32)
   execute_process(COMMAND CMD /c where bash OUTPUT_VARIABLE BASH)
   string(REGEX REPLACE "\n$" "" BASH "${BASH}")
+  message("bash: '${BASH}'")
 endif()
-
-message("bash: '${BASH}'")
 
 # Project ----------------------------------------------------------------------
 
-project(
-  ${PROJECT_NAME}
-  VERSION ${VERSION_STRING}
-  DESCRIPTION ""
-  HOMEPAGE_URL "%%myurl%%"
-  LANGUAGES CXX C)
-
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
+
+if(BUILD_DOC)
+  include(cmake/doxygen.cmake)
+endif()
+
+if(ENABLE_COVERAGE)
+  set(ENABLE_COVERAGE "ENABLE_COVERAGE")
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/coverage.sh.in"
+                 "${CMAKE_BINARY_DIR}/coverage.sh")
+endif()
 
 project_options(
   ENABLE_CONAN
