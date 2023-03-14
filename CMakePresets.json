@@ -1,0 +1,52 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "configurePresets": [{
+            "name": "coverage",
+            "displayName": "Coverage",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/../build/Coverage/GNU",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "USE_ALTERNATE_LINKER": "mold",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ENABLE_TEST": "ON",
+                "ENABLE_COVERAGE": "ON"
+            }
+        },
+        {
+            "name": "clang_release",
+            "displayName": "CLang Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/../build/Release/CLang",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_BUILD_TYPE": "Release",
+                "USE_ALTERNATE_LINKER": "mold",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF"
+            }
+        },
+        {
+            "name": "gnu_release",
+            "displayName": "GNU Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/../build/Release/GNU",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_BUILD_TYPE": "Release",
+                "USE_ALTERNATE_LINKER": "mold",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF"
+            }
+        }
+    ]
+}
