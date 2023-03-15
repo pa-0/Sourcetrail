@@ -84,6 +84,10 @@ if(ENABLE_COVERAGE)
                  "${CMAKE_BINARY_DIR}/coverage.sh")
   file(CHMOD "${CMAKE_BINARY_DIR}/coverage.sh"
        FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
+  add_custom_target(Coverage
+    COMMAND ${CMAKE_BINARY_DIR}/coverage.sh
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  )
 endif()
 
 project_options(
@@ -562,9 +566,8 @@ endif ()
 
 # Test ----------------------------------------------------------------------
 if(ENABLE_TEST)
-  find_package(Catch2  CONFIG REQUIRED)
+  find_package(Catch2 CONFIG REQUIRED)
 
-  include(CTest)
   enable_testing()
   add_subdirectory(src/test)
 endif()
