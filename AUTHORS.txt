@@ -7,5 +7,6 @@ Malte Langkabel (@mlangkabel) <mlangkabel@coati.io>
 Manuel Dobusch
 Viktoria Pfausler
 Louis St-Amour (@LouisStAmour) <LouisStAmour@gmail.com>
+Ahmed Abdel Aal (@wow2006,@ahmedhussein89) <eng.ahmedhussein89@gmail.com>
 
 Note: (@user) means a github user name.
