@@ -2,6 +2,8 @@
 
 #### WIP
 
+* Build: Upload docs to github page.
+* Build: Upload coverage to github page.
 * Docs: Add doxygen support and awesome-doxygen-css.
 * C/C++: Migrate clang to v14.
 * Code: Update Catch to v2.13.10.
