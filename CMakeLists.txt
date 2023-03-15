@@ -5,7 +5,7 @@ project(Sourcetrail
         DESCRIPTION "interactive source explorer"
         VERSION     ${VERSION_STRING}
         HOMEPAGE_URL "opensourcesourcetrail.github.io"
-        LANGUAGES CXX)
+        LANGUAGES C CXX)
 
 set(BUILD_CXX_LANGUAGE_PACKAGE          OFF CACHE BOOL "Add C and C++ support to the Sourcetrail indexer.")
 set(BUILD_DOC                           OFF CACHE BOOL "Build documentation.")
