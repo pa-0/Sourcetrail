@@ -10,6 +10,13 @@ then
     mkdir $BUILD_DIR/coverage
 fi
 
-ctest
+ctest --progress
 cd $BUILD_DIR/coverage
-gcovr -r $SOURCE_DIR/src/lib -e $SOURCE_DIR/src/external --html-details coverage.html -j 12 ..
+gcovr -r $SOURCE_DIR/src/         \
+      -e $SOURCE_DIR/src/app      \
+      -e $SOURCE_DIR/src/external \
+      -e $SOURCE_DIR/src/indexer  \
+      -e $SOURCE_DIR/src/test     \
+      --html-theme blue           \
+      --html-details index.html   \
+      -j 12 ..
