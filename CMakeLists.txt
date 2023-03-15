@@ -83,7 +83,7 @@ if(ENABLE_COVERAGE)
   configure_file("${CMAKE_SOURCE_DIR}/cmake/coverage.sh.in"
                  "${CMAKE_BINARY_DIR}/coverage.sh")
   file(CHMOD "${CMAKE_BINARY_DIR}/coverage.sh"
-       FILE_PERMISSIONS OWNER_EXECUTE)
+       FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
 endif()
 
 project_options(
