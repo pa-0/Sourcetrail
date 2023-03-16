@@ -1,30 +1,23 @@
-#ifndef MESSAGE_CODE_SHOW_DEFINITION_H
-#define MESSAGE_CODE_SHOW_DEFINITION_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 #include "types.h"
 
-class MessageCodeShowDefinition: public Message<MessageCodeShowDefinition>
-{
+class MessageCodeShowDefinition : public Message<MessageCodeShowDefinition> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageCodeShowDefinition";
-	}
+  static const std::string getStaticType() {
+    return "MessageCodeShowDefinition";
+  }
 
-	MessageCodeShowDefinition(Id nodeId, bool inIDE = false): nodeId(nodeId), inIDE(inIDE)
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageCodeShowDefinition(Id nodeId_, bool inIDE_ = false) : nodeId(nodeId_), inIDE(inIDE_) {
+    setSchedulerId(TabId::currentTab());
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		os << nodeId;
-	}
+  virtual void print(std::wostream& os) const {
+    os << nodeId;
+  }
 
-	const Id nodeId;
-	const bool inIDE;
+  const Id nodeId;
+  const bool inIDE;
 };
-
-#endif	  // MESSAGE_CODE_SHOW_DEFINITION_H

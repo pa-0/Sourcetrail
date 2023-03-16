@@ -1,31 +1,24 @@
-#ifndef MESSAGE_SHOW_SCOPE_H
-#define MESSAGE_SHOW_SCOPE_H
+#pragma once
 
 #include "Message.h"
 #include "TabId.h"
 #include "types.h"
 
-class MessageShowScope: public Message<MessageShowScope>
-{
+class MessageShowScope : public Message<MessageShowScope> {
 public:
-	MessageShowScope(Id scopeLocationId, bool showErrors)
-		: scopeLocationId(scopeLocationId), showErrors(showErrors)
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageShowScope(Id scopeLocationId_, bool showErrors_)
+      : scopeLocationId(scopeLocationId_), showErrors(showErrors_) {
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageShowScope";
-	}
+  static const std::string getStaticType() {
+    return "MessageShowScope";
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		os << scopeLocationId;
-	}
+  virtual void print(std::wostream& os) const {
+    os << scopeLocationId;
+  }
 
-	const Id scopeLocationId;
-	const bool showErrors;
+  const Id scopeLocationId;
+  const bool showErrors;
 };
-
-#endif	  // MESSAGE_SHOW_SCOPE_H

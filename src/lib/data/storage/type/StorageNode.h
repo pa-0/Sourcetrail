@@ -1,40 +1,30 @@
-#ifndef STORAGE_NODE_H
-#define STORAGE_NODE_H
-
+#pragma once
+// STL
 #include <string>
-
+// internal
 #include "types.h"
 
-struct StorageNodeData
-{
-	StorageNodeData(): type(0), serializedName(L"") {}
+struct StorageNodeData {
+  StorageNodeData() : type(0), serializedName(L"") {}
 
-	StorageNodeData(int type, std::wstring serializedName)
-		: type(type), serializedName(std::move(serializedName))
-	{
-	}
+  StorageNodeData(int type_, std::wstring serializedName_)
+      : type(type_), serializedName(std::move(serializedName_)) {}
 
-	bool operator<(const StorageNodeData& other) const
-	{
-		return serializedName < other.serializedName;
-	}
+  bool operator<(const StorageNodeData& other) const {
+    return serializedName < other.serializedName;
+  }
 
-	int type;
-	std::wstring serializedName;
+  int type = 0;
+  std::wstring serializedName = {};
 };
 
-struct StorageNode: public StorageNodeData
-{
-	StorageNode(): StorageNodeData(), id(0) {}
+struct StorageNode : public StorageNodeData {
+  StorageNode() : StorageNodeData() {}
 
-	StorageNode(Id id, int type, std::wstring serializedName)
-		: StorageNodeData(type, std::move(serializedName)), id(id)
-	{
-	}
+  StorageNode(Id id_, int type_, std::wstring serializedName_)
+      : StorageNodeData(type_, std::move(serializedName_)), id(id_) {}
 
-	StorageNode(Id id, const StorageNodeData& data): StorageNodeData(data), id(id) {}
+  StorageNode(Id id_, const StorageNodeData& data_) : StorageNodeData(data_), id(id_) {}
 
-	Id id;
+  Id id = 0;
 };
-
-#endif	  // STORAGE_NODE_H

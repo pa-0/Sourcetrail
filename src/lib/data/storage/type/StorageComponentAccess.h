@@ -1,21 +1,16 @@
-#ifndef STORAGE_COMPONENT_ACCESS_H
-#define STORAGE_COMPONENT_ACCESS_H
-
+#pragma once
+// internal
 #include "types.h"
 
-struct StorageComponentAccess
-{
-	StorageComponentAccess(): nodeId(0), type(0) {}
+struct StorageComponentAccess {
+  StorageComponentAccess() = default;
 
-	StorageComponentAccess(Id nodeId, int type): nodeId(nodeId), type(type) {}
+  StorageComponentAccess(Id nodeId_, int type_) : nodeId(nodeId_), type(type_) {}
 
-	bool operator<(const StorageComponentAccess& other) const
-	{
-		return nodeId < other.nodeId;
-	}
+  bool operator<(const StorageComponentAccess& other) const {
+    return nodeId < other.nodeId;
+  }
 
-	Id nodeId;
-	int type;
+  Id nodeId = 0;
+  int type = 0;
 };
-
-#endif	  // STORAGE_COMPONENT_ACCESS_H

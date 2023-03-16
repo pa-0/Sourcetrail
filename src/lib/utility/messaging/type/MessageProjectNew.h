@@ -1,20 +1,15 @@
-#ifndef MESSAGE_PROJECT_NEW_H
-#define MESSAGE_PROJECT_NEW_H
-
+#pragma once
+// internal
 #include "FilePath.h"
 #include "Message.h"
 
-class MessageProjectNew: public Message<MessageProjectNew>
-{
+class MessageProjectNew : public Message<MessageProjectNew> {
 public:
-	MessageProjectNew(const FilePath& cdbPath): cdbPath(cdbPath) {}
+  MessageProjectNew(const FilePath& cdbPath_) : cdbPath(cdbPath_) {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageProjectNew";
-	}
+  static const std::string getStaticType() {
+    return "MessageProjectNew";
+  }
 
-	const FilePath cdbPath;
+  const FilePath cdbPath;
 };
-
-#endif	  // MESSAGE_PROJECT_NEW_H

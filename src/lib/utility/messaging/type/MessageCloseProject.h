@@ -1,22 +1,14 @@
-#ifndef MESSAGE_CLOSE_PROJECT_H
-#define MESSAGE_CLOSE_PROJECT_H
-
-#include "RefreshInfo.h"
-
-#include "FilePath.h"
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageCloseProject: public Message<MessageCloseProject>
-{
+class MessageCloseProject : public Message<MessageCloseProject> {
 public:
-	MessageCloseProject() {}
+  MessageCloseProject() {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageCloseProject";
-	}
+  static const std::string getStaticType() {
+    return "MessageCloseProject";
+  }
 
-	virtual void print(std::wostream& os) const {}
+  void print(std::wostream& /*ostream*/) const override {}
 };
-
-#endif	  // MESSAGE_CLOSE_PROJECT_H

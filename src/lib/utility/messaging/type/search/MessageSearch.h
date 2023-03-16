@@ -1,47 +1,37 @@
-#ifndef MESSAGE_SEARCH_H
-#define MESSAGE_SEARCH_H
-
+#pragma once
+// internal
 #include "Message.h"
-
+//
 #include "NodeTypeSet.h"
 #include "SearchMatch.h"
 #include "TabId.h"
 
-class MessageSearch: public Message<MessageSearch>
-{
+class MessageSearch : public Message<MessageSearch> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageSearch";
-	}
+  static const std::string getStaticType() {
+    return "MessageSearch";
+  }
 
-	MessageSearch(const std::vector<SearchMatch>& matches, NodeTypeSet acceptedNodeTypes)
-		: acceptedNodeTypes(acceptedNodeTypes), m_matches(matches)
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageSearch(const std::vector<SearchMatch>& matches, NodeTypeSet acceptedNodeTypes_)
+      : acceptedNodeTypes(acceptedNodeTypes_), m_matches(matches) {
+    setSchedulerId(TabId::currentTab());
+  }
 
-	const std::vector<SearchMatch>& getMatches() const
-	{
-		return m_matches;
-	}
+  const std::vector<SearchMatch>& getMatches() const {
+    return m_matches;
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		for (const SearchMatch& match: m_matches)
-		{
-			os << " @" << match.name;
-			for (Id id: match.tokenIds)
-			{
-				os << ' ' << id;
-			}
-		}
-	}
+  void print(std::wostream& ostream) const override {
+    for(const SearchMatch& match : m_matches) {
+      ostream << " @" << match.name;
+      for(Id id : match.tokenIds) {
+        ostream << ' ' << id;
+      }
+    }
+  }
 
-	NodeTypeSet acceptedNodeTypes;
+  NodeTypeSet acceptedNodeTypes;
 
 private:
-	const std::vector<SearchMatch> m_matches;
+  const std::vector<SearchMatch> m_matches;
 };
-
-#endif	  // MESSAGE_SEARCH_H

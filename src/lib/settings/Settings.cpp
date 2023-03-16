@@ -74,7 +74,7 @@ const FilePath& Settings::getFilePath() const {
 }
 
 size_t Settings::getVersion() const {
-  return getValue<int>("version", 0);
+  return static_cast<size_t>(getValue<int>("version", 0));
 }
 
 void Settings::setVersion(size_t version) {

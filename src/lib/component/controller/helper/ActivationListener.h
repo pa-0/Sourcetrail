@@ -8,7 +8,7 @@
 #include "MessageActivateTrail.h"
 #include "MessageListener.h"
 
-class ActivationListener final
+class ActivationListener
     : public MessageListener<MessageActivateErrors>
     , public MessageListener<MessageActivateFullTextSearch>
     , public MessageListener<MessageActivateOverview>

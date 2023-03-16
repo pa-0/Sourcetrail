@@ -73,8 +73,8 @@ NetworkProtocolHelper::SetActiveTokenMessage NetworkProtocolHelper::parseSetActi
 					isDigits(column))
 				{
 					networkMessage.filePath = FilePath(filePath);
-					networkMessage.row = std::stoi(row);
-					networkMessage.column = std::stoi(column);
+					networkMessage.row = static_cast<uint32_t>(std::stoi(row));
+					networkMessage.column = static_cast<uint32_t>(std::stoi(column));
 					networkMessage.valid = true;
 				}
 			}

@@ -1,23 +1,17 @@
-#ifndef MESSAGE_DEACTIVATE_EDGE_H
-#define MESSAGE_DEACTIVATE_EDGE_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 
-class MessageDeactivateEdge: public Message<MessageDeactivateEdge>
-{
+class MessageDeactivateEdge : public Message<MessageDeactivateEdge> {
 public:
-	MessageDeactivateEdge(bool scrollToDefinition): scrollToDefinition(scrollToDefinition)
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageDeactivateEdge(bool scrollToDefinition_) : scrollToDefinition(scrollToDefinition_) {
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageDeactivateEdge";
-	}
+  static const std::string getStaticType() {
+    return "MessageDeactivateEdge";
+  }
 
-	bool scrollToDefinition;
+  bool scrollToDefinition;
 };
-
-#endif	  // MESSAGE_DEACTIVATE_EDGE_H

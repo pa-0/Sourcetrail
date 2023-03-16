@@ -1,19 +1,15 @@
-#ifndef MESSAGE_ERRORS_FOR_FILE_H
-#define MESSAGE_ERRORS_FOR_FILE_H
-
+#pragma once
+// STL
+#include "FilePath.h"
 #include "Message.h"
 
-class MessageErrorsForFile: public Message<MessageErrorsForFile>
-{
+class MessageErrorsForFile : public Message<MessageErrorsForFile> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageErrorsForFile";
-	}
+  static const std::string getStaticType() {
+    return "MessageErrorsForFile";
+  }
 
-	MessageErrorsForFile(const FilePath& file): file(file) {}
+  MessageErrorsForFile(const FilePath& file_) : file(file_) {}
 
-	const FilePath& file;
+  const FilePath& file;
 };
-
-#endif	  // MESSAGE_ERRORS_FOR_FILE_H

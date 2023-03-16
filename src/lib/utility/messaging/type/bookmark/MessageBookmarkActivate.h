@@ -1,20 +1,15 @@
-#ifndef MESSAGE_BOOKMARK_ACTIVATE_H
-#define MESSAGE_BOOKMARK_ACTIVATE_H
-
+#pragma once
+// internal
 #include "Bookmark.h"
 #include "Message.h"
 
-class MessageBookmarkActivate: public Message<MessageBookmarkActivate>
-{
+class MessageBookmarkActivate : public Message<MessageBookmarkActivate> {
 public:
-	MessageBookmarkActivate(const std::shared_ptr<Bookmark>& bookmark): bookmark(bookmark) {}
+  MessageBookmarkActivate(std::shared_ptr<Bookmark> bookmark_) : bookmark(std::move(bookmark_)) {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageBookmarkActivate";
-	}
+  static const std::string getStaticType() {
+    return "MessageBookmarkActivate";
+  }
 
-	const std::shared_ptr<Bookmark> bookmark;
+  const std::shared_ptr<Bookmark> bookmark;
 };
-
-#endif	  // MESSAGE_BOOKMARK_ACTIVATE_H

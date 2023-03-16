@@ -67,15 +67,15 @@ public:
       }
 
       BundleInfo info;
-      if(activeCount >= std::ceil(bundleInfos.size() / 2.0f))
+      if(static_cast<float>(activeCount) >= std::ceil(static_cast<float>(bundleInfos.size()) / 2.0f))
         info.isActive = true;
-      if(definedCount >= std::ceil(bundleInfos.size() / 2.0f))
+      if(static_cast<float>(definedCount) >= std::ceil(static_cast<float>(bundleInfos.size()) / 2.0f))
         info.isDefined = true;
-      if(verticalLayoutCount >= std::ceil(bundleInfos.size() / 2.0f))
+      if(static_cast<float>(verticalLayoutCount) >= std::ceil(static_cast<float>(bundleInfos.size()) / 2.0f))
         info.layoutVertical = true;
-      if(referencedCount >= std::ceil(bundleInfos.size() / 2.0f))
+      if(static_cast<float>(referencedCount) >= std::ceil(static_cast<float>(bundleInfos.size()) / 2.0f))
         info.isReferenced = true;
-      if(referencingCount >= std::ceil(bundleInfos.size() / 2.0f))
+      if(static_cast<float>(referencingCount) >= std::ceil(static_cast<float>(bundleInfos.size()) / 2.0f))
         info.isReferencing = true;
       return info;
     }
@@ -249,18 +249,18 @@ public:
     }
   }
 
-  Id setBundleIdRecursive(Id bundleId) {
+  Id setBundleIdRecursive(Id bundleId_) {
     if(isBundleNode()) {
-      bundleId++;
+      bundleId_++;
     }
 
-    this->bundleId = bundleId;
+    this->bundleId = bundleId_;
 
     for(const std::shared_ptr<DummyNode>& node : bundledNodes) {
-      bundleId = node->setBundleIdRecursive(bundleId);
+      bundleId_ = node->setBundleIdRecursive(bundleId_);
     }
 
-    return bundleId;
+    return bundleId_;
   }
 
   bool hasMissingChildNodes() const {
@@ -333,7 +333,7 @@ public:
   void replaceAccessNodes(const std::vector<std::shared_ptr<DummyNode>>& accessNodes) {
     for(size_t i = 0; i < subNodes.size(); i++) {
       if(subNodes[i]->isAccessNode()) {
-        subNodes.erase(subNodes.begin() + i);
+        subNodes.erase(subNodes.begin() + static_cast<long>(i));
         i--;
       }
     }

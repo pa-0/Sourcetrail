@@ -1,50 +1,35 @@
-#ifndef STORAGE_EDGE_H
-#define STORAGE_EDGE_H
-
+#pragma once
+// internal
 #include "types.h"
 
-struct StorageEdgeData
-{
-	StorageEdgeData(): type(0), sourceNodeId(0), targetNodeId(0) {}
+struct StorageEdgeData {
+  StorageEdgeData() = default;
 
-	StorageEdgeData(int type, Id sourceNodeId, Id targetNodeId)
-		: type(type), sourceNodeId(sourceNodeId), targetNodeId(targetNodeId)
-	{
-	}
+  StorageEdgeData(int type_, Id sourceNodeId_, Id targetNodeId_)
+      : type(type_), sourceNodeId(sourceNodeId_), targetNodeId(targetNodeId_) {}
 
-	bool operator<(const StorageEdgeData& other) const
-	{
-		if (type != other.type)
-		{
-			return type < other.type;
-		}
-		else if (sourceNodeId != other.sourceNodeId)
-		{
-			return sourceNodeId < other.sourceNodeId;
-		}
-		else
-		{
-			return targetNodeId < other.targetNodeId;
-		}
-	}
+  bool operator<(const StorageEdgeData& other) const {
+    if(type != other.type) {
+      return type < other.type;
+    } else if(sourceNodeId != other.sourceNodeId) {
+      return sourceNodeId < other.sourceNodeId;
+    } else {
+      return targetNodeId < other.targetNodeId;
+    }
+  }
 
-	int type;
-	Id sourceNodeId;
-	Id targetNodeId;
+  int type = 0;
+  Id sourceNodeId = 0;
+  Id targetNodeId = 0;
 };
 
-struct StorageEdge: public StorageEdgeData
-{
-	StorageEdge(): StorageEdgeData(), id(0) {}
+struct StorageEdge : public StorageEdgeData {
+  StorageEdge() : StorageEdgeData() {}
 
-	StorageEdge(Id id, const StorageEdgeData& data): StorageEdgeData(data), id(id) {}
+  StorageEdge(Id id_, const StorageEdgeData& data) : StorageEdgeData(data), id(id_) {}
 
-	StorageEdge(Id id, int type, Id sourceNodeId, Id targetNodeId)
-		: StorageEdgeData(type, sourceNodeId, targetNodeId), id(id)
-	{
-	}
+  StorageEdge(Id id_, int type_, Id sourceNodeId_, Id targetNodeId_)
+      : StorageEdgeData(type_, sourceNodeId_, targetNodeId_), id(id_) {}
 
-	Id id;
+  Id id = 0;
 };
-
-#endif	  // STORAGE_EDGE_H

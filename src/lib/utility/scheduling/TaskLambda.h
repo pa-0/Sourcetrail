@@ -1,22 +1,18 @@
-#ifndef LAMBDA_TASK_H
-#define LAMBDA_TASK_H
-
+#pragma once
+// STL
 #include <functional>
-
+// internal
 #include "Task.h"
 
-class TaskLambda: public Task
-{
+class TaskLambda : public Task {
 public:
-	TaskLambda(std::function<void()> func);
+  TaskLambda(std::function<void()> func);
 
 private:
-	void doEnter(std::shared_ptr<Blackboard> blackboard) override;
-	TaskState doUpdate(std::shared_ptr<Blackboard> blackboard) override;
-	void doExit(std::shared_ptr<Blackboard> blackboard) override;
-	void doReset(std::shared_ptr<Blackboard> blackboard) override;
+  void doEnter(std::shared_ptr<Blackboard> blackboard) override;
+  TaskState doUpdate(std::shared_ptr<Blackboard> blackboard) override;
+  void doExit(std::shared_ptr<Blackboard> blackboard) override;
+  void doReset(std::shared_ptr<Blackboard> blackboard) override;
 
-	std::function<void()> m_func;
+  std::function<void()> m_func;
 };
-
-#endif	  // LAMBDA_TASK_H

@@ -1,19 +1,14 @@
-#ifndef MESSAGE_ERRORS_HELP_MESSAGE_H
-#define MESSAGE_ERRORS_HELP_MESSAGE_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageErrorsHelpMessage: public Message<MessageErrorsHelpMessage>
-{
+class MessageErrorsHelpMessage : public Message<MessageErrorsHelpMessage> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageErrorsHelpMessage";
-	}
+  static const std::string getStaticType() {
+    return "MessageErrorsHelpMessage";
+  }
 
-	MessageErrorsHelpMessage(bool force = false): force(force) {}
+  MessageErrorsHelpMessage(bool force_ = false) : force(force_) {}
 
-	const bool force;
+  const bool force;
 };
-
-#endif	  // MESSAGE_ERRORS_HELP_MESSAGE_H

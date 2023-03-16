@@ -1,9 +1,8 @@
-#ifndef GRAPH_CONTROLLER_H
-#define GRAPH_CONTROLLER_H
-
+#pragma once
+// STL
 #include <list>
 #include <vector>
-
+// internal
 #include "MessageActivateErrors.h"
 #include "MessageActivateFullTextSearch.h"
 #include "MessageActivateLegend.h"
@@ -23,7 +22,7 @@
 #include "MessageListener.h"
 #include "MessageScrollGraph.h"
 #include "MessageShowReference.h"
-
+//
 #include "Controller.h"
 #include "DummyEdge.h"
 #include "DummyNode.h"
@@ -55,7 +54,7 @@ class GraphController
     , public MessageListener<MessageShowReference> {
 public:
   GraphController(StorageAccess* storageAccess);
-  ~GraphController() = default;
+  ~GraphController() override;
 
   Id getSchedulerId() const override;
 
@@ -169,5 +168,3 @@ private:
   bool m_showsLegend = false;
   Id m_tokenIdToFocus = 0;
 };
-
-#endif    // GRAPH_CONTROLLER_H

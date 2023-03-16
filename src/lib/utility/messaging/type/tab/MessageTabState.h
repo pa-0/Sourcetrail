@@ -1,24 +1,17 @@
-#ifndef MESSAGE_TAB_STATE_H
-#define MESSAGE_TAB_STATE_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "SearchMatch.h"
 
-class MessageTabState: public Message<MessageTabState>
-{
+class MessageTabState : public Message<MessageTabState> {
 public:
-	MessageTabState(Id tabId, const std::vector<SearchMatch>& searchMatches)
-		: tabId(tabId), searchMatches(searchMatches)
-	{
-	}
+  MessageTabState(Id tabId_, std::vector<SearchMatch> searchMatches_)
+      : tabId(tabId_), searchMatches(std::move(searchMatches_)) {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageTabState";
-	}
+  static const std::string getStaticType() {
+    return "MessageTabState";
+  }
 
-	const Id tabId;
-	const std::vector<SearchMatch> searchMatches;
+  const Id tabId;
+  const std::vector<SearchMatch> searchMatches;
 };
-
-#endif	  // MESSAGE_TAB_STATE_H

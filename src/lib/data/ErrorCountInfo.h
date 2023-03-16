@@ -1,29 +1,24 @@
-#ifndef ERROR_COUNT_INFO_H
-#define ERROR_COUNT_INFO_H
-
+#pragma once
+// STL
+#include <vector>
+// internal
 #include "ErrorInfo.h"
 
-struct ErrorCountInfo
-{
-	ErrorCountInfo(): total(0), fatal(0) {}
+struct ErrorCountInfo {
+  ErrorCountInfo() = default;
 
-	ErrorCountInfo(size_t total, size_t fatal): total(total), fatal(fatal) {}
+  ErrorCountInfo(size_t total_, size_t fatal_) : total(total_), fatal(fatal_) {}
 
-	ErrorCountInfo(const std::vector<ErrorInfo>& errors): total(0), fatal(0)
-	{
-		for (const ErrorInfo& error: errors)
-		{
-			total++;
+  ErrorCountInfo(const std::vector<ErrorInfo>& errors) {
+    for(const ErrorInfo& error : errors) {
+      total++;
 
-			if (error.fatal)
-			{
-				fatal++;
-			}
-		}
-	}
+      if(error.fatal) {
+        fatal++;
+      }
+    }
+  }
 
-	size_t total;
-	size_t fatal;
+  size_t total = 0;
+  size_t fatal = 0;
 };
-
-#endif	  // ERROR_COUNT_INFO_H

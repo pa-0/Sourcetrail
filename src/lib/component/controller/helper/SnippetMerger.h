@@ -3,6 +3,7 @@
 #include <deque>
 #include <memory>
 #include <vector>
+#include <cstdint>
 
 class SnippetMerger final {
 public:
@@ -19,9 +20,9 @@ public:
       for(size_t i = 0; i + 1 < ranges.size(); i++) {
         const Range first = ranges[i];
         const Range second = ranges[i + 1];
-        if(first.end.row + rowDifference >= second.start.row) {
-          ranges.erase(ranges.begin() + i, ranges.begin() + i + 2);
-          ranges.insert(ranges.begin() + i,
+        if(static_cast<uint64_t>(first.end.row + rowDifference) >= static_cast<uint64_t>(second.start.row)) {
+          ranges.erase(ranges.begin() + i, ranges.begin() + static_cast<uint32_t>(i) + 2);
+          ranges.insert(ranges.begin() + static_cast<uint32_t>(i),
                         Range(first.start.row < second.start.row ? first.start : second.start,
                               first.end.row > second.end.row ? first.end : second.end));
           i--;

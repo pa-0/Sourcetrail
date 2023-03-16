@@ -1,42 +1,36 @@
-#ifndef FULLTEXTSEARCH_INDEX_H
-#define FULLTEXTSEARCH_INDEX_H
-
+#pragma once
+// STL
 #include <mutex>
 #include <unordered_map>
 #include <vector>
-
+// internal
 #include "SuffixArray.h"
 #include "types.h"
 
 class StorageAccess;
 
 // contains all fulltextsearch results of one file
-struct FullTextSearchResult
-{
-	Id fileId;
-	std::vector<int> positions;
+struct FullTextSearchResult {
+  Id fileId;
+  std::vector<int> positions;
 };
 
-struct FullTextSearchFile
-{
-	FullTextSearchFile(Id fileId, SuffixArray array): fileId(fileId), array(array) {};
-	Id fileId;
-	SuffixArray array;
+struct FullTextSearchFile {
+  FullTextSearchFile(Id fileId_, SuffixArray array_) : fileId(fileId_), array(array_) {}
+  Id fileId;
+  SuffixArray array;
 };
 
-class FullTextSearchIndex
-{
+class FullTextSearchIndex {
 public:
-	void addFile(Id fileId, const std::wstring& file);
-	std::vector<FullTextSearchResult> searchForTerm(const std::wstring& term) const;
+  void addFile(Id fileId, const std::wstring& file);
+  std::vector<FullTextSearchResult> searchForTerm(const std::wstring& term) const;
 
-	size_t fileCount() const;
+  size_t fileCount() const;
 
-	void clear();
+  void clear();
 
 private:
-	mutable std::mutex m_filesMutex;
-	std::vector<FullTextSearchFile> m_files;
+  mutable std::mutex m_filesMutex;
+  std::vector<FullTextSearchFile> m_files;
 };
-
-#endif	  // FULLTEXTSEARCH_INDEX_H

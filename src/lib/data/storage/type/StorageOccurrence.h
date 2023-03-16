@@ -1,31 +1,21 @@
-#ifndef STORAGE_OCCURRENCE_H
-#define STORAGE_OCCURRENCE_H
-
+#pragma once
+// internal
 #include "types.h"
 
-struct StorageOccurrence
-{
-	StorageOccurrence(): elementId(0), sourceLocationId(0) {}
+struct StorageOccurrence {
+  StorageOccurrence() = default;
 
-	StorageOccurrence(Id elementId, Id sourceLocationId)
-		: elementId(elementId), sourceLocationId(sourceLocationId)
-	{
-	}
+  StorageOccurrence(Id elementId_, Id sourceLocationId_)
+      : elementId(elementId_), sourceLocationId(sourceLocationId_) {}
 
-	bool operator<(const StorageOccurrence& other) const
-	{
-		if (elementId != other.elementId)
-		{
-			return elementId < other.elementId;
-		}
-		else
-		{
-			return sourceLocationId < other.sourceLocationId;
-		}
-	}
+  bool operator<(const StorageOccurrence& other) const {
+    if(elementId != other.elementId) {
+      return elementId < other.elementId;
+    } else {
+      return sourceLocationId < other.sourceLocationId;
+    }
+  }
 
-	Id elementId;
-	Id sourceLocationId;
+  Id elementId = 0;
+  Id sourceLocationId = 0;
 };
-
-#endif	  // STORAGE_OCCURRENCE_H

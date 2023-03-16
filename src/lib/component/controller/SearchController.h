@@ -1,5 +1,4 @@
-#ifndef SEARCH_CONTROLLER_H
-#define SEARCH_CONTROLLER_H
+#pragma once
 
 #include "ActivationListener.h"
 #include "Controller.h"
@@ -11,30 +10,27 @@ class StorageAccess;
 class SearchView;
 
 class SearchController
-	: public Controller
-	, public ActivationListener
-	, public MessageListener<MessageFind>
-	, public MessageListener<MessageSearchAutocomplete>
-{
+    : public Controller
+    , public ActivationListener
+    , public MessageListener<MessageFind>
+    , public MessageListener<MessageSearchAutocomplete> {
 public:
-	SearchController(StorageAccess* storageAccess);
-	~SearchController() = default;
+  SearchController(StorageAccess* storageAccess);
+  ~SearchController() = default;
 
-	Id getSchedulerId() const override;
+  Id getSchedulerId() const override;
 
 private:
-	void handleActivation(const MessageActivateBase* message) override;
+  void handleActivation(const MessageActivateBase* message) override;
 
-	void handleMessage(MessageFind* message) override;
-	void handleMessage(MessageSearchAutocomplete* message) override;
+  void handleMessage(MessageFind* message) override;
+  void handleMessage(MessageSearchAutocomplete* message) override;
 
-	SearchView* getView();
+  SearchView* getView();
 
-	void clear() override;
+  void clear() override;
 
-	void updateMatches(const MessageActivateBase* message, bool updateView = true);
+  void updateMatches(const MessageActivateBase* message, bool updateView = true);
 
-	StorageAccess* m_storageAccess;
+  StorageAccess* m_storageAccess;
 };
-
-#endif	  // SEARCH_CONTROLLER_H

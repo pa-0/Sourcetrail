@@ -1,24 +1,18 @@
-#ifndef MESSAGE_INDEXING_STATUS_H
-#define MESSAGE_INDEXING_STATUS_H
-
+#pragma once
+// interal
 #include "Message.h"
 
-class MessageIndexingStatus: public Message<MessageIndexingStatus>
-{
+class MessageIndexingStatus : public Message<MessageIndexingStatus> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageIndexingStatus";
-	}
+  static const std::string getStaticType() {
+    return "MessageIndexingStatus";
+  }
 
-	MessageIndexingStatus(bool showProgress, size_t progressPercent = 0)
-		: showProgress(showProgress), progressPercent(progressPercent)
-	{
-		setSendAsTask(false);
-	}
+  MessageIndexingStatus(bool showProgress_, size_t progressPercent_ = 0)
+      : showProgress(showProgress_), progressPercent(progressPercent_) {
+    setSendAsTask(false);
+  }
 
-	const bool showProgress;
-	const size_t progressPercent;
+  const bool showProgress;
+  const size_t progressPercent;
 };
-
-#endif	  // MESSAGE_INDEXING_STATUS_H

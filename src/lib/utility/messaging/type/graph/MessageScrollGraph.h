@@ -1,25 +1,19 @@
-#ifndef MESSAGE_SCROLL_GRAPH_H
-#define MESSAGE_SCROLL_GRAPH_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 
-class MessageScrollGraph: public Message<MessageScrollGraph>
-{
+class MessageScrollGraph : public Message<MessageScrollGraph> {
 public:
-	MessageScrollGraph(int xValue, int yValue): xValue(xValue), yValue(yValue)
-	{
-		setIsLogged(false);
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageScrollGraph(int xValue_, int yValue_) : xValue(xValue_), yValue(yValue_) {
+    setIsLogged(false);
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageScrollGraph";
-	}
+  static const std::string getStaticType() {
+    return "MessageScrollGraph";
+  }
 
-	int xValue;
-	int yValue;
+  int xValue;
+  int yValue;
 };
-
-#endif	  // MESSAGE_SCROLL_GRAPH_H
