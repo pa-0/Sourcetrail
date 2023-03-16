@@ -1,5 +1,4 @@
-#ifndef MESSAGE_FOCUS_OUT_H
-#define MESSAGE_FOCUS_OUT_H
+#pragma once
 
 #include <vector>
 
@@ -7,29 +6,22 @@
 #include "TabId.h"
 #include "types.h"
 
-class MessageFocusOut: public Message<MessageFocusOut>
-{
+class MessageFocusOut : public Message<MessageFocusOut> {
 public:
-	MessageFocusOut(const std::vector<Id>& tokenIds): tokenIds(tokenIds)
-	{
-		setIsLogged(false);
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageFocusOut(const std::vector<Id>& tokenIds_) : tokenIds(tokenIds_) {
+    setIsLogged(false);
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageFocusOut";
-	}
+  static const std::string getStaticType() {
+    return "MessageFocusOut";
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		for (const Id& id: tokenIds)
-		{
-			os << id << L" ";
-		}
-	}
+  virtual void print(std::wostream& os) const {
+    for(const Id& id : tokenIds) {
+      os << id << L" ";
+    }
+  }
 
-	const std::vector<Id> tokenIds;
+  const std::vector<Id> tokenIds;
 };
-
-#endif	  // MESSAGE_FOCUS_OUT_H

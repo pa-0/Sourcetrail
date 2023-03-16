@@ -1282,7 +1282,7 @@ bool GraphController::hasCharacterIndex() const {
 void GraphController::groupNodesByParents(GroupType groupType) {
   TRACE();
 
-  if(groupType != GroupType::FILE && groupType != GroupType::NAMESPACE) {
+  if(groupType != GroupType::FILE_TYPE && groupType != GroupType::NAMESPACE) {
     return;
   }
 
@@ -1290,7 +1290,7 @@ void GraphController::groupNodesByParents(GroupType groupType) {
   std::map<std::wstring, std::vector<std::shared_ptr<DummyNode>>> nodesToGroup;
 
   std::map<Id, std::pair<Id, NameHierarchy>> nodeIdtoParentMap;
-  if(groupType == GroupType::FILE) {
+  if(groupType == GroupType::FILE_TYPE) {
     std::vector<Id> nodeIds;
     for(const std::shared_ptr<DummyNode>& dummyNode : m_dummyNodes) {
       if(dummyNode->isGraphNode()) {
@@ -1306,7 +1306,7 @@ void GraphController::groupNodesByParents(GroupType groupType) {
     if(dummyNode->isGroupNode()) {
       groupNodes.emplace(dummyNode->name, dummyNode);
     } else if(dummyNode->visible) {
-      if(groupType == GroupType::FILE) {
+      if(groupType == GroupType::FILE_TYPE) {
         if(dummyNode->isGraphNode()) {
           auto it = nodeIdtoParentMap.find(dummyNode->tokenId);
           if(it != nodeIdtoParentMap.end()) {
@@ -1339,7 +1339,7 @@ void GraphController::groupNodesByParents(GroupType groupType) {
     std::shared_ptr<DummyNode> groupNode;
 
     std::wstring name = p.first;
-    if(groupType == GroupType::FILE) {
+    if(groupType == GroupType::FILE_TYPE) {
       name = FilePath(p.first).fileName();
     }
 

@@ -599,7 +599,7 @@ GraphViewStyle::NodeStyle GraphViewStyle::getStyleOfGroupNode(GroupType type, bo
 	{
 		colorType += "default";
 	}
-	else if (type == GroupType::FILE)
+	else if (type == GroupType::FILE_TYPE)
 	{
 		colorType += "file";
 	}

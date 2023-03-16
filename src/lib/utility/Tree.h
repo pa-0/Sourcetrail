@@ -1,13 +1,11 @@
-#ifndef TREE_H
-#define TREE_H
+#pragma once
+// STL
+#include <vector>
 
 template <typename T>
-struct Tree
-{
-	Tree() {}
-	Tree(T data): data(data) {}
-	T data;
-	std::vector<Tree<T>> children;
+struct Tree {
+  Tree() {}
+  Tree(T data_) : data(data_) {}
+  T data;
+  std::vector<Tree<T>> children;
 };
-
-#endif	  // TREE_H

@@ -1,7 +1,7 @@
 #include "LanguageType.h"
 
-std::string languageTypeToString(LanguageType t) {
-  switch(t) {
+std::string languageTypeToString(LanguageType type) {
+  switch(type) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
   case LANGUAGE_C:
     return "C";
@@ -16,23 +16,23 @@ std::string languageTypeToString(LanguageType t) {
   return "unknown";
 }
 
-LanguageType stringToLanguageType(std::string s) {
+LanguageType stringToLanguageType(std::string typeString) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
-  if(s == languageTypeToString(LANGUAGE_C)) {
+  if(typeString == languageTypeToString(LANGUAGE_C)) {
     return LANGUAGE_C;
   }
-  if(s == languageTypeToString(LANGUAGE_CPP)) {
+  if(typeString == languageTypeToString(LANGUAGE_CPP)) {
     return LANGUAGE_CPP;
   }
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
-  if(s == languageTypeToString(LANGUAGE_CUSTOM)) {
+  if(typeString == languageTypeToString(LANGUAGE_CUSTOM)) {
     return LANGUAGE_CUSTOM;
   }
   return LANGUAGE_UNKNOWN;
 }
 
-LanguageType getLanguageTypeForSourceGroupType(SourceGroupType t) {
-  switch(t) {
+LanguageType getLanguageTypeForSourceGroupType(SourceGroupType type) {
+  switch(type) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
   case SOURCE_GROUP_C_EMPTY:
     return LANGUAGE_C;

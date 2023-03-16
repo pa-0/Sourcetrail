@@ -10,7 +10,7 @@ std::wstring groupTypeToString(GroupType type)
 		return L"default";
 	case GroupType::FRAMELESS:
 		return L"frameless";
-	case GroupType::FILE:
+	case GroupType::FILE_TYPE:
 		return L"file";
 	case GroupType::NAMESPACE:
 		return L"namespace";
@@ -29,8 +29,8 @@ GroupType stringToGroupType(const std::wstring& value)
 		return GroupType::DEFAULT;
 	if (value == groupTypeToString(GroupType::FRAMELESS))
 		return GroupType::FRAMELESS;
-	if (value == groupTypeToString(GroupType::FILE))
-		return GroupType::FILE;
+	if (value == groupTypeToString(GroupType::FILE_TYPE))
+		return GroupType::FILE_TYPE;
 	if (value == groupTypeToString(GroupType::NAMESPACE))
 		return GroupType::NAMESPACE;
 	if (value == groupTypeToString(GroupType::INHERITANCE))

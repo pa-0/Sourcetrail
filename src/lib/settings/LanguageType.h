@@ -1,7 +1,7 @@
 #pragma once
-
+// STL
 #include <string>
-
+// internal
 #include "SourceGroupType.h"
 
 enum LanguageType {
@@ -13,8 +13,8 @@ enum LanguageType {
   LANGUAGE_UNKNOWN
 };
 
-std::string languageTypeToString(LanguageType t);
+std::string languageTypeToString(LanguageType type);
 
-LanguageType stringToLanguageType(std::string s);
+LanguageType stringToLanguageType(std::string typeString);
 
-LanguageType getLanguageTypeForSourceGroupType(SourceGroupType t);
+LanguageType getLanguageTypeForSourceGroupType(SourceGroupType type);

@@ -1,11 +1,9 @@
-#ifndef PROJECT_H
-#define PROJECT_H
-
+#pragma once
+// STL
 #include <memory>
-#include <set>
 #include <string>
 #include <vector>
-
+// internal
 #include "RefreshInfo.h"
 #include "SourceGroup.h"
 
@@ -16,75 +14,69 @@ class PersistentStorage;
 class ProjectSettings;
 class StorageCache;
 
-class Project
-{
+class Project final {
 public:
-	Project(
-		std::shared_ptr<ProjectSettings> settings,
-		StorageCache* storageCache,
-		const std::string& appUUID,
-		bool hasGUI);
-	virtual ~Project();
+  Project(std::shared_ptr<ProjectSettings> settings,
+          StorageCache* storageCache,
+          std::string appUUID,
+          bool hasGUI);
 
-	FilePath getProjectSettingsFilePath() const;
-	std::string getDescription() const;
+  Project(const Project&) = delete;
+	Project(Project&&) = delete;
+	Project& operator=(const Project&) = delete;
+	Project& operator=(Project&&) = delete;
 
-	bool isLoaded() const;
-	bool isIndexing() const;
+  ~Project();
 
-	bool settingsEqualExceptNameAndLocation(const ProjectSettings& otherSettings) const;
-	void setStateOutdated();
+  [[nodiscard]] FilePath getProjectSettingsFilePath() const;
+  [[nodiscard]] std::string getDescription() const;
 
-	void load(std::shared_ptr<DialogView> dialogView);
+  [[nodiscard]] bool isLoaded() const;
+  [[nodiscard]] bool isIndexing() const;
 
-	void refresh(
-		std::shared_ptr<DialogView> dialogView, RefreshMode refreshMode, bool shallowIndexingRequested);
+  [[nodiscard]] bool settingsEqualExceptNameAndLocation(const ProjectSettings& otherSettings) const;
+  void setStateOutdated();
 
-	RefreshInfo getRefreshInfo(RefreshMode mode) const;
+  void load(std::shared_ptr<DialogView> dialogView);
 
-	void buildIndex(RefreshInfo info, std::shared_ptr<DialogView> dialogView);
+  void refresh(std::shared_ptr<DialogView> dialogView,
+               RefreshMode refreshMode,
+               bool shallowIndexingRequested);
+
+  [[nodiscard]] RefreshInfo getRefreshInfo(RefreshMode mode) const;
+
+  void buildIndex(RefreshInfo info, std::shared_ptr<DialogView> dialogView);
 
 private:
-	enum ProjectStateType
-	{
-		PROJECT_STATE_NOT_LOADED,
-		PROJECT_STATE_EMPTY,
-		PROJECT_STATE_LOADED,
-		PROJECT_STATE_OUTDATED,
-		PROJECT_STATE_OUTVERSIONED,
-		PROJECT_STATE_NEEDS_MIGRATION,
-		PROJECT_STATE_DB_CORRUPTED
-	};
+  enum ProjectStateType {
+    PROJECT_STATE_NOT_LOADED,
+    PROJECT_STATE_EMPTY,
+    PROJECT_STATE_LOADED,
+    PROJECT_STATE_OUTDATED,
+    PROJECT_STATE_OUTVERSIONED,
+    PROJECT_STATE_NEEDS_MIGRATION,
+    PROJECT_STATE_DB_CORRUPTED
+  };
 
-	enum class RefreshStageType
-	{
-		REFRESHING,
-		INDEXING,
-		NONE
-	};
+  enum class RefreshStageType { REFRESHING, INDEXING, NONE };
 
-	Project(const Project&);
+  void swapToTempStorage(std::shared_ptr<DialogView> dialogView);
+  bool swapToTempStorageFile(const FilePath& indexDbFilePath,
+                             const FilePath& tempIndexDbFilePath,
+                             std::shared_ptr<DialogView> dialogView);
+  void discardTempStorage();
 
-	void swapToTempStorage(std::shared_ptr<DialogView> dialogView);
-	bool swapToTempStorageFile(
-		const FilePath& indexDbFilePath,
-		const FilePath& tempIndexDbFilePath,
-		std::shared_ptr<DialogView> dialogView);
-	void discardTempStorage();
+  [[nodiscard]] bool hasCxxSourceGroup() const;
 
-	bool hasCxxSourceGroup() const;
+  std::shared_ptr<ProjectSettings> m_settings;
+  StorageCache* const m_storageCache;
 
-	std::shared_ptr<ProjectSettings> m_settings;
-	StorageCache* const m_storageCache;
+  ProjectStateType m_state;
+  RefreshStageType m_refreshStage;
 
-	ProjectStateType m_state;
-	RefreshStageType m_refreshStage;
+  std::shared_ptr<PersistentStorage> m_storage;
+  std::vector<std::shared_ptr<SourceGroup>> m_sourceGroups;
 
-	std::shared_ptr<PersistentStorage> m_storage;
-	std::vector<std::shared_ptr<SourceGroup>> m_sourceGroups;
-
-	std::string m_appUUID;
-	bool m_hasGUI;
+  std::string m_appUUID;
+  bool m_hasGUI;
 };
-
-#endif	  // PROJECT_H

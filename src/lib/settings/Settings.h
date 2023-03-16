@@ -1,119 +1,105 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
-
+#pragma once
+// STL
 #include <memory>
 #include <string>
 #include <vector>
-
+// internal
 #include "ConfigManager.h"
 #include "FilePath.h"
 
 class SettingsMigration;
 
-class Settings
-{
+class Settings {
 public:
-	Settings(const Settings& other);
-	Settings& operator=(const Settings& other);
-	virtual ~Settings();
+  Settings(const Settings& other);
+  Settings& operator=(const Settings& other);
+  virtual ~Settings();
 
-	bool load(const FilePath& filePath, bool readOnly = false);
-	bool loadFromString(const std::string& text, bool readOnly = false);
-	bool save();
-	bool save(const FilePath& filePath);
+  bool load(const FilePath& filePath, bool readOnly = false);
+  bool loadFromString(const std::string& text, bool readOnly = false);
+  bool save();
+  bool save(const FilePath& filePath);
 
-	void clear();
+  void clear();
 
-	virtual const FilePath& getFilePath() const;
+  virtual const FilePath& getFilePath() const;
 
-	size_t getVersion() const;
-	void setVersion(size_t version);
+  size_t getVersion() const;
+  void setVersion(size_t version);
 
 protected:
-	Settings();
+  Settings();
 
-	void setFilePath(const FilePath& filePath);
+  void setFilePath(const FilePath& filePath);
 
-	template <typename T>
-	T getValue(const std::string& key, T defaultValue) const;
+  template <typename T>
+  T getValue(const std::string& key, T defaultValue) const;
 
-	template <typename T>
-	std::vector<T> getValues(const std::string& key, std::vector<T> defaultValues) const;
+  template <typename T>
+  std::vector<T> getValues(const std::string& key, std::vector<T> defaultValues) const;
 
-	std::vector<FilePath> getPathValues(const std::string& key) const;
+  std::vector<FilePath> getPathValues(const std::string& key) const;
 
-	template <typename T>
-	bool setValue(const std::string& key, T value);
+  template <typename T>
+  bool setValue(const std::string& key, T value);
 
-	template <typename T>
-	bool setValues(const std::string& key, std::vector<T> values);
+  template <typename T>
+  bool setValues(const std::string& key, std::vector<T> values);
 
-	bool setPathValues(const std::string& key, const std::vector<FilePath>& paths);
+  bool setPathValues(const std::string& key, const std::vector<FilePath>& paths);
 
-	bool isValueDefined(const std::string& key) const;
+  bool isValueDefined(const std::string& key) const;
 
-	void removeValues(const std::string& key);
+  void removeValues(const std::string& key);
 
-	void enableWarnings() const;
-	void disableWarnings() const;
+  void enableWarnings() const;
+  void disableWarnings() const;
 
-	std::shared_ptr<ConfigManager> m_config;
+  std::shared_ptr<ConfigManager> m_config;
 
 private:
-	FilePath m_filePath;
-	bool m_readOnly = false;
+  FilePath m_filePath;
+  bool m_readOnly = false;
 
-	friend SettingsMigration;
+  friend SettingsMigration;
 };
 
 template <typename T>
-T Settings::getValue(const std::string& key, T defaultValue) const
-{
-	if (m_config)
-	{
-		T value;
-		if (m_config->getValue(key, value))
-		{
-			return value;
-		}
-	}
-	return defaultValue;
+T Settings::getValue(const std::string& key, T defaultValue) const {
+  if(m_config) {
+    T value;
+    if(m_config->getValue(key, value)) {
+      return value;
+    }
+  }
+  return defaultValue;
 }
 
 template <typename T>
-std::vector<T> Settings::getValues(const std::string& key, std::vector<T> defaultValues) const
-{
-	if (m_config)
-	{
-		std::vector<T> values;
-		if (m_config->getValues(key, values))
-		{
-			return values;
-		}
-	}
-	return defaultValues;
+std::vector<T> Settings::getValues(const std::string& key, std::vector<T> defaultValues) const {
+  if(m_config) {
+    std::vector<T> values;
+    if(m_config->getValues(key, values)) {
+      return values;
+    }
+  }
+  return defaultValues;
 }
 
 template <typename T>
-bool Settings::setValue(const std::string& key, T value)
-{
-	if (m_config)
-	{
-		m_config->setValue(key, value);
-		return true;
-	}
-	return false;
+bool Settings::setValue(const std::string& key, T value) {
+  if(m_config) {
+    m_config->setValue(key, value);
+    return true;
+  }
+  return false;
 }
 
 template <typename T>
-bool Settings::setValues(const std::string& key, std::vector<T> values)
-{
-	if (m_config)
-	{
-		m_config->setValues(key, values);
-		return true;
-	}
-	return false;
+bool Settings::setValues(const std::string& key, std::vector<T> values) {
+  if(m_config) {
+    m_config->setValues(key, values);
+    return true;
+  }
+  return false;
 }
-
-#endif	  // SETTINGS_H

@@ -1,47 +1,34 @@
-#ifndef MESSAGE_FOCUS_VIEW_H
-#define MESSAGE_FOCUS_VIEW_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 
-class MessageFocusView: public Message<MessageFocusView>
-{
+class MessageFocusView : public Message<MessageFocusView> {
 public:
-	enum class ViewType
-	{
-		GRAPH,
-		CODE,
-		TOGGLE
-	};
+  enum class ViewType { GRAPH, CODE, TOGGLE };
 
-	MessageFocusView(ViewType type): type(type)
-	{
-		setIsLogged(false);
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageFocusView(ViewType type_) : type(type_) {
+    setIsLogged(false);
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageFocusView";
-	}
+  static const std::string getStaticType() {
+    return "MessageFocusView";
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		switch (type)
-		{
-		case ViewType::GRAPH:
-			os << "graph";
-			break;
-		case ViewType::CODE:
-			os << "code";
-			break;
-		case ViewType::TOGGLE:
-			os << "toggle";
-			break;
-		}
-	}
+  void print(std::wostream& os) const override {
+    switch(type) {
+    case ViewType::GRAPH:
+      os << "graph";
+      break;
+    case ViewType::CODE:
+      os << "code";
+      break;
+    case ViewType::TOGGLE:
+      os << "toggle";
+      break;
+    }
+  }
 
-	const ViewType type;
+  const ViewType type;
 };
-
-#endif	  // MESSAGE_FOCUS_VIEW_H

@@ -1,57 +1,43 @@
-#ifndef MESSAGE_FOCUS_CHANGED_H
-#define MESSAGE_FOCUS_CHANGED_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 
-class MessageFocusChanged: public Message<MessageFocusChanged>
-{
+class MessageFocusChanged : public Message<MessageFocusChanged> {
 public:
-	enum class ViewType
-	{
-		GRAPH,
-		CODE
-	};
+  enum class ViewType { GRAPH, CODE };
 
-	MessageFocusChanged(ViewType type, Id tokenOrLocationId)
-		: type(type), tokenOrLocationId(tokenOrLocationId)
-	{
-		setIsLogged(false);
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageFocusChanged(ViewType type_, Id tokenOrLocationId_)
+      : type(type_), tokenOrLocationId(tokenOrLocationId_) {
+    setIsLogged(false);
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageFocusChanged";
-	}
+  static const std::string getStaticType() {
+    return "MessageFocusChanged";
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		switch (type)
-		{
-		case ViewType::GRAPH:
-			os << "graph";
-			break;
-		case ViewType::CODE:
-			os << "code";
-			break;
-		}
+  void print(std::wostream& os) const override {
+    switch(type) {
+    case ViewType::GRAPH:
+      os << "graph";
+      break;
+    case ViewType::CODE:
+      os << "code";
+      break;
+    }
 
-		os << " " << tokenOrLocationId;
-	}
+    os << " " << tokenOrLocationId;
+  }
 
-	bool isFromGraph() const
-	{
-		return type == ViewType::GRAPH;
-	}
+  bool isFromGraph() const {
+    return type == ViewType::GRAPH;
+  }
 
-	bool isFromCode() const
-	{
-		return type == ViewType::CODE;
-	}
+  bool isFromCode() const {
+    return type == ViewType::CODE;
+  }
 
-	const ViewType type;
-	const Id tokenOrLocationId;
+  const ViewType type;
+  const Id tokenOrLocationId;
 };
-
-#endif	  // MESSAGE_FOCUS_CHANGED_H

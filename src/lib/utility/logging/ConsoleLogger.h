@@ -2,7 +2,7 @@
 
 #include "Logger.h"
 
-class LogMessage;
+struct LogMessage;
 
 class ConsoleLogger final : public Logger {
 public:

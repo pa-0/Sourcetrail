@@ -1,10 +1,9 @@
-#ifndef ACTIVATION_CONTROLLER_H
-#define ACTIVATION_CONTROLLER_H
-
+#pragma once
+// STL
 #include <memory>
-
+// internal
 #include "Controller.h"
-
+// message
 #include "MessageActivateEdge.h"
 #include "MessageActivateFile.h"
 #include "MessageActivateNodes.h"
@@ -45,5 +44,3 @@ private:
 
 	StorageAccess* m_storageAccess;
 };
-
-#endif	  // ACTIVATION_CONTROLLER_H

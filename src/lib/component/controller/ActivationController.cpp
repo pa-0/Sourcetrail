@@ -121,7 +121,7 @@ void ActivationController::handleMessage(MessageActivateSourceLocations* message
 	msg.dispatchImmediately();
 }
 
-void ActivationController::handleMessage(MessageResetZoom* message)
+void ActivationController::handleMessage(MessageResetZoom* /*message*/)
 {
 	ApplicationSettings* settings = ApplicationSettings::getInstance().get();
 	int fontSizeStd = settings->getFontSizeStd();
