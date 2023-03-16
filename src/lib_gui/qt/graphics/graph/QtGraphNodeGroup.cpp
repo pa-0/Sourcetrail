@@ -78,7 +78,7 @@ void QtGraphNodeGroup::onClick()
 		return;
 	}
 
-	if (m_type == GroupType::FILE || m_type == GroupType::NAMESPACE)
+	if (m_type == GroupType::FILE_TYPE || m_type == GroupType::NAMESPACE)
 	{
 		MessageActivateNodes(m_tokenId).dispatch();
 	}
@@ -118,7 +118,7 @@ QPainterPath QtGraphNodeGroup::shape() const
 
 void QtGraphNodeGroup::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
-	if (m_type == GroupType::FILE || m_type == GroupType::NAMESPACE)
+	if (m_type == GroupType::FILE_TYPE || m_type == GroupType::NAMESPACE)
 	{
 		MessageFocusOut({m_tokenId}).dispatch();
 	}
@@ -132,7 +132,7 @@ void QtGraphNodeGroup::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 	{
 		if (!m_isCoFocused)
 		{
-			if (m_type == GroupType::FILE || m_type == GroupType::NAMESPACE)
+			if (m_type == GroupType::FILE_TYPE || m_type == GroupType::NAMESPACE)
 			{
 				MessageFocusIn({m_tokenId}, TOOLTIP_ORIGIN_GRAPH).dispatch();
 			}

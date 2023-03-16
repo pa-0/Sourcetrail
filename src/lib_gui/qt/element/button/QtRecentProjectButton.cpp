@@ -53,7 +53,7 @@ void QtRecentProjectButton::handleButtonClick() {
       auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
       for(size_t i = 0; i < recentProjects.size(); ++i) {
         if(recentProjects[i].wstr() == m_projectFilePath.wstr()) {
-          recentProjects.erase(recentProjects.begin() + i);
+          recentProjects.erase(recentProjects.begin() + static_cast<long>(i));
           ApplicationSettings::getInstance()->setRecentProjects(recentProjects);
           ApplicationSettings::getInstance()->save();
           break;

@@ -194,7 +194,7 @@ QtGraphView::QtGraphView(ViewLayout* viewLayout)
     });
 
     GroupType type = ApplicationSettings::getInstance()->getGraphGrouping();
-    if(type == GroupType::FILE) {
+    if(type == GroupType::FILE_TYPE) {
       m_groupFileButton->setChecked(true);
     } else if(type == GroupType::NAMESPACE) {
       m_groupNamespaceButton->setChecked(true);
@@ -476,7 +476,7 @@ Vec2i QtGraphView::getViewSize() const {
 
 GroupType QtGraphView::getGrouping() const {
   if(m_groupFileButton->isChecked()) {
-    return GroupType::FILE;
+    return GroupType::FILE_TYPE;
   } else if(m_groupNamespaceButton->isChecked()) {
     return GroupType::NAMESPACE;
   }
