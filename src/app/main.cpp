@@ -37,7 +37,7 @@
 #  include "SourceGroupFactoryModuleCxx.h"
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
-void signalHandler(int signum) {
+void signalHandler(int /*signum*/) {
   std::cout << "interrupt indexing" << std::endl;
   MessageIndexingInterrupted().dispatch();
 }
@@ -75,13 +75,17 @@ int main(int argc, char* argv[]) {
 
   QCoreApplication::addLibraryPath(QStringLiteral("."));
 
+#ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable : 4996)
+#endif
   if(utility::getOsType() == OS_LINUX && std::getenv("SOURCETRAIL_VIA_SCRIPT") == nullptr &&
      !FilePath(QCoreApplication::applicationDirPath().toStdWString() + L"/../share").exists()) {
     std::cout << "ERROR: Please run Sourcetrail via the Sourcetrail.sh script!" << std::endl;
   }
+#ifdef _WIN32
 #pragma warning(pop)
+#endif
 
   QApplication::setApplicationName(QStringLiteral("Sourcetrail"));
 
