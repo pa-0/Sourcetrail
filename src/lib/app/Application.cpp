@@ -1,11 +1,9 @@
 #include "Application.h"
-
-#include "AppPath.h"
+// internal
 #include "ApplicationSettings.h"
 #include "ColorScheme.h"
 #include "DialogView.h"
 #include "FileLogger.h"
-#include "FileSystem.h"
 #include "GraphViewStyle.h"
 #include "IDECommunicationController.h"
 #include "LogManager.h"
@@ -132,25 +130,25 @@ Application::~Application() {
 }
 
 std::shared_ptr<const Project> Application::getCurrentProject() const {
-  return m_project;
+  return m_pProject;
 }
 
 FilePath Application::getCurrentProjectPath() const {
-  if(m_project) {
-    return m_project->getProjectSettingsFilePath();
+  if(m_pProject) {
+    return m_pProject->getProjectSettingsFilePath();
   }
 
-  return FilePath();
+  return {};
 }
 
 bool Application::isProjectLoaded() const {
-  if(m_project) {
-    return m_project->isLoaded();
+  if(m_pProject) {
+    return m_pProject->isLoaded();
   }
   return false;
 }
 
-bool Application::hasGUI() {
+bool Application::hasGUI() const {
   return m_hasGUI;
 }
 
@@ -178,24 +176,24 @@ void Application::updateBookmarks(const std::vector<std::shared_ptr<Bookmark>>& 
   m_mainView->updateBookmarksMenu(bookmarks);
 }
 
-void Application::handleMessage(MessageActivateWindow* /*message*/) {
+void Application::handleMessage(MessageActivateWindow* /*pMessage*/) {
   if(m_hasGUI) {
     m_mainView->activateWindow();
   }
 }
 
-void Application::handleMessage(MessageCloseProject* message) {
-  if(m_project && m_project->isIndexing()) {
+void Application::handleMessage(MessageCloseProject* /*pMessage*/) {
+  if(m_pProject && m_pProject->isIndexing()) {
     MessageStatus(L"Cannot close the project while indexing.", true, false).dispatch();
     return;
   }
 
-  m_project.reset();
+  m_pProject.reset();
   updateTitle();
   m_mainView->clear();
 }
 
-void Application::handleMessage(MessageIndexingFinished* message) {
+void Application::handleMessage(MessageIndexingFinished* /*pMessage*/) {
   logStorageStats();
 
   if(m_hasGUI) {
@@ -205,30 +203,31 @@ void Application::handleMessage(MessageIndexingFinished* message) {
   }
 }
 
-void Application::handleMessage(MessageLoadProject* message) {
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+void Application::handleMessage(MessageLoadProject* pMessage) {
   TRACE("app load project");
 
-  FilePath projectSettingsFilePath(message->projectSettingsFilePath);
+  const auto projectSettingsFilePath = pMessage->projectSettingsFilePath;
   loadWindow(projectSettingsFilePath.empty());
 
   if(projectSettingsFilePath.empty()) {
     return;
   }
 
-  if(m_project && m_project->isIndexing()) {
+  if(m_pProject && m_pProject->isIndexing()) {
     MessageStatus(L"Cannot load another project while indexing.", true, false).dispatch();
     return;
   }
 
-  if(m_project && projectSettingsFilePath == m_project->getProjectSettingsFilePath()) {
-    if(message->settingsChanged && m_hasGUI) {
-      m_project->setStateOutdated();
-      refreshProject(REFRESH_ALL_FILES, message->shallowIndexingRequested);
+  if(m_pProject && projectSettingsFilePath == m_pProject->getProjectSettingsFilePath()) {
+    if(pMessage->settingsChanged && m_hasGUI) {
+      m_pProject->setStateOutdated();
+      refreshProject(REFRESH_ALL_FILES, pMessage->shallowIndexingRequested);
     }
   } else {
     MessageStatus(L"Loading Project: " + projectSettingsFilePath.wstr(), false, true).dispatch();
 
-    m_project.reset();
+    m_pProject.reset();
 
     if(m_hasGUI) {
       m_mainView->clear();
@@ -238,17 +237,17 @@ void Application::handleMessage(MessageLoadProject* message) {
       updateRecentProjects(projectSettingsFilePath);
 
       m_storageCache->clear();
-      m_storageCache->setSubject(
-          std::weak_ptr<StorageAccess>());    // TODO: check if this is really required.
+      // TODO: check if this is really required.
+      m_storageCache->setSubject(std::weak_ptr<StorageAccess>());    
 
-      m_project = std::make_shared<Project>(
+      m_pProject = std::make_shared<Project>(
           std::make_shared<ProjectSettings>(projectSettingsFilePath),
           m_storageCache.get(),
           getUUID(),
           hasGUI());
 
-      if(m_project) {
-        m_project->load(getDialogView(DialogView::UseCase::GENERAL));
+      if(m_pProject) {
+        m_pProject->load(getDialogView(DialogView::UseCase::GENERAL));
       } else {
         LOG_ERROR_STREAM(<< "Failed to load project.");
         MessageStatus(L"Failed to load project: " + projectSettingsFilePath.wstr(), true).dispatch();
@@ -272,38 +271,38 @@ void Application::handleMessage(MessageLoadProject* message) {
       MessageStatus(message, true).dispatch();
     }
 
-    if(message->refreshMode != REFRESH_NONE) {
-      refreshProject(message->refreshMode, message->shallowIndexingRequested);
+    if(pMessage->refreshMode != REFRESH_NONE) {
+      refreshProject(pMessage->refreshMode, pMessage->shallowIndexingRequested);
     }
   }
 }
 
-void Application::handleMessage(MessageRefresh* message) {
+void Application::handleMessage(MessageRefresh* pMessage) {
   TRACE("app refresh");
 
-  refreshProject(message->all ? REFRESH_ALL_FILES : REFRESH_UPDATED_FILES, false);
+  refreshProject(pMessage->all ? REFRESH_ALL_FILES : REFRESH_UPDATED_FILES, false);
 }
 
-void Application::handleMessage(MessageRefreshUI* message) {
+void Application::handleMessage(MessageRefreshUI* pMessage) {
   TRACE("ui refresh");
 
   if(m_hasGUI) {
     updateTitle();
 
-    if(message->loadStyle) {
+    if(pMessage->loadStyle) {
       loadStyle(ApplicationSettings::getInstance()->getColorSchemePath());
     }
 
     m_mainView->refreshViews();
 
-    m_mainView->refreshUIState(message->isAfterIndexing);
+    m_mainView->refreshUIState(pMessage->isAfterIndexing);
   }
 }
 
-void Application::handleMessage(MessageSwitchColorScheme* message) {
-  MessageStatus(L"Switch color scheme: " + message->colorSchemePath.wstr()).dispatch();
+void Application::handleMessage(MessageSwitchColorScheme* pMessage) {
+  MessageStatus(L"Switch color scheme: " + pMessage->colorSchemePath.wstr()).dispatch();
 
-  loadStyle(message->colorSchemePath);
+  loadStyle(pMessage->colorSchemePath);
   MessageRefreshUI().noStyleReload().dispatch();
 }
 
@@ -338,11 +337,11 @@ void Application::loadWindow(bool showStartWindow) {
 }
 
 void Application::refreshProject(RefreshMode refreshMode, bool shallowIndexingRequested) {
-  if(m_project && checkSharedMemory()) {
-    m_project->refresh(
+  if(m_pProject && checkSharedMemory()) {
+    m_pProject->refresh(
         getDialogView(DialogView::UseCase::INDEXING), refreshMode, shallowIndexingRequested);
 
-    if(!m_hasGUI && !m_project->isIndexing()) {
+    if(!m_hasGUI && !m_pProject->isIndexing()) {
       MessageQuitApplication().dispatch();
     }
   }
@@ -402,8 +401,8 @@ void Application::updateTitle() {
   if(m_hasGUI) {
     std::wstring title = L"Sourcetrail";
 
-    if(m_project) {
-      FilePath projectPath = m_project->getProjectSettingsFilePath();
+    if(m_pProject) {
+      FilePath projectPath = m_pProject->getProjectSettingsFilePath();
 
       if(!projectPath.empty()) {
         title += L" - " + projectPath.fileName();
