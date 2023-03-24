@@ -1,29 +1,10 @@
 #include "Project.h"
-
+// STL
 #include <utility>
-
+// internal
 #include "ApplicationSettings.h"
 #include "CombinedIndexerCommandProvider.h"
 #include "DialogView.h"
-#include "IndexerCommand.h"
-#include "IndexerCommandCustom.h"
-#include "PersistentStorage.h"
-#include "ProjectSettings.h"
-#include "RefreshInfoGenerator.h"
-#include "SourceGroup.h"
-#include "SourceGroupFactory.h"
-#include "SourceGroupStatusType.h"
-#include "StorageCache.h"
-#include "StorageProvider.h"
-#include "TaskBuildIndex.h"
-#include "TaskCleanStorage.h"
-#include "TaskExecuteCustomCommands.h"
-#include "TaskFillIndexerCommandQueue.h"
-#include "TaskFinishParsing.h"
-#include "TaskInjectStorage.h"
-#include "TaskMergeStorages.h"
-#include "TaskParseWrapper.h"
-
 #include "FilePath.h"
 #include "FileSystem.h"
 #include "MessageErrorCountClear.h"
@@ -33,19 +14,34 @@
 #include "MessageIndexingStatus.h"
 #include "MessageRefresh.h"
 #include "MessageStatus.h"
+#include "PersistentStorage.h"
+#include "ProjectSettings.h"
+#include "RefreshInfoGenerator.h"
+#include "SourceGroup.h"
+#include "SourceGroupFactory.h"
+#include "SourceGroupStatusType.h"
+#include "StorageCache.h"
+#include "StorageProvider.h"
 #include "TabId.h"
+#include "TaskBuildIndex.h"
+#include "TaskCleanStorage.h"
 #include "TaskDecoratorRepeat.h"
+#include "TaskExecuteCustomCommands.h"
+#include "TaskFillIndexerCommandQueue.h"
 #include "TaskFindKeyOnBlackboard.h"
+#include "TaskFinishParsing.h"
 #include "TaskGroupParallel.h"
 #include "TaskGroupSelector.h"
 #include "TaskGroupSequence.h"
+#include "TaskInjectStorage.h"
 #include "TaskLambda.h"
+#include "TaskMergeStorages.h"
+#include "TaskParseWrapper.h"
 #include "TaskReturnSuccessIf.h"
 #include "TaskSetValue.h"
 #include "TextAccess.h"
 #include "utility.h"
 #include "utilityApp.h"
-#include "utilityFile.h"
 #include "utilityString.h"
 
 Project::Project(std::shared_ptr<ProjectSettings> settings,
@@ -54,7 +50,7 @@ Project::Project(std::shared_ptr<ProjectSettings> settings,
                  bool hasGUI)
     : m_settings(std::move(settings))
     , m_storageCache(storageCache)
-    , m_state(PROJECT_STATE_NOT_LOADED)
+    , m_state(ProjectStateType::NOT_LOADED)
     , m_refreshStage(RefreshStageType::NONE)
     , m_appUUID(std::move(appUUID))
     , m_hasGUI(hasGUI) {}
@@ -71,10 +67,10 @@ std::string Project::getDescription() const {
 
 bool Project::isLoaded() const {
   switch(m_state) {
-  case PROJECT_STATE_EMPTY:
-  case PROJECT_STATE_LOADED:
-  case PROJECT_STATE_OUTDATED:
-  case PROJECT_STATE_NEEDS_MIGRATION:
+  case ProjectStateType::EMPTY:
+  case ProjectStateType::LOADED:
+  case ProjectStateType::OUTDATED:
+  case ProjectStateType::NEEDS_MIGRATION:
     return true;
 
   default:
@@ -93,8 +89,8 @@ bool Project::settingsEqualExceptNameAndLocation(const ProjectSettings& otherSet
 }
 
 void Project::setStateOutdated() {
-  if(m_state == PROJECT_STATE_LOADED) {
-    m_state = PROJECT_STATE_OUTDATED;
+  if(m_state == ProjectStateType::LOADED) {
+    m_state = ProjectStateType::OUTDATED;
   }
 }
 
@@ -129,7 +125,7 @@ void Project::load(std::shared_ptr<DialogView> dialogView) {
                {L"Keep and Continue", L"Discard and Restore"}) == 0) {
           LOG_INFO("Switching to temporary indexing data on user's decision");
           if(!swapToTempStorageFile(dbPath, tempDbPath, dialogView)) {
-            m_state = PROJECT_STATE_NOT_LOADED;
+            m_state = ProjectStateType::NOT_LOADED;
             MessageStatus(L"Unable to load project", true, false).dispatch();
             return;
           }
@@ -151,23 +147,23 @@ void Project::load(std::shared_ptr<DialogView> dialogView) {
   bool canLoad = false;
 
   if(m_settings->needMigration()) {
-    m_state = PROJECT_STATE_NEEDS_MIGRATION;
+    m_state = ProjectStateType::NEEDS_MIGRATION;
 
     if(!m_storage->isEmpty() && !m_storage->isIncompatible()) {
       canLoad = true;
     }
   } else if(m_storage->isEmpty()) {
-    m_state = PROJECT_STATE_EMPTY;
+    m_state = ProjectStateType::EMPTY;
   } else if(m_storage->isIncompatible()) {
-    m_state = PROJECT_STATE_OUTVERSIONED;
+    m_state = ProjectStateType::OUTVERSIONED;
   } else {
     ProjectSettings storedSettings;
     if(storedSettings.loadFromString(m_storage->getProjectSettingsText()) &&
        m_settings->equalsExceptNameAndLocation(storedSettings)) {
-      m_state = PROJECT_STATE_LOADED;
+      m_state = ProjectStateType::LOADED;
       canLoad = true;
     } else {
-      m_state = PROJECT_STATE_OUTDATED;
+      m_state = ProjectStateType::OUTDATED;
       canLoad = true;
     }
   }
@@ -178,7 +174,7 @@ void Project::load(std::shared_ptr<DialogView> dialogView) {
     LOG_ERROR("Exception has been encountered while loading the project.");
 
     canLoad = false;
-    m_state = PROJECT_STATE_DB_CORRUPTED;
+    m_state = ProjectStateType::DB_CORRUPTED;
   }
 
   m_sourceGroups = SourceGroupFactory::getInstance()->createSourceGroups(
@@ -195,7 +191,7 @@ void Project::load(std::shared_ptr<DialogView> dialogView) {
     MessageStatus(L"Finished Loading", false, false).dispatch();
   } else {
     switch(m_state) {
-    case PROJECT_STATE_NEEDS_MIGRATION:
+    case ProjectStateType::NEEDS_MIGRATION:
       MessageStatus(
           L"Project could not be loaded and needs to be re-indexed after automatic migration "
           L"to latest "
@@ -204,7 +200,7 @@ void Project::load(std::shared_ptr<DialogView> dialogView) {
           false)
           .dispatch();
       break;
-    case PROJECT_STATE_EMPTY:
+    case ProjectStateType::EMPTY:
       MessageStatus(
           L"Project could not load any symbols because the index database is empty. Please "
           L"re-index the "
@@ -213,7 +209,7 @@ void Project::load(std::shared_ptr<DialogView> dialogView) {
           false)
           .dispatch();
       break;
-    case PROJECT_STATE_OUTVERSIONED:
+    case ProjectStateType::OUTVERSIONED:
       MessageStatus(
           L"Project could not be loaded because the indexed data format is incompatible to "
           L"the current "
@@ -227,7 +223,7 @@ void Project::load(std::shared_ptr<DialogView> dialogView) {
     }
   }
 
-  if(m_state != PROJECT_STATE_LOADED && m_hasGUI) {
+  if(m_state != ProjectStateType::LOADED && m_hasGUI) {
     MessageRefresh().dispatch();
   }
 }
@@ -239,7 +235,7 @@ void Project::refresh(std::shared_ptr<DialogView> dialogView,
     return;
   }
 
-  if(m_state == PROJECT_STATE_NOT_LOADED) {
+  if(m_state == ProjectStateType::NOT_LOADED) {
     return;
   }
 
@@ -248,14 +244,14 @@ void Project::refresh(std::shared_ptr<DialogView> dialogView,
   std::wstring question;
 
   switch(m_state) {
-  case PROJECT_STATE_EMPTY:
+  case ProjectStateType::EMPTY:
     needsFullRefresh = true;
     break;
 
-  case PROJECT_STATE_LOADED:
+  case ProjectStateType::LOADED:
     break;
 
-  case PROJECT_STATE_OUTDATED:
+  case ProjectStateType::OUTDATED:
     question =
         L"The project file was changed after the last indexing. The project needs to get fully "
         L"reindexed to "
@@ -265,7 +261,7 @@ void Project::refresh(std::shared_ptr<DialogView> dialogView,
     fullRefresh = true;
     break;
 
-  case PROJECT_STATE_OUTVERSIONED:
+  case ProjectStateType::OUTVERSIONED:
     question =
         L"This project was indexed with a different version of Sourcetrail. It needs to be "
         L"fully reindexed to "
@@ -273,7 +269,7 @@ void Project::refresh(std::shared_ptr<DialogView> dialogView,
     needsFullRefresh = true;
     break;
 
-  case PROJECT_STATE_NEEDS_MIGRATION:
+  case ProjectStateType::NEEDS_MIGRATION:
     question =
         L"This project was created with a different version and uses an old project file "
         L"format. "
@@ -283,7 +279,7 @@ void Project::refresh(std::shared_ptr<DialogView> dialogView,
     needsFullRefresh = true;
     break;
 
-  case PROJECT_STATE_DB_CORRUPTED:
+  case ProjectStateType::DB_CORRUPTED:
     question =
         L"There was a problem loading the index of this project. The project needs to get "
         L"fully reindexed. "
@@ -315,7 +311,7 @@ void Project::refresh(std::shared_ptr<DialogView> dialogView,
 
   m_refreshStage = RefreshStageType::REFRESHING;
 
-  if(m_state == PROJECT_STATE_NEEDS_MIGRATION) {
+  if(m_state == ProjectStateType::NEEDS_MIGRATION) {
     m_settings->migrate();
   }
 
@@ -675,7 +671,7 @@ void Project::swapToTempStorage(std::shared_ptr<DialogView> dialogView) {
   m_storage.reset();
 
   if(!swapToTempStorageFile(indexDbFilePath, tempIndexDbFilePath, dialogView)) {
-    m_state = PROJECT_STATE_NOT_LOADED;
+    m_state = ProjectStateType::NOT_LOADED;
     return;
   }
 
@@ -689,7 +685,7 @@ void Project::swapToTempStorage(std::shared_ptr<DialogView> dialogView) {
   // dialogView->hideUnknownProgressDialog();
 
   m_storageCache->setSubject(m_storage);
-  m_state = PROJECT_STATE_LOADED;
+  m_state = ProjectStateType::LOADED;
 }
 
 bool Project::swapToTempStorageFile(const FilePath& indexDbFilePath,
