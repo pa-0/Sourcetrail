@@ -236,9 +236,7 @@ if(WIN32)
   configure_file("${CMAKE_SOURCE_DIR}/setup/icon/windows/sourcetrail.ico" "${CMAKE_BINARY_DIR}/${CONFIGURATION}/sourcetrail.ico" COPYONLY)
 endif()
 
-add_subdirectory(src/app)
 add_subdirectory(src/external)
-add_subdirectory(src/indexer)
 add_subdirectory(src/lib)
 add_subdirectory(src/lib_gui)
 
@@ -246,14 +244,13 @@ set_source_files_properties(${EXTERNAL_FILES} PROPERTIES COMPILE_FLAGS "-w")
 
 # Lib Utility ------------------------------------------------------------------
 add_subdirectory(src/lib_utility)
-
 # Lib Cxx ----------------------------------------------------------------------
 if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_subdirectory(src/lib_cxx)
 endif()
-
 # Lib --------------------------------------------------------------------------
 add_library(${LIB_PROJECT_NAME} ${LIB_FILES} ${EXTERNAL_FILES})
+add_library(Sourcetrail::lib ALIAS ${LIB_PROJECT_NAME})
 
 target_include_directories(
   ${LIB_PROJECT_NAME}
@@ -273,7 +270,11 @@ target_link_libraries(
   ${LIB_PROJECT_NAME}
   PUBLIC
     project_options
-    project_warnings
+    project_warnings)
+
+target_link_libraries(
+  ${LIB_PROJECT_NAME}
+  PRIVATE
     Boost::program_options
     Sourcetrail::lib_utility
     ${LIB_GUI_PROJECT_NAME}
@@ -283,13 +284,15 @@ target_link_libraries(
     fmt::fmt
     TinyXML::TinyXML
     SQLite::SQLite3
+    Tracy::TracyClient
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
     $<$<PLATFORM_ID:Windows>:bcrypt>)
+
+target_compile_definitions(${LIB_PROJECT_NAME} PRIVATE TRACY_ENABLE=1)
 
 #configure language package defines
 configure_file("${CMAKE_SOURCE_DIR}/cmake/language_packages.h.in"
                "${CMAKE_BINARY_DIR}/src/lib/language_packages.h")
-
 # Lib Gui ----------------------------------------------------------------------
 add_library(Sourcetrail_lib_gui_utility)
 add_library(Sourcetrail::lib_gui::utility ALIAS Sourcetrail_lib_gui_utility)
@@ -316,6 +319,7 @@ target_link_libraries(
     project_warnings
     Boost::system
     Qt5::Core
+    Sourcetrail::lib_utility
     ${LIB_PROJECT_NAME})
 
 # target for running versionnumber script
@@ -326,6 +330,8 @@ add_library(
   ${LIB_GUI_PROJECT_NAME}
   ${LIB_GUI_FILES}
   ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h)
+
+add_library(Sourcetrail::lib_gui ALIAS ${LIB_GUI_PROJECT_NAME})
 
 target_link_libraries(
   ${LIB_GUI_PROJECT_NAME}
@@ -340,6 +346,8 @@ target_link_libraries(
 target_link_libraries(
   ${LIB_GUI_PROJECT_NAME}
   PRIVATE
+    fmt::fmt
+    $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
     Sourcetrail::lib_gui::utility)
 
 # command for versioning script
@@ -390,135 +398,9 @@ set_property(SOURCE ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h
              PROPERTY SKIP_AUTOMOC ON)
 
 # Indexer App ------------------------------------------------------------------
-if(UNIX)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app/")
-else()
-  foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
-    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/app/")
-  endforeach()
-endif()
-
-# Find includes in corresponding build directories
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-add_executable(${APP_INDEXER_NAME} ${INDEXER_FILES})
-
-set_target_properties(
-  ${APP_INDEXER_NAME}
-  PROPERTIES
-    OUTPUT_NAME sourcetrail_indexer)
-
-if(WIN32)
-  # hide the console when running a release build.
-  set_target_properties(${APP_INDEXER_NAME} PROPERTIES LINK_FLAGS_DEBUG                   "/SUBSYSTEM:CONSOLE /DEBUG:FASTLINK")
-  set_target_properties(${APP_INDEXER_NAME} PROPERTIES COMPILE_DEFINITIONS_DEBUG          "_CONSOLE")
-  set_target_properties(${APP_INDEXER_NAME} PROPERTIES LINK_FLAGS_RELWITHDEBINFO          "/SUBSYSTEM:CONSOLE")
-  set_target_properties(${APP_INDEXER_NAME} PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
-  set_target_properties(${APP_INDEXER_NAME} PROPERTIES LINK_FLAGS_RELEASE                 "/ENTRY:\"mainCRTStartup\" /SUBSYSTEM:WINDOWS /DEBUG")
-  set_target_properties(${APP_INDEXER_NAME} PROPERTIES LINK_FLAGS_MINSIZEREL              "/SUBSYSTEM:WINDOWS")
-
-  # generate pdb for release build
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
-endif()
-
-target_link_libraries(
-  ${APP_INDEXER_NAME}
-  PRIVATE
-    ${LIB_GUI_PROJECT_NAME}
-    $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
-    ${LIB_PROJECT_NAME})
-
-if(APPLE)
-  find_library(CORE_FOUNDATION CoreFoundation)
-  target_link_libraries(${APP_INDEXER_NAME} PRIVATE ${CORE_FOUNDATION})
-endif ()
-
-set_property(
-  TARGET ${APP_INDEXER_NAME}
-  PROPERTY INCLUDE_DIRECTORIES
-    "${APP_INCLUDE_PATHS}"
-    "${LIB_INCLUDE_PATHS}"
-    "${LIB_UTILITY_INCLUDE_PATHS}"
-    "${LIB_GUI_INCLUDE_PATHS}"
-    "${CMAKE_BINARY_DIR}/src/lib_gui"
-    "${CMAKE_BINARY_DIR}/src/lib")
-
+add_subdirectory(src/indexer)
 # App --------------------------------------------------------------------------
-if(UNIX)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app/")
-else()
-  foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
-    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/app/")
-  endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
-endif()
-
-# Find includes in corresponding build directories
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-if(WIN32)
-  file(WRITE ${CMAKE_BINARY_DIR}/Sourcetrail.rc
-    "// Icon with lowest ID value placed first to ensure application icon\n"
-    "// remains consistent on all systems.\n"
-    "IDI_ICON1               ICON                    \"${CMAKE_BINARY_DIR}/Sourcetrail.ico\"\n"
-  )
-
-  add_executable(${APP_PROJECT_NAME} ${APP_FILES} ${CMAKE_BINARY_DIR}/Sourcetrail.rc)
-
-  # also show the console when running a release build.
-  set_target_properties(${APP_PROJECT_NAME} PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE /DEBUG:FASTLINK")
-  set_target_properties(${APP_PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
-  set_target_properties(${APP_PROJECT_NAME} PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE")
-  set_target_properties(${APP_PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
-  set_target_properties(${APP_PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE "/ENTRY:\"mainCRTStartup\" /SUBSYSTEM:CONSOLE /DEBUG")
-  set_target_properties(${APP_PROJECT_NAME} PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:CONSOLE")
-
-  # generate pdb for release build
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
-
-  set_property(
-    TARGET ${APP_PROJECT_NAME}
-      PROPERTY VS_DEBUGGER_WORKING_DIRECTORY
-      "${CMAKE_SOURCE_DIR}/bin/app")
-
-  string(REGEX REPLACE "/" "\\\\" BACKSLASHED_CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR})
-  string(REGEX REPLACE "/" "\\\\" BACKSLASHED_CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR})
-else()
-  add_executable(${APP_PROJECT_NAME} ${APP_FILES})
-endif()
-
-target_link_libraries(
-  ${APP_PROJECT_NAME}
-  PUBLIC
-    ${LIB_GUI_PROJECT_NAME}
-    $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
-    ${LIB_PROJECT_NAME}
-    Qt5::Widgets
-    Qt5::Network)
-
-target_include_directories(
-  ${APP_PROJECT_NAME}
-  PRIVATE
-    "${APP_INCLUDE_PATHS}"
-    "${LIB_INCLUDE_PATHS}"
-    "${LIB_GUI_INCLUDE_PATHS}"
-    "${CMAKE_BINARY_DIR}/src/lib_gui"
-    "${CMAKE_BINARY_DIR}/src/lib")
-
-target_include_directories(
-  ${APP_PROJECT_NAME}
-  SYSTEM PRIVATE
-  "${EXTERNAL_INCLUDE_PATHS}")
-
-# add platform specific libraries
-if(APPLE)
-  find_library(CORE_FOUNDATION CoreFoundation)
-  target_link_libraries(${APP_PROJECT_NAME} ${CORE_FOUNDATION})
-endif ()
-
-add_dependencies(${APP_PROJECT_NAME} ${APP_INDEXER_NAME})
-
+add_subdirectory(src/app)
 # macOS Bundle ----------------------------------------------------------------
 if(APPLE)
   set(MACOS_BUNDLE_NAME ${PROJECT_NAME})
@@ -563,7 +445,6 @@ if(APPLE)
     @ONLY
   )
 endif ()
-
 # Test ----------------------------------------------------------------------
 if(ENABLE_TEST)
   find_package(Catch2 CONFIG REQUIRED)
