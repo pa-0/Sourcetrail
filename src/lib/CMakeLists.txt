@@ -520,6 +520,7 @@ add_files(
   utility/messaging/type/MessageClearStatusView.h
   utility/messaging/type/MessageCloseProject.h
   utility/messaging/type/MessageFlushUpdates.h
+  utility/messaging/type/MessageLoadProject.cpp
   utility/messaging/type/MessageLoadProject.h
   utility/messaging/type/MessageLogFilterChanged.h
   utility/messaging/type/MessageProjectEdit.h
