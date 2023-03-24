@@ -1,19 +1,23 @@
-#ifndef SETTINGS_MIGRATION_DELETE_KEY_H
-#define SETTINGS_MIGRATION_DELETE_KEY_H
-
+#pragma once
+// STL
 #include <string>
-
+// internal
 #include "SettingsMigration.h"
 
-class SettingsMigrationDeleteKey: public SettingsMigration
-{
+class SettingsMigrationDeleteKey : public SettingsMigration {
 public:
-	SettingsMigrationDeleteKey(const std::string& key);
-	virtual ~SettingsMigrationDeleteKey();
-	virtual void apply(Settings* migratable) const;
+  explicit SettingsMigrationDeleteKey(std::string key);
+  /**
+   * @name Disable copy and move operators
+   * @{ */
+  SettingsMigrationDeleteKey(const SettingsMigrationDeleteKey&) = delete;
+  SettingsMigrationDeleteKey(SettingsMigrationDeleteKey&&) = delete;
+  SettingsMigrationDeleteKey& operator=(const SettingsMigrationDeleteKey&) = delete;
+  SettingsMigrationDeleteKey& operator=(SettingsMigrationDeleteKey&&) = delete;
+	/**  @} */
+  ~SettingsMigrationDeleteKey() override;
+  void apply(Settings* migratable) const override;
 
 private:
-	const std::string m_key;
+  const std::string m_key;
 };
-
-#endif	  // SETTINGS_MIGRATION_DELETE_KEY_H

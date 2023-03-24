@@ -13,6 +13,8 @@ class Settings {
 public:
   Settings(const Settings& other);
   Settings& operator=(const Settings& other);
+  Settings(Settings&& other) noexcept;
+  Settings& operator=(Settings&& other) noexcept;
   virtual ~Settings();
 
   bool load(const FilePath& filePath, bool readOnly = false);

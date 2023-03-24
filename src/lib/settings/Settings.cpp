@@ -1,8 +1,11 @@
 #include "Settings.h"
-
+// internal
 #include "TextAccess.h"
 #include "logging.h"
-#include "utility.h"
+
+Settings::Settings() {
+  clear();
+}
 
 Settings::Settings(const Settings& other)
     : m_config(other.m_config->createCopy()), m_filePath(other.m_filePath) {}
@@ -16,6 +19,9 @@ Settings& Settings::operator=(const Settings& other) {
   return *this;
 }
 
+Settings::Settings(Settings&& other) noexcept = default;
+Settings& Settings::operator=(Settings&& other) noexcept = default;
+
 Settings::~Settings() = default;
 
 bool Settings::load(const FilePath& filePath, bool readOnly) {
@@ -25,12 +31,12 @@ bool Settings::load(const FilePath& filePath, bool readOnly) {
     m_config = ConfigManager::createAndLoad(TextAccess::createFromFile(filePath));
     m_filePath = filePath;
     return true;
-  } else {
-    clear();
-    m_filePath = filePath;
-    LOG_WARNING(L"File for Settings not found: " + filePath.wstr());
-    return false;
   }
+
+  clear();
+  m_filePath = filePath;
+  LOG_WARNING(L"File for Settings not found: " + filePath.wstr());
+  return false;
 }
 
 bool Settings::loadFromString(const std::string& text, bool readOnly) {
@@ -47,7 +53,7 @@ bool Settings::save() {
   }
 
   bool success = false;
-  if(m_config.get() && !m_filePath.empty()) {
+  if(m_config && !m_filePath.empty()) {
     success = m_config->save(m_filePath.str());
   }
 
@@ -79,10 +85,6 @@ size_t Settings::getVersion() const {
 
 void Settings::setVersion(size_t version) {
   setValue<int>("version", static_cast<int>(version));
-}
-
-Settings::Settings() {
-  clear();
 }
 
 void Settings::setFilePath(const FilePath& filePath) {

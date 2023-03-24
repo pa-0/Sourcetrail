@@ -22,6 +22,14 @@ public:
 
   ProjectSettings();
   explicit ProjectSettings(const FilePath& projectFilePath);
+  /**
+   * @name Disable copy and move operators
+   * @{ */
+  ProjectSettings(const ProjectSettings&) = delete;
+  ProjectSettings(ProjectSettings&&) = delete;
+  ProjectSettings& operator=(const ProjectSettings&) = delete;
+  ProjectSettings& operator=(ProjectSettings&&) = delete;
+  /**  @} */
   ~ProjectSettings() override;
 
   bool equalsExceptNameAndLocation(const ProjectSettings& other) const;
