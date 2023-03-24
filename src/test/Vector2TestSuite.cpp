@@ -192,12 +192,15 @@ TEST_CASE("scalar multiplication operators")
 
 	REQUIRE(-84.0f == vec0.x);
 	REQUIRE(84.0f == vec0.y);
-
+#ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable : 4244)
+#endif
 	Vec2i vec2(-2, 2);
 	Vec2i vec3 = vec2 * 42.4f;
+#ifdef _WIN32
 #pragma warning(pop)
+#endif
 
 	REQUIRE(-84 == (int)vec3.x);
 	REQUIRE(84 == (int)vec3.y);
