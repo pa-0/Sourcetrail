@@ -20,6 +20,8 @@ target_include_directories(
     ${CMAKE_CURRENT_LIST_DIR}/helper
     ${LIB_INCLUDE_PATHS})
 
+# ========================================================
+
 set(
   test_names
   CommandlineTestSuite
@@ -39,6 +41,7 @@ set(
   MatrixDynamicBaseTestSuite
   MessageQueueTestSuite
   NetworkProtocolHelperTestSuite
+  ProjectSettingsTestSuite
   RefreshInfoGeneratorTestSuite
   SearchIndexTestSuite
   SettingsMigratorTestSuite
