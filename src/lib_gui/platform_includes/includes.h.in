@@ -1,10 +1,7 @@
-#ifndef INCLUDES_H
-#define INCLUDES_H
+#pragma once
 
 void setupPlatform(int argc, char *argv[]);
 void setupApp(int argc, char *argv[]);
 
 // platform specific include
 #include "@PLATFORM_INCLUDE@"
-
-#endif // INCLUDES_H

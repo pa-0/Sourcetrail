@@ -6,14 +6,13 @@
 // internal
 #include "AppPath.h"
 #include "FilePath.h"
-#include "FileSystem.h"
 #include "ResourcePaths.h"
 #include "UserPaths.h"
 #include "utilityQt.h"
-
+//
 #include "ApplicationSettings.h"
 
-void setupPlatform(int /*argc*/, [[maybe_unused]] char* argv[]) {
+inline void setupPlatform(int /*argc*/, [[maybe_unused]] char* argv[]) {
   std::string home = std::getenv("HOME");
   UserPaths::setUserDataDirectoryPath(FilePath(home + "/.config/sourcetrail/"));
 
@@ -32,14 +31,14 @@ void setupPlatform(int /*argc*/, [[maybe_unused]] char* argv[]) {
   }
 
   float scaleFactor = appSettings.getScreenScaleFactor();
-  if(scaleFactor > 0.0) {
+  if(scaleFactor > 0.0F) {
     QByteArray bytes;
     bytes.setNum(scaleFactor);
     qputenv("QT_SCALE_FACTOR", bytes);
   }
 }
 
-void setupApp(int argc, char* argv[]) {
+inline void setupApp([[maybe_unused]] int argc,[[maybe_unused]] char* argv[]) {
   FilePath appPath =
       FilePath(QCoreApplication::applicationDirPath().toStdWString() + L"/").getAbsolute();
   AppPath::setSharedDataDirectoryPath(appPath);
