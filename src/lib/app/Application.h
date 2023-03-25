@@ -3,6 +3,8 @@
 #include <memory>
 // internal
 #include "DialogView.h"
+#include "Project.h"
+// messages
 #include "MessageActivateWindow.h"
 #include "MessageCloseProject.h"
 #include "MessageIndexingFinished.h"
@@ -11,7 +13,6 @@
 #include "MessageRefresh.h"
 #include "MessageRefreshUI.h"
 #include "MessageSwitchColorScheme.h"
-#include "Project.h"
 
 class Bookmark;
 class IDECommunicationController;

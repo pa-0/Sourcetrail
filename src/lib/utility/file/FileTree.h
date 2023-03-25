@@ -1,26 +1,22 @@
-#ifndef FILE_TREE_H
-#define FILE_TREE_H
-
+#pragma once
+// STL
 #include <set>
 #include <string>
 #include <unordered_map>
-
+// internal
 #include "FilePath.h"
 
-class FileTree
-{
+class FileTree final {
 public:
-	FileTree(const FilePath& rootPath);
+  FileTree(const FilePath& rootPath);
 
-	FilePath getAbsoluteRootPathForRelativeFilePath(const FilePath& relativeFilePath);
-	std::vector<FilePath> getAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath);
+  FilePath getAbsoluteRootPathForRelativeFilePath(const FilePath& relativeFilePath);
+  std::vector<FilePath> getAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath);
 
 private:
-	std::vector<FilePath> doGetAbsoluteRootPathsForRelativeFilePath(
-		const FilePath& relativeFilePath, bool allowMultipleResults);
+  std::vector<FilePath> doGetAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath,
+                                                                  bool allowMultipleResults);
 
-	FilePath m_rootPath;
-	std::unordered_map<std::wstring, std::set<FilePath>> m_files;
+  FilePath m_rootPath;
+  std::unordered_map<std::wstring, std::set<FilePath>> m_files;
 };
-
-#endif	  // FILE_TREE_H

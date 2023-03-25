@@ -1,29 +1,25 @@
-#ifndef FILE_REGISTER_H
-#define FILE_REGISTER_H
-
+#pragma once
+// STL
 #include <set>
-
+// internal
 #include "FilePath.h"
 #include "UnorderedCache.h"
 
 class FilePathFilter;
 
-class FileRegister
-{
+class FileRegister {
 public:
-	FileRegister(
-		const FilePath& currentPath,
-		const std::set<FilePath>& indexedPaths,
-		const std::set<FilePathFilter>& excludeFilters);
-	virtual ~FileRegister();
+  FileRegister(const FilePath& currentPath,
+               const std::set<FilePath>& indexedPaths,
+               const std::set<FilePathFilter>& excludeFilters);
 
-	virtual bool hasFilePath(const FilePath& filePath) const;
+  virtual ~FileRegister();
+
+  virtual bool hasFilePath(const FilePath& filePath) const;
 
 private:
-	const FilePath& m_currentPath;
-	const std::set<FilePath> m_indexedPaths;
-	const std::set<FilePathFilter> m_excludeFilters;
-	mutable UnorderedCache<std::wstring, bool> m_hasFilePathCache;
+  const FilePath& m_currentPath;
+  const std::set<FilePath> m_indexedPaths;
+  const std::set<FilePathFilter> m_excludeFilters;
+  mutable UnorderedCache<std::wstring, bool> m_hasFilePathCache;
 };
-
-#endif	  // FILE_REGISTER_H

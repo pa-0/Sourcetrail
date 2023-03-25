@@ -1,30 +1,21 @@
 #pragma once
-
-#include "RefreshInfo.h"
-
+// internal
 #include "FilePath.h"
 #include "Message.h"
+#include "RefreshInfo.h"
 
 class MessageLoadProject : public Message<MessageLoadProject> {
 public:
-  MessageLoadProject(const FilePath& filePath,
-                     bool settingsChanged_ = false,
-                     RefreshMode refreshMode_ = REFRESH_NONE,
-                     bool shallowIndexingRequested_ = false)
-      : projectSettingsFilePath(filePath)
-      , settingsChanged(settingsChanged_)
-      , refreshMode(refreshMode_)
-      , shallowIndexingRequested(shallowIndexingRequested_) {}
+  explicit MessageLoadProject(FilePath filePath,
+                              bool settingsChanged_ = false,
+                              RefreshMode refreshMode_ = REFRESH_NONE,
+                              bool shallowIndexingRequested_ = false);
 
-  static const std::string getStaticType() {
+  static std::string getStaticType() {
     return "MessageLoadProject";
   }
 
-  void print(std::wostream& os) const override {
-    os << projectSettingsFilePath.wstr();
-    os << L", settingsChanged: " << std::boolalpha << settingsChanged;
-    os << L", refreshMode: " << refreshMode;
-  }
+  void print(std::wostream& ostream) const override;
 
   const FilePath projectSettingsFilePath;
   const bool settingsChanged;

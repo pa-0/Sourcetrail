@@ -1,60 +1,49 @@
 #include "FileManager.h"
-
-#include <set>
-
+// internal
 #include "FilePath.h"
 #include "FilePathFilter.h"
 #include "FileSystem.h"
 
-FileManager::FileManager() {}
+FileManager::FileManager() = default;
 
-FileManager::~FileManager() {}
+FileManager::~FileManager() = default;
 
-void FileManager::update(
-	const std::vector<FilePath>& sourcePaths,
-	const std::vector<FilePathFilter>& excludeFilters,
-	const std::vector<std::wstring>& sourceExtensions)
-{
-	m_sourcePaths = sourcePaths;
-	m_excludeFilters = excludeFilters;
-	m_sourceExtensions = sourceExtensions;
+void FileManager::update(const std::vector<FilePath>& sourcePaths,
+                         const std::vector<FilePathFilter>& excludeFilters,
+                         const std::vector<std::wstring>& sourceExtensions) {
+  m_sourcePaths = sourcePaths;
+  m_excludeFilters = excludeFilters;
+  m_sourceExtensions = sourceExtensions;
 
-	m_allSourceFilePaths.clear();
+  m_allSourceFilePaths.clear();
 
-	for (const FileInfo& fileInfo:
-		 FileSystem::getFileInfosFromPaths(m_sourcePaths, m_sourceExtensions))
-	{
-		const FilePath& filePath = fileInfo.path;
-		if (isExcluded(filePath))
-		{
-			continue;
-		}
+  for(const FileInfo& fileInfo :
+      FileSystem::getFileInfosFromPaths(m_sourcePaths, m_sourceExtensions)) {
+    const FilePath& filePath = fileInfo.path;
+    if(isExcluded(filePath)) {
+      continue;
+    }
 
-		m_allSourceFilePaths.insert(filePath);
-	}
+    m_allSourceFilePaths.insert(filePath);
+  }
 }
 
-std::vector<FilePath> FileManager::getSourcePaths() const
-{
-	return m_sourcePaths;
+std::vector<FilePath> FileManager::getSourcePaths() const {
+  return m_sourcePaths;
 }
 
-bool FileManager::hasSourceFilePath(const FilePath& filePath) const
-{
-	if (m_allSourceFilePaths.find(filePath) != m_allSourceFilePaths.end())
-	{
-		return true;
-	}
+bool FileManager::hasSourceFilePath(const FilePath& filePath) const {
+  if(m_allSourceFilePaths.find(filePath) != m_allSourceFilePaths.end()) {
+    return true;
+  }
 
-	return false;
+  return false;
 }
 
-std::set<FilePath> FileManager::getAllSourceFilePaths() const
-{
-	return m_allSourceFilePaths;
+std::set<FilePath> FileManager::getAllSourceFilePaths() const {
+  return m_allSourceFilePaths;
 }
 
-bool FileManager::isExcluded(const FilePath& filePath) const
-{
-	return FilePathFilter::areMatching(m_excludeFilters, filePath);
+bool FileManager::isExcluded(const FilePath& filePath) const {
+  return FilePathFilter::areMatching(m_excludeFilters, filePath);
 }

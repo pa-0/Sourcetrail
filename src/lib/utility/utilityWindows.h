@@ -1,13 +1,9 @@
-#ifndef UTILITY_WINDOWS_H
-#define UTILITY_WINDOWS_H
+#pragma once
 
-#ifdef WIN32
+#ifdef _WIN32
 
-namespace utility
-{
+namespace utility {
 unsigned long getLargestByteSizeOfAllocatableMemory();
 }
 
-#endif	  // WIN32
-
-#endif	  // UTILITY_WINDOWS_H
+#endif    // WIN32

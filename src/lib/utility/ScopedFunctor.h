@@ -1,17 +1,13 @@
-#ifndef SCOPED_FUNCTOR_H
-#define SCOPED_FUNCTOR_H
-
+#pragma once
+// STL
 #include <functional>
 
-class ScopedFunctor
-{
+class ScopedFunctor {
 public:
-	ScopedFunctor();
-	ScopedFunctor(std::function<void(void)> onDestroy);
-	~ScopedFunctor();
+  ScopedFunctor();
+  ScopedFunctor(std::function<void(void)> onDestroy);
+  ~ScopedFunctor();
 
 private:
-	std::function<void(void)> m_onDestroy;
+  std::function<void(void)> m_onDestroy;
 };
-
-#endif	  // SCOPED_FUNCTOR_H
