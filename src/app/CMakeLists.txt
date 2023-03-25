@@ -42,6 +42,7 @@ endif()
 target_link_libraries(
   Sourcetrail
   PUBLIC
+    Sourcetrail::core
     ${LIB_GUI_PROJECT_NAME}
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
     ${LIB_PROJECT_NAME}

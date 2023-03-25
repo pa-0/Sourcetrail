@@ -32,6 +32,7 @@ target_link_libraries(
   PRIVATE
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
 		Qt5::Core
+    Sourcetrail::core
     Sourcetrail::lib
     Sourcetrail::lib_gui)
 

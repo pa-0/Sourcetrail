@@ -244,6 +244,8 @@ set_source_files_properties(${EXTERNAL_FILES} PROPERTIES COMPILE_FLAGS "-w")
 
 # Lib Utility ------------------------------------------------------------------
 add_subdirectory(src/lib_utility)
+# core ------------------------------------------------------------------
+add_subdirectory(src/core)
 # Lib Cxx ----------------------------------------------------------------------
 if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_subdirectory(src/lib_cxx)
@@ -276,7 +278,9 @@ target_link_libraries(
   ${LIB_PROJECT_NAME}
   PRIVATE
     Boost::program_options
+    Sourcetrail::core
     Sourcetrail::lib_utility
+    Sourcetrail::scheduling
     ${LIB_GUI_PROJECT_NAME}
     Boost::system
     Boost::filesystem
@@ -319,6 +323,7 @@ target_link_libraries(
     project_warnings
     Boost::system
     Qt5::Core
+    Sourcetrail::core
     Sourcetrail::lib_utility
     ${LIB_PROJECT_NAME})
 
@@ -347,6 +352,8 @@ target_link_libraries(
   ${LIB_GUI_PROJECT_NAME}
   PRIVATE
     fmt::fmt
+    Sourcetrail::core
+    Sourcetrail::scheduling
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
     Sourcetrail::lib_gui::utility)
 

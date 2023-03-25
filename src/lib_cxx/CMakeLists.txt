@@ -174,7 +174,9 @@ endif()
 target_link_libraries(
   Sourcetrail_lib_cxx
   PRIVATE
+    Sourcetrail::core
     Sourcetrail::lib_utility
+    Sourcetrail::scheduling
     ${CLANG_LIBRARIES}
     ${REQ_LLVM_LIBS}
     TinyXML::TinyXML

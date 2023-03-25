@@ -2,7 +2,7 @@
 include(Catch)
 
 add_library(catch_main OBJECT test_main.cpp)
-target_link_libraries(catch_main PUBLIC catch2::catch2)
+target_link_libraries(catch_main PUBLIC catch2::catch2 Sourcetrail::core)
 target_include_directories(
   catch_main
   PUBLIC
@@ -16,6 +16,11 @@ target_include_directories(
 # ========================================================
 
 add_library(testHelper helper/TestFileRegister.cpp)
+target_link_libraries(
+  testHelper
+    PUBLIC
+    Sourcetrail::core
+    Sourcetrail::scheduling)
 target_include_directories(
   testHelper
   PUBLIC
@@ -78,7 +83,7 @@ foreach(test_name IN LISTS test_lib_names)
       ${LIB_GUI_PROJECT_NAME}
       ${LIB_PROJECT_NAME}
       ${LIB_GUI_PROJECT_NAME}
-      $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_PROJECT_NAME}>)
+      $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>)
 
   target_include_directories(
     ${test_name}
@@ -89,8 +94,7 @@ foreach(test_name IN LISTS test_lib_names)
       ${LIB_GUI_INCLUDE_PATHS}
       ${EXTERNAL_INCLUDE_PATHS}
       ${Boost_INCLUDE_DIRS}
-      ${CMAKE_BINARY_DIR}/src/lib
-      $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:${LIB_CXX_INCLUDE_PATHS}>)
+      ${CMAKE_BINARY_DIR}/src/lib)
 
   # automatically discover ${test_name} that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
   # to whatever you want, or use different for different binaries
@@ -120,10 +124,11 @@ if(${BUILD_CXX_LANGUAGE_PACKAGE})
     target_link_libraries(
       ${test_name}
       PUBLIC
-      testHelper
-      catch2::catch2
-      ${LIB_CXX_PROJECT_NAME}
-      ${LIB_PROJECT_NAME})
+        testHelper
+        catch2::catch2
+        Sourcetrail::lib
+        Sourcetrail::lib_cxx
+        Sourcetrail::lib_utility)
 
     target_include_directories(
       ${test_name}

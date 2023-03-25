@@ -391,41 +391,10 @@ add_files(
   utility/commandline/commands/CommandlineCommandIndex.cpp
   utility/commandline/commands/CommandlineCommandIndex.h
 
-  utility/file/FileInfo.cpp
-  utility/file/FileInfo.h
-  utility/file/FileManager.cpp
-  utility/file/FileManager.h
-  utility/file/FilePath.cpp
-  utility/file/FilePath.h
-  utility/file/FilePathFilter.cpp
-  utility/file/FilePathFilter.h
-  utility/file/FileRegister.cpp
-  utility/file/FileRegister.h
-  utility/file/FileSystem.cpp
-  utility/file/FileSystem.h
-  utility/file/FileTree.cpp
-  utility/file/FileTree.h
-  utility/file/utilityFile.cpp
-  utility/file/utilityFile.h
-
   utility/interprocess/SharedMemory.cpp
   utility/interprocess/SharedMemory.h
   utility/interprocess/SharedMemoryGarbageCollector.cpp
   utility/interprocess/SharedMemoryGarbageCollector.h
-
-  utility/logging/ConsoleLogger.cpp
-  utility/logging/ConsoleLogger.h
-  utility/logging/FileLogger.cpp
-  utility/logging/FileLogger.h
-  utility/logging/Logger.cpp
-  utility/logging/Logger.h
-  utility/logging/logging.h
-  utility/logging/LogManager.cpp
-  utility/logging/LogManager.h
-  utility/logging/LogManagerImplementation.cpp
-  utility/logging/LogManagerImplementation.h
-  utility/logging/LogMessage.h
-  utility/logging/LogMessage.cpp
 
   utility/math/Color.h
   utility/math/MatrixBase.h
@@ -554,69 +523,6 @@ add_files(
 
   utility/migration/Migration.h
   utility/migration/Migrator.h
-
-  utility/scheduling/Blackboard.cpp
-  utility/scheduling/Blackboard.h
-  utility/scheduling/Task.cpp
-  utility/scheduling/Task.h
-  utility/scheduling/TaskDecorator.cpp
-  utility/scheduling/TaskDecorator.h
-  utility/scheduling/TaskDecoratorRepeat.cpp
-  utility/scheduling/TaskDecoratorRepeat.h
-  utility/scheduling/TaskDecoratorDelay.cpp
-  utility/scheduling/TaskDecoratorDelay.h
-  utility/scheduling/TaskFindKeyOnBlackboard.cpp
-  utility/scheduling/TaskFindKeyOnBlackboard.h
-  utility/scheduling/TaskGroup.cpp
-  utility/scheduling/TaskGroup.h
-  utility/scheduling/TaskGroupParallel.cpp
-  utility/scheduling/TaskGroupParallel.h
-  utility/scheduling/TaskGroupSelector.cpp
-  utility/scheduling/TaskGroupSelector.h
-  utility/scheduling/TaskGroupSequence.cpp
-  utility/scheduling/TaskGroupSequence.h
-  utility/scheduling/TaskLambda.cpp
-  utility/scheduling/TaskLambda.h
-  utility/scheduling/TaskManager.cpp
-  utility/scheduling/TaskManager.h
-  utility/scheduling/TaskReturnSuccessIf.h
-  utility/scheduling/TaskRunner.cpp
-  utility/scheduling/TaskRunner.h
-  utility/scheduling/TaskScheduler.cpp
-  utility/scheduling/TaskScheduler.h
-  utility/scheduling/TaskSetValue.h
-
-  utility/text/TextAccess.cpp
-  utility/text/TextAccess.h
-
-  utility/ApplicationArchitectureType.h
-  utility/ConfigManager.cpp
-  utility/ConfigManager.h
-  utility/LowMemoryStringMap.h
-  utility/Optional.h
-  utility/OrderedCache.h
-  utility/OsType.h
-  utility/Property.h
-  utility/ScopedFunctor.cpp
-  utility/ScopedFunctor.h
-  utility/ScopedSwitcher.h
-  utility/SingleValueCache.h
-  utility/TimeStamp.cpp
-  utility/TimeStamp.h
-  utility/tracing.cpp
-  utility/tracing.h
-  utility/Tree.h
-  utility/types.h
-  utility/UnorderedCache.h
-  utility/utility.cpp
-  utility/utility.h
-  utility/utilityLibrary.h
-  utility/utilityUuid.cpp
-  utility/utilityUuid.h
-  utility/utilityXml.cpp
-  utility/utilityXml.h
-  utility/Version.cpp
-  utility/Version.h
 )
 
 if(WIN32)
