@@ -14,7 +14,6 @@ target_include_directories(
     ${CMAKE_BINARY_DIR}/src/lib)
 
 # ========================================================
-
 add_library(testHelper helper/TestFileRegister.cpp)
 target_link_libraries(
   testHelper
@@ -28,7 +27,6 @@ target_include_directories(
     ${LIB_INCLUDE_PATHS})
 
 # ========================================================
-
 set(
   test_lib_names
   CommandlineTestSuite
@@ -108,9 +106,34 @@ foreach(test_name IN LISTS test_lib_names)
     OUTPUT_SUFFIX .xml
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
 endforeach()
-
 # ========================================================
+set(
+  test_core_names
+  ConsoleLoggerTestSuite)
 
+foreach(test_name IN LISTS test_core_names)
+  add_executable(${test_name} ${test_name}.cpp)
+
+  target_link_libraries(
+    ${test_name}
+    PUBLIC
+      testHelper
+      catch2::catch2
+      Sourcetrail::core)
+
+  # automatically discover ${test_name} that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
+  # to whatever you want, or use different for different binaries
+  catch_discover_tests(
+    ${test_name}
+    TEST_PREFIX
+    "unittests."
+    REPORTER XML
+    OUTPUT_DIR .
+    OUTPUT_PREFIX "unittests."
+    OUTPUT_SUFFIX .xml
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
+endforeach()
+# ========================================================
 if(${BUILD_CXX_LANGUAGE_PACKAGE})
   set(
     test_cxx_names
@@ -155,9 +178,7 @@ if(${BUILD_CXX_LANGUAGE_PACKAGE})
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
   endforeach()
 endif()
-
 # ========================================================
-
 execute_process(
   COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/test"
 )
