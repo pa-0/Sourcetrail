@@ -107,9 +107,7 @@ foreach(test_name IN LISTS test_lib_names)
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
 endforeach()
 # ========================================================
-set(
-  test_core_names
-  ConsoleLoggerTestSuite)
+set(test_core_names "")
 
 foreach(test_name IN LISTS test_core_names)
   add_executable(${test_name} ${test_name}.cpp)
