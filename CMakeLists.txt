@@ -131,7 +131,6 @@ set(CMAKE_C_STANDARD              11)
 
 find_package(SQLite3 CONFIG REQUIRED)
 find_package(TinyXML CONFIG REQUIRED)
-find_package(Tracy   CONFIG REQUIRED)
 find_package(fmt     CONFIG REQUIRED)
 
 # Boost ------------------------------------------------------------------------
@@ -288,11 +287,8 @@ target_link_libraries(
     fmt::fmt
     TinyXML::TinyXML
     SQLite::SQLite3
-    Tracy::TracyClient
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
     $<$<PLATFORM_ID:Windows>:bcrypt>)
-
-target_compile_definitions(${LIB_PROJECT_NAME} PRIVATE TRACY_ENABLE=1)
 
 #configure language package defines
 configure_file("${CMAKE_SOURCE_DIR}/cmake/language_packages.h.in"
