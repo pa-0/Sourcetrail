@@ -1,6 +1,4 @@
 #include "MessageLoadProject.h"
-// tracy
-#include "Tracy/tracy/Tracy.hpp"
 
 MessageLoadProject::MessageLoadProject(FilePath filePath,
                                        bool settingsChanged_,
@@ -9,9 +7,7 @@ MessageLoadProject::MessageLoadProject(FilePath filePath,
     : projectSettingsFilePath(std::move(filePath))
     , settingsChanged(settingsChanged_)
     , refreshMode(refreshMode_)
-    , shallowIndexingRequested(shallowIndexingRequested_) {
-  ZoneScopedS(30); // NOLINT(hicpp-no-array-decay,cppcoreguidelines-pro-bounds-array-to-pointer-decay)
-}
+    , shallowIndexingRequested(shallowIndexingRequested_) {}
 
 void MessageLoadProject::print(std::wostream& ostream) const {
   ostream << projectSettingsFilePath.wstr();

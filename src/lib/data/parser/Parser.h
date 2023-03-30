@@ -1,18 +1,14 @@
-#ifndef PARSER_H
-#define PARSER_H
-
+#pragma once
+// STL
 #include <memory>
 
 class ParserClient;
 
-class Parser
-{
+class Parser {
 public:
-	Parser(std::shared_ptr<ParserClient> client);
-	virtual ~Parser() = default;
+  Parser(std::shared_ptr<ParserClient> client);
+  virtual ~Parser();
 
 protected:
-	std::shared_ptr<ParserClient> m_client;
+  std::shared_ptr<ParserClient> m_client;
 };
-
-#endif	  // PARSER_H
