@@ -13,14 +13,14 @@ class IndexerCommandCxx;
 class TaskParseCxx;
 class TextAccess;
 
-namespace clang { namespace tooling {
+namespace clang::tooling {
 class CompilationDatabase;
 class FixedCompilationDatabase;
-}}    // namespace clang::tooling
+}    // namespace clang::tooling
 
 struct IndexerStateInfo;
 
-class CxxParser : public Parser {
+class CxxParser final : public Parser {
 public:
   static std::vector<std::string> getCommandlineArgumentsEssential(
       const std::vector<std::wstring>& compilerFlags);
@@ -31,15 +31,16 @@ public:
             std::shared_ptr<IndexerStateInfo> indexerStateInfo);
 
   void buildIndex(std::shared_ptr<IndexerCommandCxx> indexerCommand);
+
   void buildIndex(const std::wstring& fileName,
                   std::shared_ptr<TextAccess> fileContent,
                   std::vector<std::wstring> compilerFlags = {});
 
 private:
-  void runTool(clang::tooling::CompilationDatabase* compilationDatabase,
+  void runTool(clang::tooling::CompilationDatabase* pCompilationDatabase,
                const FilePath& sourceFilePath);
 
-  std::shared_ptr<CxxDiagnosticConsumer> getDiagnostics(
+  [[nodiscard]] std::shared_ptr<CxxDiagnosticConsumer> getDiagnostics(
       const FilePath& sourceFilePath,
       std::shared_ptr<CanonicalFilePathCache> canonicalFilePathCache,
       bool logErrors) const;

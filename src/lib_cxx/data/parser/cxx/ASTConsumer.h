@@ -1,6 +1,5 @@
-#ifndef AST_CONSUMER_H
-#define AST_CONSUMER_H
-
+#pragma once
+// clang
 #include <clang/AST/ASTConsumer.h>
 #include <clang/AST/ASTContext.h>
 
@@ -9,23 +8,19 @@ class CxxAstVisitor;
 class ParserClient;
 struct IndexerStateInfo;
 
-class ASTConsumer: public clang::ASTConsumer
-{
+class ASTConsumer : public clang::ASTConsumer {
 public:
-	explicit ASTConsumer(
-		clang::ASTContext* context,
-		clang::Preprocessor* preprocessor,
-		std::shared_ptr<ParserClient> client,
-		std::shared_ptr<CanonicalFilePathCache> canonicalFilePathCache,
-		std::shared_ptr<IndexerStateInfo> indexerStateInfo);
+  explicit ASTConsumer(clang::ASTContext* context,
+                       clang::Preprocessor* preprocessor,
+                       std::shared_ptr<ParserClient> client,
+                       std::shared_ptr<CanonicalFilePathCache> canonicalFilePathCache,
+                       std::shared_ptr<IndexerStateInfo> indexerStateInfo);
 
-	virtual ~ASTConsumer() = default;
+  ~ASTConsumer() override;
 
-	virtual void HandleTranslationUnit(clang::ASTContext& context) override;
+  void HandleTranslationUnit(clang::ASTContext& context) override;
 
 private:
-	std::shared_ptr<CxxAstVisitor> m_visitor;
-	std::shared_ptr<IndexerStateInfo> m_indexerStateInfo;
+  std::shared_ptr<CxxAstVisitor> m_visitor;
+  std::shared_ptr<IndexerStateInfo> m_indexerStateInfo;
 };
-
-#endif	  // AST_CONSUMER_H
