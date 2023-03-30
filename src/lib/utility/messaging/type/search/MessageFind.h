@@ -1,23 +1,17 @@
-#ifndef MESSAGE_FIND_H
-#define MESSAGE_FIND_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 
-class MessageFind: public Message<MessageFind>
-{
+class MessageFind final : public Message<MessageFind> {
 public:
-	MessageFind(bool fulltext = false): findFulltext(fulltext)
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageFind(bool fulltext = false) : findFulltext(fulltext) {
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageFind";
-	}
+  static const std::string getStaticType() {
+    return "MessageFind";
+  }
 
-	bool findFulltext;
+  bool findFulltext;
 };
-
-#endif	  // MESSAGE_FIND_H

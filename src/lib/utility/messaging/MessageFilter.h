@@ -1,14 +1,10 @@
-#ifndef MESSAGE_FILTER_H
-#define MESSAGE_FILTER_H
-
+#pragma once
+// internal
 #include "MessageQueue.h"
 
-class MessageFilter
-{
+class MessageFilter {
 public:
-	virtual ~MessageFilter() {}
+  virtual ~MessageFilter() = default;
 
-	virtual void filter(MessageQueue::MessageBufferType* messageBuffer) = 0;
+  virtual void filter(MessageQueue::MessageBufferType* pMessageBuffer) = 0;
 };
-
-#endif	  // MESSAGE_FILTER_H

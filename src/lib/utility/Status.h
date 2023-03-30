@@ -10,8 +10,8 @@ enum StatusType {
 using StatusFilter = int;
 
 struct Status {
-  Status(std::wstring message, bool isError = false)
-      : message(message), type(isError ? StatusType::STATUS_ERROR : StatusType::STATUS_INFO) {}
+  Status(std::wstring message_, bool isError_ = false)
+      : message(message_), type(isError_ ? StatusType::STATUS_ERROR : StatusType::STATUS_INFO) {}
 
   std::wstring message;
   StatusType type;

@@ -1,9 +1,9 @@
 #pragma once
-
+// internal
 #include "Message.h"
 #include "TabId.h"
 
-class MessageScrollCode : public Message<MessageScrollCode> {
+class MessageScrollCode final : public Message<MessageScrollCode> {
 public:
   MessageScrollCode(int value_, bool inListMode_) : value(value_), inListMode(inListMode_) {
     setIsLogged(false);

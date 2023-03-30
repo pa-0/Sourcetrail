@@ -4,7 +4,7 @@
 //
 #include "ErrorCountInfo.h"
 
-class MessageErrorCountUpdate : public Message<MessageErrorCountUpdate> {
+class MessageErrorCountUpdate final : public Message<MessageErrorCountUpdate> {
 public:
   static const std::string getStaticType() {
     return "MessageErrorCountUpdate";

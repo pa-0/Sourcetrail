@@ -5,7 +5,7 @@
 #include "Message.h"
 #include "TabId.h"
 
-class MessageChangeFileView : public Message<MessageChangeFileView> {
+class MessageChangeFileView final : public Message<MessageChangeFileView> {
 public:
   enum FileState { FILE_MINIMIZED, FILE_SNIPPETS, FILE_MAXIMIZED };
 
@@ -28,7 +28,7 @@ public:
     return "MessageChangeFileView";
   }
 
-  virtual void print(std::wostream& ostream) const {
+  void print(std::wostream& ostream) const override {
     ostream << filePath.wstr();
 
     switch(state) {

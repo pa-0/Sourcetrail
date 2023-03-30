@@ -1,35 +1,23 @@
-#ifndef MESSAGE_LISTENER_H
-#define MESSAGE_LISTENER_H
-
+#pragma once
+// STL
 #include <string>
-
+// internal
 #include "MessageBase.h"
 #include "MessageListenerBase.h"
-#include "MessageQueue.h"
 
 template <typename MessageType>
-class MessageListener: public MessageListenerBase
-{
+class MessageListener : public MessageListenerBase {
 public:
-	MessageListener() {}
+  MessageListener() = default;
 
 private:
-	virtual std::string doGetType() const
-	{
-		return MessageType::getStaticType();
-	}
+  std::string doGetType() const override {
+    return MessageType::getStaticType();
+  }
 
-	virtual void doHandleMessageBase(MessageBase* message)
-	{
-		// if (message->isLogged())
-		// {
-		// 	LOG_INFO_STREAM_BARE(<< "handle " << message->str());
-		// }
+  void doHandleMessageBase(MessageBase* pMessage) override {
+    handleMessage(dynamic_cast<MessageType*>(pMessage));
+  }
 
-		handleMessage(dynamic_cast<MessageType*>(message));
-	}
-
-	virtual void handleMessage(MessageType* message) = 0;
+  virtual void handleMessage(MessageType* pMessage) = 0;
 };
-
-#endif	  // MESSAGE_LISTENER_H

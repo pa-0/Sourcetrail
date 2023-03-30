@@ -1,22 +1,16 @@
-#ifndef MESSAGE_IDE_CREATE_CDB_H
-#define MESSAGE_IDE_CREATE_CDB_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageIDECreateCDB: public Message<MessageIDECreateCDB>
-{
+class MessageIDECreateCDB final : public Message<MessageIDECreateCDB> {
 public:
-	MessageIDECreateCDB() {}
+  MessageIDECreateCDB() = default;
 
-	static const std::string getStaticType()
-	{
-		return "MessageIDECreateCDB";
-	}
+  static const std::string getStaticType() {
+    return "MessageIDECreateCDB";
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		os << L"Create CDB from current solution";
-	}
+  void print(std::wostream& ostream) const override {
+    ostream << L"Create CDB from current solution";
+  }
 };
-
-#endif	  // MESSAGE_IDE_CREATE_CDB_H

@@ -6,7 +6,7 @@
 #include "SearchMatch.h"
 #include "TabId.h"
 
-class MessageSearch : public Message<MessageSearch> {
+class MessageSearch final : public Message<MessageSearch> {
 public:
   static const std::string getStaticType() {
     return "MessageSearch";

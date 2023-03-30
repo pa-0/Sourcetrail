@@ -4,7 +4,7 @@
 #include "TabId.h"
 #include "types.h"
 
-class MessageGraphNodeExpand : public Message<MessageGraphNodeExpand> {
+class MessageGraphNodeExpand final : public Message<MessageGraphNodeExpand> {
 public:
   MessageGraphNodeExpand(Id tokenId_, bool expand_, bool ignoreIfNotReplayed_ = false)
       : tokenId(tokenId_), expand(expand_), ignoreIfNotReplayed(ignoreIfNotReplayed_) {

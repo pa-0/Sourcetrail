@@ -4,7 +4,7 @@
 #include "NodeTypeSet.h"
 #include "TabId.h"
 
-class MessageSearchAutocomplete : public Message<MessageSearchAutocomplete> {
+class MessageSearchAutocomplete final : public Message<MessageSearchAutocomplete> {
 public:
   MessageSearchAutocomplete(std::wstring query_, NodeTypeSet acceptedNodeTypes_)
       : query(std::move(query_)), acceptedNodeTypes(acceptedNodeTypes_) {

@@ -4,7 +4,7 @@
 #include "TabId.h"
 #include "types.h"
 
-class MessageActivateLocalSymbols : public Message<MessageActivateLocalSymbols> {
+class MessageActivateLocalSymbols final : public Message<MessageActivateLocalSymbols> {
 public:
   MessageActivateLocalSymbols(const std::vector<Id>& symbolIds_) : symbolIds(symbolIds_) {
     setSchedulerId(TabId::currentTab());

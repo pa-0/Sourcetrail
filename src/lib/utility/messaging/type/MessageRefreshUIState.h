@@ -1,19 +1,14 @@
-#ifndef MESSAGE_REFRESH_UI_STATE_H
-#define MESSAGE_REFRESH_UI_STATE_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageRefreshUIState: public Message<MessageRefreshUIState>
-{
+class MessageRefreshUIState final : public Message<MessageRefreshUIState> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageRefreshUIState";
-	}
+  static const std::string getStaticType() {
+    return "MessageRefreshUIState";
+  }
 
-	MessageRefreshUIState(bool isAfterIndexing): isAfterIndexing(isAfterIndexing) {}
+  MessageRefreshUIState(bool isAfterIndexing_) : isAfterIndexing(isAfterIndexing_) {}
 
-	bool isAfterIndexing = false;
+  bool isAfterIndexing = false;
 };
-
-#endif	  // MESSAGE_REFRESH_UI_STATE_H

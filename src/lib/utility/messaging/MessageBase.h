@@ -1,131 +1,110 @@
-#ifndef MESSAGE_BASE_H
-#define MESSAGE_BASE_H
-
+#pragma once
+// STL
 #include <ostream>
 #include <sstream>
-
+// internal
 #include "types.h"
 #include "utilityString.h"
 
-class MessageBase
-{
+class MessageBase {
 public:
-	MessageBase()
-		: m_id(s_nextId++)
-		, m_schedulerId(0)
-		, m_isParallel(false)
-		, m_isReplayed(false)
-		, m_sendAsTask(true)
-		, m_keepContent(false)
-		, m_isLast(true)
-		, m_isLogged(true)
-	{
-	}
+  MessageBase()
+      : m_id(s_nextId++)
+      , m_schedulerId(0)
+      , m_isParallel(false)
+      , m_isReplayed(false)
+      , m_sendAsTask(true)
+      , m_keepContent(false)
+      , m_isLast(true)
+      , m_isLogged(true) {}
 
-	virtual ~MessageBase() = default;
+  virtual ~MessageBase();
 
-	virtual std::string getType() const = 0;
-	virtual void dispatch() = 0;
+  virtual std::string getType() const = 0;
 
-	Id getId() const
-	{
-		return m_id;
-	}
+  virtual void dispatch() = 0;
 
-	Id getSchedulerId() const
-	{
-		return m_schedulerId;
-	}
+  Id getId() const {
+    return m_id;
+  }
 
-	void setSchedulerId(Id schedulerId)
-	{
-		m_schedulerId = schedulerId;
-	}
+  Id getSchedulerId() const {
+    return m_schedulerId;
+  }
 
-	bool sendAsTask() const
-	{
-		return m_sendAsTask;
-	}
+  void setSchedulerId(Id schedulerId) {
+    m_schedulerId = schedulerId;
+  }
 
-	void setSendAsTask(bool sendAsTask)
-	{
-		m_sendAsTask = sendAsTask;
-	}
+  bool sendAsTask() const {
+    return m_sendAsTask;
+  }
 
-	bool isParallel() const
-	{
-		return m_isParallel;
-	}
+  void setSendAsTask(bool sendAsTask) {
+    m_sendAsTask = sendAsTask;
+  }
 
-	void setIsParallel(bool isParallel)
-	{
-		m_isParallel = isParallel;
-	}
+  bool isParallel() const {
+    return m_isParallel;
+  }
 
-	bool isReplayed() const
-	{
-		return m_isReplayed;
-	}
+  void setIsParallel(bool isParallel) {
+    m_isParallel = isParallel;
+  }
 
-	void setIsReplayed(bool isReplayed)
-	{
-		m_isReplayed = isReplayed;
-	}
+  bool isReplayed() const {
+    return m_isReplayed;
+  }
 
-	bool isLast() const
-	{
-		return m_isLast;
-	}
+  void setIsReplayed(bool isReplayed) {
+    m_isReplayed = isReplayed;
+  }
 
-	void setIsLast(bool isLast)
-	{
-		m_isLast = isLast;
-	}
+  bool isLast() const {
+    return m_isLast;
+  }
 
-	bool isLogged() const
-	{
-		return m_isLogged;
-	}
+  void setIsLast(bool isLast) {
+    m_isLast = isLast;
+  }
 
-	void setIsLogged(bool isLogged)
-	{
-		m_isLogged = isLogged;
-	}
+  bool isLogged() const {
+    return m_isLogged;
+  }
 
-	void setKeepContent(bool keepContent)
-	{
-		m_keepContent = keepContent;
-	}
+  void setIsLogged(bool isLogged) {
+    m_isLogged = isLogged;
+  }
 
-	bool keepContent() const
-	{
-		return m_keepContent;
-	}
+  void setKeepContent(bool keepContent) {
+    m_keepContent = keepContent;
+  }
 
-	virtual void print(std::wostream& os) const = 0;
+  bool keepContent() const {
+    return m_keepContent;
+  }
 
-	std::wstring str() const
-	{
-		std::wstringstream ss;
-		ss << utility::decodeFromUtf8(getType()) << L" ";
-		print(ss);
-		return ss.str();
-	}
+  virtual void print(std::wostream& os) const = 0;
+
+  std::wstring str() const {
+    std::wstringstream ss;
+    ss << utility::decodeFromUtf8(getType()) << L" ";
+    print(ss);
+    return ss.str();
+  }
 
 private:
-	static Id s_nextId;
+  static Id s_nextId;
 
-	Id m_id;
-	Id m_schedulerId;
+  Id m_id;
+  Id m_schedulerId;
 
-	bool m_isParallel;
-	bool m_isReplayed;
+  bool m_isParallel;
+  bool m_isReplayed;
 
-	bool m_sendAsTask;
-	bool m_keepContent;
+  bool m_sendAsTask;
+  bool m_keepContent;
 
-	bool m_isLast;
-	bool m_isLogged;
+  bool m_isLast;
+  bool m_isLogged;
 };
-
-#endif	  // MESSAGE_BASE_H

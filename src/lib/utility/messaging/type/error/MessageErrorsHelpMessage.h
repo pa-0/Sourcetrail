@@ -2,7 +2,7 @@
 // internal
 #include "Message.h"
 
-class MessageErrorsHelpMessage : public Message<MessageErrorsHelpMessage> {
+class MessageErrorsHelpMessage final : public Message<MessageErrorsHelpMessage> {
 public:
   static const std::string getStaticType() {
     return "MessageErrorsHelpMessage";

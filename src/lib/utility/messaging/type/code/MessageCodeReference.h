@@ -1,9 +1,9 @@
 #pragma once
-
+// internal
 #include "Message.h"
 #include "TabId.h"
 
-class MessageCodeReference : public Message<MessageCodeReference> {
+class MessageCodeReference final : public Message<MessageCodeReference> {
 public:
   enum ReferenceType { REFERENCE_PREVIOUS, REFERENCE_NEXT };
 
@@ -16,7 +16,7 @@ public:
     return "MessageCodeReference";
   }
 
-  virtual void print(std::wostream& ostream) const {
+  void print(std::wostream& ostream) const override {
     if(type == REFERENCE_PREVIOUS) {
       ostream << L"previous";
     } else {

@@ -2,7 +2,7 @@
 // interal
 #include "Message.h"
 
-class MessageIndexingStatus : public Message<MessageIndexingStatus> {
+class MessageIndexingStatus final : public Message<MessageIndexingStatus> {
 public:
   static const std::string getStaticType() {
     return "MessageIndexingStatus";

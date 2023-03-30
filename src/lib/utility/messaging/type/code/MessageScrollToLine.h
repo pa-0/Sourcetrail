@@ -4,7 +4,7 @@
 #include "Message.h"
 #include "TabId.h"
 
-class MessageScrollToLine : public Message<MessageScrollToLine> {
+class MessageScrollToLine final : public Message<MessageScrollToLine> {
 public:
   MessageScrollToLine(const FilePath& filePath_, size_t line_) : filePath(filePath_), line(line_) {
     setSchedulerId(TabId::currentTab());

@@ -6,7 +6,7 @@
 #include "TabId.h"
 #include "types.h"
 
-class MessageActivateTrailEdge : public Message<MessageActivateTrailEdge> {
+class MessageActivateTrailEdge final : public Message<MessageActivateTrailEdge> {
 public:
   MessageActivateTrailEdge(const std::vector<Id>& edgeIds_,
                            Edge::EdgeType type_,

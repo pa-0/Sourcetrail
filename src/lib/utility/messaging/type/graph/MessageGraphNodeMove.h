@@ -5,7 +5,7 @@
 #include "Vector2.h"
 #include "types.h"
 
-class MessageGraphNodeMove : public Message<MessageGraphNodeMove> {
+class MessageGraphNodeMove final : public Message<MessageGraphNodeMove> {
 public:
   MessageGraphNodeMove(Id tokenId_, const Vec2i& delta_) : tokenId(tokenId_), delta(delta_) {
     setSchedulerId(TabId::currentTab());

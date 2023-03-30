@@ -3,7 +3,7 @@
 #include "Message.h"
 #include "TabId.h"
 
-class MessageFocusView : public Message<MessageFocusView> {
+class MessageFocusView final : public Message<MessageFocusView> {
 public:
   enum class ViewType { GRAPH, CODE, TOGGLE };
 
@@ -16,16 +16,16 @@ public:
     return "MessageFocusView";
   }
 
-  void print(std::wostream& os) const override {
+  void print(std::wostream& ostream) const override {
     switch(type) {
     case ViewType::GRAPH:
-      os << "graph";
+      ostream << "graph";
       break;
     case ViewType::CODE:
-      os << "code";
+      ostream << "code";
       break;
     case ViewType::TOGGLE:
-      os << "toggle";
+      ostream << "toggle";
       break;
     }
   }

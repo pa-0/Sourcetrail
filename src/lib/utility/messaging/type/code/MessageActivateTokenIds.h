@@ -1,32 +1,24 @@
-#ifndef MESSAGE_ACTIVATE_TOKEN_IDS_H
-#define MESSAGE_ACTIVATE_TOKEN_IDS_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 #include "types.h"
 
-class MessageActivateTokenIds: public Message<MessageActivateTokenIds>
-{
+class MessageActivateTokenIds final : public Message<MessageActivateTokenIds> {
 public:
-	MessageActivateTokenIds(const std::vector<Id>& tokenIds): tokenIds(tokenIds)
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageActivateTokenIds(const std::vector<Id>& tokenIds_) : tokenIds(tokenIds_) {
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageActivateTokenIds";
-	}
+  static const std::string getStaticType() {
+    return "MessageActivateTokenIds";
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		for (const Id& id: tokenIds)
-		{
-			os << id << L" ";
-		}
-	}
+  void print(std::wostream& ostream) const override {
+    for(const Id& id : tokenIds) {
+      ostream << id << L" ";
+    }
+  }
 
-	const std::vector<Id> tokenIds;
+  const std::vector<Id> tokenIds;
 };
-
-#endif	  // MESSAGE_ACTIVATE_TOKEN_IDS_H

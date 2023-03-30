@@ -1,8 +1,7 @@
-#ifndef TAB_H
-#define TAB_H
-
+#pragma once
+// STL
 #include <vector>
-
+// internal
 #include "ComponentManager.h"
 #include "MessageFocusView.h"
 #include "MessageListener.h"
@@ -10,7 +9,7 @@
 #include "View.h"
 #include "ViewLayout.h"
 
-class Tab
+class Tab final
 	: public ViewLayout
 	, public MessageListener<MessageFocusView>
 	, public MessageListener<MessageRefreshUI>
@@ -47,5 +46,3 @@ private:
 	ViewLayout* m_parentLayout;
 	ScreenSearchSender* m_screenSearchSender;
 };
-
-#endif	  // TAB_H

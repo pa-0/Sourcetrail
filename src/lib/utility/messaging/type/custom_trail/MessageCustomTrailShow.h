@@ -1,17 +1,12 @@
-#ifndef MESSAGE_CUSTOM_TRAIL_SHOW_H
-#define MESSAGE_CUSTOM_TRAIL_SHOW_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageCustomTrailShow: public Message<MessageCustomTrailShow>
-{
+class MessageCustomTrailShow final : public Message<MessageCustomTrailShow> {
 public:
-	MessageCustomTrailShow() {}
+  MessageCustomTrailShow() = default;
 
-	static const std::string getStaticType()
-	{
-		return "MessageCustomTrailShow";
-	}
+  static const std::string getStaticType() {
+    return "MessageCustomTrailShow";
+  }
 };
-
-#endif	  // MESSAGE_CUSTOM_TRAIL_SHOW_H

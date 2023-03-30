@@ -1,20 +1,16 @@
-#ifndef MESSAGE_SAVE_AS_IMAGE_H
-#define MESSAGE_SAVE_AS_IMAGE_H
-
+#pragma once
+// Qt5
+#include <QString>
+// internal
 #include "Message.h"
 
-
-class MessageSaveAsImage: public Message<MessageSaveAsImage>
-{
+class MessageSaveAsImage final : public Message<MessageSaveAsImage> {
 public:
-	MessageSaveAsImage(QString path) : path(path) {}
+  MessageSaveAsImage(QString path_) : path(std::move(path_)) {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageSaveAsImage";
-	}
+  static const std::string getStaticType() {
+    return "MessageSaveAsImage";
+  }
 
-	QString path;
+  QString path;
 };
-
-#endif /* MESSAGE_SAVE_AS_IMAGE_H */

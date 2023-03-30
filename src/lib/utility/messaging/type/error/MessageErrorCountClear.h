@@ -1,20 +1,14 @@
-#ifndef MESSAGE_ERROR_COUNT_CLEAR_H
-#define MESSAGE_ERROR_COUNT_CLEAR_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageErrorCountClear: public Message<MessageErrorCountClear>
-{
+class MessageErrorCountClear final : public Message<MessageErrorCountClear> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageErrorCountClear";
-	}
+  static const std::string getStaticType() {
+    return "MessageErrorCountClear";
+  }
 
-	MessageErrorCountClear()
-	{
-		setSendAsTask(false);
-	}
+  MessageErrorCountClear() {
+    setSendAsTask(false);
+  }
 };
-
-#endif	  // MESSAGE_ERROR_COUNT_CLEAR_H

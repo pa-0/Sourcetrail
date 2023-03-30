@@ -1,14 +1,11 @@
 #include "SettingsMigrationLambda.h"
 
 SettingsMigrationLambda::SettingsMigrationLambda(
-	std::function<void(const SettingsMigration*, Settings*)> m_lambda)
-	: m_lambda(m_lambda)
-{
-}
+    std::function<void(const SettingsMigration*, Settings*)> lambda)
+    : m_lambda(lambda) {}
 
-SettingsMigrationLambda::~SettingsMigrationLambda() {}
+SettingsMigrationLambda::~SettingsMigrationLambda() = default;
 
-void SettingsMigrationLambda::apply(Settings* migratable) const
-{
-	m_lambda(this, migratable);
+void SettingsMigrationLambda::apply(Settings* migratable) const {
+  m_lambda(this, migratable);
 }

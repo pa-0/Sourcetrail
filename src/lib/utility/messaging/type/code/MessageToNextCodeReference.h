@@ -4,7 +4,7 @@
 #include "Message.h"
 #include "TabId.h"
 
-class MessageToNextCodeReference : public Message<MessageToNextCodeReference> {
+class MessageToNextCodeReference final : public Message<MessageToNextCodeReference> {
 public:
   MessageToNextCodeReference(const FilePath& filePath_, size_t lineNumber_, size_t columnNumber_, bool next_)
       : filePath(filePath_), lineNumber(lineNumber_), columnNumber(columnNumber_), next(next_) {
@@ -15,7 +15,7 @@ public:
     return "MessageToNextCodeReference";
   }
 
-  virtual void print(std::wostream& ostream) const {
+  void print(std::wostream& ostream) const override {
     ostream << filePath.wstr() << L' ' << lineNumber << L':' << columnNumber << L' ';
 
     if(next) {

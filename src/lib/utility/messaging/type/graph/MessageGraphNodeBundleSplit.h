@@ -4,7 +4,7 @@
 #include "TabId.h"
 #include "types.h"
 
-class MessageGraphNodeBundleSplit : public Message<MessageGraphNodeBundleSplit> {
+class MessageGraphNodeBundleSplit final : public Message<MessageGraphNodeBundleSplit> {
 public:
   MessageGraphNodeBundleSplit(Id bundleId_, bool removeOtherNodes_ = false, bool layoutToList_ = false)
       : bundleId(bundleId_), removeOtherNodes(removeOtherNodes_), layoutToList(layoutToList_) {
@@ -15,8 +15,8 @@ public:
     return "MessageGraphNodeBundleSplit";
   }
 
-  virtual void print(std::wostream& os) const {
-    os << bundleId;
+  virtual void print(std::wostream& ostream) const {
+    ostream << bundleId;
   }
 
   Id bundleId;

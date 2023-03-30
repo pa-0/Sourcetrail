@@ -1,10 +1,10 @@
 #pragma once
-
+// internal
 #include "Message.h"
 #include "TabId.h"
 #include "types.h"
 
-class MessageShowScope : public Message<MessageShowScope> {
+class MessageShowScope final : public Message<MessageShowScope> {
 public:
   MessageShowScope(Id scopeLocationId_, bool showErrors_)
       : scopeLocationId(scopeLocationId_), showErrors(showErrors_) {
@@ -15,8 +15,8 @@ public:
     return "MessageShowScope";
   }
 
-  virtual void print(std::wostream& os) const {
-    os << scopeLocationId;
+  void print(std::wostream& ostream) const override {
+    ostream << scopeLocationId;
   }
 
   const Id scopeLocationId;

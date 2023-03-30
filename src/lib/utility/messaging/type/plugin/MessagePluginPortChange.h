@@ -1,17 +1,12 @@
-#ifndef MESSAGE_PLUGIN_PORT_CHANGE_H
-#define MESSAGE_PLUGIN_PORT_CHANGE_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessagePluginPortChange: public Message<MessagePluginPortChange>
-{
+class MessagePluginPortChange final : public Message<MessagePluginPortChange> {
 public:
-	MessagePluginPortChange() {}
+  MessagePluginPortChange() = default;
 
-	static const std::string getStaticType()
-	{
-		return "MessagePluginPortChange";
-	}
+  static const std::string getStaticType() {
+    return "MessagePluginPortChange";
+  }
 };
-
-#endif	  // MESSAGE_PLUGIN_PORT_CHANGE_H

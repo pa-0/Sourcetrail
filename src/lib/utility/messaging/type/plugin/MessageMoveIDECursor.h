@@ -3,7 +3,7 @@
 #include "FilePath.h"
 #include "Message.h"
 
-class MessageMoveIDECursor : public Message<MessageMoveIDECursor> {
+class MessageMoveIDECursor final : public Message<MessageMoveIDECursor> {
 public:
   MessageMoveIDECursor(const FilePath& filePath_, unsigned int row_, unsigned int column_)
       : filePath(filePath_), row(row_), column(column_) {}

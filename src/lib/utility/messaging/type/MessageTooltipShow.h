@@ -1,43 +1,36 @@
-#ifndef MESSAGE_TOOLTIP_SHOW_H
-#define MESSAGE_TOOLTIP_SHOW_H
-
+#pragma once
+// internal
 #include "Message.h"
-
+//
 #include "TooltipInfo.h"
 #include "TooltipOrigin.h"
 
-class MessageTooltipShow: public Message<MessageTooltipShow>
-{
+class MessageTooltipShow final : public Message<MessageTooltipShow> {
 public:
-	MessageTooltipShow(TooltipInfo info, TooltipOrigin origin): tooltipInfo(info), origin(origin)
-	{
-		setSendAsTask(false);
-		setIsLogged(false);
-	}
+  MessageTooltipShow(TooltipInfo info_, TooltipOrigin origin_)
+      : tooltipInfo(info_), origin(origin_) {
+    setSendAsTask(false);
+    setIsLogged(false);
+  }
 
-	MessageTooltipShow(
-		const std::vector<Id>& sourceLocationIds,
-		const std::vector<Id>& localSymbolIds,
-		TooltipOrigin origin)
-		: sourceLocationIds(sourceLocationIds), localSymbolIds(localSymbolIds), origin(origin)
-	{
-		setSendAsTask(false);
-		setIsLogged(false);
-	}
+  MessageTooltipShow(const std::vector<Id>& sourceLocationIds_,
+                     const std::vector<Id>& localSymbolIds_,
+                     TooltipOrigin origin_)
+      : sourceLocationIds(sourceLocationIds_), localSymbolIds(localSymbolIds_), origin(origin_) {
+    setSendAsTask(false);
+    setIsLogged(false);
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageTooltipShow";
-	}
+  static const std::string getStaticType() {
+    return "MessageTooltipShow";
+  }
 
-	const TooltipInfo tooltipInfo;
+  const TooltipInfo tooltipInfo;
 
-	const std::vector<Id> sourceLocationIds;
-	const std::vector<Id> localSymbolIds;
+  const std::vector<Id> sourceLocationIds;
+  const std::vector<Id> localSymbolIds;
 
-	const TooltipOrigin origin;
+  const TooltipOrigin origin;
 
-	bool force = false;
+  bool force = false;
 };
-
-#endif	  // MESSAGE_TOOLTIP_SHOW_H

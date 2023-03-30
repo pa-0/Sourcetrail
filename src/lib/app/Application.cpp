@@ -325,7 +325,7 @@ void Application::loadWindow(bool showStartWindow) {
   }
 
   if(!m_loadedWindow) {
-    ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
+    [[maybe_unused]] ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
 
     updateTitle();
 

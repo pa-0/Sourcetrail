@@ -3,7 +3,7 @@
 #include "Message.h"
 #include "SearchMatch.h"
 
-class MessageTabState : public Message<MessageTabState> {
+class MessageTabState final : public Message<MessageTabState> {
 public:
   MessageTabState(Id tabId_, std::vector<SearchMatch> searchMatches_)
       : tabId(tabId_), searchMatches(std::move(searchMatches_)) {}

@@ -428,7 +428,7 @@ void CodeController::handleMessage(MessageShowError* message) {
 
 void CodeController::handleMessage(MessageShowReference* message) {
   m_referenceIndex = static_cast<int>(message->refIndex);
-  bool replayed = message->isReplayed();
+  [[maybe_unused]] bool replayed = message->isReplayed();
 
   if(m_referenceIndex >= 0 && m_referenceIndex < static_cast<int>(m_references.size())) {
     const Reference& ref = m_references[m_referenceIndex];
@@ -475,7 +475,7 @@ void CodeController::handleMessage(MessageToNextCodeReference* message) {
   size_t currentLineNumber = message->lineNumber;
   size_t currentColumnNumber = message->columnNumber;
   bool next = message->next;
-  bool inListMode = getView()->isInListMode();
+  [[mybe_unused]] bool inListMode = getView()->isInListMode();
 
   if(currentFilePath.empty()) {
     return;

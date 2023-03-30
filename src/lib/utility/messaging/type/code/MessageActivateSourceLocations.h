@@ -1,34 +1,26 @@
-#ifndef MESSAGE_ACTIVATE_SOURCE_LOCATIONS_H
-#define MESSAGE_ACTIVATE_SOURCE_LOCATIONS_H
-
+#pragma once
+// internal
 #include "Message.h"
 #include "TabId.h"
 #include "types.h"
 
-class MessageActivateSourceLocations: public Message<MessageActivateSourceLocations>
-{
+class MessageActivateSourceLocations final : public Message<MessageActivateSourceLocations> {
 public:
-	MessageActivateSourceLocations(const std::vector<Id>& locationIds, bool containsUnsolvedLocations)
-		: locationIds(locationIds), containsUnsolvedLocations(containsUnsolvedLocations)
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageActivateSourceLocations(const std::vector<Id>& locationIds_, bool containsUnsolvedLocations_)
+      : locationIds(locationIds_), containsUnsolvedLocations(containsUnsolvedLocations_) {
+    setSchedulerId(TabId::currentTab());
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageActivateSourceLocations";
-	}
+  static const std::string getStaticType() {
+    return "MessageActivateSourceLocations";
+  }
 
-	virtual void print(std::wostream& os) const
-	{
-		for (const Id& id: locationIds)
-		{
-			os << id << L" ";
-		}
-	}
+  void print(std::wostream& ostream) const override {
+    for(const Id& id : locationIds) {
+      ostream << id << L" ";
+    }
+  }
 
-	const std::vector<Id> locationIds;
-	const bool containsUnsolvedLocations;
+  const std::vector<Id> locationIds;
+  const bool containsUnsolvedLocations;
 };
-
-#endif	  // MESSAGE_ACTIVATE_SOURCE_LOCATIONS_H

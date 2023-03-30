@@ -1,12 +1,12 @@
 #pragma once
-
+// STL
 #include <vector>
-
+// internal
 #include "Message.h"
 #include "TabId.h"
 #include "types.h"
 
-class MessageFocusOut : public Message<MessageFocusOut> {
+class MessageFocusOut final : public Message<MessageFocusOut> {
 public:
   MessageFocusOut(const std::vector<Id>& tokenIds_) : tokenIds(tokenIds_) {
     setIsLogged(false);
@@ -17,9 +17,9 @@ public:
     return "MessageFocusOut";
   }
 
-  virtual void print(std::wostream& os) const {
+  void print(std::wostream& ostream) const override {
     for(const Id& id : tokenIds) {
-      os << id << L" ";
+      ostream << id << L" ";
     }
   }
 

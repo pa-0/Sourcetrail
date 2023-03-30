@@ -12,7 +12,7 @@ public:
 		return "MessageHistoryToPosition";
 	}
 
-	MessageHistoryToPosition(size_t index): index(index)
+	MessageHistoryToPosition(size_t index_): index(index_)
 	{
 		setSchedulerId(TabId::currentTab());
 	}

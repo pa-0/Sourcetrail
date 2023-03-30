@@ -1,19 +1,14 @@
-#ifndef MESSAGE_TAB_SELECT_H
-#define MESSAGE_TAB_SELECT_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageTabSelect: public Message<MessageTabSelect>
-{
+class MessageTabSelect final : public Message<MessageTabSelect> {
 public:
-	MessageTabSelect(bool next): next(next) {}
+  MessageTabSelect(bool next_) : next(next_) {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageTabSelect";
-	}
+  static const std::string getStaticType() {
+    return "MessageTabSelect";
+  }
 
-	bool next;
+  bool next;
 };
-
-#endif	  // MESSAGE_TAB_SELECT_H

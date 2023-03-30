@@ -1,19 +1,14 @@
-#ifndef MESSAGE_PING_RECEIVED_H
-#define MESSAGE_PING_RECEIVED_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessagePingReceived: public Message<MessagePingReceived>
-{
+class MessagePingReceived final : public Message<MessagePingReceived> {
 public:
-	MessagePingReceived(): ideName(L"") {}
+  MessagePingReceived() = default;
 
-	static const std::string getStaticType()
-	{
-		return "MessagePingReceived";
-	}
+  static const std::string getStaticType() {
+    return "MessagePingReceived";
+  }
 
-	std::wstring ideName;
+  std::wstring ideName = {};
 };
-
-#endif	  // MESSAGE_PING_RECEIVED_H

@@ -1,20 +1,14 @@
-#ifndef MESSAGE_INDEXING_INTERRUPTED_H
-#define MESSAGE_INDEXING_INTERRUPTED_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageIndexingInterrupted: public Message<MessageIndexingInterrupted>
-{
+class MessageIndexingInterrupted final : public Message<MessageIndexingInterrupted> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageIndexingInterrupted";
-	}
+  static const std::string getStaticType() {
+    return "MessageIndexingInterrupted";
+  }
 
-	MessageIndexingInterrupted()
-	{
-		setSendAsTask(false);
-	}
+  MessageIndexingInterrupted() {
+    setSendAsTask(false);
+  }
 };
-
-#endif	  // MESSAGE_INDEXING_INTERRUPTED_H

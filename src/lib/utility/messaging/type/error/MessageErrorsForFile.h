@@ -3,7 +3,7 @@
 #include "FilePath.h"
 #include "Message.h"
 
-class MessageErrorsForFile : public Message<MessageErrorsForFile> {
+class MessageErrorsForFile final : public Message<MessageErrorsForFile> {
 public:
   static const std::string getStaticType() {
     return "MessageErrorsForFile";

@@ -1,5 +1,5 @@
 #pragma once
-
+// internal
 #include "Message.h"
 #include "MessageActivateBase.h"
 #include "TabId.h"

@@ -4,7 +4,7 @@
 #include "TabId.h"
 #include "types.h"
 
-class MessageCodeShowDefinition : public Message<MessageCodeShowDefinition> {
+class MessageCodeShowDefinition final : public Message<MessageCodeShowDefinition> {
 public:
   static const std::string getStaticType() {
     return "MessageCodeShowDefinition";
@@ -14,8 +14,8 @@ public:
     setSchedulerId(TabId::currentTab());
   }
 
-  virtual void print(std::wostream& os) const {
-    os << nodeId;
+  void print(std::wostream& ostream) const override {
+    ostream << nodeId;
   }
 
   const Id nodeId;

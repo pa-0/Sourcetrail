@@ -4,7 +4,7 @@
 #include "TabId.h"
 #include "types.h"
 
-class MessageGraphNodeHide : public Message<MessageGraphNodeHide> {
+class MessageGraphNodeHide final : public Message<MessageGraphNodeHide> {
 public:
   MessageGraphNodeHide(Id tokenId_) : tokenId(tokenId_) {
     setSchedulerId(TabId::currentTab());

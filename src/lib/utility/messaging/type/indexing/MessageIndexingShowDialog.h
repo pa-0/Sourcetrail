@@ -1,20 +1,14 @@
-#ifndef MESSAGE_INDEXING_SHOW_DIALOG_H
-#define MESSAGE_INDEXING_SHOW_DIALOG_H
-
+#pragma once
+// internal
 #include "Message.h"
 
-class MessageIndexingShowDialog: public Message<MessageIndexingShowDialog>
-{
+class MessageIndexingShowDialog final : public Message<MessageIndexingShowDialog> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageIndexingShowDialog";
-	}
+  static const std::string getStaticType() {
+    return "MessageIndexingShowDialog";
+  }
 
-	MessageIndexingShowDialog()
-	{
-		setSendAsTask(false);
-	}
+  MessageIndexingShowDialog() {
+    setSendAsTask(false);
+  }
 };
-
-#endif	  // MESSAGE_INDEXING_SHOW_DIALOG_H
