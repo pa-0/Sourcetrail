@@ -48,5 +48,20 @@
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF"
             }
         }
-    ]
+    ],
+    "buildPresets": [{
+        "name": "default",
+        "configurePreset": "default"
+    }],
+    "testPresets": [{
+        "name": "default",
+        "configurePreset": "default",
+        "output": {
+            "outputOnFailure": true
+        },
+        "execution": {
+            "noTestsAction": "error",
+            "stopOnFailure": true
+        }
+    }]
 }
