@@ -78,9 +78,7 @@ foreach(test_name IN LISTS test_lib_names)
       testHelper
       catch2::catch2
       Sourcetrail::lib
-      ${LIB_GUI_PROJECT_NAME}
-      ${LIB_PROJECT_NAME}
-      ${LIB_GUI_PROJECT_NAME}
+      Sourcetrail::lib_gui
       $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>)
 
   target_include_directories(
@@ -91,7 +89,6 @@ foreach(test_name IN LISTS test_lib_names)
       ${LIB_UTILITY_INCLUDE_PATHS}
       ${LIB_GUI_INCLUDE_PATHS}
       ${EXTERNAL_INCLUDE_PATHS}
-      ${Boost_INCLUDE_DIRS}
       ${CMAKE_BINARY_DIR}/src/lib)
 
   # automatically discover ${test_name} that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
@@ -159,7 +156,6 @@ if(${BUILD_CXX_LANGUAGE_PACKAGE})
         ${LIB_UTILITY_INCLUDE_PATHS}
         ${LIB_GUI_INCLUDE_PATHS}
         ${EXTERNAL_INCLUDE_PATHS}
-        ${Boost_INCLUDE_DIRS}
         ${CMAKE_BINARY_DIR}/src/lib
         ${LIB_CXX_INCLUDE_PATHS})
 

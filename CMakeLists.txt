@@ -45,15 +45,8 @@ FetchContent_Declare(
   URL "https://github.com/aminya/project_options/archive/refs/tags/v0.26.3.zip")
 FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
-
 # Variables --------------------------------------------------------------------
-
 set(PROJECT_NAME Sourcetrail)
-
-set(APP_PROJECT_NAME         "${PROJECT_NAME}")
-set(APP_INDEXER_NAME         "${PROJECT_NAME}_indexer")
-set(LIB_GUI_PROJECT_NAME     "${PROJECT_NAME}_lib_gui")
-set(LIB_PROJECT_NAME         "${PROJECT_NAME}_lib")
 
 if(WIN32)
   set(PLATFORM_INCLUDE "includesWindows.h")
@@ -250,11 +243,11 @@ if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_subdirectory(src/lib_cxx)
 endif()
 # Lib --------------------------------------------------------------------------
-add_library(${LIB_PROJECT_NAME} ${LIB_FILES} ${EXTERNAL_FILES})
-add_library(Sourcetrail::lib ALIAS ${LIB_PROJECT_NAME})
+add_library(Sourcetrail_lib ${LIB_FILES} ${EXTERNAL_FILES})
+add_library(Sourcetrail::lib ALIAS Sourcetrail_lib)
 
 target_include_directories(
-  ${LIB_PROJECT_NAME}
+  Sourcetrail_lib
   PUBLIC
     ${LIB_INCLUDE_PATHS}
     ${LIB_GUI_INCLUDE_PATHS}
@@ -263,37 +256,37 @@ target_include_directories(
     ${CMAKE_BINARY_DIR}/src/lib)
 
 target_include_directories(
-  ${LIB_PROJECT_NAME}
+  Sourcetrail_lib
   SYSTEM PUBLIC
     ${EXTERNAL_INCLUDE_PATHS})
 
 target_link_libraries(
-  ${LIB_PROJECT_NAME}
+  Sourcetrail_lib
   PUBLIC
     project_options
     project_warnings)
 
 target_link_libraries(
-  ${LIB_PROJECT_NAME}
+  Sourcetrail_lib
   PRIVATE
-    Boost::program_options
     Sourcetrail::core
     Sourcetrail::lib_utility
     Sourcetrail::scheduling
-    ${LIB_GUI_PROJECT_NAME}
-    Boost::system
-    Boost::filesystem
-    Boost::date_time
-    fmt::fmt
-    TinyXML::TinyXML
-    SQLite::SQLite3
+    Sourcetrail::lib_gui
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
+    Boost::date_time
+    Boost::filesystem
+    Boost::program_options
+    Boost::system
+    SQLite::SQLite3
+    TinyXML::TinyXML
+    fmt::fmt
     $<$<PLATFORM_ID:Windows>:bcrypt>)
 
 #configure language package defines
 configure_file("${CMAKE_SOURCE_DIR}/cmake/language_packages.h.in"
                "${CMAKE_BINARY_DIR}/src/lib/language_packages.h")
-# Lib Gui ----------------------------------------------------------------------
+# Lib gui_utility --------------------------------------------------------------
 add_library(Sourcetrail_lib_gui_utility)
 add_library(Sourcetrail::lib_gui::utility ALIAS Sourcetrail_lib_gui_utility)
 
@@ -320,32 +313,32 @@ target_link_libraries(
     Boost::system
     Qt5::Core
     Sourcetrail::core
-    Sourcetrail::lib_utility
-    ${LIB_PROJECT_NAME})
-
+    Sourcetrail::lib
+    Sourcetrail::lib_utility)
+# Lib Gui ----------------------------------------------------------------------
 # target for running versionnumber script
 # workaround for running customcommand (ninja dependency cycle)
 add_custom_target(versionnumber ALL)
-
+# Lib Gui ----------------------------------------------------------------------
 add_library(
-  ${LIB_GUI_PROJECT_NAME}
+  Sourcetrail_lib_gui
   ${LIB_GUI_FILES}
   ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h)
 
-add_library(Sourcetrail::lib_gui ALIAS ${LIB_GUI_PROJECT_NAME})
+add_library(Sourcetrail::lib_gui ALIAS Sourcetrail_lib_gui)
 
 target_link_libraries(
-  ${LIB_GUI_PROJECT_NAME}
+  Sourcetrail_lib_gui
   PUBLIC
     Sourcetrail::lib_utility
-    ${LIB_PROJECT_NAME}
+    Sourcetrail::lib
     Qt5::Widgets
     Qt5::Network
     Qt5::Svg
     $<$<PLATFORM_ID:Windows>:Qt5::WinExtras>)
 
 target_link_libraries(
-  ${LIB_GUI_PROJECT_NAME}
+  Sourcetrail_lib_gui
   PRIVATE
     fmt::fmt
     Sourcetrail::core
@@ -363,11 +356,11 @@ add_custom_command(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMENT "check/update version number")
 
-add_dependencies(${LIB_GUI_PROJECT_NAME} versionnumber)
+add_dependencies(Sourcetrail_lib_gui versionnumber)
 
 # include external header without warnings
 target_include_directories(
-  ${LIB_GUI_PROJECT_NAME}
+  Sourcetrail_lib_gui
   PUBLIC
     ${LIB_GUI_INCLUDE_PATHS}
     ${LIB_INCLUDE_PATHS}
@@ -376,7 +369,7 @@ target_include_directories(
 
 # include external header without warnings
 target_include_directories(
-  ${LIB_GUI_PROJECT_NAME}
+  Sourcetrail_lib_gui
   SYSTEM PUBLIC
     ${EXTERNAL_INCLUDE_PATHS})
 
@@ -392,14 +385,13 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/productVersion.h.in
                ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h)
 
 set_target_properties(
-  ${LIB_GUI_PROJECT_NAME}
+  Sourcetrail_lib_gui
   PROPERTIES
-  AUTOMOC ON
-  INCLUDE_CURRENT_DIR ON)
+    AUTOMOC ON
+    INCLUDE_CURRENT_DIR ON)
 
 set_property(SOURCE ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h
              PROPERTY SKIP_AUTOMOC ON)
-
 # Indexer App ------------------------------------------------------------------
 add_subdirectory(src/indexer)
 # App --------------------------------------------------------------------------
@@ -423,7 +415,7 @@ endif()
 
 # Add other targets that you want installed here, be default we just package the one executable
 # we know we want to ship
-package_project(TARGETS ${APP_PROJECT_NAME} ${APP_INDEXER_NAME}
+package_project(TARGETS Sourcetrail Sourcetrail_indexer
   # FIXME: this does not work! CK
   # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
 )

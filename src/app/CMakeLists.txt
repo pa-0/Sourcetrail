@@ -43,9 +43,9 @@ target_link_libraries(
   Sourcetrail
   PUBLIC
     Sourcetrail::core
-    ${LIB_GUI_PROJECT_NAME}
+    Sourcetrail::lib
+    Sourcetrail::lib_gui
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
-    ${LIB_PROJECT_NAME}
     Qt5::Widgets
     Qt5::Network)
 
@@ -69,4 +69,4 @@ if(APPLE)
   target_link_libraries(Sourcetrail ${CORE_FOUNDATION})
 endif ()
 
-add_dependencies(Sourcetrail ${APP_INDEXER_NAME})
+add_dependencies(Sourcetrail Sourcetrail_indexer)
