@@ -36,6 +36,7 @@ if(NOT "${USE_ALTERNATE_LINKER}" STREQUAL "")
   set_alternate_linker(${USE_ALTERNATE_LINKER})
 endif()
 
+# TODO(Hussein): Move to Conan V2
 # Add project_options v0.26.3
 # https://github.com/cpp-best-practices/project_options
 include(FetchContent)
@@ -54,7 +55,7 @@ elseif(APPLE)
   set(PLATFORM_INCLUDE "includesMac.h")
 else()
   set(PLATFORM_INCLUDE "includesLinux.h")
-endif ()
+endif()
 
 set(BASH "")
 if(WIN32)
@@ -62,9 +63,7 @@ if(WIN32)
   string(REGEX REPLACE "\n$" "" BASH "${BASH}")
   message("bash: '${BASH}'")
 endif()
-
 # Project ----------------------------------------------------------------------
-
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
 
 if(BUILD_DOC)
@@ -121,21 +120,15 @@ set(CMAKE_CXX_STANDARD            17)
 set(CMAKE_C_STANDARD              11)
 
 # Settings ---------------------------------------------------------------------
-
 find_package(SQLite3 CONFIG REQUIRED)
 find_package(TinyXML CONFIG REQUIRED)
 find_package(fmt     CONFIG REQUIRED)
-
 # Boost ------------------------------------------------------------------------
-
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS ON CACHE BOOL "Set to ON to force the use of the static libraries.")
 set(Boost_USE_STATIC_RUNTIME OFF)
-
 find_package(Boost 1.67 COMPONENTS system program_options filesystem date_time REQUIRED)
-
 # Qt ---------------------------------------------------------------------------
-
 set(QT_MIN_VERSION     "5.12.0")
 set(QT_MIN_VERSION_HEX 0x051200)
 find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Widgets PrintSupport Network Svg REQUIRED)
@@ -164,7 +157,6 @@ if(Qt5Widgets_FOUND)
   #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=${QT_MIN_VERSION_HEX}    # disables all the APIs deprecated at or before the specified Qt version
   add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=${QT_MIN_VERSION_HEX})
 endif()
-
 # Setup ---------------------------------------------------------------------------
 if(WIN32)
   get_filename_component(QT_BINARY_DIR "${QT_MOC_EXECUTABLE}" PATH)
@@ -350,11 +342,11 @@ target_link_libraries(
 add_custom_command(
   TARGET versionnumber
   PRE_BUILD
-  COMMAND ${CMAKE_COMMAND} -DBINARY_DIR=${CMAKE_BINARY_DIR} -P ${CMAKE_SOURCE_DIR}/cmake/version.cmake
-  BYPRODUCTS ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h
-  DEPENDS ${LIB_GUI_PROJECT_NAME}
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  COMMENT "check/update version number")
+    COMMAND           ${CMAKE_COMMAND} -DBINARY_DIR=${CMAKE_BINARY_DIR} -P ${CMAKE_SOURCE_DIR}/cmake/version.cmake
+    BYPRODUCTS        ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h
+    DEPENDS           Sourcetrail_lib_gui
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT           "check/update version number")
 
 add_dependencies(Sourcetrail_lib_gui versionnumber)
 
