@@ -162,7 +162,7 @@ Edge* Node::findEdge(std::function<bool(Edge*)> func) const
 
 Edge* Node::findEdgeOfType(Edge::TypeMask mask) const
 {
-	return findEdgeOfType(mask, [](Edge* e) { return true; });
+	return findEdgeOfType(mask, [](Edge*) { return true; });
 }
 
 Edge* Node::findEdgeOfType(Edge::TypeMask mask, std::function<bool(Edge*)> func) const

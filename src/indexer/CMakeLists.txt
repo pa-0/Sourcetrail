@@ -17,12 +17,20 @@ set_target_properties(
 
 if(WIN32)
   # hide the console when running a release build.
-  set_target_properties(Sourcetrail_indexer PROPERTIES LINK_FLAGS_DEBUG                   "/SUBSYSTEM:CONSOLE /DEBUG:FASTLINK")
-  set_target_properties(Sourcetrail_indexer PROPERTIES COMPILE_DEFINITIONS_DEBUG          "_CONSOLE")
-  set_target_properties(Sourcetrail_indexer PROPERTIES LINK_FLAGS_RELWITHDEBINFO          "/SUBSYSTEM:CONSOLE")
-  set_target_properties(Sourcetrail_indexer PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
-  set_target_properties(Sourcetrail_indexer PROPERTIES LINK_FLAGS_RELEASE                 "/ENTRY:\"mainCRTStartup\" /SUBSYSTEM:WINDOWS /DEBUG")
-  set_target_properties(Sourcetrail_indexer PROPERTIES LINK_FLAGS_MINSIZEREL              "/SUBSYSTEM:WINDOWS")
+  set_target_properties(
+    Sourcetrail_indexer
+    PROPERTIES
+      LINK_FLAGS_DEBUG                   "/SUBSYSTEM:CONSOLE /DEBUG:FASTLINK"
+      COMPILE_DEFINITIONS_DEBUG          "_CONSOLE"
+      LINK_FLAGS_RELWITHDEBINFO          "/SUBSYSTEM:CONSOLE"
+      COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE"
+      LINK_FLAGS_RELEASE                 "/ENTRY:\"mainCRTStartup\" /SUBSYSTEM:WINDOWS /DEBUG"
+      LINK_FLAGS_MINSIZEREL              "/SUBSYSTEM:WINDOWS")
+
+  target_compile_definitions(
+    Sourcetrail_indexer
+    PRIVATE
+      NOMINMAX)
 
   # generate pdb for release build
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
@@ -32,6 +40,7 @@ target_link_libraries(
   Sourcetrail_indexer
   PRIVATE
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
+    Boost::locale
     Qt5::Core
     Sourcetrail::core
     Sourcetrail::lib

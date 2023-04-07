@@ -15,23 +15,30 @@ if(WIN32)
     "IDI_ICON1               ICON                    \"${CMAKE_BINARY_DIR}/Sourcetrail.ico\"\n"
   )
 
-  add_executable(Sourcetrail main.cpp ${CMAKE_BINARY_DIR}/Sourcetrail.rc)
+  add_executable(
+    Sourcetrail
+      main.cpp
+      ${CMAKE_BINARY_DIR}/Sourcetrail.rc)
+
+  target_compile_definitions(
+    Sourcetrail
+    PRIVATE
+      NOMINMAX)
 
   # also show the console when running a release build.
-  set_target_properties(Sourcetrail PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE /DEBUG:FASTLINK")
-  set_target_properties(Sourcetrail PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
-  set_target_properties(Sourcetrail PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE")
-  set_target_properties(Sourcetrail PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
-  set_target_properties(Sourcetrail PROPERTIES LINK_FLAGS_RELEASE "/ENTRY:\"mainCRTStartup\" /SUBSYSTEM:CONSOLE /DEBUG")
-  set_target_properties(Sourcetrail PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:CONSOLE")
+  set_target_properties(
+    Sourcetrail
+    PROPERTIES
+      LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE /DEBUG:FASTLINK"
+      COMPILE_DEFINITIONS_DEBUG "_CONSOLE"
+      LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE"
+      COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE"
+      LINK_FLAGS_RELEASE "/ENTRY:\"mainCRTStartup\" /SUBSYSTEM:CONSOLE /DEBUG"
+      LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:CONSOLE"
+      VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/app")
 
   # generate pdb for release build
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
-
-  set_property(
-    TARGET Sourcetrail
-      PROPERTY VS_DEBUGGER_WORKING_DIRECTORY
-      "${CMAKE_SOURCE_DIR}/bin/app")
 
   string(REGEX REPLACE "/" "\\\\" BACKSLASHED_CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR})
   string(REGEX REPLACE "/" "\\\\" BACKSLASHED_CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR})
@@ -46,6 +53,7 @@ target_link_libraries(
     Sourcetrail::lib
     Sourcetrail::lib_gui
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
+    Boost::locale
     Qt5::Widgets
     Qt5::Network)
 
@@ -70,3 +78,9 @@ if(APPLE)
 endif ()
 
 add_dependencies(Sourcetrail Sourcetrail_indexer)
+
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico)
+  message(FATAL "\"sourcetrail.ico\" not found. You may run `git submodule`")
+endif()
+file(COPY ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico 
+     DESTINATION ${CMAKE_BINARY_DIR})

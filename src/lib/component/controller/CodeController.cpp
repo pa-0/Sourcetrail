@@ -565,8 +565,6 @@ void CodeController::clear() {
 
 std::vector<CodeFileParams> CodeController::getFilesForActiveSourceLocations(
     const SourceLocationCollection* collection, Id declarationId) const {
-  TRACE();
-
   std::vector<CodeFileParams> files;
   collection->forEachSourceLocationFile([&](std::shared_ptr<SourceLocationFile> file) -> void {
     bool isDeclarationFile = false;
@@ -599,8 +597,6 @@ std::vector<CodeFileParams> CodeController::getFilesForActiveSourceLocations(
 
 std::vector<CodeFileParams> CodeController::getFilesForCollection(
     std::shared_ptr<SourceLocationCollection> collection) const {
-  TRACE();
-
   std::vector<CodeFileParams> files;
 
   collection->forEachSourceLocationFile([&](std::shared_ptr<SourceLocationFile> file) -> void {
@@ -646,8 +642,6 @@ CodeSnippetParams CodeController::getSnippetParamsForWholeFile(
 
 std::vector<CodeSnippetParams> CodeController::getSnippetsForFile(
     std::shared_ptr<SourceLocationFile> activeSourceLocations) const {
-  TRACE();
-
   bool showsErrors = false;
   if(activeSourceLocations->getSourceLocations().size()) {
     showsErrors = (*activeSourceLocations->getSourceLocations().begin())->getType() == LOCATION_ERROR;
@@ -1050,8 +1044,6 @@ std::pair<int, int> CodeController::findClosestReferenceIndex(const std::vector<
 }
 
 void CodeController::expandVisibleFiles(bool useSingleFileCache) {
-  TRACE();
-
   if(!m_files.size()) {
     return;
   }
@@ -1149,8 +1141,6 @@ void CodeController::setFileState(const FilePath& filePath,
 void CodeController::setFileState(CodeFileParams& file,
                                   MessageChangeFileView::FileState state,
                                   bool useSingleFileCache) {
-  TRACE();
-
   switch(state) {
   case MessageChangeFileView::FILE_MINIMIZED:
     file.isMinimized = true;
@@ -1181,8 +1171,6 @@ void CodeController::setFileState(CodeFileParams& file,
 }
 
 bool CodeController::addAllSourceLocations() {
-  TRACE();
-
   bool addedNewLocations = false;
 
   for(CodeFileParams& file : m_files) {
@@ -1230,8 +1218,6 @@ bool CodeController::addAllSourceLocations() {
 }
 
 void CodeController::addModificationTimes() {
-  TRACE();
-
   std::vector<FilePath> filePaths;
   for(const CodeFileParams& file : m_files) {
     filePaths.push_back(file.locationFile->getFilePath());

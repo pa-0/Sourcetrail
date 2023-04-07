@@ -34,6 +34,7 @@
 //						-Added Name based parameter binding to CppSQLite3Statement.
 ////////////////////////////////////////////////////////////////////////////////
 #include "CppSQLite3.h"
+#include "sqlite3.h"
 #include <cstdlib>
 
 
@@ -51,6 +52,11 @@ int sqlite3_decode_binary(const unsigned char *in, unsigned char *out);
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+
+CppSQLite3Exception::CppSQLite3Exception(const int nErrCode,
+									const char* szErrMess,
+									bool bDeleteMsg/*=true*/) :CppSQLite3Exception(nErrCode,
+									const_cast<char*>(szErrMess), bDeleteMsg) {}
 
 CppSQLite3Exception::CppSQLite3Exception(const int nErrCode,
 									char* szErrMess,

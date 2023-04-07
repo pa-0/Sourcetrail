@@ -1,5 +1,6 @@
 #pragma once
 // STL
+#include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <map>
@@ -18,8 +19,8 @@ class StringTraits {};
 template <>
 class StringTraits<std::string> {
 public:
-  typedef char CharT;
-  typedef std::ostream StreamT;
+  using CharT = char;
+  using StreamT = std::ostream;
 
   static size_t SizeFn(const CharT* str) {
     return strlen(str);
@@ -40,8 +41,8 @@ public:
 template <>
 class StringTraits<std::wstring> {
 public:
-  typedef wchar_t CharT;
-  typedef std::wostream StreamT;
+  using CharT = wchar_t;
+  using StreamT = std::wostream;
 
   static size_t SizeFn(const CharT* str) {
     return wcslen(str);
@@ -73,8 +74,8 @@ public:
 template <typename StringT, typename ValueT, ValueT defaultVal>
 class LowMemoryStringMap {
 public:
-  typedef typename StringTraits<StringT>::CharT CharT;
-  typedef typename StringTraits<StringT>::StreamT StreamT;
+  using CharT = typename StringTraits<StringT>::CharT;
+  using StreamT = typename StringTraits<StringT>::StreamT;
 
   LowMemoryStringMap() : m_root(StringT()) {}
 

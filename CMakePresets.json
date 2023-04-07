@@ -1,11 +1,12 @@
 {
-    "version": 6,
+    "version": 5,
     "cmakeMinimumRequired": {
         "major": 3,
         "minor": 23,
         "patch": 0
     },
-    "configurePresets": [{
+    "configurePresets": [
+        {
             "name": "coverage",
             "displayName": "Coverage",
             "generator": "Ninja",
@@ -47,21 +48,48 @@
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF"
             }
+        },
+        {
+            "name": "vc_release",
+            "displayName": "VC++ Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/../build/Release/",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
+                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
+                "Boost_DIR": "C:/local/boost_1_81_0/lib64-msvc-14.3/cmake/Boost-1.81.0"
+            }
         }
     ],
-    "buildPresets": [{
-        "name": "default",
-        "configurePreset": "default"
-    }],
-    "testPresets": [{
-        "name": "default",
-        "configurePreset": "default",
-        "output": {
-            "outputOnFailure": true
-        },
-        "execution": {
-            "noTestsAction": "error",
-            "stopOnFailure": true
+    "buildPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default"
         }
-    }]
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "vc++ test",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "vc_release"
+        }
+    ]
 }

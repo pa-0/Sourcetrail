@@ -30,8 +30,7 @@ target_sources(
     ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/LogManagerImplementation.cpp
     ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/LogMessage.cpp
 
-    ${CMAKE_SOURCE_DIR}/src/lib/utility/text/TextAccess.cpp
-)
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/text/TextAccess.cpp)
 
 target_include_directories(
   Sourcetrail_core
@@ -39,8 +38,12 @@ target_include_directories(
     ${CMAKE_SOURCE_DIR}/src/lib/utility/
     ${CMAKE_SOURCE_DIR}/src/lib/utility/file/
     ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/
-    ${CMAKE_SOURCE_DIR}/src/lib/utility/text/
-)
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/text/)
+
+target_link_libraries(
+  Sourcetrail_core
+  PUBLIC
+    Boost::date_time)
 
 target_link_libraries(
   Sourcetrail_core
@@ -48,8 +51,7 @@ target_link_libraries(
     Boost::filesystem
     Sourcetrail::lib_utility
     TinyXML::TinyXML
-    fmt::fmt
-)
+    fmt::fmt)
 
 # ================================================
 add_library(Sourcetrail_scheduling)
@@ -71,18 +73,16 @@ target_sources(
     ${CMAKE_SOURCE_DIR}/src/lib/utility/scheduling/TaskLambda.cpp
     ${CMAKE_SOURCE_DIR}/src/lib/utility/scheduling/TaskManager.cpp
     ${CMAKE_SOURCE_DIR}/src/lib/utility/scheduling/TaskRunner.cpp
-    ${CMAKE_SOURCE_DIR}/src/lib/utility/scheduling/TaskScheduler.cpp
-)
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/scheduling/TaskScheduler.cpp)
 
 target_include_directories(
   Sourcetrail_scheduling
   PUBLIC
-  ${CMAKE_SOURCE_DIR}/src/lib/utility/scheduling/
-)
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/scheduling/)
 
 target_link_libraries(
   Sourcetrail_scheduling
   PRIVATE
+    Boost::date_time
     Sourcetrail::core
-    Sourcetrail::lib_utility
-)
+    Sourcetrail::lib_utility)

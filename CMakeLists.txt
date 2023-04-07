@@ -1,6 +1,7 @@
 #${CMAKE_SOURCE_DIR}/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 include(cmake/version.cmake)
+
 project(Sourcetrail
         DESCRIPTION "interactive source explorer"
         VERSION     ${VERSION_STRING}
@@ -127,7 +128,7 @@ find_package(fmt     CONFIG REQUIRED)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS ON CACHE BOOL "Set to ON to force the use of the static libraries.")
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.67 COMPONENTS system program_options filesystem date_time REQUIRED)
+find_package(Boost 1.67 COMPONENTS system program_options filesystem date_time locale REQUIRED)
 # Qt ---------------------------------------------------------------------------
 set(QT_MIN_VERSION     "5.12.0")
 set(QT_MIN_VERSION_HEX 0x051200)
@@ -157,7 +158,7 @@ if(Qt5Widgets_FOUND)
   #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=${QT_MIN_VERSION_HEX}    # disables all the APIs deprecated at or before the specified Qt version
   add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=${QT_MIN_VERSION_HEX})
 endif()
-# Setup ---------------------------------------------------------------------------
+# Setup ------------------------------------------------------------------------
 if(WIN32)
   get_filename_component(QT_BINARY_DIR "${QT_MOC_EXECUTABLE}" PATH)
   set(QT_PLUGINS_DIR "${QT_BINARY_DIR}/../plugins")
@@ -216,26 +217,22 @@ if(WIN32)
   COPY_QT_BINARIES(True False)
   COPY_QT_BINARIES(False True)
   COPY_QT_BINARIES(False False)
-
-  configure_file("${CMAKE_SOURCE_DIR}/setup/icon/windows/sourcetrail.ico" "${CMAKE_BINARY_DIR}/${CONFIGURATION}/sourcetrail.ico" COPYONLY)
 endif()
 
 add_subdirectory(src/external)
 add_subdirectory(src/lib)
 add_subdirectory(src/lib_gui)
 
-set_source_files_properties(${EXTERNAL_FILES} PROPERTIES COMPILE_FLAGS "-w")
-
 # Lib Utility ------------------------------------------------------------------
 add_subdirectory(src/lib_utility)
-# core ------------------------------------------------------------------
+# core -------------------------------------------------------------------------
 add_subdirectory(src/core)
 # Lib Cxx ----------------------------------------------------------------------
 if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_subdirectory(src/lib_cxx)
 endif()
 # Lib --------------------------------------------------------------------------
-add_library(Sourcetrail_lib ${LIB_FILES} ${EXTERNAL_FILES})
+add_library(Sourcetrail_lib ${LIB_FILES})
 add_library(Sourcetrail::lib ALIAS Sourcetrail_lib)
 
 target_include_directories(
@@ -247,16 +244,12 @@ target_include_directories(
     ${CMAKE_SOURCE_DIR}/src/lib_gui/utility/path_detector/
     ${CMAKE_BINARY_DIR}/src/lib)
 
-target_include_directories(
-  Sourcetrail_lib
-  SYSTEM PUBLIC
-    ${EXTERNAL_INCLUDE_PATHS})
-
 target_link_libraries(
   Sourcetrail_lib
   PUBLIC
     project_options
-    project_warnings)
+    project_warnings
+    CppSQLite::CppSQLite3)
 
 target_link_libraries(
   Sourcetrail_lib
@@ -350,7 +343,6 @@ add_custom_command(
 
 add_dependencies(Sourcetrail_lib_gui versionnumber)
 
-# include external header without warnings
 target_include_directories(
   Sourcetrail_lib_gui
   PUBLIC
@@ -358,12 +350,6 @@ target_include_directories(
     ${LIB_INCLUDE_PATHS}
     ${CMAKE_BINARY_DIR}/src/lib_gui
     ${CMAKE_BINARY_DIR}/src/lib)
-
-# include external header without warnings
-target_include_directories(
-  Sourcetrail_lib_gui
-  SYSTEM PUBLIC
-    ${EXTERNAL_INCLUDE_PATHS})
 
 # configure platform specific include file
 configure_file("${PROJECT_SOURCE_DIR}/src/lib_gui/platform_includes/includes.h.in"
@@ -388,7 +374,7 @@ set_property(SOURCE ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h
 add_subdirectory(src/indexer)
 # App --------------------------------------------------------------------------
 add_subdirectory(src/app)
-# Test ----------------------------------------------------------------------
+# Test -------------------------------------------------------------------------
 if(ENABLE_TEST)
   find_package(Catch2 CONFIG REQUIRED)
 
