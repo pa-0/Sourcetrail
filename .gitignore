@@ -2,6 +2,8 @@
 build-*
 /distr/
 /deps/
+.vs/*
+out/*
 
 /bin/app/data/cxx
 /bin/app/data/java/lib/
@@ -73,4 +75,4 @@ CMakeLists.txt.user*
 /deployment/windows/wixSetup/Setup/build/Setup/Release
 /deployment/windows/wixSetup/Setup/build/Setup/x64
 .cache/
-compile_commands.json
+compile_commands.json 
