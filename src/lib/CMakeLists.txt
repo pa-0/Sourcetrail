@@ -64,6 +64,9 @@ add_files(
   component/controller/UndoRedoController.cpp
   component/controller/UndoRedoController.h
 
+  component/controller/ConsoleController.cpp
+  component/controller/ConsoleController.hpp
+
   component/view/helper/CodeScrollParams.h
   component/view/helper/CodeSnippetParams.cpp
   component/view/helper/CodeSnippetParams.h
@@ -112,6 +115,9 @@ add_files(
   component/view/ViewLayout.h
   component/view/ViewWidgetWrapper.cpp
   component/view/ViewWidgetWrapper.h
+
+  component/view/ConsoleView.cpp
+  component/view/ConsoleView.hpp
 
   component/Component.cpp
   component/Component.h
