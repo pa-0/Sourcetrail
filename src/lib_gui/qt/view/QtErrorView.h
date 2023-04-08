@@ -1,8 +1,7 @@
-#ifndef QT_ERROR_VIEW_H
-#define QT_ERROR_VIEW_H
-
+#pragma once
+// Qt5
 #include <QWidget>
-
+// internal
 #include "ControllerProxy.h"
 #include "ErrorController.h"
 #include "ErrorFilter.h"
@@ -18,74 +17,72 @@ class QtHelpButton;
 class QtSelfRefreshIconButton;
 class QtTable;
 
-class QtErrorView
-	: public QWidget
-	, public ErrorView
-{
-	Q_OBJECT
+class QtErrorView final
+    : public QWidget
+    , public ErrorView {
+  Q_OBJECT
 
 public:
-	QtErrorView(ViewLayout* viewLayout);
-	~QtErrorView() = default;
+  explicit QtErrorView(ViewLayout* viewLayout);
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  ~QtErrorView() override;
 
-	// ErrorView implementation
-	void clear() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	void addErrors(
-		const std::vector<ErrorInfo>& errors, const ErrorCountInfo& errorCount, bool scrollTo) override;
-	void setErrorId(Id errorId) override;
+  // ErrorView implementation
+  void clear() override;
 
-	ErrorFilter getErrorFilter() const override;
-	void setErrorFilter(const ErrorFilter& filter) override;
+  void addErrors(const std::vector<ErrorInfo>& errors,
+                 const ErrorCountInfo& errorCount,
+                 bool scrollTo) override;
+  void setErrorId(Id errorId) override;
+
+  ErrorFilter getErrorFilter() const override;
+  void setErrorFilter(const ErrorFilter& filter) override;
 
 private slots:
-	void errorFilterChanged(int i = 0);
+  void errorFilterChanged(int i = 0);
 
 private:
-	enum Column
-	{
-		ID = 0,
-		TYPE = 1,
-		MESSAGE = 2,
-		FILE = 3,
-		LINE = 4,
-		INDEXED = 5,
-		TRANSLATION_UNIT = 6,
-		COLUMN_MAX = TRANSLATION_UNIT
-	};
+  enum class Column : int {
+    ID = 0,
+    TYPE = 1,
+    MESSAGE = 2,
+    FILE = 3,
+    LINE = 4,
+    INDEXED = 5,
+    TRANSLATION_UNIT = 6,
+    COLUMN_MAX = TRANSLATION_UNIT
+  };
 
-	void setStyleSheet() const;
+  void setStyleSheet() const;
 
-	void addErrorToTable(const ErrorInfo& error);
+  void addErrorToTable(const ErrorInfo& error);
 
-	QCheckBox* createFilterCheckbox(const QString& name, bool checked, QBoxLayout* layout);
-	bool isShownError(const ErrorInfo& error);
+  QCheckBox* createFilterCheckbox(const QString& name, bool checked, QBoxLayout* layout);
+  bool isShownError(const ErrorInfo& error);
 
-	static QIcon s_errorIcon;
+  static const QIcon s_errorIcon;
 
-	ControllerProxy<ErrorController> m_controllerProxy;
-	QtThreadedLambdaFunctor m_onQtThread;
+  ControllerProxy<ErrorController> m_controllerProxy;
+  QtThreadedLambdaFunctor m_onQtThread;
 
-	ErrorFilter m_errorFilter;
+  ErrorFilter m_errorFilter;
 
-	QLabel* m_errorLabel;
-	QLabel* m_allLabel;
-	QPushButton* m_allButton;
+  QLabel* m_errorLabel;
+  QLabel* m_allLabel;
+  QPushButton* m_allButton;
 
-	QCheckBox* m_showErrors;
-	QCheckBox* m_showFatals;
-	QCheckBox* m_showNonIndexedErrors;
-	QCheckBox* m_showNonIndexedFatals;
+  QCheckBox* m_showErrors;
+  QCheckBox* m_showFatals;
+  QCheckBox* m_showNonIndexedErrors;
+  QCheckBox* m_showNonIndexedFatals;
 
-	QtHelpButton* m_helpButton;
-	QtSelfRefreshIconButton* m_editButton;
+  QtHelpButton* m_helpButton;
+  QtSelfRefreshIconButton* m_editButton;
 
-	QStandardItemModel* m_model;
-	QtTable* m_table;
+  QStandardItemModel* m_model;
+  QtTable* m_table;
 };
-
-#endif	  // QT_ERROR_VIEW_H

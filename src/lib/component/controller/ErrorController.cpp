@@ -1,5 +1,7 @@
 #include "ErrorController.h"
-
+// STL
+#include <vector>
+// internal
 #include "Application.h"
 #include "ApplicationSettings.h"
 #include "DialogView.h"
@@ -8,16 +10,16 @@
 #include "StorageAccess.h"
 #include "TabId.h"
 
-ErrorController::ErrorController(StorageAccess* storageAccess) : m_storageAccess(storageAccess) {}
+ErrorController::ErrorController(StorageAccess* pStorageAccess) : m_storageAccess(pStorageAccess) {}
 
-ErrorController::~ErrorController() {}
+ErrorController::~ErrorController() = default;
 
 void ErrorController::errorFilterChanged(const ErrorFilter& filter) {
   if(m_tabActiveFilePath[TabId::currentTab()].empty()) {
     MessageActivateErrors(filter).dispatch();
-  } else {
-    MessageActivateErrors(filter, m_tabActiveFilePath[TabId::currentTab()]).dispatch();
+    return;
   }
+  MessageActivateErrors(filter, m_tabActiveFilePath[TabId::currentTab()]).dispatch();
 }
 
 void ErrorController::showError(Id errorId) {
@@ -28,25 +30,25 @@ void ErrorController::showError(Id errorId) {
   MessageShowError(errorId).dispatch();
 }
 
-void ErrorController::handleActivation(const MessageActivateBase* message) {
-  m_tabShowsErrors[dynamic_cast<const MessageBase*>(message)->getSchedulerId()] = false;
+void ErrorController::handleActivation(const MessageActivateBase* pMessage) {
+  m_tabShowsErrors[dynamic_cast<const MessageBase*>(pMessage)->getSchedulerId()] = false;
 }
 
-void ErrorController::handleMessage(MessageActivateErrors* message) {
+void ErrorController::handleMessage(MessageActivateErrors* pMessage) {
   clear();
 
-  m_tabShowsErrors[message->getSchedulerId()] = true;
-  m_tabActiveFilePath[message->getSchedulerId()] = message->file;
+  m_tabShowsErrors[pMessage->getSchedulerId()] = true;
+  m_tabActiveFilePath[pMessage->getSchedulerId()] = pMessage->file;
 
   ErrorView* view = getView();
-  view->setErrorFilter(message->filter);
+  view->setErrorFilter(pMessage->filter);
 
-  if(showErrors(message->filter, true)) {
+  if(showErrors(pMessage->filter, true)) {
     view->showDockWidget();
   }
 }
 
-void ErrorController::handleMessage(MessageErrorCountClear* /*message*/) {
+void ErrorController::handleMessage(MessageErrorCountClear* /*pMessage*/) {
   clear();
 
   ErrorView* view = getView();
@@ -56,8 +58,8 @@ void ErrorController::handleMessage(MessageErrorCountClear* /*message*/) {
   view->setErrorFilter(filter);
 }
 
-void ErrorController::handleMessage(MessageErrorCountUpdate* message) {
-  m_storageAccess->addErrorsToCache(message->newErrors, message->errorCount);
+void ErrorController::handleMessage(MessageErrorCountUpdate* pMessage) {
+  m_storageAccess->addErrorsToCache(pMessage->newErrors, pMessage->errorCount);
   m_newErrorsAdded = true;
 
   ErrorFilter filter = getView()->getErrorFilter();
@@ -67,7 +69,7 @@ void ErrorController::handleMessage(MessageErrorCountUpdate* message) {
     filter.limit = 0;
     std::vector<ErrorInfo> errors;
 
-    for(const ErrorInfo& error : message->newErrors) {
+    for(const ErrorInfo& error : pMessage->newErrors) {
       if(filter.filter(error)) {
         errors.push_back(error);
 
@@ -77,7 +79,7 @@ void ErrorController::handleMessage(MessageErrorCountUpdate* message) {
       }
     }
 
-    getView()->addErrors(errors, message->errorCount, true);
+    getView()->addErrors(errors, pMessage->errorCount, true);
 
     if(!Application::getInstance()->getDialogView(DialogView::UseCase::INDEXING)->dialogsHidden()) {
       getView()->showDockWidget();
@@ -87,11 +89,11 @@ void ErrorController::handleMessage(MessageErrorCountUpdate* message) {
   }
 }
 
-void ErrorController::handleMessage(MessageErrorsAll* /*message*/) {
+void ErrorController::handleMessage(MessageErrorsAll* /*pMessage*/) {
   MessageActivateErrors(getView()->getErrorFilter()).dispatch();
 }
 
-void ErrorController::handleMessage(MessageErrorsForFile* message) {
+void ErrorController::handleMessage(MessageErrorsForFile* pMessage) {
   std::shared_ptr<const Project> project = Application::getInstance()->getCurrentProject();
   if(project && project->isIndexing()) {
     Application::getInstance()->handleDialog(
@@ -99,12 +101,12 @@ void ErrorController::handleMessage(MessageErrorsForFile* message) {
     return;
   }
 
-  MessageActivateErrors(ErrorFilter(), message->file).dispatch();
+  MessageActivateErrors(ErrorFilter(), pMessage->file).dispatch();
 }
 
-void ErrorController::handleMessage(MessageErrorsHelpMessage* message) {
+void ErrorController::handleMessage(MessageErrorsHelpMessage* pMessage) {
   ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
-  if(!message->force) {
+  if(!pMessage->force) {
     if(appSettings->getSeenErrorHelpMessage()) {
       return;
     }
@@ -121,7 +123,7 @@ void ErrorController::handleMessage(MessageErrorsHelpMessage* message) {
   m_onQtThread([=]() { createErrorHelpButtonInfo().displayMessage(nullptr); });
 }
 
-void ErrorController::handleMessage(MessageIndexingFinished* /*message*/) {
+void ErrorController::handleMessage(MessageIndexingFinished* /*pMessage*/) {
   m_storageAccess->setUseErrorCache(false);
 
   clear();
@@ -129,12 +131,12 @@ void ErrorController::handleMessage(MessageIndexingFinished* /*message*/) {
   showErrors(getView()->getErrorFilter(), false);
 }
 
-void ErrorController::handleMessage(MessageIndexingStarted* /*message*/) {
+void ErrorController::handleMessage(MessageIndexingStarted* /*pMessage*/) {
   m_storageAccess->setUseErrorCache(true);
 }
 
-void ErrorController::handleMessage(MessageShowError* message) {
-  getView()->setErrorId(message->errorId);
+void ErrorController::handleMessage(MessageShowError* pMessage) {
+  getView()->setErrorId(pMessage->errorId);
 }
 
 ErrorView* ErrorController::getView() const {
@@ -151,7 +153,7 @@ void ErrorController::clear() {
 }
 
 bool ErrorController::showErrors(const ErrorFilter& filter, bool scrollTo) {
-  ErrorView* view = getView();
+  auto* pView = getView();
 
   ErrorFilter filterUnlimited = filter;
   filterUnlimited.limit = 0;
@@ -169,7 +171,7 @@ bool ErrorController::showErrors(const ErrorFilter& filter, bool scrollTo) {
     errors.resize(filter.limit);
   }
 
-  view->addErrors(errors, errorCount, scrollTo);
+  pView->addErrors(errors, errorCount, scrollTo);
 
-  return errors.size();
+  return !errors.empty();
 }
