@@ -13,14 +13,15 @@ class ComponentFactory {
 public:
   ComponentFactory(const ViewFactory* viewFactory, StorageAccess* storageAccess);
 
-  const ViewFactory* getViewFactory() const;
-  StorageAccess* getStorageAccess() const;
+  [[nodiscard]] const ViewFactory* getViewFactory() const;
+  [[nodiscard]] StorageAccess* getStorageAccess() const;
 
   std::shared_ptr<Component> createActivationComponent();
   std::shared_ptr<Component> createBookmarkComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createCodeComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createCustomTrailComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createErrorComponent(ViewLayout* viewLayout);
+  std::shared_ptr<Component> createConsoleComponent(ViewLayout* pViewLayout);
   std::shared_ptr<Component> createGraphComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createRefreshComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createScreenSearchComponent(ViewLayout* viewLayout);

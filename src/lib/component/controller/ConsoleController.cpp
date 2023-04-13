@@ -1,5 +1,8 @@
 #include "ConsoleController.hpp"
+#include "StorageAccess.h"
 
-ConsoleController::ConsoleController() = default;
+ConsoleController::ConsoleController([[maybe_unused]] StorageAccess* pViewLayout) {}
 
 ConsoleController::~ConsoleController() = default;
+
+void ConsoleController::clear() {}

@@ -114,6 +114,9 @@ void ComponentManager::setupMain(ViewLayout* viewLayout, Id appId)
 		tabbedView.get());
 	m_components.push_back(errorComponent);
 
+	auto consoleComponent = m_componentFactory.createConsoleComponent(tabbedView.get());
+	m_components.push_back(consoleComponent);
+
 	std::shared_ptr<Component> bookmarkComponent = m_componentFactory.createBookmarkComponent(
 		compositeView.get());
 	m_components.push_back(bookmarkComponent);

@@ -5,6 +5,7 @@
 #include "QtBookmarkView.h"
 #include "QtCodeView.h"
 #include "QtCompositeView.h"
+#include "QtConsoleView.hpp"
 #include "QtCustomTrailView.h"
 #include "QtDialogView.h"
 #include "QtErrorView.h"
@@ -62,6 +63,10 @@ std::shared_ptr<CustomTrailView> QtViewFactory::createCustomTrailView(ViewLayout
 
 std::shared_ptr<ErrorView> QtViewFactory::createErrorView(ViewLayout* viewLayout) const {
   return View::createAndAddToLayout<QtErrorView>(viewLayout);
+}
+
+std::shared_ptr<ConsoleView> QtViewFactory::createConsoleView(ViewLayout* pViewLayout) const {
+  return View::createAndAddToLayout<QtConsoleView>(pViewLayout);
 }
 
 std::shared_ptr<StatusView> QtViewFactory::createStatusView(ViewLayout* viewLayout) const {

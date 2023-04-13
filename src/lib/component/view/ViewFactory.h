@@ -8,6 +8,7 @@
 class BookmarkButtonsView;
 class BookmarkView;
 class CodeView;
+class ConsoleView;
 class CustomTrailView;
 class ErrorView;
 class GraphView;
@@ -43,6 +44,7 @@ public:
   virtual std::shared_ptr<CodeView> createCodeView(ViewLayout* viewLayout) const = 0;
   virtual std::shared_ptr<CustomTrailView> createCustomTrailView(ViewLayout* viewLayout) const = 0;
   virtual std::shared_ptr<ErrorView> createErrorView(ViewLayout* viewLayout) const = 0;
+  virtual std::shared_ptr<ConsoleView> createConsoleView(ViewLayout* pViewLayout) const = 0;
   virtual std::shared_ptr<GraphView> createGraphView(ViewLayout* viewLayout) const = 0;
   virtual std::shared_ptr<RefreshView> createRefreshView(ViewLayout* viewLayout) const = 0;
   virtual std::shared_ptr<ScreenSearchView> createScreenSearchView(ViewLayout* viewLayout) const = 0;

@@ -10,13 +10,12 @@
 
 QtConsoleView::QtConsoleView(ViewLayout* pViewLayout)
     : ConsoleView(pViewLayout), m_pEditor {new QTextEdit} {
-  layout()->addWidget(m_pEditor);
   // Must be called
-  setWidgetWrapper(std::make_shared<QtViewWidgetWrapper>(new QFrame));
+  setWidgetWrapper(std::make_shared<QtViewWidgetWrapper>(new QFrame)); // NOLINT(cppcoreguidelines-owning-memory): Qt manage the memory
 
   auto* pWidget = QtViewWidgetWrapper::getWidgetOfView(this);
 
-  auto* pLayout = new QVBoxLayout;
+  auto* pLayout = new QVBoxLayout; // NOLINT(cppcoreguidelines-owning-memory): Qt manage the memory
   pLayout->setContentsMargins(0, 0, 0, 0);
   pLayout->setSpacing(0);
   pWidget->setLayout(pLayout);
