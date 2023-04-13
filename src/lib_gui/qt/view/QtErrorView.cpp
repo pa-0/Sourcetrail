@@ -23,12 +23,15 @@
 #include "TabId.h"
 #include "utilityQt.h"
 
-const QIcon QtErrorView::s_errorIcon = QIcon(QString::fromStdWString(
-    ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/error.png").wstr()));
+QIcon QtErrorView::s_errorIcon;
 
 QtErrorView::QtErrorView(ViewLayout* pViewLayout)
     : ErrorView(pViewLayout), m_controllerProxy(this, TabId::app()) {
-  setWidgetWrapper(std::make_shared<QtViewWidgetWrapper>(new QFrame()));
+  setWidgetWrapper(std::make_shared<QtViewWidgetWrapper>(new QFrame));
+  if(s_errorIcon.isNull()) {
+    s_errorIcon = QIcon(QString::fromStdWString(
+    ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/error.png").wstr()));
+  }
 
   QWidget* widget = QtViewWidgetWrapper::getWidgetOfView(this);
 

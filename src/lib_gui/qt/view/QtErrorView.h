@@ -64,7 +64,7 @@ private:
   QCheckBox* createFilterCheckbox(const QString& name, bool checked, QBoxLayout* layout);
   bool isShownError(const ErrorInfo& error);
 
-  static const QIcon s_errorIcon;
+  static QIcon s_errorIcon;
 
   ControllerProxy<ErrorController> m_controllerProxy;
   QtThreadedLambdaFunctor m_onQtThread;
