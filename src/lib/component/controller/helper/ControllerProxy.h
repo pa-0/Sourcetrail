@@ -1,53 +1,40 @@
-#ifndef CONTROLLER_PROXY_H
-#define CONTROLLER_PROXY_H
-
+#pragma once
+// STL
 #include <functional>
-
+// internal
 #include "TaskLambda.h"
-
 #include "View.h"
 
 template <typename ControllerType>
-class ControllerProxy
-{
+class ControllerProxy {
 public:
-	ControllerProxy(View* view, Id schedulerId): m_view(view), m_schedulerId(schedulerId) {}
+  ControllerProxy(View* pView, Id schedulerId) : m_pView(pView), m_schedulerId(schedulerId) {}
 
-	void execute(std::function<void(ControllerType*)> callback)
-	{
-		ControllerType* controller = m_view->getController<ControllerType>();
-		if (controller)
-		{
-			callback(controller);
-		}
-	}
+  void execute(std::function<void(ControllerType*)> callback) {
+    ControllerType* pController = m_pView->getController<ControllerType>();
+    if(pController != nullptr) {
+      callback(pController);
+    }
+  }
 
-	void executeAsTask(std::function<void(ControllerType*)> callback)
-	{
-		ControllerType* controller = m_view->getController<ControllerType>();
-		if (controller)
-		{
-			Task::dispatch(
-				m_schedulerId, std::make_shared<TaskLambda>(std::bind(callback, controller)));
-		}
-	}
+  void executeAsTask(std::function<void(ControllerType*)> callback) {
+    ControllerType* pController = m_pView->getController<ControllerType>();
+    if(pController != nullptr) {
+      Task::dispatch(m_schedulerId, std::make_shared<TaskLambda>(std::bind(callback, pController)));
+    }
+  }
 
-	template <typename FuncType, typename... Args>
-	void executeAsTaskWithArgs(FuncType callback, const Args... args)
-	{
-		ControllerType* controller = m_view->getController<ControllerType>();
-		if (controller)
-		{
-			Task::dispatch(
-				m_schedulerId,
-				std::make_shared<TaskLambda>(
-					[func = std::bind(callback, controller, args...)]() { func(); }));
-		}
-	}
+  template <typename FuncType, typename... Args>
+  void executeAsTaskWithArgs(FuncType callback, const Args... args) {
+    ControllerType* pController = m_pView->getController<ControllerType>();
+    if(pController != nullptr) {
+      Task::dispatch(m_schedulerId,
+                     std::make_shared<TaskLambda>(
+                         [func = std::bind(callback, pController, args...)]() { func(); }));
+    }
+  }
 
 private:
-	View* m_view;
-	Id m_schedulerId;
+  View* m_pView;
+  Id m_schedulerId;
 };
-
-#endif	  // CONTROLLER_PROXY_H
