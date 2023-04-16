@@ -11,11 +11,17 @@ class MessageBase;
 class MessageFilter;
 class MessageListenerBase;
 
-class MessageQueue {
+class MessageQueue final {
 public:
+  using Ptr = std::shared_ptr<MessageQueue>;
   using MessageBufferType = std::deque<std::shared_ptr<MessageBase>>;
 
-  static std::shared_ptr<MessageQueue> getInstance();
+  static Ptr getInstance();
+
+  MessageQueue(const MessageQueue&) = delete;
+  MessageQueue(MessageQueue&&) = delete;
+  MessageQueue& operator=(const MessageQueue&) = delete;
+  MessageQueue& operator=(MessageQueue&&) = delete;
 
   ~MessageQueue();
 
@@ -27,7 +33,7 @@ public:
   void addMessageFilter(std::shared_ptr<MessageFilter> pFilter);
 
   void pushMessage(std::shared_ptr<MessageBase> pMessage);
-  void processMessage(std::shared_ptr<MessageBase> pMessage, bool asNextTask);
+  void processMessage(const std::shared_ptr<MessageBase>&, bool asNextTask);
 
   void startMessageLoopThreaded();
   void startMessageLoop();
@@ -39,15 +45,13 @@ public:
   void setSendMessagesAsTasks(bool sendMessagesAsTasks);
 
 private:
-  static std::shared_ptr<MessageQueue> s_instance;
+  static Ptr s_instance; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
   MessageQueue();
-  MessageQueue(const MessageQueue&) = delete;
-  void operator=(const MessageQueue&) = delete;
 
   void processMessages();
-  void sendMessage(std::shared_ptr<MessageBase> pMessage);
-  void sendMessageAsTask(std::shared_ptr<MessageBase> pMessage, bool asNextTask) const;
+  void sendMessage(const std::shared_ptr<MessageBase>& pMessage);
+  void sendMessageAsTask(const std::shared_ptr<MessageBase>& pMessage, bool asNextTask) const;
 
   MessageBufferType m_messageBuffer;
   std::vector<MessageListenerBase*> m_listeners;

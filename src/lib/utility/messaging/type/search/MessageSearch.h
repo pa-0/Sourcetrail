@@ -8,7 +8,7 @@
 
 class MessageSearch final : public Message<MessageSearch> {
 public:
-  static const std::string getStaticType() {
+  static std::string getStaticType() {
     return "MessageSearch";
   }
 
@@ -17,7 +17,7 @@ public:
     setSchedulerId(TabId::currentTab());
   }
 
-  const std::vector<SearchMatch>& getMatches() const {
+  [[nodiscard]] const std::vector<SearchMatch>& getMatches() const {
     return m_matches;
   }
 

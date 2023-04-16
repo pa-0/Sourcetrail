@@ -36,7 +36,6 @@ set(
   LowMemoryStringMapTestSuite
   MatrixBaseTestSuite
   MatrixDynamicBaseTestSuite
-  MessageQueueTestSuite
   NetworkProtocolHelperTestSuite
   ProjectSettingsTestSuite
   RefreshInfoGeneratorTestSuite

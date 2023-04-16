@@ -1,6 +1,7 @@
 #include "MessageQueue.h"
 // STL
 #include <chrono>
+#include <mutex>
 #include <thread>
 // internal
 #include "MessageBase.h"
@@ -12,7 +13,7 @@
 #include "TaskLambda.h"
 #include "logging.h"
 
-std::shared_ptr<MessageQueue> MessageQueue::getInstance() {
+MessageQueue::Ptr MessageQueue::getInstance() {
   if(!s_instance) {
     s_instance = std::shared_ptr<MessageQueue>(new MessageQueue());
   }
@@ -20,23 +21,23 @@ std::shared_ptr<MessageQueue> MessageQueue::getInstance() {
 }
 
 MessageQueue::~MessageQueue() {
-  std::lock_guard<std::mutex> lock(m_listenersMutex);
-  for(size_t i = 0; i < m_listeners.size(); i++) {
-    m_listeners[i]->removedListener();
+  std::scoped_lock<std::mutex> lock(m_listenersMutex);
+  for(auto& m_listener : m_listeners) {
+    m_listener->removedListener();
   }
   m_listeners.clear();
 }
 
 void MessageQueue::registerListener(MessageListenerBase* pListener) {
-  std::lock_guard<std::mutex> lock(m_listenersMutex);
+  std::scoped_lock<std::mutex> lock(m_listenersMutex);
   m_listeners.push_back(pListener);
 }
 
 void MessageQueue::unregisterListener(MessageListenerBase* pListener) {
-  std::lock_guard<std::mutex> lock(m_listenersMutex);
+  std::scoped_lock<std::mutex> lock(m_listenersMutex);
   for(size_t i = 0; i < m_listeners.size(); i++) {
     if(m_listeners[i] == pListener) {
-      m_listeners.erase(m_listeners.begin() + i);
+      m_listeners.erase(m_listeners.begin() + static_cast<long>(i));
 
       // m_currentListenerIndex and m_listenersLength need to be updated in case this happens
       // while a message is handled.
@@ -56,46 +57,47 @@ void MessageQueue::unregisterListener(MessageListenerBase* pListener) {
 }
 
 MessageListenerBase* MessageQueue::getListenerById(Id listenerId) const {
-  std::lock_guard<std::mutex> lock(m_listenersMutex);
-  for(size_t i = 0; i < m_listeners.size(); i++) {
-    if(m_listeners[i]->getId() == listenerId) {
-      return m_listeners[i];
+  std::scoped_lock<std::mutex> lock(m_listenersMutex);
+  for(auto* m_listener : m_listeners) {
+    if(m_listener->getId() == listenerId) {
+      return m_listener;
     }
   }
   return nullptr;
 }
 
 void MessageQueue::addMessageFilter(std::shared_ptr<MessageFilter> pFilter) {
-  m_filters.push_back(pFilter);
+  m_filters.push_back(std::move(pFilter));
 }
 
 void MessageQueue::pushMessage(std::shared_ptr<MessageBase> pMessage) {
-  std::lock_guard<std::mutex> lock(m_messageBufferMutex);
-  m_messageBuffer.push_back(pMessage);
+  std::scoped_lock<std::mutex> lock(m_messageBufferMutex);
+  m_messageBuffer.push_back(std::move(pMessage));
 }
 
-void MessageQueue::processMessage(std::shared_ptr<MessageBase> pMessage, bool asNextTask) {
+void MessageQueue::processMessage(const std::shared_ptr<MessageBase>& pMessage, bool asNextTask) {
   if(pMessage->isLogged()) {
     LOG_INFO_BARE(L"send " + pMessage->str());
   }
 
   if(m_sendMessagesAsTasks && pMessage->sendAsTask()) {
     sendMessageAsTask(pMessage, asNextTask);
-  } else {
-    sendMessage(pMessage);
+    return;
   }
+
+  sendMessage(pMessage);
 }
 
 void MessageQueue::startMessageLoopThreaded() {
   std::thread(&MessageQueue::startMessageLoop, this).detach();
 
-  std::lock_guard<std::mutex> lock(m_threadMutex);
+  std::scoped_lock<std::mutex> lock(m_threadMutex);
   m_threadIsRunning = true;
 }
 
 void MessageQueue::startMessageLoop() {
   {
-    std::lock_guard<std::mutex> lock(m_loopMutex);
+    std::scoped_lock<std::mutex> lock(m_loopMutex);
 
     if(m_loopIsRunning) {
       LOG_ERROR("Loop is already running");
@@ -109,7 +111,7 @@ void MessageQueue::startMessageLoop() {
     processMessages();
 
     {
-      std::lock_guard<std::mutex> lock(m_loopMutex);
+      std::scoped_lock<std::mutex> lock(m_loopMutex);
 
       if(!m_loopIsRunning) {
         break;
@@ -120,7 +122,7 @@ void MessageQueue::startMessageLoop() {
   }
 
   {
-    std::lock_guard<std::mutex> lock(m_threadMutex);
+    std::scoped_lock<std::mutex> lock(m_threadMutex);
     if(m_threadIsRunning) {
       m_threadIsRunning = false;
     }
@@ -129,7 +131,7 @@ void MessageQueue::startMessageLoop() {
 
 void MessageQueue::stopMessageLoop() {
   {
-    std::lock_guard<std::mutex> lock(m_loopMutex);
+    std::scoped_lock<std::mutex> lock(m_loopMutex);
 
     if(!m_loopIsRunning) {
       LOG_WARNING("Loop is not running");
@@ -140,7 +142,7 @@ void MessageQueue::stopMessageLoop() {
 
   while(true) {
     {
-      std::lock_guard<std::mutex> lock(m_threadMutex);
+      std::scoped_lock<std::mutex> lock(m_threadMutex);
       if(!m_threadIsRunning) {
         break;
       }
@@ -151,20 +153,20 @@ void MessageQueue::stopMessageLoop() {
 }
 
 bool MessageQueue::loopIsRunning() const {
-  std::lock_guard<std::mutex> lock(m_loopMutex);
+  std::scoped_lock<std::mutex> lock(m_loopMutex);
   return m_loopIsRunning;
 }
 
 bool MessageQueue::hasMessagesQueued() const {
-  std::lock_guard<std::mutex> lock(m_messageBufferMutex);
-  return m_messageBuffer.size() > 0;
+  std::scoped_lock<std::mutex> lock(m_messageBufferMutex);
+  return !m_messageBuffer.empty();
 }
 
 void MessageQueue::setSendMessagesAsTasks(bool sendMessagesAsTasks) {
   m_sendMessagesAsTasks = sendMessagesAsTasks;
 }
 
-std::shared_ptr<MessageQueue> MessageQueue::s_instance;
+MessageQueue::Ptr MessageQueue::s_instance; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MessageQueue::MessageQueue()
     : m_currentListenerIndex(0)
@@ -177,17 +179,17 @@ void MessageQueue::processMessages() {
   while(true) {
     std::shared_ptr<MessageBase> message;
     {
-      std::lock_guard<std::mutex> lock(m_messageBufferMutex);
+      std::scoped_lock<std::mutex> lock(m_messageBufferMutex);
 
-      for(std::shared_ptr<MessageFilter> filter : m_filters) {
-        if(!m_messageBuffer.size()) {
+      for(const auto& filter : m_filters) {
+        if(m_messageBuffer.empty()) {
           break;
         }
 
         filter->filter(&m_messageBuffer);
       }
 
-      if(!m_messageBuffer.size()) {
+      if(m_messageBuffer.empty()) {
         break;
       }
 
@@ -199,8 +201,8 @@ void MessageQueue::processMessages() {
   }
 }
 
-void MessageQueue::sendMessage(std::shared_ptr<MessageBase> pMessage) {
-  std::lock_guard<std::mutex> lock(m_listenersMutex);
+void MessageQueue::sendMessage(const std::shared_ptr<MessageBase>& pMessage) {
+  std::scoped_lock<std::mutex> lock(m_listenersMutex);
 
   // m_listenersLength is saved, so that new listeners registered within message handling don't
   // get the current message and the length can be reduced when a listener gets unregistered.
@@ -223,7 +225,7 @@ void MessageQueue::sendMessage(std::shared_ptr<MessageBase> pMessage) {
   }
 }
 
-void MessageQueue::sendMessageAsTask(std::shared_ptr<MessageBase> pMessage, bool asNextTask) const {
+void MessageQueue::sendMessageAsTask(const std::shared_ptr<MessageBase>& pMessage, bool asNextTask) const {
   std::shared_ptr<TaskGroup> taskGroup;
   if(pMessage->isParallel()) {
     taskGroup = std::make_shared<TaskGroupParallel>();
@@ -232,17 +234,15 @@ void MessageQueue::sendMessageAsTask(std::shared_ptr<MessageBase> pMessage, bool
   }
 
   {
-    std::lock_guard<std::mutex> lock(m_listenersMutex);
-    for(size_t i = 0; i < m_listeners.size(); i++) {
-      auto* pListener = m_listeners[i];
-
+    std::scoped_lock<std::mutex> lock(m_listenersMutex);
+    for(auto pListener : m_listeners) {
       if(pListener->getType() == pMessage->getType() &&
          (pMessage->getSchedulerId() == 0 || pListener->getSchedulerId() == 0 ||
           pListener->getSchedulerId() == pMessage->getSchedulerId())) {
         Id listenerId = pListener->getId();
         taskGroup->addTask(std::make_shared<TaskLambda>([listenerId, pMessage]() {
           auto* pInnerListener = MessageQueue::getInstance()->getListenerById(listenerId);
-          if(pInnerListener) {
+          if(pInnerListener != nullptr) {
             pInnerListener->handleMessageBase(pMessage.get());
           }
         }));
@@ -251,7 +251,7 @@ void MessageQueue::sendMessageAsTask(std::shared_ptr<MessageBase> pMessage, bool
   }
 
   Id schedulerId = pMessage->getSchedulerId();
-  if(!schedulerId) {
+  if(schedulerId == 0U) {
     schedulerId = TabId::app();
   }
 
