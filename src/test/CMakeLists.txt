@@ -30,7 +30,6 @@ target_include_directories(
 set(
   test_lib_names
   CommandlineTestSuite
-  ConfigManagerTestSuite
   GraphTestSuite
   HierarchyCacheTestSuite
   LogManagerTestSuite
@@ -51,7 +50,6 @@ set(
   SqliteIndexStorageTestSuite
   StorageTestSuite
   TaskSchedulerTestSuite
-  TextAccessTestSuite
   UtilityStringTestSuite
   UtilityTestSuite
   Vector2TestSuite)

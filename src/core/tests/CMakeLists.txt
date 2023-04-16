@@ -4,7 +4,11 @@ set(
   FileManagerTestSuite
   FilePathFilterTestSuite
   FilePathTestSuite
-  FileSystemTestSuite)
+  FileSystemTestSuite
+  
+  ConfigManagerTestSuite
+  
+  TextAccessTestSuite)
 
 foreach(test_name IN LISTS test_lib_names)
   add_executable(${test_name} ${test_name}.cpp)
