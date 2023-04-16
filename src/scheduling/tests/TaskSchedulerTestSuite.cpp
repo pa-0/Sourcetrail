@@ -1,283 +1,255 @@
-#include <catch2/catch_all.hpp>
-
+// STL
 #include <chrono>
 #include <thread>
-
+// catch2
+#include <catch2/catch_all.hpp>
+// internal
 #include "Blackboard.h"
 #include "Task.h"
 #include "TaskGroupSelector.h"
 #include "TaskGroupSequence.h"
 #include "TaskScheduler.h"
 
-namespace
-{
-void executeTask(Task& task)
-{
-	std::shared_ptr<Blackboard> blackboard = std::make_shared<Blackboard>();
-	while (true)
-	{
-		if (task.update(blackboard) != Task::STATE_RUNNING)
-		{
-			return;
-		}
-	}
+namespace {
+void executeTask(Task& task) {
+  std::shared_ptr<Blackboard> blackboard = std::make_shared<Blackboard>();
+  while(true) {
+    if(task.update(blackboard) != Task::STATE_RUNNING) {
+      return;
+    }
+  }
 }
 
-class TestTask: public Task
-{
+class TestTask : public Task {
 public:
-	TestTask(int* orderCountPtr, int updateCount, TaskState returnState = STATE_SUCCESS)
-		: orderCount(*orderCountPtr)
-		, updateCount(updateCount)
-		, returnState(returnState)
-		, enterCallOrder(0)
-		, updateCallOrder(0)
-		, exitCallOrder(0)
-		, resetCallOrder(0)
-	{
-	}
+  TestTask(int* orderCountPtr, int updateCount, TaskState returnState = STATE_SUCCESS)
+      : orderCount(*orderCountPtr), updateCount(updateCount), returnState(returnState) {}
 
-	virtual void doEnter(std::shared_ptr<Blackboard> blackboard)
-	{
-		enterCallOrder = ++orderCount;
-	}
+  void doEnter(std::shared_ptr<Blackboard> /*blackboard*/) override {
+    enterCallOrder = ++orderCount;
+  }
 
-	virtual TaskState doUpdate(std::shared_ptr<Blackboard> blackboard)
-	{
-		updateCallOrder = ++orderCount;
+  TaskState doUpdate(std::shared_ptr<Blackboard> /*blackboard*/) override {
+    updateCallOrder = ++orderCount;
 
-		if (updateCount < 0)
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			return Task::STATE_RUNNING;
-		}
+    if(updateCount < 0) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      return Task::STATE_RUNNING;
+    }
 
-		updateCount--;
-		if (updateCount)
-		{
-			return Task::STATE_RUNNING;
-		}
+    updateCount--;
+    if(updateCount != 0) {
+      return Task::STATE_RUNNING;
+    }
 
-		return returnState;
-	}
+    return returnState;
+  }
 
-	virtual void doExit(std::shared_ptr<Blackboard> blackboard)
-	{
-		exitCallOrder = ++orderCount;
-	}
+  void doExit(std::shared_ptr<Blackboard> /*blackboard*/) override {
+    exitCallOrder = ++orderCount;
+  }
 
-	virtual void doReset(std::shared_ptr<Blackboard> blackboard)
-	{
-		resetCallOrder = ++orderCount;
-	}
+  void doReset(std::shared_ptr<Blackboard> /*blackboard*/) override {
+    resetCallOrder = ++orderCount;
+  }
 
-	int& orderCount;
-	int updateCount;
-	TaskState returnState;
+  int& orderCount;
+  int updateCount;
+  TaskState returnState;
 
-	int enterCallOrder;
-	int updateCallOrder;
-	int exitCallOrder;
-	int resetCallOrder;
+  int enterCallOrder {};
+  int updateCallOrder {};
+  int exitCallOrder {};
+  int resetCallOrder {};
 };
 
-class TestTaskDispatch: public TestTask
-{
+class TestTaskDispatch : public TestTask {
 public:
-	TestTaskDispatch(int* orderCountPtr, int updateCount, TaskScheduler* scheduler)
-		: TestTask(orderCountPtr, updateCount), scheduler(scheduler)
-	{
-	}
+  TestTaskDispatch(int* orderCountPtr, int updateCount, TaskScheduler* scheduler)
+      : TestTask(orderCountPtr, updateCount), scheduler(scheduler) {}
 
-	virtual TaskState doUpdate(std::shared_ptr<Blackboard> blackboard)
-	{
-		subTask = std::make_shared<TestTask>(&orderCount, 1);
-		scheduler->pushTask(subTask);
+  TaskState doUpdate(std::shared_ptr<Blackboard> blackboard) override {
+    subTask = std::make_shared<TestTask>(&orderCount, 1);
+    scheduler->pushTask(subTask);
 
-		return TestTask::doUpdate(blackboard);
-	}
+    return TestTask::doUpdate(blackboard);
+  }
 
-	TaskScheduler* scheduler;
-	std::shared_ptr<TestTask> subTask;
+  TaskScheduler* scheduler;
+  std::shared_ptr<TestTask> subTask;
 };
 
-void waitForThread(TaskScheduler& scheduler)
-{
-	static const int THREAD_WAIT_TIME_MS = 20;
-	do
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_WAIT_TIME_MS));
-	} while (scheduler.hasTasksQueued());
+void waitForThread(TaskScheduler& scheduler) {
+  static const int THREAD_WAIT_TIME_MS = 20;
+  do {
+    std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_WAIT_TIME_MS));
+  } while(scheduler.hasTasksQueued());
 }
-}	 // namespace
+}    // namespace
 
-TEST_CASE("scheduler loop starts and stops")
-{
-	TaskScheduler scheduler(0);
-	REQUIRE(!scheduler.loopIsRunning());
+// NOLINTNEXTLINE(cert-err58-cpp)
+TEST_CASE("scheduler loop starts and stops", "[scheduling]") {
+  TaskScheduler scheduler(0);
+  REQUIRE(!scheduler.loopIsRunning());
 
-	scheduler.startSchedulerLoopThreaded();
+  scheduler.startSchedulerLoopThreaded();
 
-	waitForThread(scheduler);
+  waitForThread(scheduler);
 
-	REQUIRE(scheduler.loopIsRunning());
+  REQUIRE(scheduler.loopIsRunning());
 
-	scheduler.stopSchedulerLoop();
+  scheduler.stopSchedulerLoop();
 
-	waitForThread(scheduler);
+  waitForThread(scheduler);
 
-	REQUIRE(!scheduler.loopIsRunning());
+  REQUIRE(!scheduler.loopIsRunning());
 }
 
-TEST_CASE("tasks get executed without scheduling in correct order")
-{
-	int order = 0;
-	TestTask task(&order, 1);
+TEST_CASE("tasks get executed without scheduling in correct order", "[scheduling]") {
+  int order = 0;
+  TestTask task(&order, 1);
 
-	executeTask(task);
+  executeTask(task);
 
-	REQUIRE(3 == order);
+  REQUIRE(3 == order);
 
-	REQUIRE(1 == task.enterCallOrder);
-	REQUIRE(2 == task.updateCallOrder);
-	REQUIRE(3 == task.exitCallOrder);
+  REQUIRE(1 == task.enterCallOrder);
+  REQUIRE(2 == task.updateCallOrder);
+  REQUIRE(3 == task.exitCallOrder);
 }
 
-TEST_CASE("scheduled tasks get processed with callbacks in correct order")
-{
-	TaskScheduler scheduler(0);
-	scheduler.startSchedulerLoopThreaded();
+TEST_CASE("scheduled tasks get processed with callbacks in correct order", "[scheduling]") {
+  TaskScheduler scheduler(0);
+  scheduler.startSchedulerLoopThreaded();
 
-	int order = 0;
-	std::shared_ptr<TestTask> task = std::make_shared<TestTask>(&order, 1);
+  int order = 0;
+  std::shared_ptr<TestTask> task = std::make_shared<TestTask>(&order, 1);
 
-	scheduler.pushTask(task);
+  scheduler.pushTask(task);
 
-	waitForThread(scheduler);
+  waitForThread(scheduler);
 
-	scheduler.stopSchedulerLoop();
+  scheduler.stopSchedulerLoop();
 
-	REQUIRE(3 == order);
+  REQUIRE(3 == order);
 
-	REQUIRE(1 == task->enterCallOrder);
-	REQUIRE(2 == task->updateCallOrder);
-	REQUIRE(3 == task->exitCallOrder);
+  REQUIRE(1 == task->enterCallOrder);
+  REQUIRE(2 == task->updateCallOrder);
+  REQUIRE(3 == task->exitCallOrder);
 }
 
-TEST_CASE("sequential task group to process tasks in correct order")
-{
-	TaskScheduler scheduler(0);
-	scheduler.startSchedulerLoopThreaded();
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+TEST_CASE("sequential task group to process tasks in correct order", "[scheduling]") {
+  TaskScheduler scheduler(0);
+  scheduler.startSchedulerLoopThreaded();
 
-	int order = 0;
-	std::shared_ptr<TestTask> task1 = std::make_shared<TestTask>(&order, 1);
-	std::shared_ptr<TestTask> task2 = std::make_shared<TestTask>(&order, 1);
+  int order = 0;
+  std::shared_ptr<TestTask> task1 = std::make_shared<TestTask>(&order, 1);
+  std::shared_ptr<TestTask> task2 = std::make_shared<TestTask>(&order, 1);
 
-	std::shared_ptr<TaskGroupSequence> taskGroup = std::make_shared<TaskGroupSequence>();
-	taskGroup->addTask(task1);
-	taskGroup->addTask(task2);
+  std::shared_ptr<TaskGroupSequence> taskGroup = std::make_shared<TaskGroupSequence>();
+  taskGroup->addTask(task1);
+  taskGroup->addTask(task2);
 
-	scheduler.pushTask(taskGroup);
+  scheduler.pushTask(taskGroup);
 
-	waitForThread(scheduler);
+  waitForThread(scheduler);
 
-	scheduler.stopSchedulerLoop();
+  scheduler.stopSchedulerLoop();
 
-	REQUIRE(6 == order);
+  REQUIRE(6 == order);
 
-	REQUIRE(1 == task1->enterCallOrder);
-	REQUIRE(2 == task1->updateCallOrder);
-	REQUIRE(3 == task1->exitCallOrder);
+  REQUIRE(1 == task1->enterCallOrder);
+  REQUIRE(2 == task1->updateCallOrder);
+  REQUIRE(3 == task1->exitCallOrder);
 
-	REQUIRE(4 == task2->enterCallOrder);
-	REQUIRE(5 == task2->updateCallOrder);
-	REQUIRE(6 == task2->exitCallOrder);
+  REQUIRE(4 == task2->enterCallOrder);
+  REQUIRE(5 == task2->updateCallOrder);
+  REQUIRE(6 == task2->exitCallOrder);
 }
 
-TEST_CASE("sequential task group does not evaluate tasks after failure")
-{
-	TaskScheduler scheduler(0);
-	scheduler.startSchedulerLoopThreaded();
+TEST_CASE("sequential task group does not evaluate tasks after failure", "[scheduling]") {
+  TaskScheduler scheduler(0);
+  scheduler.startSchedulerLoopThreaded();
 
-	int order = 0;
-	std::shared_ptr<TestTask> task1 = std::make_shared<TestTask>(&order, 1, Task::STATE_FAILURE);
-	std::shared_ptr<TestTask> task2 = std::make_shared<TestTask>(&order, -1);
+  int order = 0;
+  std::shared_ptr<TestTask> task1 = std::make_shared<TestTask>(&order, 1, Task::STATE_FAILURE);
+  std::shared_ptr<TestTask> task2 = std::make_shared<TestTask>(&order, -1);
 
-	std::shared_ptr<TaskGroupSequence> taskGroup = std::make_shared<TaskGroupSequence>();
-	taskGroup->addTask(task1);
-	taskGroup->addTask(task2);
+  std::shared_ptr<TaskGroupSequence> taskGroup = std::make_shared<TaskGroupSequence>();
+  taskGroup->addTask(task1);
+  taskGroup->addTask(task2);
 
-	scheduler.pushTask(taskGroup);
+  scheduler.pushTask(taskGroup);
 
-	waitForThread(scheduler);
+  waitForThread(scheduler);
 
-	scheduler.stopSchedulerLoop();
+  scheduler.stopSchedulerLoop();
 
-	REQUIRE(1 == task1->enterCallOrder);
-	REQUIRE(2 == task1->updateCallOrder);
-	REQUIRE(3 == task1->exitCallOrder);
+  REQUIRE(1 == task1->enterCallOrder);
+  REQUIRE(2 == task1->updateCallOrder);
+  REQUIRE(3 == task1->exitCallOrder);
 
-	REQUIRE(0 == task2->enterCallOrder);
-	REQUIRE(0 == task2->updateCallOrder);
-	REQUIRE(0 == task2->exitCallOrder);
+  REQUIRE(0 == task2->enterCallOrder);
+  REQUIRE(0 == task2->updateCallOrder);
+  REQUIRE(0 == task2->exitCallOrder);
 }
 
-TEST_CASE("sequential task group does not evaluate tasks after success")
-{
-	TaskScheduler scheduler(0);
-	scheduler.startSchedulerLoopThreaded();
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+TEST_CASE("sequential task group does not evaluate tasks after success", "[scheduling]") {
+  TaskScheduler scheduler(0);
+  scheduler.startSchedulerLoopThreaded();
 
-	int order = 0;
-	std::shared_ptr<TestTask> task1 = std::make_shared<TestTask>(&order, 1, Task::STATE_FAILURE);
-	std::shared_ptr<TestTask> task2 = std::make_shared<TestTask>(&order, 1, Task::STATE_SUCCESS);
-	std::shared_ptr<TestTask> task3 = std::make_shared<TestTask>(&order, -1);
+  int order = 0;
+  std::shared_ptr<TestTask> task1 = std::make_shared<TestTask>(&order, 1, Task::STATE_FAILURE);
+  std::shared_ptr<TestTask> task2 = std::make_shared<TestTask>(&order, 1, Task::STATE_SUCCESS);
+  std::shared_ptr<TestTask> task3 = std::make_shared<TestTask>(&order, -1);
 
-	std::shared_ptr<TaskGroupSelector> taskGroup = std::make_shared<TaskGroupSelector>();
-	taskGroup->addTask(task1);
-	taskGroup->addTask(task2);
-	taskGroup->addTask(task3);
+  std::shared_ptr<TaskGroupSelector> taskGroup = std::make_shared<TaskGroupSelector>();
+  taskGroup->addTask(task1);
+  taskGroup->addTask(task2);
+  taskGroup->addTask(task3);
 
-	scheduler.pushTask(taskGroup);
+  scheduler.pushTask(taskGroup);
 
-	waitForThread(scheduler);
+  waitForThread(scheduler);
 
-	scheduler.stopSchedulerLoop();
+  scheduler.stopSchedulerLoop();
 
-	REQUIRE(1 == task1->enterCallOrder);
-	REQUIRE(2 == task1->updateCallOrder);
-	REQUIRE(3 == task1->exitCallOrder);
+  REQUIRE(1 == task1->enterCallOrder);
+  REQUIRE(2 == task1->updateCallOrder);
+  REQUIRE(3 == task1->exitCallOrder);
 
-	REQUIRE(4 == task2->enterCallOrder);
-	REQUIRE(5 == task2->updateCallOrder);
-	REQUIRE(6 == task2->exitCallOrder);
+  REQUIRE(4 == task2->enterCallOrder);
+  REQUIRE(5 == task2->updateCallOrder);
+  REQUIRE(6 == task2->exitCallOrder);
 
-	REQUIRE(0 == task3->enterCallOrder);
-	REQUIRE(0 == task3->updateCallOrder);
-	REQUIRE(0 == task3->exitCallOrder);
+  REQUIRE(0 == task3->enterCallOrder);
+  REQUIRE(0 == task3->updateCallOrder);
+  REQUIRE(0 == task3->exitCallOrder);
 }
 
-TEST_CASE("task scheduling within task processing")
-{
-	TaskScheduler scheduler(0);
-	scheduler.startSchedulerLoopThreaded();
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+TEST_CASE("task scheduling within task processing", "[scheduling]") {
+  TaskScheduler scheduler(0);
+  scheduler.startSchedulerLoopThreaded();
 
-	int order = 0;
-	std::shared_ptr<TestTaskDispatch> task = std::make_shared<TestTaskDispatch>(
-		&order, 1, &scheduler);
+  int order = 0;
+  std::shared_ptr<TestTaskDispatch> task = std::make_shared<TestTaskDispatch>(&order, 1, &scheduler);
 
-	scheduler.pushTask(task);
+  scheduler.pushTask(task);
 
-	waitForThread(scheduler);
+  waitForThread(scheduler);
 
-	scheduler.stopSchedulerLoop();
+  scheduler.stopSchedulerLoop();
 
-	REQUIRE(6 == order);
+  REQUIRE(6 == order);
 
-	REQUIRE(1 == task->enterCallOrder);
-	REQUIRE(2 == task->updateCallOrder);
-	REQUIRE(3 == task->exitCallOrder);
+  REQUIRE(1 == task->enterCallOrder);
+  REQUIRE(2 == task->updateCallOrder);
+  REQUIRE(3 == task->exitCallOrder);
 
-	REQUIRE(4 == task->subTask->enterCallOrder);
-	REQUIRE(5 == task->subTask->updateCallOrder);
-	REQUIRE(6 == task->subTask->exitCallOrder);
+  REQUIRE(4 == task->subTask->enterCallOrder);
+  REQUIRE(5 == task->subTask->updateCallOrder);
+  REQUIRE(6 == task->subTask->exitCallOrder);
 }
