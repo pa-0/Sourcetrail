@@ -4,13 +4,18 @@
 // internal
 #include "ConsoleView.hpp"
 
+QT_FORWARD_DECLARE_CLASS(QLineEdit)
 QT_FORWARD_DECLARE_CLASS(QTextEdit)
+
+class ConsoleController;
 
 class QtConsoleView final
     : public QWidget
     , public ConsoleView {
 public:
   explicit QtConsoleView(ViewLayout* pViewLayout);
+
+  Q_DISABLE_COPY_MOVE(QtConsoleView)
 
   ~QtConsoleView() override;
 
@@ -19,12 +24,11 @@ public:
 
   void refreshView() override;
 
-private:
-  void setupViewWidgetWrapper();
-
 private slots:
   void returnButtonPressed();
 
 private:
+  ConsoleController* m_pController = nullptr;
+  QLineEdit *m_pLineEdit;
   QTextEdit *m_pEditor;
 };
