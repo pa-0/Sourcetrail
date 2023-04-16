@@ -31,3 +31,7 @@ if(UNIX AND NOT APPLE)
       rt
       Threads::Threads)
 endif()
+
+if(ENABLE_UNIT_TEST)
+  add_subdirectory(tests)
+endif()

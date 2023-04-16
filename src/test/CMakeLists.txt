@@ -48,7 +48,6 @@ set(
   SqliteBookmarkStorageTestSuite
   SqliteIndexStorageTestSuite
   StorageTestSuite
-  UtilityStringTestSuite
   UtilityTestSuite
   Vector2TestSuite)
 
