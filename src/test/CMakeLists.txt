@@ -32,8 +32,6 @@ set(
   CommandlineTestSuite
   ConfigManagerTestSuite
   FileManagerTestSuite
-  FilePathFilterTestSuite
-  FilePathTestSuite
   FileSystemTestSuite
   GraphTestSuite
   HierarchyCacheTestSuite

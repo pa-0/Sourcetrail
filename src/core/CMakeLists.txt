@@ -86,3 +86,7 @@ target_link_libraries(
     Boost::date_time
     Sourcetrail::core
     Sourcetrail::lib_utility)
+
+if(ENABLE_UNIT_TEST)
+  add_subdirectory(tests)
+endif()
