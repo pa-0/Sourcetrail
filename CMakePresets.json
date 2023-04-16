@@ -17,7 +17,6 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "USE_ALTERNATE_LINKER": "mold",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "ENABLE_TEST": "ON",
                 "ENABLE_COVERAGE": "ON"
             }
         },

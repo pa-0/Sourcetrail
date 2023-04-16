@@ -227,6 +227,8 @@ add_subdirectory(src/lib_gui)
 add_subdirectory(src/lib_utility)
 # core -------------------------------------------------------------------------
 add_subdirectory(src/core)
+add_subdirectory(src/scheduling)
+add_subdirectory(src/messaging)
 # Lib Cxx ----------------------------------------------------------------------
 if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_subdirectory(src/lib_cxx)
