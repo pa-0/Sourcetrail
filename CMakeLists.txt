@@ -10,7 +10,9 @@ project(Sourcetrail
 
 set(BUILD_CXX_LANGUAGE_PACKAGE          OFF CACHE BOOL "Add C and C++ support to the Sourcetrail indexer.")
 set(BUILD_DOC                           OFF CACHE BOOL "Build documentation.")
-set(ENABLE_TEST                         OFF CACHE BOOL "Build tests.")
+set(ENABLE_UNIT_TEST                    OFF CACHE BOOL "Build unit-tests.")
+set(ENABLE_INTEGRATION_TEST             OFF CACHE BOOL "Build integration-tests.")
+set(ENABLE_E2E_TEST                     OFF CACHE BOOL "Build e2e-tests.")
 set(ENABLE_CLANG_TIDY                   OFF CACHE BOOL "Run clang-tidy after building.")
 set(ENABLE_CPPCHECK                     OFF CACHE BOOL "Run cppcheck after building.")
 set(ENABLE_SANITIZER_ADDRESS            OFF CACHE BOOL "Inject address sanitizer.")
@@ -219,6 +221,12 @@ if(WIN32)
   COPY_QT_BINARIES(False False)
 endif()
 
+if(ENABLE_UNIT_TEST OR ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
+  enable_testing()
+  find_package(Catch2 CONFIG REQUIRED)
+  include(Catch)
+endif()
+
 add_subdirectory(src/external)
 add_subdirectory(src/lib)
 add_subdirectory(src/lib_gui)
@@ -251,14 +259,12 @@ target_link_libraries(
   PUBLIC
     project_options
     project_warnings
-    CppSQLite::CppSQLite3)
-
-target_link_libraries(
-  Sourcetrail_lib
+    Sourcetrail::messaging
+    Sourcetrail::scheduling
+    CppSQLite::CppSQLite3
   PRIVATE
     Sourcetrail::core
     Sourcetrail::lib_utility
-    Sourcetrail::scheduling
     Sourcetrail::lib_gui
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
     Boost::date_time
@@ -322,14 +328,11 @@ target_link_libraries(
     Qt5::Widgets
     Qt5::Network
     Qt5::Svg
-    $<$<PLATFORM_ID:Windows>:Qt5::WinExtras>)
-
-target_link_libraries(
-  Sourcetrail_lib_gui
+    $<$<PLATFORM_ID:Windows>:Qt5::WinExtras>
   PRIVATE
     fmt::fmt
     Sourcetrail::core
-    Sourcetrail::scheduling
+    Sourcetrail::messaging
     $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
     Sourcetrail::lib_gui::utility)
 
@@ -376,35 +379,18 @@ set_property(SOURCE ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h
 add_subdirectory(src/indexer)
 # App --------------------------------------------------------------------------
 add_subdirectory(src/app)
-# Test -------------------------------------------------------------------------
-if(ENABLE_TEST)
-  find_package(Catch2 CONFIG REQUIRED)
+# Tests ------------------------------------------------------------------------
+if(ENABLE_UNIT_TEST OR ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
+  if(ENABLE_UNIT_TEST)
+    add_subdirectory(src/test)
+  endif()
 
-  enable_testing()
-  add_subdirectory(src/test)
+  if(ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
+    add_subdirectory(tests)
+  endif()
 endif()
 
 execute_process(COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/app")
 execute_process(
   COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/data" "${CMAKE_BINARY_DIR}/app/data"
   COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/app/user" "${CMAKE_BINARY_DIR}/app/user")
-
-if(CMAKE_SKIP_INSTALL_RULES)
-  return()
-endif()
-
-# Add other targets that you want installed here, be default we just package the one executable
-# we know we want to ship
-package_project(TARGETS Sourcetrail Sourcetrail_indexer
-  # FIXME: this does not work! CK
-  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-)
-
-# Experience shows that explicit package naming can help make it easier to sort
-# out potential ABI related issues before they start, while helping you
-# track a build to a specific GIT SHA
-set(CPACK_PACKAGE_FILE_NAME
-    "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
-)
-
-include(CPack)

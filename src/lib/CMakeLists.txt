@@ -517,19 +517,10 @@ add_files(
   utility/messaging/type/MessageWindowFocus.h
   utility/messaging/type/MessageZoom.h
 
-  utility/messaging/Message.h
-  utility/messaging/MessageBase.cpp
-  utility/messaging/MessageBase.h
-  utility/messaging/MessageFilter.h
-  utility/messaging/MessageListener.h
-  utility/messaging/MessageListenerBase.cpp
-  utility/messaging/MessageListenerBase.h
-  utility/messaging/MessageQueue.cpp
-  utility/messaging/MessageQueue.h
-
   utility/migration/Migration.h
   utility/migration/Migrator.h
-)
+
+  utility/ConsoleParser.cpp)
 
 if(WIN32)
   add_files(
