@@ -1,8 +1,10 @@
 # ${CMAKE_SOURCE_DIR}/src/core/tests/CMakeLists.txt
 set(
   test_lib_names
+  FileManagerTestSuite
+  FilePathFilterTestSuite
   FilePathTestSuite
-  FilePathFilterTestSuite)
+  FileSystemTestSuite)
 
 foreach(test_name IN LISTS test_lib_names)
   add_executable(${test_name} ${test_name}.cpp)
@@ -30,3 +32,13 @@ foreach(test_name IN LISTS test_lib_names)
     OUTPUT_SUFFIX .xml
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
 endforeach()
+
+target_link_libraries(
+  FileSystemTestSuite
+    PRIVATE
+      Sourcetrail::lib_utility)
+
+target_link_libraries(
+  FileManagerTestSuite
+    PRIVATE
+      Sourcetrail::lib_utility)

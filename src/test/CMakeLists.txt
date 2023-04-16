@@ -31,8 +31,6 @@ set(
   test_lib_names
   CommandlineTestSuite
   ConfigManagerTestSuite
-  FileManagerTestSuite
-  FileSystemTestSuite
   GraphTestSuite
   HierarchyCacheTestSuite
   LogManagerTestSuite
