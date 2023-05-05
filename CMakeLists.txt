@@ -269,6 +269,7 @@ add_custom_target(versionnumber ALL)
 add_library(
   Sourcetrail_lib_gui
   ${LIB_GUI_FILES}
+  bin/resources.qrc
   ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h)
 
 add_library(Sourcetrail::lib_gui ALIAS Sourcetrail_lib_gui)
@@ -324,6 +325,7 @@ set_target_properties(
   Sourcetrail_lib_gui
   PROPERTIES
     AUTOMOC ON
+    AUTORCC ON
     INCLUDE_CURRENT_DIR ON)
 
 set_property(SOURCE ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h
