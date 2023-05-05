@@ -9,6 +9,8 @@
 #include <QPushButton>
 #include <QString>
 #include <QVBoxLayout>
+// tracy
+#include <tracy/Tracy.hpp>
 // internal
 #include "ApplicationSettings.h"
 #include "LanguageType.h"
@@ -22,17 +24,15 @@
 namespace {
 
 QIcon getProjectIcon(LanguageType lang) {
-  static const auto CppIcon = utility::toIcon(L"icon/cpp_icon.png");
-  static const auto CIcon = utility::toIcon(L"icon/c_icon.png");
-  static const auto ProjectIcon = utility::toIcon(L"icon/empty_icon.png");
+  static const auto CppIcon     = QIcon("://icon/cpp_icon.png");
+  static const auto CIcon       = QIcon("://icon/c_icon.png");
+  static const auto ProjectIcon = QIcon("://icon/empty_icon.png");
 
   switch(lang) {
-#if BUILD_CXX_LANGUAGE_PACKAGE
   case LanguageType::LANGUAGE_C:
     return CIcon;
   case LANGUAGE_CPP:
     return CppIcon;
-#endif    // BUILD_CXX_LANGUAGE_PACKAGE
   case LANGUAGE_CUSTOM:
   default:
     return ProjectIcon;
@@ -40,22 +40,29 @@ QIcon getProjectIcon(LanguageType lang) {
 }
 
 QtRecentProjectButton* createRecentProjectButton(QWidget* pParent) {
-  auto* pButton = new QtRecentProjectButton(pParent);
-  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
+  constexpr auto IconSize = QSize(30, 30);
+
+  auto* pButton = new QtRecentProjectButton(pParent); // NOLINT(cppcoreguidelines-owning-memory)
+  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect); // fixes layouting on Mac
   pButton->setIcon(utility::toIcon(L"icon/empty_icon.png"));
-  pButton->setIconSize(QSize(30, 30));
+  pButton->setIconSize(IconSize);
   pButton->setMinimumSize(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45, 40);
   pButton->setObjectName(QStringLiteral("recentButtonMissing"));
   pButton->minimumSizeHint();    // force font loading
+
   return pButton;
 }
 
 }    // namespace
 
-QtStartScreen::QtStartScreen(QWidget* pParent) : QtWindow(true, pParent) {}
+QtStartScreen::QtStartScreen(QWidget* pParent) : QtWindow(true, pParent) {
+  // TODO(Hussein): Moved to general location
+  Q_INIT_RESOURCE(resources);
+}
 
 QSize QtStartScreen::sizeHint() const {
-  return QSize(600, 650);
+  constexpr auto Size = QSize(600, 650);
+  return Size;
 }
 
 void QtStartScreen::updateButtons() {
@@ -101,13 +108,13 @@ void QtStartScreen::setupStartScreen() {
   addLogo();
 
   // Create the main layout
-  auto* pLayout = new QHBoxLayout();
+  auto *pLayout = new QHBoxLayout; // NOLINT(cppcoreguidelines-owning-memory)
   pLayout->setContentsMargins(15, 170, 15, 0);
   pLayout->setSpacing(1);
   m_content->setLayout(pLayout);
 
   {
-    auto* pVBoxLayout = new QVBoxLayout();
+    auto* pVBoxLayout = new QVBoxLayout; // NOLINT(cppcoreguidelines-owning-memory)
     pLayout->addLayout(pVBoxLayout, 3);
 
     // Create a Version label
@@ -154,7 +161,7 @@ void QtStartScreen::setupStartScreen() {
   pLayout->addSpacing(50);
 
   {    // Create Recent Projects
-    auto* pVBoxLayout = new QVBoxLayout();
+    auto* pVBoxLayout = new QVBoxLayout; // NOLINT(cppcoreguidelines-owning-memory)
     pLayout->addLayout(pVBoxLayout, 1);
 
     auto* pRecentProjectsLabel = new QLabel(QStringLiteral("Recent Projects: "), this);
@@ -165,7 +172,7 @@ void QtStartScreen::setupStartScreen() {
 
     for(size_t index = 0; index < ApplicationSettings::getInstance()->getMaxRecentProjectsCount();
         ++index) {
-      auto pButton = createRecentProjectButton(this);
+      auto *pButton = createRecentProjectButton(this);
       m_recentProjectsButtons.push_back(pButton);
       pVBoxLayout->addWidget(pButton);
     }
