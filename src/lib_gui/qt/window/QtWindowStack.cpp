@@ -3,94 +3,68 @@
 #include "QtWindow.h"
 
 
-QtWindowStackElement::QtWindowStackElement(QWidget* parent): QWidget(parent) {}
+QtWindowStackElement::QtWindowStackElement(QWidget* parent) : QWidget(parent) {}
 
-QtWindowStack::QtWindowStack(QObject* parent): QObject(parent) {}
+QtWindowStack::QtWindowStack(QObject* parent) : QObject(parent) {}
 
-QtWindowStackElement* QtWindowStack::getTopWindow() const
-{
-	if (m_stack.size())
-	{
-		return m_stack.back();
-	}
-
-	return nullptr;
+QtWindowStackElement* QtWindowStack::getTopWindow() const {
+  return m_stack.empty() ? nullptr : m_stack.back();
 }
 
-QtWindowStackElement* QtWindowStack::getBottomWindow() const
-{
-	if (m_stack.size())
-	{
-		return m_stack.front();
-	}
-
-	return nullptr;
+QtWindowStackElement* QtWindowStack::getBottomWindow() const {
+  return m_stack.empty() ? nullptr : m_stack.front();
 }
 
-size_t QtWindowStack::getWindowCount() const
-{
-	return m_stack.size();
+size_t QtWindowStack::getWindowCount() const {
+  return m_stack.size();
 }
 
-void QtWindowStack::pushWindow(QtWindowStackElement* window)
-{
-	if (m_stack.size())
-	{
-		m_stack.back()->hideWindow();
-	}
+void QtWindowStack::pushWindow(QtWindowStackElement* window) {
+  if(!m_stack.empty()) {
+    m_stack.back()->hideWindow();
+  }
 
-	window->showWindow();
+  window->showWindow();
 
-	m_stack.push_back(window);
+  m_stack.push_back(window);
 
-	emit push();
+  emit push();
 }
 
-void QtWindowStack::popWindow()
-{
-	if (m_stack.size())
-	{
-		m_stack.back()->hideWindow();
-		m_stack.back()->deleteLater();
-		m_stack.pop_back();
+void QtWindowStack::popWindow() {
+  if(!m_stack.empty()) {
+    m_stack.back()->hideWindow();
+    m_stack.back()->deleteLater();
+    m_stack.pop_back();
 
-		emit pop();
-	}
+    emit pop();
+  }
 
-	if (m_stack.size())
-	{
-		m_stack.back()->showWindow();
-	}
-	else
-	{
-		emit empty();
-	}
+  if(m_stack.empty()) {
+    emit empty();
+  } else {
+    m_stack.back()->showWindow();
+  }
 }
 
-void QtWindowStack::centerSubWindows()
-{
-	for (QtWindowStackElement* window: m_stack)
-	{
-		QtWindow* qtWindow = dynamic_cast<QtWindow*>(window);
-		if (qtWindow)
-		{
-			if (qtWindow->isSubWindow())
-			{
-				qtWindow->moveToCenter();
-			}
-		}
-	}
+void QtWindowStack::centerSubWindows() {
+  for(QtWindowStackElement* window : m_stack) {
+    auto* qtWindow = dynamic_cast<QtWindow*>(window);
+    if(qtWindow != nullptr) {
+      if(qtWindow->isSubWindow()) {
+        qtWindow->moveToCenter();
+      }
+    }
+  }
 }
 
-void QtWindowStack::clearWindows()
-{
-	for (QtWindowStackElement* window: m_stack)
-	{
-		window->hideWindow();
-		window->deleteLater();
-	}
+void QtWindowStack::clearWindows() {
+  for(QtWindowStackElement* window : m_stack) {
+    window->hideWindow();
+    window->deleteLater();
+  }
 
-	m_stack.clear();
+  m_stack.clear();
 
-	emit empty();
+  emit empty();
 }
