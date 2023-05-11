@@ -383,6 +383,7 @@ add_subdirectory(src/app)
 if(ENABLE_UNIT_TEST OR ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
   if(ENABLE_UNIT_TEST)
     add_subdirectory(src/test)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/lib_gui/tests/)
   endif()
 
   if(ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
