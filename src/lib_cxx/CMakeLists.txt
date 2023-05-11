@@ -175,6 +175,7 @@ target_link_libraries(
   Sourcetrail_lib_cxx
   PRIVATE
     Sourcetrail::core
+    Sourcetrail::lib
     Sourcetrail::lib_utility
     Sourcetrail::scheduling
     ${CLANG_LIBRARIES}
