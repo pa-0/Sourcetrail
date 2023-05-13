@@ -5,12 +5,11 @@
 // internal
 #include "Controller.h"
 
-class ConsoleParser;
-class StorageAccess;
+struct IConsoleInterpreter;
 
 class ConsoleController final : public Controller {
 public:
-  explicit ConsoleController(StorageAccess* pStorageAccess);
+  explicit ConsoleController(std::unique_ptr<IConsoleInterpreter> pParser);
 
   ConsoleController(const ConsoleController& pViewLayout) = delete;
   ConsoleController(ConsoleController&& pViewLayout) = delete;
@@ -24,5 +23,5 @@ public:
   void clear() override;
 
 private:
-  std::unique_ptr<ConsoleParser> m_pParser;
+  std::unique_ptr<IConsoleInterpreter> m_pParser;
 };

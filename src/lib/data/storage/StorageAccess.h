@@ -33,6 +33,7 @@ public:
 
   virtual Id getNodeIdForFileNode(const FilePath& filePath) const = 0;
   virtual Id getNodeIdForNameHierarchy(const NameHierarchy& nameHierarchy) const = 0;
+  // TODO(Hussein): Make the first argment const ref inside of const only
   virtual std::vector<Id> getNodeIdsForNameHierarchies(
       const std::vector<NameHierarchy> nameHierarchies) const = 0;
 
@@ -103,7 +104,7 @@ public:
   virtual std::shared_ptr<SourceLocationCollection> getErrorSourceLocations(
       const std::vector<ErrorInfo>& errors) const = 0;
 
-  // todo: remove bookmark related methods from storage access
+  // TODO(Hussein): remove bookmark related methods from storage access
   virtual Id addNodeBookmark(const NodeBookmark& bookmark) = 0;
   virtual Id addEdgeBookmark(const EdgeBookmark& bookmark) = 0;
   virtual Id addBookmarkCategory(const std::wstring& categoryName) = 0;

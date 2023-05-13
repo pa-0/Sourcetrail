@@ -1,6 +1,7 @@
 #include "QtCompositeView.h"
 
 #include <QBoxLayout>
+#include <QWidget>
 
 #include "ColorScheme.h"
 #include "QtViewWidgetWrapper.h"
@@ -17,7 +18,7 @@ QtCompositeView::QtCompositeView(
 	const size_t indicatorHeight = 3;
 
 	{
-		m_focusIndicator = new QWidget();
+		m_focusIndicator = new QWidget;
 		m_focusIndicator->setObjectName(QStringLiteral("focus_indicator"));
 		m_focusIndicator->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 		m_focusIndicator->setFixedHeight(indicatorHeight);

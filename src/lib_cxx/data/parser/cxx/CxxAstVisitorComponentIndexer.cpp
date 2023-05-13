@@ -164,13 +164,13 @@ void CxxAstVisitorComponentIndexer::beginTraverseLambdaCapture(
 {
 	if ((!lambdaExpr->isInitCapture(capture)) && (capture->capturesVariable()))
 	{
-		clang::VarDecl* d = capture->getCapturedVar();
-		if (utility::isLocalVariable(d) || utility::isParameter(d))
+		auto* value = capture->getCapturedVar();
+		if (utility::isLocalVariable(value) || utility::isParameter(value))
 		{
-			if (!d->getNameAsString().empty())	  // don't record anonymous parameters
+			if (!value->getNameAsString().empty())	  // don't record anonymous parameters
 			{
 				m_client->recordLocalSymbol(
-					getLocalSymbolName(d->getLocation()), getParseLocation(capture->getLocation()));
+					getLocalSymbolName(value->getLocation()), getParseLocation(capture->getLocation()));
 			}
 		}
 	}
@@ -1002,8 +1002,7 @@ Id CxxAstVisitorComponentIndexer::getOrCreateSymbolId(const clang::NamedDecl* de
 	NameHierarchy symbolName(L"global", NAME_DELIMITER_UNKNOWN);
 	if (decl)
 	{
-		std::unique_ptr<CxxDeclName> declName =
-			CxxDeclNameResolver(getAstVisitor()->getCanonicalFilePathCache()).getName(decl);
+		auto declName = CxxDeclNameResolver(getAstVisitor()->getCanonicalFilePathCache()).getName(decl);
 		if (declName)
 		{
 			symbolName = declName->toNameHierarchy();

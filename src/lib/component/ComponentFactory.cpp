@@ -7,6 +7,7 @@
 #include "CodeView.h"
 #include "Component.h"
 #include "ConsoleController.hpp"
+#include "ConsoleInterpreter.hpp"
 #include "ConsoleView.hpp"
 #include "CustomTrailController.h"
 #include "CustomTrailView.h"
@@ -31,6 +32,7 @@
 #include "UndoRedoController.h"
 #include "UndoRedoView.h"
 #include "ViewFactory.h"
+#include <memory>
 
 ComponentFactory::ComponentFactory(const ViewFactory* viewFactory, StorageAccess* storageAccess)
     : m_viewFactory(viewFactory), m_storageAccess(storageAccess) {}
@@ -81,7 +83,7 @@ std::shared_ptr<Component> ComponentFactory::createErrorComponent(ViewLayout* vi
 
 std::shared_ptr<Component> ComponentFactory::createConsoleComponent(ViewLayout* pViewLayout) {
   auto pView = m_viewFactory->createConsoleView(pViewLayout);
-  auto pController = std::make_shared<ConsoleController>(m_storageAccess);
+  auto pController = std::make_shared<ConsoleController>(std::make_unique<ConsoleInterpreter>(m_storageAccess));
 
   return std::make_shared<Component>(pView, pController);
 }

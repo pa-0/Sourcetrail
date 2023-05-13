@@ -1,24 +1,23 @@
-#ifndef QT_VIEW_WIDGET_WRAPPER_H
-#define QT_VIEW_WIDGET_WRAPPER_H
-
-#include <QWidget>
-
+#pragma once
+// Qt5
+#include <qglobal.h>
+// internal
 #include "ViewWidgetWrapper.h"
+
+QT_FORWARD_DECLARE_CLASS(QWidget)
 
 class View;
 
-class QtViewWidgetWrapper: public ViewWidgetWrapper
-{
+class QtViewWidgetWrapper : public ViewWidgetWrapper {
 public:
-	static QWidget* getWidgetOfView(const View* view);
+  static QWidget* getWidgetOfView(const View* pView);
 
-	QtViewWidgetWrapper(QWidget* widget);
-	~QtViewWidgetWrapper();
+  explicit QtViewWidgetWrapper(QWidget* pWidget);
+	Q_DISABLE_COPY_MOVE(QtViewWidgetWrapper)
+  ~QtViewWidgetWrapper() override;
 
-	QWidget* getWidget();
+  [[nodiscard]] QWidget* getWidget() const;
 
 private:
-	QWidget* m_widget;
+  QWidget* m_pWidget;
 };
-
-#endif	  // QT_VIEW_WIDGET_WRAPPER_H

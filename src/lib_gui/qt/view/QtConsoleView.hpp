@@ -1,6 +1,6 @@
 #pragma once
 // Qt5
-#include <QWidget>
+#include <QObject>
 // internal
 #include "ConsoleView.hpp"
 
@@ -10,8 +10,8 @@ QT_FORWARD_DECLARE_CLASS(QTextEdit)
 class ConsoleController;
 
 class QtConsoleView final
-    : public QWidget
-    , public ConsoleView {
+    : public QObject,
+      public ConsoleView {
 public:
   explicit QtConsoleView(ViewLayout* pViewLayout);
 
@@ -27,7 +27,7 @@ public:
 private slots:
   void returnButtonPressed();
 
-private:
+private: // NOLINT(readability-redundant-access-specifiers)
   ConsoleController* m_pController = nullptr;
   QLineEdit *m_pLineEdit;
   QTextEdit *m_pEditor;

@@ -1,4 +1,4 @@
-#include "ConsoleParser.hpp"
+#include "ConsoleInterpreter.hpp"
 // STL
 #include <memory>
 #include <string>
@@ -38,11 +38,13 @@ namespace {
   }
 }
 
-ConsoleParser::ConsoleParser([[maybe_unused]] StorageAccess* pStorageAccess) noexcept {
+ConsoleInterpreter::ConsoleInterpreter([[maybe_unused]] StorageAccess* pStorageAccess) noexcept {
   mCommands.emplace("find", std::make_shared<FindCommand>());
 }
 
-std::string ConsoleParser::process(const std::string& text) {
+ConsoleInterpreter::~ConsoleInterpreter() = default;
+
+std::string ConsoleInterpreter::process(const std::string& text) {
   if(auto tokens = split(text); tokens.size() > 1) {
     if(auto iterator = mCommands.find(tokens.front()); iterator != mCommands.end()) {
       return iterator->second->apply(tokens);
