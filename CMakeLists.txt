@@ -21,6 +21,12 @@ set(ENABLE_SANITIZER_THREAD             OFF CACHE BOOL "Inject thread sanitizer.
 set(ENABLE_SANITIZER_MEMORY             OFF CACHE BOOL "Inject memory sanitizer.")
 set(ENABLE_COVERAGE                     OFF CACHE BOOL "Build coverage report run `ninja coverage`.")
 set(ENABLE_BUILD_WITH_TIME_TRACE        OFF CACHE BOOL "Trace building time.")
+set(SOURCETRAIL_CMAKE_VERBOSE           OFF CACHE BOOL "CMake verbose")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD_REQUIRED   ON)
+set(CMAKE_CXX_STANDARD            17)
+set(CMAKE_C_STANDARD              11)
 
 include(cmake/add_files.cmake)
 include(cmake/version_setup.cmake)
@@ -64,7 +70,9 @@ set(BASH "")
 if(WIN32)
   execute_process(COMMAND CMD /c where bash OUTPUT_VARIABLE BASH)
   string(REGEX REPLACE "\n$" "" BASH "${BASH}")
-  message("bash: '${BASH}'")
+  if(SOURCETRAIL_CMAKE_VERBOSE)
+    message("bash: '${BASH}'")
+  endif()
 endif()
 # Project ----------------------------------------------------------------------
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
@@ -117,11 +125,6 @@ if(UNIX AND NOT APPLE)
   set(CMAKE_INSTALL_RPATH "$ORIGIN/lib/:$$ORIGIN/lib/")
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD_REQUIRED   ON)
-set(CMAKE_CXX_STANDARD            17)
-set(CMAKE_C_STANDARD              11)
-
 # Settings ---------------------------------------------------------------------
 find_package(SQLite3 CONFIG REQUIRED)
 find_package(TinyXML CONFIG REQUIRED)
@@ -141,7 +144,9 @@ if(WIN32)
 endif()
 
 if(Qt5Widgets_FOUND)
-  message(STATUS "Found Qt ${Qt5Widgets_VERSION_STRING}")
+  if(SOURCETRAIL_CMAKE_VERBOSE)
+    message(STATUS "Found Qt ${Qt5Widgets_VERSION_STRING}")
+  endif()
 
   # FIX: Qt was built with -reduce-relocations
   if(Qt5_POSITION_INDEPENDENT_CODE)

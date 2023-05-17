@@ -1,7 +1,7 @@
 # ${CMAKE_SOURCE_DIR}/src/lib_cxx/CMakeLists.txt
 find_package(Clang REQUIRED)
 
-if(LLVM_FOUND)
+if(LLVM_FOUND AND SOURCETRAIL_CMAKE_VERBOSE)
   message(STATUS "Found LLVM ${LLVM_VERSION}")
 endif()
 
