@@ -6,114 +6,191 @@
 #include "SourceLocationCollection.h"
 #include "SourceLocationFile.h"
 
+class SourceLocationsGetCreatedWithOtherEnd : public testing::Test {
+public:
+  void SetUp() override {
+    const uint StartLocation[] {2, 3};
+    const uint EndLocation[] {4, 5};
+
+    FilePath filePath(L"file.c");
+
+    // clang-format off
+    m_pStartLocation = mCollection.addSourceLocation(
+        LOCATION_TOKEN, 1, {1},
+        filePath,
+        StartLocation[0], StartLocation[1],
+        EndLocation[0], EndLocation[1]);
+    // clang-format on
+    ASSERT_NE(nullptr, m_pStartLocation);
+  }
+
+  SourceLocationCollection mCollection;
+  SourceLocation* m_pStartLocation = nullptr;
+};
+
 // NOLINTNEXTLINE
-TEST(SourceLocationCollection, SourceLocationsGetCreatedWithOtherEnd) {
-  SourceLocationCollection collection;
-  const auto* pLocation0 = collection.addSourceLocation(
-      LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
-
-  EXPECT_NE(nullptr, pLocation0);
-  EXPECT_TRUE(pLocation0->isStartLocation());
-  EXPECT_FALSE(pLocation0->isEndLocation());
-
-  const auto* pLocation1 = pLocation0->getOtherLocation();
-
-  EXPECT_NE(nullptr, pLocation1);
-  EXPECT_TRUE(!pLocation1->isStartLocation());
-  EXPECT_TRUE(pLocation1->isEndLocation());
-
-  EXPECT_EQ(pLocation0, pLocation1->getOtherLocation());
-  EXPECT_EQ(pLocation0, pLocation1->getStartLocation());
-  EXPECT_EQ(pLocation0, pLocation0->getStartLocation());
-  EXPECT_EQ(pLocation1, pLocation0->getEndLocation());
-  EXPECT_EQ(pLocation1, pLocation1->getEndLocation());
+TEST_F(SourceLocationsGetCreatedWithOtherEnd, goodCaseStartLocation) {
+  EXPECT_TRUE(m_pStartLocation->isStartLocation());
+  EXPECT_FALSE(m_pStartLocation->isEndLocation());
 }
 
 // NOLINTNEXTLINE
-TEST(SourceLocationCollection, SourceLocationsDoNotGetCreatedWithWrongInput) {
-  SourceLocationCollection collection;
-  auto* pLocation0 = collection.addSourceLocation(
-      LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 2, 1);
-  auto* pLocation1 = collection.addSourceLocation(
-      LOCATION_TOKEN, 2, {1}, FilePath(L"file.c"), 4, 1, 1, 10);
+TEST_F(SourceLocationsGetCreatedWithOtherEnd, goodCaseEndLocation) {
+  const auto* pEndLocation = m_pStartLocation->getOtherLocation();
+  ASSERT_NE(nullptr, pEndLocation);
 
-  EXPECT_EQ(nullptr, pLocation0);
-  EXPECT_EQ(nullptr, pLocation1);
+  EXPECT_FALSE(pEndLocation->isStartLocation());
+  EXPECT_TRUE(pEndLocation->isEndLocation());
+
+  EXPECT_EQ(m_pStartLocation, pEndLocation->getOtherLocation());
+  EXPECT_EQ(m_pStartLocation, pEndLocation->getStartLocation());
+  EXPECT_EQ(m_pStartLocation, m_pStartLocation->getStartLocation());
+
+  EXPECT_EQ(pEndLocation, m_pStartLocation->getEndLocation());
+  EXPECT_EQ(pEndLocation, pEndLocation->getEndLocation());
 }
 
-// NOLINTNEXTLINE
-TEST(SourceLocationCollection, SourceLocationsGetUniqueIdButBothEndsHaveTheSame) {
-  SourceLocationCollection collection;
-  auto* a = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 1, 1, 1, 1);
-  auto* b = collection.addSourceLocation(LOCATION_TOKEN, 2, {2}, FilePath(L"file.c"), 1, 1, 1, 1);
-  auto* c = collection.addSourceLocation(LOCATION_TOKEN, 3, {3}, FilePath(L"file.c"), 1, 1, 1, 1);
+class SourceLocationsDoNotGetCreatedWithWrongInput : public testing::Test {
+public:
+  void SetUp() override {
+    m_pLocation0 = collection.addSourceLocation(
+        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 2, 1);
+    m_pLocation1 = collection.addSourceLocation(
+        LOCATION_TOKEN, 2, {1}, FilePath(L"file.c"), 4, 1, 1, 10);
+  }
 
+  SourceLocationCollection collection;
+  SourceLocation* m_pLocation0 = nullptr;
+  SourceLocation* m_pLocation1 = nullptr;
+};
+
+// NOLINTNEXTLINE
+TEST_F(SourceLocationsDoNotGetCreatedWithWrongInput, goodCase) {
+  ASSERT_EQ(nullptr, m_pLocation0);
+  ASSERT_EQ(nullptr, m_pLocation1);
+}
+
+class SourceLocationsGetUniqueIdButBothEndsHaveTheSame : public testing::Test {
+public:
+  void SetUp() override {
+    m_pLocation0 = collection.addSourceLocation(
+        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 1, 1, 1, 1);
+    ASSERT_NE(nullptr, m_pLocation0);
+    m_pLocation1 = collection.addSourceLocation(
+        LOCATION_TOKEN, 2, {2}, FilePath(L"file.c"), 1, 1, 1, 1);
+    ASSERT_NE(nullptr, m_pLocation1);
+    m_pLocation2 = collection.addSourceLocation(
+        LOCATION_TOKEN, 3, {3}, FilePath(L"file.c"), 1, 1, 1, 1);
+    ASSERT_NE(nullptr, m_pLocation2);
+  }
+
+  SourceLocationCollection collection;
+  SourceLocation* m_pLocation0 = nullptr;
+  SourceLocation* m_pLocation1 = nullptr;
+  SourceLocation* m_pLocation2 = nullptr;
+};
+
+// NOLINTNEXTLINE
+TEST_F(SourceLocationsGetUniqueIdButBothEndsHaveTheSame, goodCase) {
   EXPECT_EQ(1, collection.getSourceLocationFileCount());
   EXPECT_EQ(3, collection.getSourceLocationCount());
 
-  EXPECT_EQ(1, a->getLocationId());
-  EXPECT_EQ(2, b->getLocationId());
-  EXPECT_EQ(3, c->getLocationId());
+  EXPECT_EQ(1, m_pLocation0->getLocationId());
+  EXPECT_EQ(2, m_pLocation1->getLocationId());
+  EXPECT_EQ(3, m_pLocation2->getLocationId());
 
-  EXPECT_NE(a->getLocationId(), b->getLocationId());
-  EXPECT_NE(b->getLocationId(), c->getLocationId());
-  EXPECT_NE(c->getLocationId(), a->getLocationId());
+  EXPECT_NE(m_pLocation0->getLocationId(), m_pLocation1->getLocationId());
+  EXPECT_NE(m_pLocation1->getLocationId(), m_pLocation2->getLocationId());
+  EXPECT_NE(m_pLocation2->getLocationId(), m_pLocation0->getLocationId());
 
-  EXPECT_EQ(a->getLocationId(), a->getOtherLocation()->getLocationId());
-  EXPECT_EQ(b->getLocationId(), b->getOtherLocation()->getLocationId());
-  EXPECT_EQ(c->getLocationId(), c->getOtherLocation()->getLocationId());
+  EXPECT_EQ(m_pLocation0->getLocationId(), m_pLocation0->getOtherLocation()->getLocationId());
+  EXPECT_EQ(m_pLocation1->getLocationId(), m_pLocation1->getOtherLocation()->getLocationId());
+  EXPECT_EQ(m_pLocation2->getLocationId(), m_pLocation2->getOtherLocation()->getLocationId());
 }
 
-// NOLINTNEXTLINE
-TEST(SourceLocationCollection, SourceLocationsHaveRightFilePathLineColumnAndTokenId) {
-  SourceLocationCollection collection;
-  auto* pLocation = collection.addSourceLocation(
-      LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
+class SourceLocationsHaveRightFilePathLineColumnAndTokenId : public testing::Test {
+public:
+  void SetUp() override {
+    m_pLocation = collection.addSourceLocation(
+        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
+    ASSERT_NE(nullptr, m_pLocation);
+  }
 
-  EXPECT_EQ(1, pLocation->getTokenIds()[0]);
-  EXPECT_EQ(2, pLocation->getLineNumber());
-  EXPECT_EQ(3, pLocation->getColumnNumber());
-  EXPECT_EQ(4, pLocation->getOtherLocation()->getLineNumber());
-  EXPECT_EQ(5, pLocation->getOtherLocation()->getColumnNumber());
-  EXPECT_THAT(pLocation->getFilePath().wstr(), testing::StrEq(L"file.c"));
+  SourceLocationCollection collection;
+  SourceLocation* m_pLocation = nullptr;
+};
+
+// NOLINTNEXTLINE
+TEST_F(SourceLocationsHaveRightFilePathLineColumnAndTokenId, goodCase) {
+  EXPECT_EQ(1, m_pLocation->getTokenIds()[0]);
+  EXPECT_EQ(2, m_pLocation->getLineNumber());
+  EXPECT_EQ(3, m_pLocation->getColumnNumber());
+  EXPECT_EQ(4, m_pLocation->getOtherLocation()->getLineNumber());
+  EXPECT_EQ(5, m_pLocation->getOtherLocation()->getColumnNumber());
+  EXPECT_THAT(m_pLocation->getFilePath().wstr(), testing::StrEq(L"file.c"));
 }
 
-// NOLINTNEXTLINE
-TEST(SourceLocationCollection, FindingSourceLocationsById) {
-  SourceLocationCollection collection;
-  const auto* pLocation0 = collection.addSourceLocation(
-      LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
-  const auto* pLocation1 = collection.addSourceLocation(
-      LOCATION_TOKEN, 2, {6}, FilePath(L"file.c"), 7, 8, 9, 10);
+class FindingSourceLocationsById : public testing::Test {
+public:
+  void SetUp() override {
+    m_pLocation0 = collection.addSourceLocation(
+        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
+    ASSERT_NE(nullptr, m_pLocation0);
+    m_pLocation1 = collection.addSourceLocation(
+        LOCATION_TOKEN, 2, {6}, FilePath(L"file.c"), 7, 8, 9, 10);
+    ASSERT_NE(nullptr, m_pLocation1);
+  }
 
-  EXPECT_EQ(pLocation0, collection.getSourceLocationById(pLocation0->getLocationId()));
-  EXPECT_EQ(pLocation1, collection.getSourceLocationById(pLocation1->getLocationId()));
+  SourceLocationCollection collection;
+  SourceLocation* m_pLocation0 = nullptr;
+  SourceLocation* m_pLocation1 = nullptr;
+};
+
+// NOLINTNEXTLINE
+TEST_F(FindingSourceLocationsById, goodCase) {
+  EXPECT_EQ(m_pLocation0, collection.getSourceLocationById(m_pLocation0->getLocationId()));
+  EXPECT_EQ(m_pLocation1, collection.getSourceLocationById(m_pLocation1->getLocationId()));
 }
 
-// NOLINTNEXTLINE
-TEST(SourceLocationCollection, CreatingPlainCopyOfAllLocationsInLineRange) {
-  const FilePath filePath {L"file.c"};
-  SourceLocationCollection collection;
-  auto* a = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, filePath, 2, 3, 4, 5);
-  auto* b = collection.addSourceLocation(LOCATION_TOKEN, 2, {1}, filePath, 3, 3, 4, 5);
-  auto* c = collection.addSourceLocation(LOCATION_TOKEN, 3, {1}, filePath, 1, 3, 5, 5);
-  auto* d = collection.addSourceLocation(LOCATION_TOKEN, 4, {1}, filePath, 1, 5, 4, 5);
+class CreatingPlainCopyOfAllLocationsInLineRange : public testing::Test {
+public:
+  void SetUp() override {
+    const FilePath filePath {L"file.c"};
+    m_pLocation0 = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, filePath, 2, 3, 4, 5);
+    ASSERT_NE(nullptr, m_pLocation0);
+    m_pLocation1 = collection.addSourceLocation(LOCATION_TOKEN, 2, {1}, filePath, 3, 3, 4, 5);
+    ASSERT_NE(nullptr, m_pLocation1);
+    m_pLocation2 = collection.addSourceLocation(LOCATION_TOKEN, 3, {1}, filePath, 1, 3, 5, 5);
+    ASSERT_NE(nullptr, m_pLocation2);
+    m_pLocation3 = collection.addSourceLocation(LOCATION_TOKEN, 4, {1}, filePath, 1, 5, 4, 5);
+    ASSERT_NE(nullptr, m_pLocation3);
+  }
 
-  Id ida = a->getLocationId();
-  Id idb = b->getLocationId();
-  Id idc = c->getLocationId();
-  Id idd = d->getLocationId();
+  SourceLocationCollection collection;
+  SourceLocation* m_pLocation0 = nullptr;
+  SourceLocation* m_pLocation1 = nullptr;
+  SourceLocation* m_pLocation2 = nullptr;
+  SourceLocation* m_pLocation3 = nullptr;
+};
+
+// NOLINTNEXTLINE
+TEST_F(CreatingPlainCopyOfAllLocationsInLineRange, goodCase) {
+  Id ida = m_pLocation0->getLocationId();
+  Id idb = m_pLocation1->getLocationId();
+  Id idc = m_pLocation2->getLocationId();
+  Id idd = m_pLocation3->getLocationId();
 
   unsigned int fromLine = 2;
   unsigned int toLine = 4;
 
   SourceLocationCollection copy;
-  auto* x = collection.getSourceLocationById(ida);
+  auto* pLocation = collection.getSourceLocationById(ida);
+  ASSERT_NE(pLocation, nullptr);
 
-  x->getSourceLocationFile()->forEachSourceLocation(
-      [&copy, fromLine, toLine](SourceLocation* location) {
-        if(location->getLineNumber() >= fromLine && location->getLineNumber() <= toLine) {
-          copy.addSourceLocationCopy(location);
+  pLocation->getSourceLocationFile()->forEachSourceLocation(
+      [&copy, fromLine, toLine](SourceLocation* pLocation) {
+        if(pLocation->getLineNumber() >= fromLine && pLocation->getLineNumber() <= toLine) {
+          copy.addSourceLocationCopy(pLocation);
         }
       });
 
@@ -125,8 +202,8 @@ TEST(SourceLocationCollection, CreatingPlainCopyOfAllLocationsInLineRange) {
   EXPECT_FALSE(copy.getSourceLocationById(idc));
   EXPECT_TRUE(copy.getSourceLocationById(idd));
 
-  EXPECT_NE(a, copy.getSourceLocationById(ida));
-  EXPECT_NE(d, copy.getSourceLocationById(idd));
+  EXPECT_NE(m_pLocation0, copy.getSourceLocationById(ida));
+  EXPECT_NE(m_pLocation3, copy.getSourceLocationById(idd));
 
   EXPECT_TRUE(copy.getSourceLocationById(ida)->getStartLocation());
   EXPECT_TRUE(copy.getSourceLocationById(ida)->getEndLocation());
@@ -135,40 +212,60 @@ TEST(SourceLocationCollection, CreatingPlainCopyOfAllLocationsInLineRange) {
   EXPECT_TRUE(copy.getSourceLocationById(idd)->getEndLocation());
 }
 
-// NOLINTNEXTLINE
-TEST(Sourcelocationcollection, GetSourceLocationsFilteredByLines) {
-  const FilePath filePath {L"file.c"};
-  SourceLocationCollection collection;
-  auto* a = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, filePath, 1, 3, 1, 5);
-  auto* b = collection.addSourceLocation(LOCATION_TOKEN, 2, {1}, filePath, 1, 3, 2, 5);
-  auto* c = collection.addSourceLocation(LOCATION_TOKEN, 3, {1}, filePath, 2, 3, 2, 5);
-  auto* d = collection.addSourceLocation(LOCATION_TOKEN, 4, {1}, filePath, 3, 3, 4, 5);
-  auto* e = collection.addSourceLocation(LOCATION_TOKEN, 5, {1}, filePath, 3, 5, 5, 5);
-  auto* f = collection.addSourceLocation(LOCATION_TOKEN, 6, {1}, filePath, 1, 5, 5, 5);
-  auto* g = collection.addSourceLocation(LOCATION_TOKEN, 7, {1}, filePath, 5, 5, 5, 5);
+class GetSourceLocationsFilteredByLines : public testing::Test {
+public:
+  void SetUp() override {
+    const FilePath filePath {L"file.c"};
+    m_pLocation0 = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, filePath, 1, 3, 1, 5);
+    ASSERT_NE(nullptr, m_pLocation0);
+    m_pLocation1 = collection.addSourceLocation(LOCATION_TOKEN, 2, {1}, filePath, 1, 3, 2, 5);
+    ASSERT_NE(nullptr, m_pLocation1);
+    m_pLocation2 = collection.addSourceLocation(LOCATION_TOKEN, 3, {1}, filePath, 2, 3, 2, 5);
+    ASSERT_NE(nullptr, m_pLocation2);
+    m_pLocation3 = collection.addSourceLocation(LOCATION_TOKEN, 4, {1}, filePath, 3, 3, 4, 5);
+    ASSERT_NE(nullptr, m_pLocation3);
+    m_pLocation4 = collection.addSourceLocation(LOCATION_TOKEN, 5, {1}, filePath, 3, 5, 5, 5);
+    ASSERT_NE(nullptr, m_pLocation4);
+    m_pLocation5 = collection.addSourceLocation(LOCATION_TOKEN, 6, {1}, filePath, 1, 5, 5, 5);
+    ASSERT_NE(nullptr, m_pLocation5);
+    m_pLocation6 = collection.addSourceLocation(LOCATION_TOKEN, 7, {1}, filePath, 5, 5, 5, 5);
+    ASSERT_NE(nullptr, m_pLocation6);
+  }
 
+  SourceLocationCollection collection;
+  SourceLocation* m_pLocation0 = nullptr;
+  SourceLocation* m_pLocation1 = nullptr;
+  SourceLocation* m_pLocation2 = nullptr;
+  SourceLocation* m_pLocation3 = nullptr;
+  SourceLocation* m_pLocation4 = nullptr;
+  SourceLocation* m_pLocation5 = nullptr;
+  SourceLocation* m_pLocation6 = nullptr;
+};
+
+// NOLINTNEXTLINE
+TEST_F(GetSourceLocationsFilteredByLines, goodCase) {
   SourceLocationCollection copy;
-  copy.addSourceLocationFile(collection.getSourceLocationById(a->getLocationId())
+  copy.addSourceLocationFile(collection.getSourceLocationById(m_pLocation0->getLocationId())
                                  ->getSourceLocationFile()
                                  ->getFilteredByLines(2, 4));
 
   EXPECT_EQ(1, copy.getSourceLocationFileCount());
   EXPECT_EQ(4, copy.getSourceLocationCount());
 
-  EXPECT_FALSE(copy.getSourceLocationById(a->getLocationId()));
-  EXPECT_TRUE(copy.getSourceLocationById(b->getLocationId()));
-  EXPECT_TRUE(copy.getSourceLocationById(c->getLocationId()));
-  EXPECT_TRUE(copy.getSourceLocationById(d->getLocationId()));
-  EXPECT_TRUE(copy.getSourceLocationById(e->getLocationId()));
-  EXPECT_FALSE(copy.getSourceLocationById(f->getLocationId()));
-  EXPECT_FALSE(copy.getSourceLocationById(g->getLocationId()));
+  EXPECT_FALSE(copy.getSourceLocationById(m_pLocation0->getLocationId()));
+  EXPECT_TRUE(copy.getSourceLocationById(m_pLocation1->getLocationId()));
+  EXPECT_TRUE(copy.getSourceLocationById(m_pLocation2->getLocationId()));
+  EXPECT_TRUE(copy.getSourceLocationById(m_pLocation3->getLocationId()));
+  EXPECT_TRUE(copy.getSourceLocationById(m_pLocation4->getLocationId()));
+  EXPECT_FALSE(copy.getSourceLocationById(m_pLocation5->getLocationId()));
+  EXPECT_FALSE(copy.getSourceLocationById(m_pLocation6->getLocationId()));
 
-  EXPECT_NE(b, copy.getSourceLocationById(b->getLocationId()));
-  EXPECT_NE(c, copy.getSourceLocationById(c->getLocationId()));
+  EXPECT_NE(m_pLocation1, copy.getSourceLocationById(m_pLocation1->getLocationId()));
+  EXPECT_NE(m_pLocation2, copy.getSourceLocationById(m_pLocation2->getLocationId()));
 
-  EXPECT_FALSE(copy.getSourceLocationById(b->getLocationId())->getStartLocation());
-  EXPECT_TRUE(copy.getSourceLocationById(b->getLocationId())->getEndLocation());
+  EXPECT_FALSE(copy.getSourceLocationById(m_pLocation1->getLocationId())->getStartLocation());
+  EXPECT_TRUE(copy.getSourceLocationById(m_pLocation1->getLocationId())->getEndLocation());
 
-  EXPECT_TRUE(copy.getSourceLocationById(e->getLocationId())->getStartLocation());
-  EXPECT_FALSE(copy.getSourceLocationById(e->getLocationId())->getEndLocation());
+  EXPECT_TRUE(copy.getSourceLocationById(m_pLocation4->getLocationId())->getStartLocation());
+  EXPECT_FALSE(copy.getSourceLocationById(m_pLocation4->getLocationId())->getEndLocation());
 }
