@@ -7,25 +7,11 @@
 // fmt
 #include <fmt/printf.h>
 // internal
+#include "command/ICommand.hpp"
 #include "TabId.h"
 #include "MessageSearch.h"
 #include "utilityString.h"
 // #include "StorageAccess.h"
-
-struct ICommand {
-  virtual ~ICommand() = default;
-  virtual std::string apply(const std::vector<std::string>& args) = 0;
-};
-
-struct FindCommand final : ICommand {
-  ~FindCommand() override = default;
-  std::string apply(const std::vector<std::string>& args) override {
-    MessageSearch message({SearchMatch{utility::decodeFromUtf8(args[1])}}, NodeTypeSet::all());
-    message.setSchedulerId(TabId::background());
-    message.dispatch();
-    return "DONE";
-  }
-};
 
 namespace {
   std::vector<std::string> split(const std::string& text) {
@@ -38,8 +24,12 @@ namespace {
   }
 }
 
-ConsoleInterpreter::ConsoleInterpreter([[maybe_unused]] StorageAccess* pStorageAccess) noexcept {
-  mCommands.emplace("find", std::make_shared<FindCommand>());
+ConsoleInterpreter::ConsoleInterpreter(StorageAccess* pStorageAccess) noexcept
+  : m_pStorageAccess{pStorageAccess} {
+  // mCommands.emplace("find",   std::make_shared<FindCommand>());
+  // mCommands.emplace("help",   std::make_shared<HelpCommand>());
+  // mCommands.emplace("select", std::make_shared<SelectCommand>());
+  // mCommands.emplace("show",   std::make_shared<ShowCommand>());
 }
 
 ConsoleInterpreter::~ConsoleInterpreter() = default;
@@ -47,7 +37,7 @@ ConsoleInterpreter::~ConsoleInterpreter() = default;
 std::string ConsoleInterpreter::process(const std::string& text) {
   if(auto tokens = split(text); tokens.size() > 1) {
     if(auto iterator = mCommands.find(tokens.front()); iterator != mCommands.end()) {
-      return iterator->second->apply(tokens);
+      return iterator->second->apply(*m_pStorageAccess, tokens);
     }
   }
 

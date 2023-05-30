@@ -6,6 +6,7 @@ spdlog/1.10.0
 sqlite3/3.30.1
 tinyxml/2.6.2
 trompeloeil/43
+gtest/1.13.0
 
 [generators]
 cmake_find_package_multi

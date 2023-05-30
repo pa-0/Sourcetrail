@@ -1,8 +1,8 @@
 #pragma once
-
+// STL
 #include <memory>
 #include <vector>
-
+// internal
 #include "FullTextSearchIndex.h"
 #include "HierarchyCache.h"
 #include "SearchIndex.h"
@@ -19,21 +19,30 @@ public:
 
   std::pair<Id, bool> addNode(const StorageNodeData& data) override;
   std::vector<Id> addNodes(const std::vector<StorageNode>& nodes) override;
+
   void addSymbol(const StorageSymbol& data) override;
   void addSymbols(const std::vector<StorageSymbol>& symbols) override;
+
   void addFile(const StorageFile& data) override;
+
   Id addEdge(const StorageEdgeData& data) override;
   std::vector<Id> addEdges(const std::vector<StorageEdge>& edges) override;
+
   Id addLocalSymbol(const StorageLocalSymbolData& data) override;
   std::vector<Id> addLocalSymbols(const std::set<StorageLocalSymbol>& symbols) override;
+
   Id addSourceLocation(const StorageSourceLocationData& data) override;
   std::vector<Id> addSourceLocations(const std::vector<StorageSourceLocation>& locations) override;
+
   void addOccurrence(const StorageOccurrence& data) override;
   void addOccurrences(const std::vector<StorageOccurrence>& occurrences) override;
+
   void addComponentAccess(const StorageComponentAccess& componentAccess) override;
   void addComponentAccesses(const std::vector<StorageComponentAccess>& componentAccesses) override;
+
   void addElementComponent(const StorageElementComponent& component) override;
   void addElementComponents(const std::vector<StorageElementComponent>& components) override;
+  
   Id addError(const StorageErrorData& data) override;
 
   void removeElement(const Id id);

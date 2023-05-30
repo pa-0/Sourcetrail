@@ -520,7 +520,12 @@ add_files(
   utility/migration/Migration.h
   utility/migration/Migrator.h
 
-  utility/ConsoleInterpreter.cpp)
+  utility/ConsoleInterpreter.cpp
+  utility/command/FindCommand.cpp
+  #utility/command/HelpCommand.cpp
+  #utility/command/SelectCommand.cpp
+  #utility/command/ShowCommand.cpp
+)
 
 if(WIN32)
   add_files(

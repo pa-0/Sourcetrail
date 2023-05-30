@@ -58,6 +58,11 @@ FilePath::FilePath(const std::wstring& filePath, const std::wstring& base)
 
 FilePath::~FilePath() = default;
 
+const FilePath& FilePath::EmptyFilePath() {
+  static const FilePath sEmptyFilePath;
+  return sEmptyFilePath;
+}
+
 boost::filesystem::path FilePath::getPath() const {
   return *(m_path.get());
 }

@@ -1,12 +1,11 @@
-#ifndef SOURCE_LOCATION_COLLECTION_H
-#define SOURCE_LOCATION_COLLECTION_H
-
+#pragma once
+// STL
 #include <functional>
 #include <map>
 #include <memory>
 #include <ostream>
 #include <vector>
-
+// internal
 #include "LocationType.h"
 #include "types.h"
 
@@ -14,50 +13,56 @@ class FilePath;
 class SourceLocation;
 class SourceLocationFile;
 
-class SourceLocationCollection
-{
+class SourceLocationCollection final {
 public:
-	SourceLocationCollection();
-	virtual ~SourceLocationCollection();
+  SourceLocationCollection();
 
-	const std::map<FilePath, std::shared_ptr<SourceLocationFile>>& getSourceLocationFiles() const;
+  SourceLocationCollection(const SourceLocationCollection&) = delete;
+  SourceLocationCollection& operator=(const SourceLocationCollection&) = delete;
+  SourceLocationCollection(SourceLocationCollection&&) = delete;
+  SourceLocationCollection& operator=(SourceLocationCollection&&) = delete;
 
-	size_t getSourceLocationCount() const;
-	size_t getSourceLocationFileCount() const;
+  ~SourceLocationCollection();
 
-	std::shared_ptr<SourceLocationFile> getSourceLocationFileByPath(const FilePath& filePath) const;
-	SourceLocation* getSourceLocationById(Id locationId) const;
+  [[nodiscard]] const std::map<FilePath, std::shared_ptr<SourceLocationFile>>& getSourceLocationFiles() const;
 
-	SourceLocation* addSourceLocation(
-		LocationType type,
-		Id locationId,
-		std::vector<Id> tokenIds,
-		const FilePath& filePath,
-		size_t startLineNumber,
-		size_t startColumnNumber,
-		size_t endLineNumber,
-		size_t endColumnNumber);
+  [[nodiscard]] size_t getSourceLocationCount() const;
 
-	SourceLocation* addSourceLocationCopy(const SourceLocation* location);
-	void addSourceLocationCopies(const SourceLocationCollection* other);
-	void addSourceLocationCopies(const SourceLocationFile* otherFile);
+  [[nodiscard]] size_t getSourceLocationFileCount() const;
 
-	void addSourceLocationFile(std::shared_ptr<SourceLocationFile> file);
+  [[nodiscard]] std::shared_ptr<SourceLocationFile> getSourceLocationFileByPath(const FilePath& filePath) const;
 
-	void forEachSourceLocationFile(std::function<void(std::shared_ptr<SourceLocationFile>)> func) const;
-	void forEachSourceLocation(std::function<void(SourceLocation*)> func) const;
+  [[nodiscard]] SourceLocation* getSourceLocationById(Id locationId) const;
+
+  SourceLocation* addSourceLocation(LocationType type,
+                                    Id locationId,
+                                    std::vector<Id> tokenIds,
+                                    const FilePath& filePath,
+                                    size_t startLineNumber,
+                                    size_t startColumnNumber,
+                                    size_t endLineNumber,
+                                    size_t endColumnNumber);
+
+  SourceLocation* addSourceLocationCopy(const SourceLocation* location);
+
+  void addSourceLocationCopies(const SourceLocationCollection* other);
+
+  void addSourceLocationCopies(const SourceLocationFile* otherFile);
+
+  void addSourceLocationFile(std::shared_ptr<SourceLocationFile> file);
+
+  void forEachSourceLocationFile(const std::function<void(std::shared_ptr<SourceLocationFile>)>& func) const;
+
+  void forEachSourceLocation(const std::function<void(SourceLocation*)>& func) const;
 
 private:
-	SourceLocationFile* createSourceLocationFile(
-		const FilePath& filePath,
-		const std::wstring& language = L"",
-		bool isWhole = false,
-		bool isComplete = false,
-		bool isIndexed = false);
+  SourceLocationFile* createSourceLocationFile(const FilePath& filePath,
+                                               const std::wstring& language = L"",
+                                               bool isWhole = false,
+                                               bool isComplete = false,
+                                               bool isIndexed = false);
 
-	std::map<FilePath, std::shared_ptr<SourceLocationFile>> m_files;
+  std::map<FilePath, std::shared_ptr<SourceLocationFile>> m_files;
 };
 
 std::wostream& operator<<(std::wostream& ostream, const SourceLocationCollection& base);
-
-#endif	  // SOURCE_LOCATION_COLLECTION_H

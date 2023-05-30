@@ -129,7 +129,7 @@ std::vector<std::vector<T>> utility::splitToEquallySizedParts(const std::vector<
     parts.emplace_back(std::vector<T>());
   }
 
-  int i = 0;
+  uint32_t i = 0;
   for(const T& value : values) {
     parts[i % partCount].emplace_back(value);
     ++i;

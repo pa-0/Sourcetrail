@@ -15,8 +15,8 @@ struct MockedConsoleInterpreter : IConsoleInterpreter {
 };
 
 // NOLINTNEXTLINE(cert-err58-cpp)
-TEST_CASE("structure", "[lib]") {
-  MockedStroageAccess mockedStroageAccess;
+TEST_CASE("goodcase", "[lib]") {
+  MockStorageAccess mockedStroageAccess;
   auto mockedInterpreter = std::make_unique<MockedConsoleInterpreter>();
 
   REQUIRE_CALL(*mockedInterpreter, process(""))

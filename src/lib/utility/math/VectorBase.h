@@ -325,7 +325,7 @@ bool VectorBase<T, N>::isSame(const VectorBase<T, N>& other) const
 
 template <class T, unsigned int N>
 template <class U>
-bool VectorBase<T, N>::isSame(const VectorBase<U, N>& other) const
+bool VectorBase<T, N>::isSame(const VectorBase<U, N>&  /*other*/) const
 {
 	return false;
 }

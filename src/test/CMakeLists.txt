@@ -1,6 +1,4 @@
 # ${CMAKE_SOURCE_DIR}/src/test/CMakeLists.txt
-include(Catch)
-
 add_library(catch_main OBJECT test_main.cpp)
 target_link_libraries(catch_main PUBLIC catch2::catch2 Sourcetrail::core)
 target_include_directories(
@@ -44,7 +42,6 @@ set(
   SettingsTestSuite
   SharedMemoryTestSuite
   SourceGroupTestSuite
-  SourceLocationCollectionTestSuite
   SqliteBookmarkStorageTestSuite
   SqliteIndexStorageTestSuite
   StorageTestSuite

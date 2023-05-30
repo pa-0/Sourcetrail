@@ -8,19 +8,19 @@
  * @brief Macros to simplify usage of the log manager
  */
 #define LOG_INFO(__str__)                                                                          \
-  do {                                                                                             \
+  do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                                              \
     /* NOLINTNEXTLINE(hicpp-no-array-decay,cppcoreguidelines-pro-bounds-array-to-pointer-decay) */ \
     LogManager::getInstance()->logInfo(__str__, __FILE__, __FUNCTION__, __LINE__);                 \
   } while(0)
 
 #define LOG_WARNING(__str__)                                                                       \
-  do {                                                                                             \
+  do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                                              \
     /* NOLINTNEXTLINE(hicpp-no-array-decay,cppcoreguidelines-pro-bounds-array-to-pointer-decay) */ \
     LogManager::getInstance()->logWarning(__str__, __FILE__, __FUNCTION__, __LINE__);              \
   } while(0)
 
 #define LOG_ERROR(__str__)                                                                         \
-  do {                                                                                             \
+  do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                                              \
     /* NOLINTNEXTLINE(hicpp-no-array-decay,cppcoreguidelines-pro-bounds-array-to-pointer-decay) */ \
     LogManager::getInstance()->logError(__str__, __FILE__, __FUNCTION__, __LINE__);                \
   } while(0)

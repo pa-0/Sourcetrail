@@ -26,5 +26,6 @@ public:
   std::string process(const std::string& text) override;
 
 private:
+  StorageAccess* m_pStorageAccess;
   std::unordered_map<std::string, std::shared_ptr<ICommand>> mCommands;
 };

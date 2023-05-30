@@ -18,6 +18,8 @@ public:
   FilePath(const std::wstring& filePath, const std::wstring& base);
   ~FilePath();
 
+  static const FilePath& EmptyFilePath();
+
   boost::filesystem::path getPath() const;
 
   bool empty() const;

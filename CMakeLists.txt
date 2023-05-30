@@ -228,9 +228,11 @@ endif()
 
 if(ENABLE_UNIT_TEST OR ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
   enable_testing()
+  find_package(GTest CONFIG REQUIRED)
   find_package(Catch2 CONFIG REQUIRED)
-  find_package(trompeloeil REQUIRED)
+  find_package(trompeloeil CONFIG REQUIRED)
   include(Catch)
+  include(GoogleTest)
 endif()
 
 add_subdirectory(src/external)
