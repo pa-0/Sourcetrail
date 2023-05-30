@@ -7,7 +7,7 @@ set(
   #ConsoleInterpreterTestSuite
   SourceLocationTestSuite
   SourceLocationFileTestSuite
-  #SourceLocationCollectionTestSuite
+  SourceLocationCollectionTestSuite
   #FindCommandTestSuite
 )
 
