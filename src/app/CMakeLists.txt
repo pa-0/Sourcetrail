@@ -49,6 +49,7 @@ endif()
 target_link_libraries(
   Sourcetrail
   PUBLIC
+    fmt::fmt
     Sourcetrail::core
     Sourcetrail::lib
     Sourcetrail::lib_gui
@@ -82,5 +83,5 @@ add_dependencies(Sourcetrail Sourcetrail_indexer)
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico)
   message(FATAL "\"sourcetrail.ico\" not found. You may run `git submodule`")
 endif()
-file(COPY ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico 
+file(COPY ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico
      DESTINATION ${CMAKE_BINARY_DIR})

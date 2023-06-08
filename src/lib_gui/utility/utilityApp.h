@@ -53,4 +53,7 @@ constexpr ApplicationArchitectureType getApplicationArchitectureType() {
 #endif
   return APPLICATION_ARCHITECTURE_UNKNOWN;
 }
+
+std::string getAppArchTypeString();
+
 }    // namespace utility

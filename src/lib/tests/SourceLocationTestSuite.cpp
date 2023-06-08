@@ -8,6 +8,7 @@
 #include "SourceLocationFile.h"
 
 using namespace ::testing;
+using namespace std::string_literals;
 
 // NOLINTNEXTLINE
 TEST(SourceLocation, createStartSourceLocation) {
@@ -43,7 +44,7 @@ TEST(SourceLocation, createEndSourceLocation) {
   EXPECT_EQ(endSourceLocation->getOtherLocation(), &startSourceLocation);
   EXPECT_EQ(endSourceLocation->getLocationId(), 1);
   EXPECT_THAT(endSourceLocation->getTokenIds(), IsEmpty());
-  EXPECT_EQ(endSourceLocation->getType(), LocationType::LOCATION_FULLTEXT_SEARCH);\
+  EXPECT_EQ(endSourceLocation->getType(), LocationType::LOCATION_FULLTEXT_SEARCH);
   EXPECT_FALSE(endSourceLocation->isStartLocation());
   EXPECT_TRUE(endSourceLocation->isEndLocation());
 }
@@ -62,7 +63,7 @@ TEST(SourceLocation, createEndSourceLocationSameAsStart) {
   EXPECT_EQ(endSourceLocation->getOtherLocation(), &startSourceLocation);
   EXPECT_EQ(endSourceLocation->getLocationId(), 1);
   EXPECT_THAT(endSourceLocation->getTokenIds(), IsEmpty());
-  EXPECT_EQ(endSourceLocation->getType(), LocationType::LOCATION_FULLTEXT_SEARCH);\
+  EXPECT_EQ(endSourceLocation->getType(), LocationType::LOCATION_FULLTEXT_SEARCH);
   EXPECT_FALSE(endSourceLocation->isStartLocation());
   EXPECT_TRUE(endSourceLocation->isEndLocation());
 }
@@ -73,7 +74,8 @@ TEST(SourceLocation, createSourceLocationFromAnother) {
       nullptr, LocationType::LOCATION_FULLTEXT_SEARCH, 1, std::vector<Id> {}, 1, 1, true);
 
   SourceLocationFile sourceFile {FilePath {"main.cpp"}, L".cpp", true, true, true};
-  auto newStartSourceLocation = SourceLocation::createSourceLocationFromAnother(&sourceLocation, &sourceFile);
+  auto newStartSourceLocation = SourceLocation::createSourceLocationFromAnother(
+      &sourceLocation, &sourceFile);
   EXPECT_EQ(newStartSourceLocation->getSourceLocationFile(), &sourceFile);
   EXPECT_EQ(newStartSourceLocation->getStartLocation(), newStartSourceLocation.get());
   EXPECT_EQ(newStartSourceLocation->getEndLocation(), nullptr);

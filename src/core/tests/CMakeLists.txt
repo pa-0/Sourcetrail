@@ -5,9 +5,9 @@ set(
   FilePathFilterTestSuite
   FilePathTestSuite
   FileSystemTestSuite
-  
+
   ConfigManagerTestSuite
-  
+
   TextAccessTestSuite)
 
 foreach(test_name IN LISTS test_lib_names)
@@ -28,8 +28,7 @@ foreach(test_name IN LISTS test_lib_names)
   # to whatever you want, or use different for different binaries
   catch_discover_tests(
     ${test_name}
-    TEST_PREFIX
-    "unittests."
+    TEST_PREFIX "unittests."
     REPORTER XML
     OUTPUT_DIR .
     OUTPUT_PREFIX "unittests."
@@ -46,3 +45,27 @@ target_link_libraries(
   FileManagerTestSuite
     PRIVATE
       Sourcetrail::lib_utility)
+
+set(gtest_lib_names LoggerTestSuite)
+
+foreach(test_name IN LISTS gtest_lib_names)
+  add_executable(${test_name} ${test_name}.cpp)
+
+  target_link_libraries(
+    ${test_name}
+    PUBLIC
+      GTest::gmock
+      GTest::gtest
+      GTest::gtest_main
+      Sourcetrail::core)
+
+  set_target_properties(
+    ${test_name}
+    PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
+
+  gtest_discover_tests(
+    ${test_name}
+    TEST_PREFIX "unittests.")
+endforeach()
+

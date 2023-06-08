@@ -4,6 +4,7 @@
 // internal
 #include "SourceLocationFile.h"
 
+using namespace std::string_literals;
 using namespace testing;
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,cert-err58-cpp,cppcoreguidelines-owning-memory,readability-function-cognitive-complexity)
@@ -54,10 +55,23 @@ TEST_F(SourceLocationFileFix, SourceLocationWithZeroLocationId) {
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,cert-err58-cpp,cppcoreguidelines-owning-memory)
 TEST_F(SourceLocationFileFix, SourceLocationCopy) {
   // NOTE: Passing nullptr or m_pSourceLocationFile.get() make no difference
-  const SourceLocation sourceLocation{nullptr, LocationType::LOCATION_FULLTEXT_SEARCH, Id{2}, std::vector<Id>{}, 1, 1, true};
+  const SourceLocation sourceLocation {
+      nullptr, LocationType::LOCATION_FULLTEXT_SEARCH, Id {2}, std::vector<Id> {}, 1, 1, true};
 
   const auto* const pSourceLocation = m_pSourceLocationFile->addSourceLocationCopy(&sourceLocation);
   EXPECT_NE(pSourceLocation, nullptr);
   EXPECT_EQ(m_pSourceLocationFile->getUnscopedStartLocationCount(), 1);
   EXPECT_EQ(m_pSourceLocationFile->getSourceLocationCount(), 1);
+}
+
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,cert-err58-cpp,cppcoreguidelines-owning-memory)
+TEST_F(SourceLocationFileFix, serializeToJson) {
+  auto json = m_pSourceLocationFile->toJSON();
+  Json::FastWriter fastWriter;
+
+  EXPECT_THAT(
+      fastWriter.write(json),
+      testing::StrEq(
+          R"({"complete":true,"file":"main.cpp","indexed":true,"lang":"cpp","whole":true})"s +
+          "\n"));
 }

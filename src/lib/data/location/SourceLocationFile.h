@@ -5,6 +5,8 @@
 #include <memory>
 #include <ostream>
 #include <set>
+// JSON
+#include <json/json.h>
 // internal
 #include "FilePath.h"
 #include "LocationType.h"
@@ -75,6 +77,8 @@ public:
   std::shared_ptr<SourceLocationFile> getFilteredByType(LocationType type) const;
 
   std::shared_ptr<SourceLocationFile> getFilteredByTypes(const std::vector<LocationType>& types) const;
+
+  Json::Value toJSON() const;
 
 private:
   const FilePath m_filePath;

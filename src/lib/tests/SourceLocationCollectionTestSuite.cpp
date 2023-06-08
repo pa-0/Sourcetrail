@@ -53,10 +53,9 @@ TEST_F(SourceLocationsGetCreatedWithOtherEnd, goodCaseEndLocation) {
 class SourceLocationsDoNotGetCreatedWithWrongInput : public testing::Test {
 public:
   void SetUp() override {
-    m_pLocation0 = collection.addSourceLocation(
-        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 2, 1);
-    m_pLocation1 = collection.addSourceLocation(
-        LOCATION_TOKEN, 2, {1}, FilePath(L"file.c"), 4, 1, 1, 10);
+    FilePath filePath(L"file.c");
+    m_pLocation0 = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, filePath, 2, 3, 2, 1);
+    m_pLocation1 = collection.addSourceLocation(LOCATION_TOKEN, 2, {1}, filePath, 4, 1, 1, 10);
   }
 
   SourceLocationCollection collection;
@@ -73,14 +72,12 @@ TEST_F(SourceLocationsDoNotGetCreatedWithWrongInput, goodCase) {
 class SourceLocationsGetUniqueIdButBothEndsHaveTheSame : public testing::Test {
 public:
   void SetUp() override {
-    m_pLocation0 = collection.addSourceLocation(
-        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 1, 1, 1, 1);
+    FilePath filePath(L"file.c");
+    m_pLocation0 = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, filePath, 1, 1, 1, 1);
     ASSERT_NE(nullptr, m_pLocation0);
-    m_pLocation1 = collection.addSourceLocation(
-        LOCATION_TOKEN, 2, {2}, FilePath(L"file.c"), 1, 1, 1, 1);
+    m_pLocation1 = collection.addSourceLocation(LOCATION_TOKEN, 2, {2}, filePath, 1, 1, 1, 1);
     ASSERT_NE(nullptr, m_pLocation1);
-    m_pLocation2 = collection.addSourceLocation(
-        LOCATION_TOKEN, 3, {3}, FilePath(L"file.c"), 1, 1, 1, 1);
+    m_pLocation2 = collection.addSourceLocation(LOCATION_TOKEN, 3, {3}, filePath, 1, 1, 1, 1);
     ASSERT_NE(nullptr, m_pLocation2);
   }
 
@@ -133,11 +130,10 @@ TEST_F(SourceLocationsHaveRightFilePathLineColumnAndTokenId, goodCase) {
 class FindingSourceLocationsById : public testing::Test {
 public:
   void SetUp() override {
-    m_pLocation0 = collection.addSourceLocation(
-        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
+    FilePath filePath(L"file.c");
+    m_pLocation0 = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, filePath, 2, 3, 4, 5);
     ASSERT_NE(nullptr, m_pLocation0);
-    m_pLocation1 = collection.addSourceLocation(
-        LOCATION_TOKEN, 2, {6}, FilePath(L"file.c"), 7, 8, 9, 10);
+    m_pLocation1 = collection.addSourceLocation(LOCATION_TOKEN, 2, {6}, filePath, 7, 8, 9, 10);
     ASSERT_NE(nullptr, m_pLocation1);
   }
 

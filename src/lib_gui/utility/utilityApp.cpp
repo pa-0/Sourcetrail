@@ -21,7 +21,9 @@
 #include "utilityString.h"
 
 namespace utility {
+
 std::mutex s_runningProcessesMutex;
+
 std::set<std::shared_ptr<boost::process::child>> s_runningProcesses;
 }    // namespace utility
 
@@ -46,8 +48,7 @@ std::wstring utility::searchPath(const std::wstring& bin) {
 
 namespace {
 template <typename Rep, typename Period>
-bool safely_wait_for(boost::process::child& process,
-                     const std::chrono::duration<Rep, Period>& rel_time) {
+bool safely_wait_for(boost::process::child& process, const std::chrono::duration<Rep, Period>& rel_time) {
   // This wrapper around boost::process::wait_for handles the following edge case:
   // Calling wait_for on an already exitted process will wait for the entire timeout.
   if(process.running()) {
@@ -64,7 +65,7 @@ utility::ProcessOutput utility::executeProcess(const std::wstring& command,
                                                const bool waitUntilNoOutput,
                                                const int timeout,
                                                bool logProcessOutput) {
-  std::string output = "";
+  std::string output;
   int exitCode = 255;
   try {
     boost::asio::io_service ios;
@@ -80,20 +81,18 @@ utility::ProcessOutput utility::executeProcess(const std::wstring& command,
     }
 
     if(workingDirectory.empty()) {
-      process = std::make_shared<boost::process::child>(
-          searchPath(command),
-          boost::process::args(arguments),
-          env,
-          boost::process::std_in.close(),
-          (boost::process::std_out & boost::process::std_err) > ap);
+      process = std::make_shared<boost::process::child>(searchPath(command),
+                                                        boost::process::args(arguments),
+                                                        env,
+                                                        boost::process::std_in.close(),
+                                                        (boost::process::std_out & boost::process::std_err) > ap);
     } else {
-      process = std::make_shared<boost::process::child>(
-          searchPath(command),
-          boost::process::args(arguments),
-          boost::process::start_dir(workingDirectory.wstr()),
-          env,
-          boost::process::std_in.close(),
-          (boost::process::std_out & boost::process::std_err) > ap);
+      process = std::make_shared<boost::process::child>(searchPath(command),
+                                                        boost::process::args(arguments),
+                                                        boost::process::start_dir(workingDirectory.wstr()),
+                                                        env,
+                                                        boost::process::std_in.close(),
+                                                        (boost::process::std_out & boost::process::std_err) > ap);
     }
 
     {
@@ -107,7 +106,7 @@ utility::ProcessOutput utility::executeProcess(const std::wstring& command,
     });
 
     bool outputReceived = false;
-    std::vector<char> buf(128);
+    std::vector<char> buf(128U);
     auto stdOutBuffer = boost::asio::buffer(buf);
     std::string logBuffer;
 
@@ -159,8 +158,7 @@ utility::ProcessOutput utility::executeProcess(const std::wstring& command,
         }
       } else {
         if(!safely_wait_for(*process, std::chrono::milliseconds(timeout))) {
-          LOG_WARNING("Canceling process because it timed out after " +
-                      std::to_string(timeout / 1000) + " seconds.");
+          LOG_WARNING("Canceling process because it timed out after " + std::to_string(timeout / 1000) + " seconds.");
           process->terminate();
         }
       }
@@ -192,7 +190,7 @@ utility::ProcessOutput utility::executeProcess(const std::wstring& command,
 
 void utility::killRunningProcesses() {
   std::lock_guard<std::mutex> lock(s_runningProcessesMutex);
-  for(std::shared_ptr<boost::process::child> process : s_runningProcesses) {
+  for(const auto& process : s_runningProcesses) {
     process->terminate();
   }
 }
@@ -218,4 +216,8 @@ std::string utility::getOsTypeString() {
     break;
   }
   return "unknown";
+}
+
+std::string utility::getAppArchTypeString() {
+  return (getApplicationArchitectureType() == APPLICATION_ARCHITECTURE_X86_32) ? "32" : "64";
 }

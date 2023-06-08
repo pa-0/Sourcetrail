@@ -31,7 +31,8 @@ SourceLocation::SourceLocation(SourceLocation* pOther, size_t lineNumber, size_t
 }
 
 SourceLocation::Ptr SourceLocation::createEndSourceLocation(SourceLocation* pOther, size_t lineNumber, size_t columnNumber) {
-  auto ptr = std::make_shared<SourceLocation>(pOther->m_file, pOther->m_type, pOther->m_locationId, pOther->m_tokenIds, lineNumber, columnNumber, !pOther->m_isStart);
+  auto ptr = std::make_shared<SourceLocation>(
+      pOther->m_file, pOther->m_type, pOther->m_locationId, pOther->m_tokenIds, lineNumber, columnNumber, !pOther->m_isStart);
   ptr->m_other = pOther;
   return ptr;
 }
@@ -47,7 +48,8 @@ SourceLocation::SourceLocation(const SourceLocation* pOther, SourceLocationFile*
     , m_isStart(pOther->m_isStart) {}
 
 SourceLocation::Ptr SourceLocation::createSourceLocationFromAnother(const SourceLocation* pOther, SourceLocationFile* pFile) {
-  return std::make_shared<SourceLocation>(pFile, pOther->m_type, pOther->m_locationId, pOther->m_tokenIds, pOther->m_lineNumber, pOther->m_columnNumber, pOther->m_isStart);
+  return std::make_shared<SourceLocation>(
+      pFile, pOther->m_type, pOther->m_locationId, pOther->m_tokenIds, pOther->m_lineNumber, pOther->m_columnNumber, pOther->m_isStart);
 }
 
 SourceLocation::~SourceLocation() = default;
@@ -83,15 +85,14 @@ bool SourceLocation::operator>(const SourceLocation& rhs) const {
 }
 
 bool SourceLocation::contains(const SourceLocation& other) const {
-  const SourceLocation* pStart      = getStartLocation();
+  const SourceLocation* pStart = getStartLocation();
   const SourceLocation* pOtherStart = other.getStartLocation();
 
   if(pStart->getLineNumber() > pOtherStart->getLineNumber()) {
     return false;
   }
 
-  if(pStart->getLineNumber() == pOtherStart->getLineNumber() &&
-     pStart->getColumnNumber() > pOtherStart->getColumnNumber()) {
+  if(pStart->getLineNumber() == pOtherStart->getLineNumber() && pStart->getColumnNumber() > pOtherStart->getColumnNumber()) {
     return false;
   }
 
@@ -102,8 +103,7 @@ bool SourceLocation::contains(const SourceLocation& other) const {
     return false;
   }
 
-  if(pEnd->getLineNumber() == pOtherEnd->getLineNumber() &&
-     pEnd->getColumnNumber() < pOtherEnd->getColumnNumber()) {
+  if(pEnd->getLineNumber() == pOtherEnd->getLineNumber() && pEnd->getColumnNumber() < pOtherEnd->getColumnNumber()) {
     return false;
   }
 

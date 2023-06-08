@@ -1,9 +1,9 @@
 #include "SourceLocationFile.h"
+#include "utilityString.h"
 
 #include <utility>
 
-SourceLocationFile::SourceLocationFile(
-    FilePath filePath, std::wstring language, bool isWhole, bool isComplete, bool isIndexed)
+SourceLocationFile::SourceLocationFile(FilePath filePath, std::wstring language, bool isWhole, bool isComplete, bool isIndexed)
     : m_filePath(std::move(filePath))
     , m_language(std::move(language))
     , m_isWhole(isWhole)
@@ -48,8 +48,7 @@ bool SourceLocationFile::isIndexed() const {
   return m_isIndexed;
 }
 
-const std::multiset<std::shared_ptr<SourceLocation>, SourceLocationFile::LocationComp>& SourceLocationFile::
-    getSourceLocations() const {
+const std::multiset<std::shared_ptr<SourceLocation>, SourceLocationFile::LocationComp>& SourceLocationFile::getSourceLocations() const {
   return m_locations;
 }
 
@@ -58,10 +57,9 @@ size_t SourceLocationFile::getSourceLocationCount() const {
 }
 
 size_t SourceLocationFile::getUnscopedStartLocationCount() const {
-  return static_cast<size_t>(
-      std::count_if(std::cbegin(m_locations), std::cend(m_locations), [](const auto& pLocation) {
-        return pLocation->isStartLocation() && !pLocation->isScopeLocation();
-      }));
+  return static_cast<size_t>(std::count_if(std::cbegin(m_locations), std::cend(m_locations), [](const auto& pLocation) {
+    return pLocation->isStartLocation() && !pLocation->isScopeLocation();
+  }));
 }
 
 SourceLocation* SourceLocationFile::addSourceLocation(LocationType type,
@@ -71,15 +69,14 @@ SourceLocation* SourceLocationFile::addSourceLocation(LocationType type,
                                                       size_t startColumnNumber,
                                                       size_t endLineNumber,
                                                       size_t endColumnNumber) {
-  auto pStart = std::make_shared<SourceLocation>(
-      this, type, locationId, tokenIds, startLineNumber, startColumnNumber, true);
+  auto pStart = std::make_shared<SourceLocation>(this, type, locationId, tokenIds, startLineNumber, startColumnNumber, true);
   auto pEnd = std::make_shared<SourceLocation>(pStart.get(), endLineNumber, endColumnNumber);
 
   m_locations.insert(pStart);
   m_locations.insert(pEnd);
 
-  if(pStart->getLocationId() != 0U) {
-    m_locationIndex.emplace(pStart->getLocationId(), pStart.get());
+  if(auto startId = pStart->getLocationId(); startId != 0U) {
+    m_locationIndex.emplace(startId, pStart.get());
   }
 
   return pStart.get();
@@ -94,8 +91,7 @@ SourceLocation* SourceLocationFile::addSourceLocationCopy(const SourceLocation* 
     }
 
     const auto* pOtherOldLocation = pOldLocation->getOtherLocation();
-    if((pOtherOldLocation != nullptr) &&
-       pOtherOldLocation->isStartLocation() == location->isStartLocation()) {
+    if((pOtherOldLocation != nullptr) && pOtherOldLocation->isStartLocation() == location->isStartLocation()) {
       return const_cast<SourceLocation*>(pOtherOldLocation);
     }
   }
@@ -117,14 +113,11 @@ SourceLocation* SourceLocationFile::addSourceLocationCopy(const SourceLocation* 
 }
 
 void SourceLocationFile::copySourceLocations(const std::shared_ptr<SourceLocationFile>& pFile) {
-  pFile->forEachSourceLocation(
-      [this](SourceLocation* pLocation) { addSourceLocationCopy(pLocation); });
+  pFile->forEachSourceLocation([this](SourceLocation* pLocation) { addSourceLocationCopy(pLocation); });
 }
 
 SourceLocation* SourceLocationFile::getSourceLocationById(Id locationId) const {
-  auto iterator = m_locationIndex.find(locationId);
-
-  if(iterator != m_locationIndex.end()) {
+  if(auto iterator = m_locationIndex.find(locationId); iterator != m_locationIndex.end()) {
     return iterator->second;
   }
 
@@ -132,40 +125,35 @@ SourceLocation* SourceLocationFile::getSourceLocationById(Id locationId) const {
 }
 
 void SourceLocationFile::forEachSourceLocation(const std::function<void(SourceLocation*)>& func) const {
-  for(const std::shared_ptr<SourceLocation>& location : m_locations) {
-    func(location.get());
-  }
+  std::for_each(std::cbegin(m_locations), std::cend(m_locations), [&func](const auto& location) { func(location.get()); });
 }
 
-void SourceLocationFile::forEachStartSourceLocation(
-    const std::function<void(SourceLocation*)>& func) const {
-  for(const std::shared_ptr<SourceLocation>& location : m_locations) {
-    if(location->isStartLocation()) {
-      func(location.get());
+void SourceLocationFile::forEachStartSourceLocation(const std::function<void(SourceLocation*)>& func) const {
+  for(const auto& pLocation : m_locations) {
+    if(pLocation->isStartLocation()) {
+      func(pLocation.get());
     }
   }
 }
 
 void SourceLocationFile::forEachEndSourceLocation(const std::function<void(SourceLocation*)>& func) const {
-  for(const std::shared_ptr<SourceLocation>& location : m_locations) {
-    if(location->isEndLocation()) {
-      func(location.get());
+  for(const auto& pLocation : m_locations) {
+    if(pLocation->isEndLocation()) {
+      func(pLocation.get());
     }
   }
 }
 
-std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByLines(size_t firstLineNumber,
-                                                                           size_t lastLineNumber) const {
-  std::shared_ptr<SourceLocationFile> ret = std::make_shared<SourceLocationFile>(
-      getFilePath(), getLanguage(), false, isComplete(), isIndexed());
+std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByLines(size_t firstLineNumber, size_t lastLineNumber) const {
+  auto pOutput = std::make_shared<SourceLocationFile>(getFilePath(), getLanguage(), false, isComplete(), isIndexed());
 
-  for(const std::shared_ptr<SourceLocation>& location : m_locations) {
-    if(location->getLineNumber() >= firstLineNumber && location->getLineNumber() <= lastLineNumber) {
-      ret->addSourceLocationCopy(location.get());
+  for(const auto& pLocation : m_locations) {
+    if(pLocation->getLineNumber() >= firstLineNumber && pLocation->getLineNumber() <= lastLineNumber) {
+      pOutput->addSourceLocationCopy(pLocation.get());
     }
   }
 
-  return ret;
+  return pOutput;
 }
 
 std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByType(LocationType type) const {
@@ -181,8 +169,7 @@ std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByType(Locati
   return ret;
 }
 
-std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByTypes(
-    const std::vector<LocationType>& types) const {
+std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByTypes(const std::vector<LocationType>& types) const {
   size_t typeMask = 0;
   for(LocationType type : types) {
     typeMask |= static_cast<size_t>(1) << type;
@@ -198,6 +185,18 @@ std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByTypes(
   }
 
   return pSourceLocationFile;
+}
+
+Json::Value SourceLocationFile::toJSON() const {
+  Json::Value output;
+  // clang-format off
+  output["file"]     = m_filePath.str();
+  output["lang"]     = utility::encodeToUtf8(m_language);
+  output["whole"]    = m_isWhole;
+  output["complete"] = m_isComplete;
+  output["indexed"]  = m_isIndexed;
+  // clang-format on
+  return output;
 }
 
 std::wostream& operator<<(std::wostream& ostream, const SourceLocationFile& file) {

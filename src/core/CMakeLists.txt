@@ -53,6 +53,14 @@ target_link_libraries(
     TinyXML::TinyXML
     fmt::fmt)
 
+# $<$<PLATFORM_ID:Windows>:bcrypt>
+target_compile_definitions(
+  Sourcetrail_core
+  PUBLIC
+    $<$<PLATFORM_ID:Windows>:D_WINDOWS>
+    $<$<PLATFORM_ID:Linux>:D_LINUX>
+    $<$<PLATFORM_ID:Darwin>:D_Darwin>)
+
 if(ENABLE_UNIT_TEST)
   add_subdirectory(tests)
 endif()
