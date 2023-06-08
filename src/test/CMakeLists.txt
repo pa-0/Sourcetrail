@@ -36,15 +36,10 @@ set(
   MatrixDynamicBaseTestSuite
   NetworkProtocolHelperTestSuite
   ProjectSettingsTestSuite
-  RefreshInfoGeneratorTestSuite
   SearchIndexTestSuite
   SettingsMigratorTestSuite
   SettingsTestSuite
   SharedMemoryTestSuite
-  SourceGroupTestSuite
-  SqliteBookmarkStorageTestSuite
-  SqliteIndexStorageTestSuite
-  StorageTestSuite
   UtilityTestSuite
   Vector2TestSuite)
 
