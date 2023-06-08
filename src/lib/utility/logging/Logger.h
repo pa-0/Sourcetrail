@@ -1,31 +1,45 @@
 #pragma once
 // STL
-#include <memory>
 #include <vector>
+#include <string>
 // internal
 #include "LogMessage.h"
 
 class Logger {
 public:
-  typedef int LogLevelMask;
+  using LogLevelMask = int;
   enum LogLevel : int { LOG_INFOS = 0x1, LOG_WARNINGS = 0x2, LOG_ERRORS = 0x4, LOG_ALL = 0x7 };
 
-  Logger(const std::string& type);
-  virtual ~Logger() = default;
+  static LogLevel convertStringToLogLevel(const std::string& level);
 
-  std::string getType() const;
+  explicit Logger(std::string type);
 
-  LogLevelMask getLogLevel() const;
+  Logger(const Logger&) = delete;
+  Logger& operator=(const Logger&) = delete;
+  Logger(Logger&&) = delete;
+  Logger& operator=(Logger&&) = delete;
+
+  virtual ~Logger();
+
+  [[nodiscard]] std::string getType() const;
+
+  [[nodiscard]] LogLevelMask getLogLevel() const;
+
   void setLogLevel(LogLevelMask mask);
-  bool isLogLevel(LogLevelMask mask);
+
+  [[nodiscard]] bool isLogLevel(LogLevelMask mask) const;
 
   void onInfo(const LogMessage& message);
+
   void onWarning(const LogMessage& message);
+
   void onError(const LogMessage& message);
 
 private:
   virtual void logInfo(const LogMessage& message) = 0;
+
   virtual void logWarning(const LogMessage& message) = 0;
+
   virtual void logError(const LogMessage& message) = 0;
 
   const std::string m_type;

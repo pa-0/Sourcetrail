@@ -27,10 +27,7 @@ void parseAndSetValue(boolFunc f, const char* opt, ApplicationSettings* settings
 }
 
 typedef void (ApplicationSettings::*filePathFunc)(const FilePath&);
-void parseAndSetValue(filePathFunc f,
-                      const char* opt,
-                      ApplicationSettings* settings,
-                      po::variables_map& vm) {
+void parseAndSetValue(filePathFunc f, const char* opt, ApplicationSettings* settings, po::variables_map& vm) {
   if(vm.count(opt)) {
     FilePath path(vm[opt].as<std::string>());
     if(!path.exists()) {
@@ -41,10 +38,7 @@ void parseAndSetValue(filePathFunc f,
 }
 
 typedef bool (ApplicationSettings::*vectorFunc)(const std::vector<FilePath>&);
-void parseAndSetValue(vectorFunc f,
-                      const char* opt,
-                      ApplicationSettings* settings,
-                      po::variables_map& vm) {
+void parseAndSetValue(vectorFunc f, const char* opt, ApplicationSettings* settings, po::variables_map& vm) {
   if(vm.count(opt)) {
     std::vector<FilePath> v = extractPaths(vm[opt].as<std::vector<std::string>>());
     (settings->*f)(v);
@@ -113,27 +107,20 @@ CommandlineCommand::ReturnStatus CommandlineCommandConfig::parse(std::vector<std
               << "\n  indexer-threads: " << settings->getIndexerThreadCount()
               << "\n  use-processes: " << settings->getMultiProcessIndexingEnabled()
               << "\n  logging-enabled: " << settings->getLoggingEnabled()
-              << "\n  verbose-indexer-logging-enabled: "
-              << settings->getVerboseIndexerLoggingEnabled();
-		printVector("global-header-search-paths", settings->getHeaderSearchPaths());
+              << "\n  verbose-indexer-logging-enabled: " << settings->getVerboseIndexerLoggingEnabled();
+    printVector("global-header-search-paths", settings->getHeaderSearchPaths());
     printVector("global-framework-search-paths", settings->getFrameworkSearchPaths());
     return ReturnStatus::CMD_QUIT;
   }
 
-  parseAndSetValue(
-      &ApplicationSettings::setMultiProcessIndexingEnabled, "use-processes", settings, vm);
+  parseAndSetValue(&ApplicationSettings::setMultiProcessIndexingEnabled, "use-processes", settings, vm);
   parseAndSetValue(&ApplicationSettings::setLoggingEnabled, "logging-enabled", settings, vm);
-  parseAndSetValue(&ApplicationSettings::setVerboseIndexerLoggingEnabled,
-                   "verbose-indexer-logging-enabled",
-                   settings,
-                   vm);
+  parseAndSetValue(&ApplicationSettings::setVerboseIndexerLoggingEnabled, "verbose-indexer-logging-enabled", settings, vm);
 
   parseAndSetValue(&ApplicationSettings::setIndexerThreadCount, "indexer-threads", settings, vm);
 
-  parseAndSetValue(
-      &ApplicationSettings::setHeaderSearchPaths, "global-header-search-paths", settings, vm);
-  parseAndSetValue(
-      &ApplicationSettings::setFrameworkSearchPaths, "global-framework-search-paths", settings, vm);
+  parseAndSetValue(&ApplicationSettings::setHeaderSearchPaths, "global-header-search-paths", settings, vm);
+  parseAndSetValue(&ApplicationSettings::setFrameworkSearchPaths, "global-framework-search-paths", settings, vm);
 
   settings->save();
 

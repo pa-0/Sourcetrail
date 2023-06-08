@@ -1,25 +1,22 @@
-#ifndef COMMANDLINE_COMMAND_CONFIG_H
-#define COMMANDLINE_COMMAND_CONFIG_H
+#pragma once
 
 #include "CommandlineCommand.h"
 
-namespace commandline
-{
-class CommandlineCommandConfig: public CommandlineCommand
-{
+namespace commandline {
+
+class CommandlineCommandConfig : public CommandlineCommand {
 public:
-	CommandlineCommandConfig(CommandLineParser* parser);
-	virtual ~CommandlineCommandConfig();
+  CommandlineCommandConfig(CommandLineParser* parser);
 
-	virtual void setup();
-	virtual ReturnStatus parse(std::vector<std::string>& args);
+  ~CommandlineCommandConfig() override;
 
-	virtual bool hasHelp() const
-	{
-		return true;
-	}
+  void setup() override;
+
+  ReturnStatus parse(std::vector<std::string>& args) override;
+
+  bool hasHelp() const override {
+    return true;
+  }
 };
 
-}	 // namespace commandline
-
-#endif	  // COMMANDLINE_COMMAND_CONFIG_H
+}    // namespace commandline

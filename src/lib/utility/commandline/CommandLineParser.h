@@ -1,6 +1,4 @@
-#ifndef COMMAND_LINE_PARSER_H
-#define COMMAND_LINE_PARSER_H
-
+#pragma once
 #include <memory>
 #include <string>
 #include <vector>
@@ -10,59 +8,66 @@
 #include "FilePath.h"
 #include "RefreshInfo.h"
 
-namespace po = boost::program_options;
-
-namespace commandline
-{
+namespace commandline {
 class CommandlineCommand;
 
-class CommandLineParser
-{
+class CommandLineParser final {
 public:
-	CommandLineParser(const std::string& version);
-	~CommandLineParser();
+  explicit CommandLineParser(std::string version);
 
-	void preparse(int argc, char** argv);
-	void preparse(std::vector<std::string>& args);
-	void parse();
+  CommandLineParser(const CommandLineParser&) = delete;
+  CommandLineParser& operator=(const CommandLineParser&) = delete;
+  CommandLineParser(CommandLineParser&&) = delete;
+  CommandLineParser& operator=(CommandLineParser&&) = delete;
 
-	bool runWithoutGUI() const;
-	bool exitApplication() const;
+  ~CommandLineParser();
 
-	bool hasError() const;
-	std::wstring getError();
+  void preparse(std::vector<std::string> args);
 
-	void fullRefresh();
-	void incompleteRefresh();
-	void setShallowIndexingRequested(bool enabled = true);
+  void parse();
 
-	const FilePath& getProjectFilePath() const;
-	void setProjectFile(const FilePath& filepath);
+  [[nodiscard]] bool runWithoutGUI() const;
 
-	RefreshMode getRefreshMode() const;
-	bool getShallowIndexingRequested() const;
+  [[nodiscard]] bool exitApplication() const;
+
+  [[nodiscard]] bool hasError() const;
+
+  std::wstring getError();
+
+  void fullRefresh();
+
+  void incompleteRefresh();
+
+  void setShallowIndexingRequested(bool enabled = true);
+
+  [[nodiscard]] const FilePath& getProjectFilePath() const;
+
+  void setProjectFile(const FilePath& filepath);
+
+  [[nodiscard]] RefreshMode getRefreshMode() const;
+
+  [[nodiscard]] bool getShallowIndexingRequested() const;
 
 private:
-	void processProjectfile();
-	void printHelp() const;
+  void processProjectfile();
 
-	boost::program_options::options_description m_options;
-	boost::program_options::positional_options_description m_positional;
+  void printHelp() const;
 
-	std::vector<std::shared_ptr<CommandlineCommand>> m_commands;
-	std::vector<std::string> m_args;
+  boost::program_options::options_description m_options;
+  boost::program_options::positional_options_description m_positional;
 
-	const std::string m_version;
-	FilePath m_projectFile;
-	RefreshMode m_refreshMode = REFRESH_UPDATED_FILES;
-	bool m_shallowIndexingRequested = false;
+  std::vector<std::shared_ptr<CommandlineCommand>> m_commands;
+  std::vector<std::string> m_args;
 
-	bool m_quit = false;
-	bool m_withoutGUI = false;
+  const std::string m_version;
+  FilePath m_projectFile;
+  RefreshMode m_refreshMode = REFRESH_UPDATED_FILES;
+  bool m_shallowIndexingRequested = false;
 
-	std::wstring m_errorString;
+  bool m_quit = false;
+  bool m_withoutGUI = false;
+
+  std::wstring m_errorString;
 };
 
-}	 // namespace commandline
-
-#endif	  // COMMAND_LINE_PARSER_H
+}    // namespace commandline

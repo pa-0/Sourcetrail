@@ -1,25 +1,22 @@
-#ifndef COMMANDLINE_COMMAND_INDEX_H
-#define COMMANDLINE_COMMAND_INDEX_H
+#pragma once
 
 #include "CommandlineCommand.h"
 
-namespace commandline
-{
-class CommandlineCommandIndex: public CommandlineCommand
-{
+namespace commandline {
+
+class CommandlineCommandIndex : public CommandlineCommand {
 public:
-	CommandlineCommandIndex(CommandLineParser* parser);
-	virtual ~CommandlineCommandIndex();
+  CommandlineCommandIndex(CommandLineParser* parser);
 
-	virtual void setup();
-	virtual ReturnStatus parse(std::vector<std::string>& args);
+  ~CommandlineCommandIndex() override;
 
-	virtual bool hasHelp() const
-	{
-		return true;
-	}
+  void setup() override;
+
+  ReturnStatus parse(std::vector<std::string>& args) override;
+
+  [[nodiscard]] bool hasHelp() const override {
+    return true;
+  }
 };
 
-}	 // namespace commandline
-
-#endif	  // COMMANDLINE_COMMAND_INDEX_H
+}    // namespace commandline
