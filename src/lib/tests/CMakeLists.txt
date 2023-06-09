@@ -17,6 +17,7 @@ set(
   FileHandlerTestSuite
   CommandLineParserTestSuite
   CommandlineHelperTestSuite
+  CommandlineCommandTestSuite
   #ConsoleControllerTestSuite
   #ConsoleInterpreterTestSuite
   LocationTypeTestSuite
