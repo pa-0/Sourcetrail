@@ -1,4 +1,8 @@
+#include <algorithm>
 #include <array>
+#include <filesystem>
+#include <memory>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -118,23 +122,23 @@ TEST(CommandLineParserConfig, projectFileOptionIsEmpty) {
 }
 
 // NOLINTNEXTLINE
-TEST(CommandLineParserConfig, projectFileOption) {
+TEST(CommandLineParserConfig, projectFileOptionNotExists) {
   std::vector<std::string> args {"--project-file", "not-exists"};
   commandline::CommandLineParser parser({});
   parser.preparse(args);
   EXPECT_FALSE(parser.runWithoutGUI());
   EXPECT_FALSE(parser.exitApplication());
   EXPECT_TRUE(parser.hasError());
-  const std::wstring GeneratedErrorMessage = L"Provided Projectfile is not valid:\n* Provided Projectfile('not-exists')  does not exist";
+  const std::wstring GeneratedErrorMessage =
+      L"Provided Projectfile is not valid:\n* Provided Projectfile('not-exists')  does not exist";
   EXPECT_THAT(parser.getError(), StrEq(GeneratedErrorMessage));
   EXPECT_EQ(RefreshMode::REFRESH_NONE, parser.getShallowIndexingRequested());
   EXPECT_FALSE(parser.getShallowIndexingRequested());
 }
 
-/*
 // NOLINTNEXTLINE
-TEST(CommandLineParserConfig, emptyProjectFile) {
-  std::vector<std::string> args{"not-exists-project"};
+TEST(CommandLineParserConfig, DISABLED_emptyProjectFile) {
+  std::vector<std::string> args {"not-exists-project", "/tmp/empty.srctrlprj"};
   commandline::CommandLineParser parser({});
   parser.preparse(args);
   EXPECT_FALSE(parser.runWithoutGUI());
@@ -144,6 +148,7 @@ TEST(CommandLineParserConfig, emptyProjectFile) {
   EXPECT_FALSE(parser.getShallowIndexingRequested());
 }
 
+/*
 // NOLINTNEXTLINE
 TEST(CommandLineParserConfig, initStateNoRegisitedCommands) {
   std::vector<std::string> args{"somthing"};
