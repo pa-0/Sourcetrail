@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstdint>
 #include <iterator>
+#include <random>
 #include <string>
 
 #include <boost/locale/encoding_utf.hpp>
@@ -508,4 +509,18 @@ bool caseInsensitiveLess(const std::wstring& s1, const std::wstring& s2) {
   }
   return res_cmp;
 }
+
+std::string createRandomString(size_t stringLength) {
+  static constexpr std::string_view Template = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  std::random_device random;
+  std::mt19937 gen(random());
+  std::uniform_int_distribution<uint32_t> distribution(0, Template.size()-1);
+
+  std::string output(stringLength, 0);
+  std::for_each(std::begin(output), std::end(output), [&distribution, &gen](auto& item) { item = Template[distribution(gen)]; });
+
+  return output;
+}
+
 }    // namespace utility

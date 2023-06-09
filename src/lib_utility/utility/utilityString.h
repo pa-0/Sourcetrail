@@ -186,4 +186,6 @@ bool equalsCaseInsensitive(const StringType& str1, const StringType& str2) {
   return false;
 }
 
+std::string createRandomString(size_t stringLength);
+
 }    // namespace utility

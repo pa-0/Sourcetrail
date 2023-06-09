@@ -295,3 +295,17 @@ TEST(CaseInsensitiveLess, shouldReturnFalseWhenAfterLowerCasingSecondWStringSeco
 TEST(CaseInsensitiveLess, shouldReturnFalseWhenAfterLowerCasingBothSecondWStringSecondIsPrefixOfFirst) {
   EXPECT_FALSE(utility::caseInsensitiveLess(L"ab_cD!E", L"aB_cd!"));
 }
+
+TEST(GenerateRandomString, goodCase) {
+  EXPECT_THAT(utility::createRandomString(0), IsEmpty());
+
+  constexpr auto StringLength0 = 16U;
+  const auto result0 = utility::createRandomString(StringLength0);
+  ASSERT_EQ(StringLength0, result0.size());
+  EXPECT_THAT(result0, MatchesRegex("([A-z]|[0-9]){16}"));
+
+  constexpr auto StringLength1 = 32U;
+  const auto result1 = utility::createRandomString(StringLength1);
+  ASSERT_EQ(StringLength1, result1.size());
+  EXPECT_THAT(result1, MatchesRegex("([A-z]|[0-9]){32}"));
+}
