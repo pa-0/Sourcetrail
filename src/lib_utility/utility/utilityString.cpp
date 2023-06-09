@@ -1,11 +1,11 @@
 #include "utilityString.h"
-// STL
+
 #include <algorithm>
 #include <cctype>
 #include <cstdint>
 #include <iterator>
 #include <string>
-// boost
+
 #include <boost/locale/encoding_utf.hpp>
 
 namespace {
@@ -42,8 +42,7 @@ StringType doReplaceBetween(const StringType& str,
       depth--;
 
       if(depth == 0) {
-        StringType end = doReplaceBetween<StringType>(
-            str.substr(pos + 1), startDelimiter, endDelimiter, to);
+        StringType end = doReplaceBetween<StringType>(str.substr(pos + 1), startDelimiter, endDelimiter, to);
         return str.substr(0, startPos) + startDelimiter + to + endDelimiter + end;
       }
     }
@@ -237,17 +236,11 @@ std::wstring replace(std::wstring str, const std::wstring& from, const std::wstr
   return doReplace(str, from, to);
 }
 
-std::string replaceBetween(const std::string& str,
-                           char startDelimiter,
-                           char endDelimiter,
-                           const std::string& to) {
+std::string replaceBetween(const std::string& str, char startDelimiter, char endDelimiter, const std::string& to) {
   return doReplaceBetween<std::string>(str, startDelimiter, endDelimiter, to);
 }
 
-std::wstring replaceBetween(const std::wstring& str,
-                            wchar_t startDelimiter,
-                            wchar_t endDelimiter,
-                            const std::wstring& to) {
+std::wstring replaceBetween(const std::wstring& str, wchar_t startDelimiter, wchar_t endDelimiter, const std::wstring& to) {
   return doReplaceBetween<std::wstring>(str, startDelimiter, endDelimiter, to);
 }
 
@@ -349,11 +342,8 @@ std::wstring breakSignature(std::wstring signature, size_t maxLineLength, size_t
   return breakSignature(returnPart, namePart, paramPart, maxLineLength, tabWidth);
 }
 
-std::wstring breakSignature(std::wstring returnPart,
-                            std::wstring namePart,
-                            std::wstring paramPart,
-                            size_t maxLineLength,
-                            size_t tabWidth) {
+std::wstring breakSignature(
+    std::wstring returnPart, std::wstring namePart, std::wstring paramPart, size_t maxLineLength, size_t tabWidth) {
   namePart = L' ' + namePart;
 
   size_t totalSize = returnPart.size() + namePart.size() + paramPart.size();
@@ -441,17 +431,13 @@ std::wstring breakSignature(std::wstring returnPart,
 
 std::string trim(const std::string& str) {
   auto wsfront = std::find_if_not(str.begin(), str.end(), [](int c) { return std::isspace(c); });
-  auto wsback = std::find_if_not(str.rbegin(), str.rend(), [](int c) {
-                  return std::isspace(c);
-                }).base();
+  auto wsback = std::find_if_not(str.rbegin(), str.rend(), [](int c) { return std::isspace(c); }).base();
   return (wsback <= wsfront ? std::string() : std::string(wsfront, wsback));
 }
 
 std::wstring trim(const std::wstring& str) {
   auto wsfront = std::find_if_not(str.begin(), str.end(), [](int c) { return std::isspace(c); });
-  auto wsback = std::find_if_not(str.rbegin(), str.rend(), [](int c) {
-                  return std::isspace(c);
-                }).base();
+  auto wsback = std::find_if_not(str.rbegin(), str.rend(), [](int c) { return std::isspace(c); }).base();
   return (wsback <= wsfront ? std::wstring() : std::wstring(wsfront, wsback));
 }
 
@@ -508,8 +494,7 @@ bool caseInsensitiveLess(const std::wstring& s1, const std::wstring& s2) {
   size_t s1_size = s1.size();
   size_t s2_size = s2.size();
   bool res_cmp = s1_size < s2_size;
-  size_t lesser_size = s2_size ^
-      ((s1_size ^ s2_size) & static_cast<size_t>(-static_cast<int>(res_cmp)));
+  size_t lesser_size = s2_size ^ ((s1_size ^ s2_size) & static_cast<size_t>(-static_cast<int>(res_cmp)));
   for(size_t i = 0; i < lesser_size; ++i) {
     wchar_t s1_wchr = s1[i];
     wchar_t s2_wchr = s2[i];

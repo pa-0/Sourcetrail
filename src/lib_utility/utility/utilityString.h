@@ -1,5 +1,4 @@
 #pragma once
-// STL
 #include <algorithm>
 #include <deque>
 #include <sstream>
@@ -7,7 +6,9 @@
 #include <vector>
 
 namespace utility {
+
 std::string encodeToUtf8(const std::wstring& text);
+
 std::wstring decodeFromUtf8(const std::string& text);
 
 template <typename ContainerType>
@@ -48,9 +49,7 @@ std::string substrAfter(const std::string& str, char delimiter);
 std::string substrAfter(const std::string& str, const std::string& delimiter);
 
 template <typename StringType>
-StringType substrBetween(const StringType& str,
-                         const StringType& delimiter1,
-                         const StringType& delimiter2);
+StringType substrBetween(const StringType& str, const StringType& delimiter1, const StringType& delimiter2);
 
 template <typename StringType>
 bool isPrefix(const StringType& prefix, const StringType& text);
@@ -69,22 +68,13 @@ bool equalsCaseInsensitive(const std::string& a, const std::string& b);
 std::string replace(std::string str, const std::string& from, const std::string& to);
 std::wstring replace(std::wstring str, const std::wstring& from, const std::wstring& to);
 
-std::string replaceBetween(const std::string& str,
-                           char startDelimiter,
-                           char endDelimiter,
-                           const std::string& to);
-std::wstring replaceBetween(const std::wstring& str,
-                            wchar_t startDelimiter,
-                            wchar_t endDelimiter,
-                            const std::wstring& to);
+std::string replaceBetween(const std::string& str, char startDelimiter, char endDelimiter, const std::string& to);
+std::wstring replaceBetween(const std::wstring& str, wchar_t startDelimiter, wchar_t endDelimiter, const std::wstring& to);
 
 std::string insertLineBreaksAtBlankSpaces(const std::string& s, size_t maxLineLength);
 std::wstring breakSignature(std::wstring signature, size_t maxLineLength, size_t tabWidth);
-std::wstring breakSignature(std::wstring returnPart,
-                            std::wstring namePart,
-                            std::wstring paramPart,
-                            size_t maxLineLength,
-                            size_t tabWidth);
+std::wstring breakSignature(
+    std::wstring returnPart, std::wstring namePart, std::wstring paramPart, size_t maxLineLength, size_t tabWidth);
 
 std::string trim(const std::string& str);
 std::wstring trim(const std::wstring& str);
@@ -161,9 +151,7 @@ std::wstring join(const ContainerType& list, const std::wstring& delimiter) {
 
 
 template <typename StringType>
-StringType substrBetween(const StringType& str,
-                         const StringType& delimiter1,
-                         const StringType& delimiter2) {
+StringType substrBetween(const StringType& str, const StringType& delimiter1, const StringType& delimiter2) {
   size_t found_delimiter1 = str.find(delimiter1);
   found_delimiter1 += delimiter1.length();
   size_t found_delimiter2 = str.find(delimiter2, found_delimiter1);
@@ -177,8 +165,8 @@ StringType substrBetween(const StringType& str,
 template <typename StringType>
 bool isPrefix(const StringType& prefix, const StringType& text) {
   if(prefix.size() <= text.size()) {
-    std::pair<typename StringType::const_iterator, typename StringType::const_iterator> res =
-        std::mismatch(prefix.begin(), prefix.end(), text.begin());
+    std::pair<typename StringType::const_iterator, typename StringType::const_iterator> res = std::mismatch(
+        prefix.begin(), prefix.end(), text.begin());
 
     return res.first == prefix.end();
   }
@@ -197,4 +185,5 @@ bool equalsCaseInsensitive(const StringType& str1, const StringType& str2) {
   }
   return false;
 }
+
 }    // namespace utility

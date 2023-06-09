@@ -1,381 +1,297 @@
-#include <catch2/catch_all.hpp>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include "utilityString.h"
 
-TEST_CASE("split with char delimiter")
-{
-	std::deque<std::string> result = utility::split("A,B,C", ',');
+using namespace testing;
 
-	REQUIRE(result.size() == 3);
-	REQUIRE(result.at(0) == "A");
-	REQUIRE(result.at(1) == "B");
-	REQUIRE(result.at(2) == "C");
+TEST(Split, splitWithCharDelimiter) {
+  const auto result = utility::split("A,B,C", ',');
+
+  ASSERT_EQ(3, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"A", "B", "C"}));
 }
 
-TEST_CASE("split with string delimiter")
-{
-	std::deque<std::string> result = utility::split("A->B>C", "->");
+TEST(Split, splitWithStringDelimiter) {
+  const auto result = utility::split("A->B>C", "->");
 
-	REQUIRE(result.size() == 2);
-	REQUIRE(result.at(0) == "A");
-	REQUIRE(result.at(1) == "B>C");
+  ASSERT_EQ(2, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"A", "B>C"}));
 }
 
-TEST_CASE("split on empty string")
-{
-	std::deque<std::string> result = utility::split("", "->");
+TEST(Split, splitOnEmptyString) {
+  const auto result = utility::split("", "->");
 
-	REQUIRE(result.size() == 1);
-	REQUIRE(result.at(0) == "");
+  ASSERT_EQ(1, result.size());
+  EXPECT_THAT(result.at(0), IsEmpty());
 }
 
-TEST_CASE("split with unused delimiter")
-{
-	std::deque<std::string> result = utility::split("A:B:C", ";");
+TEST(Split, splitWithUnusedDelimiter) {
+  const auto result = utility::split("A:B:C", ";");
 
-	REQUIRE(result.size() == 1);
-	REQUIRE(result.at(0) == "A:B:C");
+  ASSERT_EQ(1, result.size());
+  EXPECT_THAT(result.at(0), StrEq("A:B:C"));
 }
 
-TEST_CASE("split with delimiters next to each")
-{
-	std::deque<std::string> result = utility::split("A::B:C", ':');
+TEST(Split, splitWithDelimitersNextToEach) {
+  const auto result = utility::split("A::B:C", ':');
 
-	REQUIRE(result.size() == 4);
-	REQUIRE(result.at(0) == "A");
-	REQUIRE(result.at(1) == "");
-	REQUIRE(result.at(2) == "B");
-	REQUIRE(result.at(3) == "C");
+  ASSERT_EQ(4, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"A", "", "B", "C"}));
 }
 
-TEST_CASE("split with delimiter at start")
-{
-	std::deque<std::string> result = utility::split(":B:C", ':');
+TEST(Split, splitWithDelimiterAtStart) {
+  const auto result = utility::split(":B:C", ':');
 
-	REQUIRE(result.size() == 3);
-	REQUIRE(result.at(0) == "");
-	REQUIRE(result.at(1) == "B");
-	REQUIRE(result.at(2) == "C");
+  ASSERT_EQ(3, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"", "B", "C"}));
 }
 
-TEST_CASE("split with delimiter at end")
-{
-	std::deque<std::string> result = utility::split("B:C:", ':');
+TEST(Split, splitWithDelimiterAtEnd) {
+  const auto result = utility::split("B:C:", ':');
 
-	REQUIRE(result.size() == 3);
-	REQUIRE(result.at(0) == "B");
-	REQUIRE(result.at(1) == "C");
-	REQUIRE(result.at(2) == "");
+  ASSERT_EQ(3, result.size());
+  ASSERT_THAT(result, Eq(std::deque<std::string> {"B", "C", ""}));
 }
 
-TEST_CASE("join with char delimiter")
-{
-	std::deque<std::string> list;
-	list.push_back("A");
-	list.push_back("B");
-	list.push_back("C");
+TEST(Join, joinWithCharDelimiter) {
+  std::deque<std::string> list;
+  list.push_back("A");
+  list.push_back("B");
+  list.push_back("C");
 
-	std::string result = utility::join(list, ',');
-	REQUIRE(result == "A,B,C");
+  std::string result = utility::join(list, ',');
+  EXPECT_THAT(result, StrEq("A,B,C"));
 }
 
-TEST_CASE("join with string delimiter")
-{
-	std::deque<std::string> list;
-	list.push_back("A");
-	list.push_back("B");
-	list.push_back("C");
+TEST(Join, joinWithStringDelimiter) {
+  std::deque<std::string> list;
+  list.push_back("A");
+  list.push_back("B");
+  list.push_back("C");
 
-	std::string result = utility::join(list, "==");
-	REQUIRE(result == "A==B==C");
+  std::string result = utility::join(list, "==");
+  EXPECT_THAT(result, StrEq("A==B==C"));
 }
 
-TEST_CASE("join on empty list")
-{
-	std::deque<std::string> list;
-	std::string result = utility::join(list, ',');
-	REQUIRE(result == "");
+TEST(Join, joinOnEmptyList) {
+  std::deque<std::string> list;
+  std::string result = utility::join(list, ',');
+
+  EXPECT_THAT(result, IsEmpty());
 }
 
-TEST_CASE("join with empty strings in list")
-{
-	std::deque<std::string> list;
-	list.push_back("A");
-	list.push_back("");
-	list.push_back("");
+TEST(Join, joinWithEmptyStringsInList) {
+  std::deque<std::string> list;
+  list.push_back("A");
+  list.push_back("");
+  list.push_back("");
 
-	std::string result = utility::join(list, ':');
-	REQUIRE(result == "A::");
+  const std::string result = utility::join(list, ':');
+  EXPECT_THAT(result, StrEq("A::"));
 }
 
-TEST_CASE("tokenize with string")
-{
-	std::deque<std::string> result = utility::tokenize("A->B->C", "->");
+TEST(Tokenize, tokenizeWithString) {
+  const auto result = utility::tokenize("A->B->C", "->");
 
-	REQUIRE(result.size() == 5);
-	REQUIRE(result.at(0) == "A");
-	REQUIRE(result.at(1) == "->");
-	REQUIRE(result.at(2) == "B");
-	REQUIRE(result.at(3) == "->");
-	REQUIRE(result.at(4) == "C");
+  ASSERT_EQ(5, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"A", "->", "B", "->", "C"}));
 }
 
-TEST_CASE("tokenize with string and delimiter at start")
-{
-	std::deque<std::string> result = utility::tokenize("->B", "->");
+TEST(Tokenize, tokenizeWithStringAndDelimiterAtStart) {
+  const auto result = utility::tokenize("->B", "->");
 
-	REQUIRE(result.size() == 2);
-	REQUIRE(result.at(0) == "->");
-	REQUIRE(result.at(1) == "B");
+  ASSERT_EQ(2, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"->", "B"}));
 }
 
-TEST_CASE("tokenize with string and delimiter at end")
-{
-	std::deque<std::string> result = utility::tokenize("C+", '+');
+TEST(Tokenize, tokenizeWithStringAndDelimiterAtEnd) {
+  const auto result = utility::tokenize("C+", '+');
 
-	REQUIRE(result.size() == 2);
-	REQUIRE(result.at(0) == "C");
-	REQUIRE(result.at(1) == "+");
+  ASSERT_EQ(2, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"C", "+"}));
 }
 
-TEST_CASE("tokenize with deque")
-{
-	std::deque<std::string> result = utility::tokenize("A->B=C->D", "->");
-	result = utility::tokenize(result, "=");
+TEST(Tokenize, tokenizeWithDeque) {
+  auto result = utility::tokenize("A->B=C->D", "->");
+  result = utility::tokenize(result, "=");
 
-	REQUIRE(result.size() == 7);
-	REQUIRE(result.at(0) == "A");
-	REQUIRE(result.at(1) == "->");
-	REQUIRE(result.at(2) == "B");
-	REQUIRE(result.at(3) == "=");
-	REQUIRE(result.at(4) == "C");
-	REQUIRE(result.at(5) == "->");
-	REQUIRE(result.at(6) == "D");
+  ASSERT_EQ(7, result.size());
+  EXPECT_THAT(result, Eq(std::deque<std::string> {"A", "->", "B", "=", "C", "->", "D"}));
 }
 
-TEST_CASE("substr before first with single delimiter occurrence")
-{
-	REQUIRE(utility::substrBeforeFirst("foo bar", ' ') == "foo");
+TEST(Substr, substrBeforeFirstWithSingleDelimiterOccurrence) {
+  EXPECT_THAT(utility::substrBeforeFirst("foo bar", ' '), StrEq("foo"));
 }
 
-TEST_CASE("substr before first with multiple delimiter occurrences")
-{
-	REQUIRE(utility::substrBeforeFirst("foo bar foo", ' ') == "foo");
+TEST(Substr, substrBeforeFirstWithMultipleDelimiterOccurrences) {
+  EXPECT_THAT(utility::substrBeforeFirst("foo bar foo", ' '), StrEq("foo"));
 }
 
-TEST_CASE("substr before first with no delimiter occurrence")
-{
-	REQUIRE(utility::substrBeforeFirst("foobar", ' ') == "foobar");
+TEST(Substr, substrBeforeFirstWithNoDelimiterOccurrence) {
+  EXPECT_THAT(utility::substrBeforeFirst("foobar", ' '), StrEq("foobar"));
 }
 
-TEST_CASE("substr before first with delimiter at start")
-{
-	REQUIRE(utility::substrBeforeFirst(" foobar", ' ') == "");
+TEST(Substr, substrBeforeFirstWithDelimiterAtStart) {
+  EXPECT_THAT(utility::substrBeforeFirst(" foobar", ' '), IsEmpty());
 }
 
-TEST_CASE("substr before first with delimiter at end")
-{
-	REQUIRE(utility::substrBeforeFirst("foobar ", ' ') == "foobar");
+TEST(Substr, substrBeforeFirstWithDelimiterAtEnd) {
+  EXPECT_THAT(utility::substrBeforeFirst("foobar ", ' '), StrEq("foobar"));
 }
 
-TEST_CASE("substr before last with single delimiter occurrence")
-{
-	REQUIRE(utility::substrBeforeLast("foo bar", ' ') == "foo");
+TEST(Substr, substrBeforeLastWithSingleDelimiterOccurrence) {
+  EXPECT_THAT(utility::substrBeforeLast("foo bar", ' '), StrEq("foo"));
 }
 
-TEST_CASE("substr before last with multiple delimiter occurrences")
-{
-	REQUIRE(utility::substrBeforeLast("foo bar foo", ' ') == "foo bar");
+TEST(Substr, substrBeforeLastWithMultipleDelimiterOccurrences) {
+  EXPECT_THAT(utility::substrBeforeLast("foo bar foo", ' '), StrEq("foo bar"));
 }
 
-TEST_CASE("substr before last with no delimiter occurrence")
-{
-	REQUIRE(utility::substrBeforeLast("foobar", ' ') == "foobar");
+TEST(Substr, substrBeforeLastWithNoDelimiterOccurrence) {
+  EXPECT_THAT(utility::substrBeforeLast("foobar", ' '), StrEq("foobar"));
 }
 
-TEST_CASE("substr before last with delimiter at start")
-{
-	REQUIRE(utility::substrBeforeLast(" foobar", ' ') == "");
+TEST(Substr, substrBeforeLastWithDelimiterAtStart) {
+  EXPECT_THAT(utility::substrBeforeLast(" foobar", ' '), IsEmpty());
 }
 
-TEST_CASE("substr before last with delimiter at end")
-{
-	REQUIRE(utility::substrBeforeLast("foobar ", ' ') == "foobar");
+TEST(Substr, substrBeforeLastWithDelimiterAtEnd) {
+  EXPECT_THAT(utility::substrBeforeLast("foobar ", ' '), StrEq("foobar"));
 }
 
-TEST_CASE("substr after with single delimiter occurrence")
-{
-	REQUIRE(utility::substrAfter("foo bar", ' ') == "bar");
+TEST(Substr, substrAfterWithSingleDelimiterOccurrence) {
+  EXPECT_THAT(utility::substrAfter("foo bar", ' '), StrEq("bar"));
 }
 
-TEST_CASE("substr after with multiple delimiter occurrences")
-{
-	REQUIRE(utility::substrAfter("foo bar foo", ' ') == "bar foo");
+TEST(Substr, substrAfterWithMultipleDelimiterOccurrences) {
+  EXPECT_THAT(utility::substrAfter("foo bar foo", ' '), StrEq("bar foo"));
 }
 
-TEST_CASE("substr after with no delimiter occurrence")
-{
-	REQUIRE(utility::substrAfter("foobar", ' ') == "foobar");
+TEST(Substr, substrAfterWithNoDelimiterOccurrence) {
+  EXPECT_THAT(utility::substrAfter("foobar", ' '), StrEq("foobar"));
 }
 
-TEST_CASE("substr after with delimiter at start")
-{
-	REQUIRE(utility::substrAfter(" foobar", ' ') == "foobar");
+TEST(Substr, substrAfterWithDelimiterAtStart) {
+  EXPECT_THAT(utility::substrAfter(" foobar", ' '), StrEq("foobar"));
 }
 
-TEST_CASE("substr after with delimiter at end")
-{
-	REQUIRE(utility::substrAfter("foobar ", ' ') == "");
+TEST(Substr, substrAfterWithDelimiterAtEnd) {
+  EXPECT_THAT(utility::substrAfter("foobar ", ' '), IsEmpty());
 }
 
-TEST_CASE("empty string is detected as prefix of any other string")
-{
-	const std::string foo = "foo";
+TEST(IsPrefix, emptyStringIsDetectedAsPrefixOfAnyOtherString) {
+  const std::string foo = "foo";
 
-	REQUIRE(utility::isPrefix<std::string>("", foo));
+  EXPECT_TRUE(utility::isPrefix<std::string>("", foo));
 }
 
-TEST_CASE("prefix of bigger text is detected as prefix")
-{
-	const std::string foobar = "foobar";
-	const std::string foo = "foo";
+TEST(IsPrefix, prefixOfBiggerTextIsDetectedAsPrefix) {
+  const std::string foobar = "foobar";
+  const std::string foo = "foo";
 
-	REQUIRE(utility::isPrefix(foo, foobar));
+  EXPECT_TRUE(utility::isPrefix(foo, foobar));
 }
 
-TEST_CASE("prefix is detected as prefix of self")
-{
-	const std::string foo = "foo";
+TEST(IsPrefix, prefixIsDetectedAsPrefixOfSelf) {
+  const std::string foo = "foo";
 
-	REQUIRE(utility::isPrefix(foo, foo));
+  EXPECT_TRUE(utility::isPrefix(foo, foo));
 }
 
-TEST_CASE("different texts are not detected of prefixes of each other")
-{
-	const std::string foo = "foo";
-	const std::string bar = "bar";
+TEST(IsPrefix, differentTextsAreNotDetectedOfPrefixesOfEachOther) {
+  const std::string foo = "foo";
+  const std::string bar = "bar";
 
-	REQUIRE(!utility::isPrefix(foo, bar));
-	REQUIRE(!utility::isPrefix(bar, foo));
+  EXPECT_FALSE(utility::isPrefix(foo, bar));
+  EXPECT_FALSE(utility::isPrefix(bar, foo));
 }
 
-TEST_CASE("to lower case")
-{
-	REQUIRE("foobar" == utility::toLowerCase("FooBar"));
-	REQUIRE("foobar" == utility::toLowerCase("FOOBAR"));
-	REQUIRE("foobar" == utility::toLowerCase("foobar"));
+TEST(ToLowerCase, goodCase) {
+  EXPECT_THAT(utility::toLowerCase("FooBar"), StrEq("foobar"));
+  EXPECT_THAT(utility::toLowerCase("FOOBAR"), StrEq("foobar"));
+  EXPECT_THAT(utility::toLowerCase("foobar"), StrEq("foobar"));
 }
 
-TEST_CASE("equals case insensitive with different cases")
-{
-	const std::string foo = "FooBar";
-	const std::string foo2 = "foobar";
+TEST(EqualsCaseInsensitive, differentCases) {
+  const std::string foo = "FooBar";
+  const std::string foo2 = "foobar";
 
-	REQUIRE(utility::equalsCaseInsensitive(foo, foo2));
+  EXPECT_TRUE(utility::equalsCaseInsensitive(foo, foo2));
 }
 
-TEST_CASE("equals case insensitive with same cases")
-{
-	const std::string foo = "foobar";
-	const std::string foo2 = "foobar";
+TEST(EqualsCaseInsensitive, sameCases) {
+  const std::string foo = "foobar";
+  const std::string foo2 = "foobar";
 
-	REQUIRE(utility::equalsCaseInsensitive(foo, foo2));
+  EXPECT_TRUE(utility::equalsCaseInsensitive(foo, foo2));
 }
 
-TEST_CASE("equals case insensitive with different strings")
-{
-	const std::string foo = "foo";
-	const std::string foo2 = "foobar";
+TEST(EqualsCaseInsensitive, differentStrings) {
+  const std::string foo = "foo";
+  const std::string foo2 = "foobar";
 
-	REQUIRE(!utility::equalsCaseInsensitive(foo, foo2));
+  EXPECT_TRUE(!utility::equalsCaseInsensitive(foo, foo2));
 }
 
-TEST_CASE("replace")
-{
-	REQUIRE("fubar" == utility::replace("foobar", "oo", "u"));
-	REQUIRE("fuuuubar" == utility::replace("foobar", "o", "uu"));
-	REQUIRE("bar" == utility::replace("foobar", "foo", ""));
-	REQUIRE("foobar" == utility::replace("foobar", "", "i"));
-	REQUIRE("foobar" == utility::replace("foobar", "", ""));
-	REQUIRE("" == utility::replace("", "foo", "bar"));
-	REQUIRE("foobar" == utility::replace("foobar", "ba", "ba"));
+TEST(Replace, goodCase) {
+  EXPECT_THAT(utility::replace("foobar", "oo", "u"), StrEq("fubar"));
+  EXPECT_THAT(utility::replace("foobar", "o", "uu"), StrEq("fuuuubar"));
+  EXPECT_THAT(utility::replace("foobar", "foo", ""), StrEq("bar"));
+  EXPECT_THAT(utility::replace("foobar", "", "i"), StrEq("foobar"));
+  EXPECT_THAT(utility::replace("foobar", "", ""), StrEq("foobar"));
+  EXPECT_THAT(utility::replace("", "foo", "bar"), IsEmpty());
+  EXPECT_THAT(utility::replace("foobar", "ba", "ba"), StrEq("foobar"));
 }
 
-TEST_CASE("caseInsensitiveLess should return false when comparing empty wstrings")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"", L""));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenComparingEmptyWStrings) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"", L""));
 }
 
-TEST_CASE("caseInsensitiveLess should return false when both wstrings are equal")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"ab_cd!", L"ab_cd!"));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenBothWStringsAreEqual) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"ab_cd!", L"ab_cd!"));
 }
 
-TEST_CASE(
-	"caseInsensitiveLess should return false when both wstrings have"
-	"different cases but after lower casing are equal")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"ab_CD!", L"aB_cD!"));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenBothWStringsHaveDifferentCasesButAfterLowerCasingAreEqual) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"ab_CD!", L"aB_cD!"));
 }
 
-TEST_CASE("caseInsensitiveLess should return true when first wstring is empty and second not")
-{
-	REQUIRE(utility::caseInsensitiveLess(L"", L"ab"));
+TEST(CaseInsensitiveLess, shouldReturnTrueWhenFirstWStringIsEmptyAndSecondNot) {
+  EXPECT_TRUE(utility::caseInsensitiveLess(L"", L"ab"));
 }
 
-TEST_CASE("caseInsensitiveLess should return false when second wstring is empty and first not")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"ab", L""));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenSecondWStringIsEmptyAndFirstNot) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"ab", L""));
 }
 
-TEST_CASE("caseInsensitiveLess should return true when first wstring is prefix of second")
-{
-	REQUIRE(utility::caseInsensitiveLess(L"ab_cd!", L"ab_cd!e"));
+TEST(CaseInsensitiveLess, shouldReturnTrueWhenFirstWStringIsPrefixOfSecond) {
+  EXPECT_TRUE(utility::caseInsensitiveLess(L"ab_cd!", L"ab_cd!e"));
 }
 
-TEST_CASE("caseInsensitiveLess should return false when second wstring is prefix of first")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"ab_cd!e", L"ab_cd!"));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenSecondWStringIsPrefixOfFirst) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"ab_cd!e", L"ab_cd!"));
 }
 
-TEST_CASE(
-	"caseInsensitiveLess should return true when after lower casing first wstring, first is prefix "
-	"of second")
-{
-	REQUIRE(utility::caseInsensitiveLess(L"aB_cd!", L"ab_cd!e"));
+TEST(CaseInsensitiveLess, shouldReturnTrueWhenAfterLowerCasingFirstWStringFirstIsPrefixOfSecond) {
+  EXPECT_TRUE(utility::caseInsensitiveLess(L"aB_cd!", L"ab_cd!e"));
 }
 
-TEST_CASE(
-	"caseInsensitiveLess should return true when after lower casing second wstring, first is "
-	"prefix of second")
-{
-	REQUIRE(utility::caseInsensitiveLess(L"ab_cd!", L"ab_cD!e"));
+TEST(CaseInsensitiveLess, shouldReturnTrueWhenAfterLowerCasingSecondWStringFirsIsPrefixOfSecond) {
+  EXPECT_TRUE(utility::caseInsensitiveLess(L"ab_cd!", L"ab_cD!e"));
 }
 
-TEST_CASE(
-	"caseInsensitiveLess should return true when after lower casing both wstrings, first is prefix "
-	"of second")
-{
-	REQUIRE(utility::caseInsensitiveLess(L"aB_cd!", L"ab_cD!E"));
+TEST(CaseInsensitiveLess, shouldReturnTrueWhenAfterLowerCasingBothWStringsFirstIsPrefixOfSecond) {
+  EXPECT_TRUE(utility::caseInsensitiveLess(L"aB_cd!", L"ab_cD!E"));
 }
 
-TEST_CASE(
-	"caseInsensitiveLess should return false when after lower casing first wstring, second is "
-	"prefix of first")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"ab_Cd!e", L"ab_cd!"));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenAfterLowerCasingFirstWStringSecondIsPrefixOfFirst) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"ab_Cd!e", L"ab_cd!"));
 }
 
-TEST_CASE(
-	"caseInsensitiveLess should return false when after lower casing second wstring, second is "
-	"prefix of first")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"ab_cd!e", L"Ab_cd!"));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenAfterLowerCasingSecondWStringSecondIsPrefixOfFirst) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"ab_cd!e", L"Ab_cd!"));
 }
 
-TEST_CASE(
-	"caseInsensitiveLess should return false when after lower casing both wstrings, second is "
-	"prefix of first")
-{
-	REQUIRE_FALSE(utility::caseInsensitiveLess(L"ab_cD!E", L"aB_cd!"));
+TEST(CaseInsensitiveLess, shouldReturnFalseWhenAfterLowerCasingBothSecondWStringSecondIsPrefixOfFirst) {
+  EXPECT_FALSE(utility::caseInsensitiveLess(L"ab_cD!E", L"aB_cd!"));
 }
