@@ -11,42 +11,11 @@
 
 #include "CommandLineParser.h"
 #include "utilities/FileHandler.hpp"
+#include "utilities/CollectOutStream.hpp"
 #include "utilityString.h"
 
 using namespace ::testing;
 using namespace std::string_literals;
-
-// NOTE: Move to utilities
-struct CollectOutStream final {
-  explicit CollectOutStream(std::ostream& ostream) : mStream {ostream}, mOldBuffer {mStream.rdbuf()} {
-    mStream.rdbuf(mBufferStream.rdbuf());
-  }
-
-  ~CollectOutStream() {
-    close();
-  }
-
-  void close() {
-    if(mOldBuffer != nullptr) {
-      mStream.rdbuf(mOldBuffer);
-      mOldBuffer = nullptr;
-    }
-  }
-
-  std::string str() const {
-    return mBufferStream.str();
-  }
-
-  CollectOutStream(const CollectOutStream&) = delete;
-  CollectOutStream& operator=(const CollectOutStream&) = delete;
-  CollectOutStream(CollectOutStream&&) = delete;
-  CollectOutStream& operator=(CollectOutStream&&) = delete;
-
-private:
-  std::ostream& mStream;
-  std::streambuf* mOldBuffer;
-  std::stringstream mBufferStream;
-};
 
 // NOLINTNEXTLINE
 TEST(CommandLineParser, refreshModes) {
