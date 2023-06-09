@@ -43,7 +43,7 @@ void CommandLineParser::preparse(std::vector<std::string> args) {
   m_args = std::move(args);
 
   try {
-    for(auto& command : m_commands) {
+    for(const auto& command : m_commands) {
       if(m_args[0] == command->name()) {
         m_withoutGUI = true;
         return;
@@ -84,18 +84,18 @@ void CommandLineParser::parse() {
 
   try {
     // parsing for all commands
-    for(auto& command : m_commands) {
+    for(const auto& command : m_commands) {
       if(m_args[0] == command->name()) {
         m_args.erase(m_args.begin());
-        CommandlineCommand::ReturnStatus status = command->parse(m_args);
+        const auto status = command->parse(m_args);
 
         if(status != CommandlineCommand::ReturnStatus::CMD_OK) {
           m_quit = true;
         }
       }
     }
-  } catch(boost::program_options::error& e) {
-    std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+  } catch(const boost::program_options::error& error) {
+    std::cerr << "ERROR: " << error.what() << std::endl << std::endl;
     std::cerr << m_options << std::endl;
   }
 }

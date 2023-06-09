@@ -10,10 +10,13 @@
 #include <gtest/gtest.h>
 
 #include "CommandLineParser.h"
+#include "utilities/FileHandler.hpp"
+#include "utilityString.h"
 
 using namespace ::testing;
 using namespace std::string_literals;
 
+// NOTE: Move to utilities
 struct CollectOutStream final {
   explicit CollectOutStream(std::ostream& ostream) : mStream {ostream}, mOldBuffer {mStream.rdbuf()} {
     mStream.rdbuf(mBufferStream.rdbuf());
@@ -44,6 +47,30 @@ private:
   std::streambuf* mOldBuffer;
   std::stringstream mBufferStream;
 };
+
+// NOLINTNEXTLINE
+TEST(CommandLineParser, refreshModes) {
+  commandline::CommandLineParser parser({});
+  EXPECT_EQ(RefreshMode::REFRESH_UPDATED_FILES, parser.getRefreshMode());
+
+  parser.fullRefresh();
+  EXPECT_EQ(RefreshMode::REFRESH_ALL_FILES, parser.getRefreshMode());
+
+  parser.incompleteRefresh();
+  EXPECT_EQ(RefreshMode::REFRESH_UPDATED_AND_INCOMPLETE_FILES, parser.getRefreshMode());
+}
+
+// NOLINTNEXTLINE
+TEST(CommandLineParser, ShallowIndexing) {
+  commandline::CommandLineParser parser({});
+  EXPECT_FALSE(parser.getShallowIndexingRequested());
+
+  parser.setShallowIndexingRequested(true);
+  EXPECT_TRUE(parser.getShallowIndexingRequested());
+
+  parser.setShallowIndexingRequested(false);
+  EXPECT_FALSE(parser.getShallowIndexingRequested());
+}
 
 // NOLINTNEXTLINE
 TEST(CommandLineParser, initStateEmptyArgs) {
@@ -137,18 +164,62 @@ TEST(CommandLineParserConfig, projectFileOptionNotExists) {
 }
 
 // NOLINTNEXTLINE
-TEST(CommandLineParserConfig, DISABLED_emptyProjectFile) {
-  std::vector<std::string> args {"not-exists-project", "/tmp/empty.srctrlprj"};
+TEST(CommandLineParserConfig, projectFileMissingExtention) {
+  constexpr auto EmptyProjectPath = "/tmp/empty.proj";
+  std::vector<std::string> args {"--project-file", EmptyProjectPath};
+  auto fileHandler = FileHandler::createEmptyFile(args.back());
+
   commandline::CommandLineParser parser({});
   parser.preparse(args);
   EXPECT_FALSE(parser.runWithoutGUI());
   EXPECT_FALSE(parser.exitApplication());
   EXPECT_TRUE(parser.hasError());
+  const auto ErrorMessage = utility::decodeFromUtf8("Provided Projectfile is not valid:\n* Provided Projectfile('"s +
+                                                    fs::path {EmptyProjectPath}.filename().string() +
+                                                    "')  has a wrong file ending");
+  EXPECT_THAT(parser.getError(), StrEq(ErrorMessage));
   EXPECT_EQ(RefreshMode::REFRESH_NONE, parser.getShallowIndexingRequested());
   EXPECT_FALSE(parser.getShallowIndexingRequested());
 }
 
-/*
+// NOLINTNEXTLINE
+TEST(CommandLineParserConfig, emptyProjectFile) {
+  constexpr auto EmptyProjectPath = "/tmp/empty.srctrlprj";
+  std::vector<std::string> args {"--project-file", EmptyProjectPath};
+  auto fileHandler = FileHandler::createEmptyFile(args.back());
+
+  commandline::CommandLineParser parser({});
+  parser.preparse(args);
+  EXPECT_FALSE(parser.runWithoutGUI());
+  EXPECT_FALSE(parser.exitApplication());
+  EXPECT_TRUE(parser.hasError());
+  const auto ErrorMessage = utility::decodeFromUtf8("Provided Projectfile is not valid:\n* Provided Projectfile('"s +
+                                                    fs::path {EmptyProjectPath}.filename().string() +
+                                                    "')  could not be loaded (invalid)");
+  EXPECT_THAT(parser.getError(), StrEq(ErrorMessage));
+  EXPECT_EQ(RefreshMode::REFRESH_NONE, parser.getShallowIndexingRequested());
+  EXPECT_FALSE(parser.getShallowIndexingRequested());
+  // EXPECT_THAT(parser.getProjectFilePath().str(), StrEq(fs::path {EmptyProjectPath}.filename().string()));
+}
+
+// NOLINTNEXTLINE
+TEST(CommandLineParserConfig, loadTutorialProject) {
+  constexpr auto ProjectPath = "../app/user/projects/tutorial/tutorial.srctrlprj";
+  std::vector<std::string> args {"--project-file", ProjectPath};
+  auto fileHandler = FileHandler::createEmptyFile(args.back());
+
+  commandline::CommandLineParser parser({});
+  parser.preparse(args);
+  EXPECT_FALSE(parser.runWithoutGUI());
+  EXPECT_FALSE(parser.exitApplication());
+  EXPECT_FALSE(parser.hasError()) << parser.getError();
+  EXPECT_EQ(RefreshMode::REFRESH_NONE, parser.getShallowIndexingRequested());
+  EXPECT_FALSE(parser.getShallowIndexingRequested());
+  auto resultPath = fs::absolute(parser.getProjectFilePath().str());
+  auto expectedPath = fs::absolute(ProjectPath);
+  EXPECT_EQ(resultPath, expectedPath);
+}
+
 // NOLINTNEXTLINE
 TEST(CommandLineParserConfig, initStateNoRegisitedCommands) {
   std::vector<std::string> args{"somthing"};
@@ -161,6 +232,7 @@ TEST(CommandLineParserConfig, initStateNoRegisitedCommands) {
   EXPECT_FALSE(parser.getShallowIndexingRequested());
 }
 
+/*
 // NOLINTNEXTLINE
 TEST(CommandLineParserConfig, initStateRegisitedCommands) {
   std::vector<std::string> args{"config --help"};
