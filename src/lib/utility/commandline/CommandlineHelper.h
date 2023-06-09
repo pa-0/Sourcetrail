@@ -1,28 +1,21 @@
-#ifndef COMMANDLINE_HELPER_H
-#define COMMANDLINE_HELPER_H
+#pragma once
 
 #include <string>
 #include <vector>
 
-#include "utility.h"
-#include "utilityString.h"
-
-namespace boost
-{
-namespace program_options
-{
+namespace boost::program_options {
 class variables_map;
 class options_description;
-}	 // namespace program_options
-}	 // namespace boost
+}    // namespace boost::program_options
+
+class FilePath;
 
 namespace po = boost::program_options;
 
-namespace commandline
-{
-void parseConfigFile(po::variables_map& vm, po::options_description& options);
+namespace commandline {
 
-std::vector<FilePath> extractPaths(const std::vector<std::string>& vector);
-}	 // namespace commandline
+void parseConfigFile(po::variables_map& variablesMap, po::options_description& options);
 
-#endif	  // COMMANDLINE_HELPER_H
+std::vector<FilePath> extractPaths(const std::vector<std::string>& paths);
+
+}    // namespace commandline

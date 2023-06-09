@@ -24,7 +24,7 @@ public:
 
   void preparse(std::vector<std::string> args);
 
-  void parse();
+  [[deprecated]] void parse();
 
   [[nodiscard]] bool runWithoutGUI() const;
 

@@ -1,43 +1,39 @@
 #include "CommandlineHelper.h"
 
 #include <fstream>
-#include <iostream>
 #include <string>
 
 #include <boost/program_options.hpp>
 
-namespace commandline
-{
-void parseConfigFile(po::variables_map& vm, po::options_description& options)
-{
-	if (vm.count("config-file"))
-	{
-		const std::string configFile = vm["config-file"].as<std::string>();
-		std::ifstream ifs(configFile.c_str());
+#include <fmt/printf.h>
 
-		if (!ifs)
-		{
-			std::cout << "Could not open config file( " << configFile << ")" << std::endl;
-		}
-		else
-		{
-			po::store(po::parse_config_file(ifs, options), vm);
-		}
-	}
+#include "FilePath.h"
+#include "utilityString.h"
+
+namespace commandline {
+
+void parseConfigFile(po::variables_map& variablesMap, po::options_description& options) {
+  if(variablesMap.count("config-file") != 0U) {
+    const std::string configFile = variablesMap["config-file"].as<std::string>();
+    std::ifstream ifs(configFile.c_str());
+
+    if(!ifs) {
+      fmt::print("Could not open config file({})\n", configFile);
+    } else {
+      po::store(po::parse_config_file(ifs, options), variablesMap);
+    }
+  }
 }
 
-std::vector<FilePath> extractPaths(const std::vector<std::string>& vector)
-{
-	std::vector<FilePath> v;
-	for (const std::string& s: vector)
-	{
-		std::vector<std::string> temp = utility::splitToVector(s, ',');
-		for (const std::string& path: temp)
-		{
-			v.push_back(FilePath(path));
-		}
-	}
-	return v;
+std::vector<FilePath> extractPaths(const std::vector<std::string>& paths) {
+  std::vector<FilePath> filePaths;
+  for(const auto& pathString : paths) {
+    const auto& temp = utility::splitToVector(pathString, ',');
+    for(const auto& path : temp) {
+      filePaths.emplace_back(path);
+    }
+  }
+  return filePaths;
 }
 
-}	 // namespace commandline
+}    // namespace commandline

@@ -16,6 +16,7 @@ set(
   test_lib_names
   FileHandlerTestSuite
   CommandLineParserTestSuite
+  CommandlineHelperTestSuite
   #ConsoleControllerTestSuite
   #ConsoleInterpreterTestSuite
   LocationTypeTestSuite
