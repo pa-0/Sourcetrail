@@ -18,6 +18,7 @@ set(
   CommandLineParserTestSuite
   CommandlineHelperTestSuite
   CommandlineCommandTestSuite
+  CommandlineCommandConfigTestSuite
   #ConsoleControllerTestSuite
   #ConsoleInterpreterTestSuite
   LocationTypeTestSuite

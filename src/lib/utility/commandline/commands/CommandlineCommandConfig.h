@@ -4,9 +4,14 @@
 
 namespace commandline {
 
-class CommandlineCommandConfig : public CommandlineCommand {
+class CommandlineCommandConfig final : public CommandlineCommand {
 public:
-  CommandlineCommandConfig(CommandLineParser* parser);
+  explicit CommandlineCommandConfig(CommandLineParser* parser);
+
+  CommandlineCommandConfig(const CommandlineCommandConfig&) = delete;
+  CommandlineCommandConfig& operator=(const CommandlineCommandConfig&) = delete;
+  CommandlineCommandConfig(CommandlineCommandConfig&&) = delete;
+  CommandlineCommandConfig& operator=(CommandlineCommandConfig&&) = delete;
 
   ~CommandlineCommandConfig() override;
 
@@ -14,7 +19,7 @@ public:
 
   ReturnStatus parse(std::vector<std::string>& args) override;
 
-  bool hasHelp() const override {
+  [[nodiscard]] bool hasHelp() const override {
     return true;
   }
 };
