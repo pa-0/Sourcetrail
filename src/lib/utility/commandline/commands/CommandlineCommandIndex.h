@@ -6,7 +6,12 @@ namespace commandline {
 
 class CommandlineCommandIndex : public CommandlineCommand {
 public:
-  CommandlineCommandIndex(CommandLineParser* parser);
+  explicit CommandlineCommandIndex(CommandLineParser* parser);
+
+  CommandlineCommandIndex(const CommandlineCommandIndex&) = delete;
+  CommandlineCommandIndex& operator=(const CommandlineCommandIndex&) = delete;
+  CommandlineCommandIndex(CommandlineCommandIndex&&) = delete;
+  CommandlineCommandIndex& operator=(CommandlineCommandIndex&&) = delete;
 
   ~CommandlineCommandIndex() override;
 

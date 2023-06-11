@@ -53,7 +53,13 @@ void CommandLineParser::preparse(std::vector<std::string> args) {
     po::variables_map variablesMap;
     po::positional_options_description positional;
     positional.add("project-file", 1);
-    po::store(po::command_line_parser(m_args).options(m_options).positional(positional).allow_unregistered().run(), variablesMap);
+    // clang-format off
+    po::store(po::command_line_parser(m_args)
+      .options(m_options)
+      .positional(positional)
+      .allow_unregistered()
+      .run(), variablesMap);
+    // clang-format on
     po::notify(variablesMap);
 
     if(variablesMap.count("version") != 0U) {

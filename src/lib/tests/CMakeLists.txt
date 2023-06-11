@@ -14,18 +14,17 @@ target_include_directories(
 
 set(
   test_lib_names
-  FileHandlerTestSuite
-  CommandLineParserTestSuite
-  CommandlineHelperTestSuite
-  CommandlineCommandTestSuite
   CommandlineCommandConfigTestSuite
-  #ConsoleControllerTestSuite
-  #ConsoleInterpreterTestSuite
-  LocationTypeTestSuite
-  SourceLocationTestSuite
-  SourceLocationFileTestSuite
-  SourceLocationCollectionTestSuite
+  CommandlineCommandIndexTestSuite
+  CommandlineCommandTestSuite
+  CommandlineHelperTestSuite
+  CommandLineParserTestSuite
+  FileHandlerTestSuite
   FindCommandTestSuite
+  LocationTypeTestSuite
+  SourceLocationCollectionTestSuite
+  SourceLocationFileTestSuite
+  SourceLocationTestSuite
 )
 
 foreach(test_name IN LISTS test_lib_names)
