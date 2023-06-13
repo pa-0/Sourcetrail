@@ -94,7 +94,7 @@ void QtGraphNodeData::updateStyle()
 	setStyle(style);
 }
 
-void QtGraphNodeData::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+void QtGraphNodeData::hoverEnterEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	focusIn();
 
@@ -125,7 +125,7 @@ void QtGraphNodeData::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 	}
 }
 
-void QtGraphNodeData::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+void QtGraphNodeData::hoverLeaveEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	focusOut();
 

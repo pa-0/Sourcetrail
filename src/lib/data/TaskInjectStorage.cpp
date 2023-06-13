@@ -33,7 +33,7 @@ void TaskInjectStorage::doExit(std::shared_ptr<Blackboard> blackboard) {}
 
 void TaskInjectStorage::doReset(std::shared_ptr<Blackboard> blackboard) {}
 
-void TaskInjectStorage::handleMessage(MessageIndexingInterrupted* message)
+void TaskInjectStorage::handleMessage(MessageIndexingInterrupted* /*message*/)
 {
 	m_storageProvider->clear();
 }

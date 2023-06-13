@@ -261,7 +261,7 @@ void QtProjectWizard::newProject() {
   setup();
 }
 
-void QtProjectWizard::newProjectFromCDB(const FilePath& filePath) {
+void QtProjectWizard::newProjectFromCDB(const FilePath& /*filePath*/) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
   if(!m_projectSettings) {
     m_projectSettings = std::make_shared<ProjectSettings>();

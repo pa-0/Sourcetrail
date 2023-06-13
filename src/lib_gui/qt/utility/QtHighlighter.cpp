@@ -252,7 +252,7 @@ void QtHighlighter::applyFormat(int startPosition, int endPosition, const QTextC
   cursor.setCharFormat(format);
 }
 
-QTextCharFormat QtHighlighter::getFormat(int startPosition, int endPosition) const {
+QTextCharFormat QtHighlighter::getFormat(int /*startPosition*/, int endPosition) const {
   QTextCursor cursor(document());
   cursor.setPosition(endPosition);
   return cursor.charFormat();

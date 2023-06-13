@@ -21,7 +21,7 @@ public:
 	bool isExpanded() const;
 
 protected:
-	virtual void matchName(const std::wstring& query, std::vector<QtGraphNode*>* matchedNodes) {}
+	virtual void matchName(const std::wstring& /*query*/, std::vector<QtGraphNode*>* /*matchedNodes*/) {}
 
 private:
 	QGraphicsPixmapItem* m_icon;

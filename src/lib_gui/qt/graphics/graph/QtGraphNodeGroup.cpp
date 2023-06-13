@@ -116,7 +116,7 @@ QPainterPath QtGraphNodeGroup::shape() const
 	return m_path;
 }
 
-void QtGraphNodeGroup::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+void QtGraphNodeGroup::hoverLeaveEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	if (m_type == GroupType::FILE_TYPE || m_type == GroupType::NAMESPACE)
 	{

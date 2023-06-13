@@ -20,7 +20,7 @@
 QtProjectWizardContentSelect::QtProjectWizardContentSelect(QtProjectWizardWindow* window)
     : QtProjectWizardContent(window) {}
 
-void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& row) {
+void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
   struct SourceGroupInfo {
     SourceGroupInfo(SourceGroupType type, bool recommended = false)
         : type(type), recommended(recommended) {}

@@ -308,7 +308,7 @@ std::vector<EdgeBookmark> BookmarkController::BookmarkCache::getAllEdgeBookmarks
 	return m_edgeBookmarks;
 }
 
-void BookmarkController::handleActivation(const MessageActivateBase* message)
+void BookmarkController::handleActivation(const MessageActivateBase* /*message*/)
 {
 	clear();
 }
@@ -361,17 +361,17 @@ void BookmarkController::handleMessage(MessageBookmarkCreate* message)
 	showBookmarkCreator(message->nodeId);
 }
 
-void BookmarkController::handleMessage(MessageBookmarkDelete* message)
+void BookmarkController::handleMessage(MessageBookmarkDelete* /*message*/)
 {
 	deleteBookmarkForActiveTokens();
 }
 
-void BookmarkController::handleMessage(MessageBookmarkEdit* message)
+void BookmarkController::handleMessage(MessageBookmarkEdit* /*message*/)
 {
 	showBookmarkCreator(0);
 }
 
-void BookmarkController::handleMessage(MessageIndexingFinished* message)
+void BookmarkController::handleMessage(MessageIndexingFinished*  /*message*/)
 {
 	m_bookmarkCache.clear();
 

@@ -48,9 +48,9 @@ void CompositeView::removeView(View* view)
 	m_views.erase(it);
 }
 
-void CompositeView::showView(View* view) {}
+void CompositeView::showView(View* /*view*/) {}
 
-void CompositeView::hideView(View* view) {}
+void CompositeView::hideView(View* /*view*/) {}
 
 void CompositeView::setViewEnabled(View* view, bool enabled)
 {

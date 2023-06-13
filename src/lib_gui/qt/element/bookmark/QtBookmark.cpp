@@ -164,7 +164,7 @@ void QtBookmark::commentToggled()
 	}
 }
 
-void QtBookmark::resizeEvent(QResizeEvent* event)
+void QtBookmark::resizeEvent(QResizeEvent* /*event*/)
 {
 	if (m_ignoreNextResize)
 	{
@@ -176,12 +176,12 @@ void QtBookmark::resizeEvent(QResizeEvent* event)
 	QTimer::singleShot(10, this, &QtBookmark::elideButtonText);
 }
 
-void QtBookmark::showEvent(QShowEvent* event)
+void QtBookmark::showEvent(QShowEvent* /*event*/)
 {
 	elideButtonText();
 }
 
-void QtBookmark::enterEvent(QEvent* event)
+void QtBookmark::enterEvent(QEvent* /*event*/)
 {
 	m_editButton->show();
 	m_deleteButton->show();
@@ -190,7 +190,7 @@ void QtBookmark::enterEvent(QEvent* event)
 	updateArrow();
 }
 
-void QtBookmark::leaveEvent(QEvent* event)
+void QtBookmark::leaveEvent(QEvent* /*event*/)
 {
 	m_editButton->hide();
 	m_deleteButton->hide();

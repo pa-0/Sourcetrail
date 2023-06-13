@@ -424,7 +424,7 @@ std::pair<QtCodeSnippet*, Id> QtCodeFileList::getFirstSnippetAndActiveLocationId
 	return result;
 }
 
-void QtCodeFileList::resizeEvent(QResizeEvent* event)
+void QtCodeFileList::resizeEvent(QResizeEvent* /*event*/)
 {
 	clearSnippetTitleAndScrollBar();
 	updateSnippetTitleAndScrollBar();
@@ -441,7 +441,7 @@ void QtCodeFileList::updateSnippetTitleAndScrollBarSlot()
 	}
 }
 
-void QtCodeFileList::updateSnippetTitleAndScrollBar(int value)
+void QtCodeFileList::updateSnippetTitleAndScrollBar(int /*value*/)
 {
 	QtCodeFile* firstFile = nullptr;
 	QScrollBar* lastSnippetScrollBar = nullptr;

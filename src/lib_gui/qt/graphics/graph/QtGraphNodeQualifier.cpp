@@ -107,7 +107,7 @@ void QtGraphNodeQualifier::updateStyle()
 	hoverLeaveEvent(nullptr);
 }
 
-void QtGraphNodeQualifier::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+void QtGraphNodeQualifier::hoverEnterEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	const int width = QFontMetrics(m_name->font()).boundingRect(m_name->text()).width() + 10;
 	const int height = QFontMetrics(m_name->font()).height() + 2;
@@ -139,7 +139,7 @@ void QtGraphNodeQualifier::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 	this->setZValue(100);
 }
 
-void QtGraphNodeQualifier::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+void QtGraphNodeQualifier::hoverLeaveEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	const int height = QFontMetrics(m_name->font()).height() + 2;
 	const int arrowWidth = static_cast<int>(height * 0.85);

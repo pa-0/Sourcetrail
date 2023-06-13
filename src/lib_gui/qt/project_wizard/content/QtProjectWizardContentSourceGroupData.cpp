@@ -90,7 +90,7 @@ void QtProjectWizardContentSourceGroupData::editedName(QString name)
 	emit nameUpdated(name);
 }
 
-void QtProjectWizardContentSourceGroupData::changedStatus(bool checked)
+void QtProjectWizardContentSourceGroupData::changedStatus(bool /*checked*/)
 {
 	emit statusUpdated(
 		m_status->isChecked() ? SOURCE_GROUP_STATUS_ENABLED : SOURCE_GROUP_STATUS_DISABLED);

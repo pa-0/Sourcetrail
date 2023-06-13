@@ -1426,7 +1426,7 @@ std::shared_ptr<SourceLocationFile> PersistentStorage::getSourceLocationsOfTypeI
 }
 
 std::shared_ptr<TextAccess> PersistentStorage::getFileContent(const FilePath& filePath,
-                                                              bool showsErrors) const {
+                                                              bool /*showsErrors*/) const {
   std::shared_ptr<TextAccess> fileContent = m_sqliteIndexStorage.getFileContentByPath(filePath.wstr());
   if(fileContent->getLineCount() > 0) {
     return fileContent;

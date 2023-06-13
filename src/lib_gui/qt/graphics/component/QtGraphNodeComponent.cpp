@@ -4,8 +4,8 @@ QtGraphNodeComponent::QtGraphNodeComponent(QtGraphNode* graphNode): m_graphNode(
 
 QtGraphNodeComponent::~QtGraphNodeComponent() {}
 
-void QtGraphNodeComponent::nodeMousePressEvent(QGraphicsSceneMouseEvent* event) {}
+void QtGraphNodeComponent::nodeMousePressEvent(QGraphicsSceneMouseEvent* /*event*/) {}
 
-void QtGraphNodeComponent::nodeMouseMoveEvent(QGraphicsSceneMouseEvent* event) {}
+void QtGraphNodeComponent::nodeMouseMoveEvent(QGraphicsSceneMouseEvent* /*event*/) {}
 
-void QtGraphNodeComponent::nodeMouseReleaseEvent(QGraphicsSceneMouseEvent* event) {}
+void QtGraphNodeComponent::nodeMouseReleaseEvent(QGraphicsSceneMouseEvent* /*event*/) {}

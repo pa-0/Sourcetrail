@@ -367,7 +367,7 @@ const std::set<Id>& QtCodeNavigator::getActiveLocalTokenIds() const
 }
 
 void QtCodeNavigator::setActiveLocalTokenIds(
-	const std::vector<Id>& activeLocalTokenIds, LocationType locationType)
+	const std::vector<Id>& activeLocalTokenIds, LocationType /*locationType*/)
 {
 	setCurrentActiveLocalLocationIds({});
 
@@ -698,7 +698,7 @@ void QtCodeNavigator::scrolled(int value)
 	MessageScrollCode(value, m_mode == MODE_LIST).dispatch();
 }
 
-void QtCodeNavigator::showEvent(QShowEvent* event)
+void QtCodeNavigator::showEvent(QShowEvent* /*event*/)
 {
 	scrollTo(m_scrollParams, false, true);
 }
@@ -865,12 +865,12 @@ void QtCodeNavigator::keyPressEvent(QKeyEvent* event)
 	}
 }
 
-void QtCodeNavigator::focusInEvent(QFocusEvent* event)
+void QtCodeNavigator::focusInEvent(QFocusEvent* /*event*/)
 {
 	emit focusIn();
 }
 
-void QtCodeNavigator::focusOutEvent(QFocusEvent* event)
+void QtCodeNavigator::focusOutEvent(QFocusEvent* /*event*/)
 {
 	QApplication* app = dynamic_cast<QApplication*>(QCoreApplication::instance());
 	if (isAncestorOf(app->focusWidget()))
@@ -881,7 +881,7 @@ void QtCodeNavigator::focusOutEvent(QFocusEvent* event)
 	emit focusOut();
 }
 
-void QtCodeNavigator::focusChanged(QWidget* from, QWidget* to)
+void QtCodeNavigator::focusChanged(QWidget* /*from*/, QWidget* to)
 {
 	if (isAncestorOf(to))
 	{

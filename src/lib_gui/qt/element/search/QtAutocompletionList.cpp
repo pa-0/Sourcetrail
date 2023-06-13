@@ -312,7 +312,7 @@ void QtAutocompletionDelegate::paint(
 	painter->restore();
 }
 
-QSize QtAutocompletionDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
+QSize QtAutocompletionDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& /*index*/) const
 {
 	const_cast<QtAutocompletionDelegate*>(this)->calculateCharSizes(option.font);
 

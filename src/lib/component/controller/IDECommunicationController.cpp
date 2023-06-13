@@ -134,7 +134,7 @@ void IDECommunicationController::handleSetActiveTokenMessage(
 }
 
 void IDECommunicationController::handleCreateProjectMessage(
-	const NetworkProtocolHelper::CreateProjectMessage& message)
+	const NetworkProtocolHelper::CreateProjectMessage&  /*message*/)
 {
 	LOG_ERROR_STREAM(<< "Network Protocol CreateProjectMessage not supported anymore.");
 }
@@ -181,7 +181,7 @@ void IDECommunicationController::handleMessage(MessageWindowFocus* message)
 	}
 }
 
-void IDECommunicationController::handleMessage(MessageIDECreateCDB* message)
+void IDECommunicationController::handleMessage(MessageIDECreateCDB*  /*message*/)
 {
 	std::wstring networkMessage = NetworkProtocolHelper::buildCreateCDBMessage();
 
@@ -203,7 +203,7 @@ void IDECommunicationController::handleMessage(MessageMoveIDECursor* message)
 	sendMessage(networkMessage);
 }
 
-void IDECommunicationController::handleMessage(MessagePluginPortChange* message)
+void IDECommunicationController::handleMessage(MessagePluginPortChange*  /*message*/)
 {
 	stopListening();
 	startListening();

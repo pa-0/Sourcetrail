@@ -29,7 +29,7 @@ QPainterPath QtLineItemAngled::shape() const
 	return path;
 }
 
-void QtLineItemAngled::paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget)
+void QtLineItemAngled::paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* /*widget*/)
 {
 	QPen p = pen();
 	painter->setPen(p);

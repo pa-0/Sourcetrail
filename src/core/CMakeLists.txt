@@ -43,7 +43,9 @@ target_include_directories(
 target_link_libraries(
   Sourcetrail_core
   PUBLIC
-    Boost::date_time)
+    Boost::date_time
+    Boost::system
+    Boost::filesystem)
 
 target_link_libraries(
   Sourcetrail_core

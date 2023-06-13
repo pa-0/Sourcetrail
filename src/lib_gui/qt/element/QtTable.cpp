@@ -123,7 +123,7 @@ bool QtTable::hasSelection() const
 	return this->selectionModel()->hasSelection();
 }
 
-void QtTable::columnResized(int column, int oldWidth, int newWidth)
+void QtTable::columnResized(int /*column*/, int /*oldWidth*/, int /*newWidth*/)
 {
 	resizeRowsToContents();
 }

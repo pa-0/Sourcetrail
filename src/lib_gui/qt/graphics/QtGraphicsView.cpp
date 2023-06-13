@@ -528,14 +528,14 @@ void QtGraphicsView::keyReleaseEvent(QKeyEvent* event) {
   }
 }
 
-void QtGraphicsView::focusInEvent(QFocusEvent* event) {
+void QtGraphicsView::focusInEvent(QFocusEvent* /*event*/) {
   m_focusIndicator->show();
   emit focusIn();
 
   MessageFocusView(MessageFocusView::ViewType::GRAPH).dispatch();
 }
 
-void QtGraphicsView::focusOutEvent(QFocusEvent* event) {
+void QtGraphicsView::focusOutEvent(QFocusEvent* /*event*/) {
   m_focusIndicator->hide();
   emit focusOut();
 }

@@ -5,7 +5,7 @@
 
 #include "MessageIndexingInterrupted.h"
 
-QtIndexingProgressDialog::QtIndexingProgressDialog(bool hideable, QWidget* parent)
+QtIndexingProgressDialog::QtIndexingProgressDialog(bool /*hideable*/, QWidget* parent)
 	: QtProgressBarDialog(0.38f, true, parent), m_filePathLabel(nullptr), m_errorWidget(nullptr)
 {
 	setSizeGripStyle(false);
@@ -107,7 +107,7 @@ void QtIndexingProgressDialog::onStopPressed()
 	}
 }
 
-void QtIndexingProgressDialog::closeEvent(QCloseEvent* event)
+void QtIndexingProgressDialog::closeEvent(QCloseEvent* /*event*/)
 {
 	emit visibleChanged(false);
 }

@@ -161,7 +161,7 @@ void QtMainView::clearBookmarksMenu()
 	updateBookmarksMenu({});
 }
 
-void QtMainView::handleMessage(MessageProjectEdit* message)
+void QtMainView::handleMessage(MessageProjectEdit* /*message*/)
 {
 	m_onQtThread([=]() { m_window->editProject(); });
 }
@@ -173,7 +173,7 @@ void QtMainView::handleMessage(MessageProjectNew* message)
 	m_onQtThread([=]() { m_window->newProjectFromCDB(cdbPath); });
 }
 
-void QtMainView::handleMessage(MessageWindowChanged* message)
+void QtMainView::handleMessage(MessageWindowChanged* /*message*/)
 {
 	// Fixes an issue where newly added QtWidgets don't fully respond to focus events on macOS
 	if (utility::getOsType() == OS_MAC)

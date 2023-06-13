@@ -188,7 +188,7 @@ void QtBookmarkBrowser::handleNext()
 	close();
 }
 
-void QtBookmarkBrowser::filterOrOrderChanged(int index)
+void QtBookmarkBrowser::filterOrOrderChanged(int /*index*/)
 {
 	Bookmark::BookmarkFilter filter = getSelectedFilter();
 	Bookmark::BookmarkOrder order = getSelectedOrder();
@@ -196,7 +196,7 @@ void QtBookmarkBrowser::filterOrOrderChanged(int index)
 	m_controllerProxy->executeAsTaskWithArgs(&BookmarkController::displayBookmarksFor, filter, order);
 }
 
-void QtBookmarkBrowser::treeItemClicked(QTreeWidgetItem* item, int column)
+void QtBookmarkBrowser::treeItemClicked(QTreeWidgetItem* item, int /*column*/)
 {
 	QtBookmarkCategory* category = dynamic_cast<QtBookmarkCategory*>(
 		m_bookmarkTree->itemWidget(item, 0));

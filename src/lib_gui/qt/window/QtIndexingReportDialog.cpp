@@ -134,7 +134,7 @@ void QtIndexingReportDialog::updateErrorCount(size_t errorCount, size_t fatalCou
 	}
 }
 
-void QtIndexingReportDialog::closeEvent(QCloseEvent* event)
+void QtIndexingReportDialog::closeEvent(QCloseEvent* /*event*/)
 {
 	emit QtIndexingDialog::canceled();
 }

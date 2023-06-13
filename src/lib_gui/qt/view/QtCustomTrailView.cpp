@@ -110,7 +110,7 @@ QtCustomTrailView::QtCustomTrailView(ViewLayout* viewLayout)
 		connect(
 			m_searchBoxFrom,
 			&QtSmartSearchBox::autocomplete,
-			[this](const std::wstring& query, NodeTypeSet acceptedNodeTypes) {
+			[this](const std::wstring& query, NodeTypeSet /*acceptedNodeTypes*/) {
 				m_controllerProxy.executeAsTaskWithArgs(
 					&CustomTrailController::autocomplete, query, true);
 			});
@@ -118,7 +118,7 @@ QtCustomTrailView::QtCustomTrailView(ViewLayout* viewLayout)
 		connect(
 			m_searchBoxTo,
 			&QtSmartSearchBox::autocomplete,
-			[this](const std::wstring& query, NodeTypeSet acceptedNodeTypes) {
+			[this](const std::wstring& query, NodeTypeSet /*acceptedNodeTypes*/) {
 				m_controllerProxy.executeAsTaskWithArgs(
 					&CustomTrailController::autocomplete, query, false);
 			});

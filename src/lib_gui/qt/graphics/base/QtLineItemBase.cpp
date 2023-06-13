@@ -434,7 +434,7 @@ void QtLineItemBase::drawArrow(const QPolygon& poly, QPainterPath* path, QPainte
 }
 
 void QtLineItemBase::getPivotPoints(
-	Vec2f* p, const Vec4i& in, const Vec4i& out, int offset, bool target) const
+	Vec2f* p, const Vec4i& in, const Vec4i& out, int offset, bool /*target*/) const
 {
 	float f = 1 / 2.f;
 

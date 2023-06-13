@@ -120,7 +120,7 @@ void TaskExecuteCustomCommands::doExit(std::shared_ptr<Blackboard> blackboard) {
 
 void TaskExecuteCustomCommands::doReset(std::shared_ptr<Blackboard> blackboard) {}
 
-void TaskExecuteCustomCommands::handleMessage(MessageIndexingInterrupted* message) {
+void TaskExecuteCustomCommands::handleMessage(MessageIndexingInterrupted*  /*message*/) {
   LOG_INFO("Interrupting custom command execution.");
 
   m_interrupted = true;

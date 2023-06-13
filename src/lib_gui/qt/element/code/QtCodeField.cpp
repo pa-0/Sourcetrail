@@ -235,9 +235,9 @@ void QtCodeField::paintEvent(QPaintEvent* event) {
   QPlainTextEdit::paintEvent(event);
 }
 
-void QtCodeField::enterEvent(QEvent* event) {}
+void QtCodeField::enterEvent(QEvent* /*event*/) {}
 
-void QtCodeField::leaveEvent(QEvent* event) {
+void QtCodeField::leaveEvent(QEvent* /*event*/) {
   setHoveredAnnotations(std::vector<const Annotation*>());
 }
 
@@ -307,7 +307,7 @@ void QtCodeField::focusTokenIds(const std::vector<Id>& focusedTokenIds) {
       std::set<Id>(), std::set<Id>(), std::set<Id>(focusedTokenIds.begin(), focusedTokenIds.end()), 0);
 }
 
-void QtCodeField::defocusTokenIds(const std::vector<Id>& activeTokenIds) {
+void QtCodeField::defocusTokenIds(const std::vector<Id>& /*activeTokenIds*/) {
   annotateText(std::set<Id>(), std::set<Id>(), std::set<Id>(), 0);
 }
 

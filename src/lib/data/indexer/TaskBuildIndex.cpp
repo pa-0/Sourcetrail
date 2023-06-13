@@ -165,7 +165,7 @@ void TaskBuildIndex::terminate()
 	utility::killRunningProcesses();
 }
 
-void TaskBuildIndex::handleMessage(MessageIndexingInterrupted* message)
+void TaskBuildIndex::handleMessage(MessageIndexingInterrupted* /*message*/)
 {
 	LOG_INFO("sending indexer interrupt command.");
 

@@ -9,8 +9,6 @@
 #include <QPushButton>
 #include <QString>
 #include <QVBoxLayout>
-// tracy
-#include <tracy/Tracy.hpp>
 // internal
 #include "ApplicationSettings.h"
 #include "LanguageType.h"
@@ -29,10 +27,12 @@ QIcon getProjectIcon(LanguageType lang) {
   static const auto ProjectIcon = QIcon("://icon/empty_icon.png");
 
   switch(lang) {
+#if BUILD_CXX_LANGUAGE_PACKAGE
   case LanguageType::LANGUAGE_C:
     return CIcon;
   case LANGUAGE_CPP:
     return CppIcon;
+#endif
   case LANGUAGE_CUSTOM:
   default:
     return ProjectIcon;

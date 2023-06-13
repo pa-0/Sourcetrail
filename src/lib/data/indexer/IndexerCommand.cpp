@@ -15,7 +15,7 @@ std::wstring IndexerCommand::serialize(std::shared_ptr<const IndexerCommand> ind
 
 IndexerCommand::IndexerCommand(const FilePath& sourceFilePath): m_sourceFilePath(sourceFilePath) {}
 
-size_t IndexerCommand::getByteSize(size_t stringSize) const
+size_t IndexerCommand::getByteSize(size_t /*stringSize*/) const
 {
 	return utility::encodeToUtf8(m_sourceFilePath.wstr()).size();
 }

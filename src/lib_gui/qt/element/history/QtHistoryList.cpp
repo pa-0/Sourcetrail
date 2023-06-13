@@ -190,7 +190,7 @@ void QtHistoryList::showPopup(QPoint pos)
 	show();
 }
 
-void QtHistoryList::closeEvent(QCloseEvent* event)
+void QtHistoryList::closeEvent(QCloseEvent* /*event*/)
 {
 	emit closed();
 }

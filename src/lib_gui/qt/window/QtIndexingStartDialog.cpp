@@ -172,7 +172,7 @@ void QtIndexingStartDialog::resizeEvent(QResizeEvent* event)
 	QtIndexingDialog::resizeEvent(event);
 }
 
-void QtIndexingStartDialog::closeEvent(QCloseEvent* event)
+void QtIndexingStartDialog::closeEvent(QCloseEvent* /*event*/)
 {
 	emit QtIndexingDialog::canceled();
 }

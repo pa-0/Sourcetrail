@@ -11,7 +11,7 @@
 #include "utilityQt.h"
 #include "utilityString.h"
 
-void QtListWidget::mouseDoubleClickEvent(QMouseEvent* event)
+void QtListWidget::mouseDoubleClickEvent(QMouseEvent* /*event*/)
 {
 	QModelIndex index;
 	emit doubleClicked(index);

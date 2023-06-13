@@ -22,54 +22,54 @@ bool DialogView::dialogsHidden() const
 
 void DialogView::clearDialogs() {}
 
-void DialogView::showUnknownProgressDialog(const std::wstring& title, const std::wstring& message)
+void DialogView::showUnknownProgressDialog(const std::wstring& /*title*/, const std::wstring& /*message*/)
 {
 }
 
 void DialogView::hideUnknownProgressDialog() {}
 
-void DialogView::showProgressDialog(const std::wstring& title, const std::wstring& message, size_t progress)
+void DialogView::showProgressDialog(const std::wstring& /*title*/, const std::wstring& /*message*/, size_t /*progress*/)
 {
 }
 
 void DialogView::hideProgressDialog() {}
 
 void DialogView::startIndexingDialog(
-	Project* project,
-	const std::vector<RefreshMode>& enabledModes,
-	const RefreshMode initialMode,
-	bool enabledShallowOption,
-	bool shallow,
-	std::function<void(const RefreshInfo& info)> onStartIndexing,
-	std::function<void()> onCancelIndexing)
+	Project* /*project*/,
+	const std::vector<RefreshMode>& /*enabledModes*/,
+	const RefreshMode /*initialMode*/,
+	bool /*enabledShallowOption*/,
+	bool /*shallow*/,
+	std::function<void(const RefreshInfo& info)> /*onStartIndexing*/,
+	std::function<void()> /*onCancelIndexing*/)
 {
 }
 
 void DialogView::updateIndexingDialog(
-	size_t startedFileCount,
-	size_t finishedFileCount,
-	size_t totalFileCount,
-	const std::vector<FilePath>& sourcePaths)
+	size_t /*startedFileCount*/,
+	size_t /*finishedFileCount*/,
+	size_t /*totalFileCount*/,
+	const std::vector<FilePath>& /*sourcePaths*/)
 {
 }
 
 void DialogView::updateCustomIndexingDialog(
-	size_t startedFileCount,
-	size_t finishedFileCount,
-	size_t totalFileCount,
-	const std::vector<FilePath>& sourcePaths)
+	size_t /*startedFileCount*/,
+	size_t /*finishedFileCount*/,
+	size_t /*totalFileCount*/,
+	const std::vector<FilePath>& /*sourcePaths*/)
 {
 }
 
 DatabasePolicy DialogView::finishedIndexingDialog(
-	size_t indexedFileCount,
-	size_t totalIndexedFileCount,
-	size_t completedFileCount,
-	size_t totalFileCount,
-	float time,
-	ErrorCountInfo errorInfo,
-	bool interrupted,
-	bool shallow)
+	size_t /*indexedFileCount*/,
+	size_t /*totalIndexedFileCount*/,
+	size_t /*completedFileCount*/,
+	size_t /*totalFileCount*/,
+	float /*time*/,
+	ErrorCountInfo /*errorInfo*/,
+	bool /*interrupted*/,
+	bool /*shallow*/)
 {
 	return DATABASE_POLICY_KEEP;	// used in non-gui mode
 }
@@ -79,7 +79,7 @@ int DialogView::confirm(const std::wstring& message)
 	return confirm(message, std::vector<std::wstring>());
 }
 
-int DialogView::confirm(const std::wstring& message, const std::vector<std::wstring>& options)
+int DialogView::confirm(const std::wstring& /*message*/, const std::vector<std::wstring>& /*options*/)
 {
 	return -1;
 }

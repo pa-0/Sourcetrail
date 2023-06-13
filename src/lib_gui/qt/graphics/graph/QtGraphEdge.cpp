@@ -481,7 +481,7 @@ void QtGraphEdge::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 	}
 }
 
-void QtGraphEdge::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+void QtGraphEdge::hoverEnterEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	m_focusHandler->focusEdge(this);
 
@@ -507,7 +507,7 @@ void QtGraphEdge::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 	}
 }
 
-void QtGraphEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+void QtGraphEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	m_focusHandler->defocusEdge(this);
 

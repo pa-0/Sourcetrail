@@ -17,7 +17,7 @@ QtProjectWizardContent::QtProjectWizardContent(QtProjectWizardWindow* window)
     , m_showFilesFunctor(
           std::bind(&QtProjectWizardContent::showFilesDialog, this, std::placeholders::_1)) {}
 
-void QtProjectWizardContent::populate(QGridLayout* layout, int& row) {}
+void QtProjectWizardContent::populate(QGridLayout* /*layout*/, int& /*row**/) {}
 
 void QtProjectWizardContent::windowReady() {}
 

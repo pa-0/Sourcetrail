@@ -220,7 +220,7 @@ void GraphFocusHandler::focusEdge(QtGraphEdge* edge)
 	}
 }
 
-void GraphFocusHandler::defocusEdge(QtGraphEdge* edge) {}
+void GraphFocusHandler::defocusEdge(QtGraphEdge* /*edge*/) {}
 
 void GraphFocusHandler::defocusGraph()
 {

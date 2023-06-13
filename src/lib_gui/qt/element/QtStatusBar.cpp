@@ -176,7 +176,7 @@ void QtStatusBar::hideIndexingProgress()
 	m_vlineIndexing->hide();
 }
 
-void QtStatusBar::resizeEvent(QResizeEvent* event)
+void QtStatusBar::resizeEvent(QResizeEvent* /*event*/)
 {
 	m_text.setText(m_text.fontMetrics().elidedText(
 		QString::fromStdWString(m_textString), Qt::ElideRight, m_text.width()));

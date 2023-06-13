@@ -367,7 +367,7 @@ void QtMainWindow::hideWindowsTaskbarProgress() {
   m_windowsTaskbarButton.hideProgress();
 }
 
-void QtMainWindow::showEvent(QShowEvent* e) {
+void QtMainWindow::showEvent(QShowEvent* /*event*/) {
   m_windowsTaskbarButton.setWindow(this);
 }
 
@@ -415,7 +415,7 @@ void QtMainWindow::contextMenuEvent(QContextMenuEvent* event) {
   menu.show();
 }
 
-void QtMainWindow::closeEvent(QCloseEvent* event) {
+void QtMainWindow::closeEvent(QCloseEvent* /*event*/) {
   MessageWindowClosed().dispatchImmediately();
 }
 
@@ -424,7 +424,7 @@ void QtMainWindow::resizeEvent(QResizeEvent* event) {
   QMainWindow::resizeEvent(event);
 }
 
-bool QtMainWindow::focusNextPrevChild(bool next) {
+bool QtMainWindow::focusNextPrevChild(bool /*next*/) {
   // makes tab key available in key press event
   return false;
 }

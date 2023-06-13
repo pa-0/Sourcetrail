@@ -41,7 +41,7 @@ void QtProgressBar::showUnknownProgressAnimated()
 	show();
 }
 
-void QtProgressBar::paintEvent(QPaintEvent* event)
+void QtProgressBar::paintEvent(QPaintEvent* /*event*/)
 {
 	QPainter painter(this);
 

@@ -4,7 +4,7 @@
 
 #include "QtProgressBar.h"
 
-QtProgressBarDialog::QtProgressBarDialog(float topRatio, bool hideable, QWidget* parent)
+QtProgressBarDialog::QtProgressBarDialog(float topRatio, bool /*hideable*/, QWidget* parent)
 	: QtIndexingDialog(true, parent), m_title(nullptr), m_topRatio(topRatio)
 {
 	m_top = new QWidget(m_window);
