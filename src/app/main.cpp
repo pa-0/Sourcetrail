@@ -191,8 +191,12 @@ int main(int argc, char* argv[]) {
   MessageStatus(utility::decodeFromUtf8(message)).dispatch();
 
   commandline::CommandLineParser commandLineParser(version.toDisplayString());
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-  std::vector<std::string> args(static_cast<size_t>(argc-1), argv[1]);
+  std::vector<std::string> args;
+  if(argc > 1) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+    args = std::vector<std::string>(static_cast<size_t>(argc-1), argv[1]);
+  }
+ 
   commandLineParser.preparse(std::move(args));
   if(commandLineParser.exitApplication()) {
     return EXIT_SUCCESS;
