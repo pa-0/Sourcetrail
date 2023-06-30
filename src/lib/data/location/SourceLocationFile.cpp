@@ -187,18 +187,6 @@ std::shared_ptr<SourceLocationFile> SourceLocationFile::getFilteredByTypes(const
   return pSourceLocationFile;
 }
 
-Json::Value SourceLocationFile::toJSON() const {
-  Json::Value output;
-  // clang-format off
-  output["file"]     = m_filePath.str();
-  output["lang"]     = utility::encodeToUtf8(m_language);
-  output["whole"]    = m_isWhole;
-  output["complete"] = m_isComplete;
-  output["indexed"]  = m_isIndexed;
-  // clang-format on
-  return output;
-}
-
 std::wostream& operator<<(std::wostream& ostream, const SourceLocationFile& file) {
   ostream << L"file \"" << file.getFilePath().wstr() << L"\"";
 
