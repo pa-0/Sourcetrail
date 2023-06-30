@@ -1,12 +1,5 @@
 #${CMAKE_SOURCE_DIR}/src/app/CMakeLists.txt
-if(UNIX)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app/")
-else()
-  foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
-    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/app/")
-  endforeach()
-endif()
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app/")
 
 if(WIN32)
   file(WRITE ${CMAKE_BINARY_DIR}/Sourcetrail.rc
@@ -38,10 +31,10 @@ if(WIN32)
       VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/app")
 
   # generate pdb for release build
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
-
-  string(REGEX REPLACE "/" "\\\\" BACKSLASHED_CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR})
-  string(REGEX REPLACE "/" "\\\\" BACKSLASHED_CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+  add_compile_options(
+    Sourcetrail
+    PRIVATE
+      $<$<CONFIG:Release>:/Zi>)
 else()
   add_executable(Sourcetrail main.cpp)
 endif()
@@ -71,8 +64,11 @@ target_include_directories(
   Sourcetrail
   SYSTEM PRIVATE
     "${EXTERNAL_INCLUDE_PATHS}")
-
-# add platform specific libraries
+set_target_properties(
+  Sourcetrail
+  PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app/")
+    # add platform specific libraries
 if(APPLE)
   find_library(CORE_FOUNDATION CoreFoundation)
   target_link_libraries(Sourcetrail ${CORE_FOUNDATION})
@@ -85,3 +81,7 @@ if(NOT EXISTS ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico)
 endif()
 file(COPY ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico
      DESTINATION ${CMAKE_BINARY_DIR})
+
+if(WIN32)
+  copy_qt_binaries("${CMAKE_BINARY_DIR}/app/" TRUE)
+endif()
