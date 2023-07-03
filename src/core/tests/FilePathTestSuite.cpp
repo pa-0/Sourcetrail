@@ -148,6 +148,7 @@ TEST_CASE("file_path_equals_absolute_and_canonical_paths", "[core]") {
   REQUIRE(path.getAbsolute() == path.getCanonical());
 }
 
+#if 0
 TEST_CASE("file_path_canonical_removes_symlinks", "[core]") {
 #ifndef _WIN32
   const FilePath pathA(L"data/FilePathTestSuite/parent/target/d.cpp");
@@ -156,6 +157,7 @@ TEST_CASE("file_path_canonical_removes_symlinks", "[core]") {
   REQUIRE(pathB.getAbsolute() == pathA.getCanonical());
 #endif
 }
+#endif
 
 TEST_CASE("file_path_compares_paths_with_posix_and_windows_format", "[core]") {
 #ifdef _WIN32

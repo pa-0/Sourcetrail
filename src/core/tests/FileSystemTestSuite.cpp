@@ -83,8 +83,9 @@ TEST_CASE("find file infos", "[core]") {
   std::vector<FileInfo> files = FileSystem::getFileInfosFromPaths(
       directoryPaths, {L".h", L".hpp", L".cpp"}, false);
 
-  REQUIRE(files.size() == 2);
+  REQUIRE(files.size() == 3);
   REQUIRE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.cpp"));
+  REQUIRE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/main.cpp"));
   REQUIRE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.h"));
 #endif
 }

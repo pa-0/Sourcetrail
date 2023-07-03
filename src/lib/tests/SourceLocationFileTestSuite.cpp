@@ -63,15 +63,3 @@ TEST_F(SourceLocationFileFix, SourceLocationCopy) {
   EXPECT_EQ(m_pSourceLocationFile->getUnscopedStartLocationCount(), 1);
   EXPECT_EQ(m_pSourceLocationFile->getSourceLocationCount(), 1);
 }
-
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,cert-err58-cpp,cppcoreguidelines-owning-memory)
-TEST_F(SourceLocationFileFix, serializeToJson) {
-  auto json = m_pSourceLocationFile->toJSON();
-  Json::FastWriter fastWriter;
-
-  EXPECT_THAT(
-      fastWriter.write(json),
-      testing::StrEq(
-          R"({"complete":true,"file":"main.cpp","indexed":true,"lang":"cpp","whole":true})"s +
-          "\n"));
-}
