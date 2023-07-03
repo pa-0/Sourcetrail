@@ -18,8 +18,6 @@ class QtCoreApplication
 public:
   QtCoreApplication(int argc, char** argv);
 
-  Q_DISABLE_COPY_MOVE(QtCoreApplication)
-
   ~QtCoreApplication() override;
 
 private:

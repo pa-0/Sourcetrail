@@ -15,8 +15,6 @@ class QtConsoleView final
 public:
   explicit QtConsoleView(ViewLayout* pViewLayout);
 
-  Q_DISABLE_COPY_MOVE(QtConsoleView)
-
   ~QtConsoleView() override;
 
   // View implementation

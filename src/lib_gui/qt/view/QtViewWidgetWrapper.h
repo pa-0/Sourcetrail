@@ -13,7 +13,7 @@ public:
   static QWidget* getWidgetOfView(const View* pView);
 
   explicit QtViewWidgetWrapper(QWidget* pWidget);
-	Q_DISABLE_COPY_MOVE(QtViewWidgetWrapper)
+
   ~QtViewWidgetWrapper() override;
 
   [[nodiscard]] QWidget* getWidget() const;
