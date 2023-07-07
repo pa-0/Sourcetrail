@@ -70,6 +70,6 @@ int main(int argc, char** argv) {
   pLogger->setLogLevel(Logger::LOG_ALL);
   pLogManager->addLogger(pLogger);
 
-  QTimer::singleShot(0, [&] { app.exit(Catch::Session().run(argc, argv)); });
+
   return app.exec();
 }

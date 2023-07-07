@@ -15,6 +15,8 @@ function(copy_qt_binaries DESTINATION IS_APP)
         set(CONFIGURATION "Debug")
     endif()
 
+    set(GUI_LIBRARIES Qt5Core Qt5Gui Qt5Network Qt5Svg Qt5Widgets Qt5WinExtras)
+
     if(IS_APP)
         set(SETUP_URL "https://codeload.github.com/OpenSourceSourceTrail/setup/zip/refs/heads/main")
         set(TEMP_DIR $ENV{TMP})
@@ -22,9 +24,10 @@ function(copy_qt_binaries DESTINATION IS_APP)
         file(ARCHIVE_EXTRACT INPUT ${TEMP_DIR}/setup.zip DESTINATION ${TEMP_DIR}/)
         file(GLOB MY_PUBLIC_HEADERS "${TEMP_DIR}/setup-main/dynamic_libraries/win64/app/${CONFIGURATION}/*")
         file(COPY ${MY_PUBLIC_HEADERS} DESTINATION "${DESTINATION}")
+    else()
+        list(APPEND GUI_LIBRARIES Qt5Test)
     endif()
 
-    set(GUI_LIBRARIES Qt5Core Qt5Gui Qt5Network Qt5Svg Qt5Widgets Qt5WinExtras)
 
     foreach(library IN LISTS GUI_LIBRARIES)
         configure_file("${QT_BINARY_DIR}/${library}${SUFFIX}.dll" "${DESTINATION}" COPYONLY)    

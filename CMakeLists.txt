@@ -340,6 +340,8 @@ if(ENABLE_UNIT_TEST OR ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
   execute_process(COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/test")
   create_symlink("${CMAKE_SOURCE_DIR}/bin/test/data" "${CMAKE_BINARY_DIR}/test/data")
 
+  find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Test REQUIRED)
+
   if(ENABLE_UNIT_TEST)
     add_subdirectory(src/test)
     add_subdirectory(${CMAKE_SOURCE_DIR}/src/lib/tests/)
@@ -350,7 +352,27 @@ if(ENABLE_UNIT_TEST OR ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
     add_subdirectory(tests)
   endif()
 endif()
-
+# Assets -----------------------------------------------------------------------
 execute_process(COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/app")
 create_symlink("${CMAKE_SOURCE_DIR}/bin/app/data" "${CMAKE_BINARY_DIR}/app/data")
 create_symlink("${CMAKE_SOURCE_DIR}/bin/app/user" "${CMAKE_BINARY_DIR}/app/user")
+# Pack -------------------------------------------------------------------------
+if(CMAKE_SKIP_INSTALL_RULES)
+  return()
+endif()
+
+# Add other targets that you want installed here, be default we just package the one executable
+# we know we want to ship
+package_project(TARGETS Sourcetrail Sourcetrail_indexer
+  # FIXME: this does not work! CK
+  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
+)
+
+# Experience shows that explicit package naming can help make it easier to sort
+# out potential ABI related issues before they start, while helping you
+# track a build to a specific GIT SHA
+set(CPACK_PACKAGE_FILE_NAME
+    "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
+)
+
+include(CPack)

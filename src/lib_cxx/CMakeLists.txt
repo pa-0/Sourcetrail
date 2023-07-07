@@ -1,44 +1,6 @@
 # ${CMAKE_SOURCE_DIR}/src/lib_cxx/CMakeLists.txt
 find_package(Clang REQUIRED)
 
-if(LLVM_FOUND AND SOURCETRAIL_CMAKE_VERBOSE)
-  message(STATUS "Found LLVM ${LLVM_VERSION}")
-endif()
-
-if(UNIX)
-  set(LLVM_CONFIGURATION_TYPES ".")
-endif()
-
-set(CLANG_COMPILER_HEADER_SEARCH_PATH "")
-foreach(LLVM_CONFIGURATION_TYPE IN LISTS LLVM_CONFIGURATION_TYPES)
-  if(CLANG_COMPILER_HEADER_SEARCH_PATH STREQUAL "")
-    set(_CLANG_HEADERS_SEARCH_LIST
-      "${LLVM_BINARY_DIR}/${LLVM_CONFIGURATION_TYPE}/lib/clang/${LLVM_VERSION}/include"
-      "${LLVM_BINARY_DIR}/${LLVM_CONFIGURATION_TYPE}/lib64/clang/${LLVM_VERSION}/include")
-    foreach(_CLANG_HEADER_PATH IN LISTS _CLANG_HEADERS_SEARCH_LIST)
-      if(EXISTS ${_CLANG_HEADER_PATH})
-        set(CLANG_COMPILER_HEADER_SEARCH_PATH ${_CLANG_HEADER_PATH})
-        break()
-      endif()
-    endforeach ()
-
-    message(STATUS "Trying to find Clang compiler headers in '${LLVM_CONFIGURATION_TYPE}' build config in directory '${CLANG_COMPILER_HEADER_SEARCH_PATH}'.")
-    if(EXISTS ${CLANG_COMPILER_HEADER_SEARCH_PATH})
-      message(STATUS "Found headers for '${LLVM_CONFIGURATION_TYPE}' build config.")
-      file(GLOB_RECURSE CLANG_COMPILER_HEADER_PATHS RELATIVE "${CLANG_COMPILER_HEADER_SEARCH_PATH}" "${CLANG_COMPILER_HEADER_SEARCH_PATH}/*")
-      foreach(CLANG_COMPILER_HEADER_PATH IN LISTS CLANG_COMPILER_HEADER_PATHS)
-        configure_file("${CLANG_COMPILER_HEADER_SEARCH_PATH}/${CLANG_COMPILER_HEADER_PATH}" "${CMAKE_SOURCE_DIR}/bin/app/data/cxx/include/${CLANG_COMPILER_HEADER_PATH}" COPYONLY)
-      endforeach()
-    else()
-      set(CLANG_COMPILER_HEADER_SEARCH_PATH "")
-    endif()
-  endif()
-endforeach()
-
-if(CLANG_COMPILER_HEADER_SEARCH_PATH STREQUAL "")
-  message(FATAL_ERROR "Unable to copy Clang compiler headers from clang build dir.")
-endif()
-
 add_library(Sourcetrail_lib_cxx)
 add_library(Sourcetrail::lib_cxx ALIAS Sourcetrail_lib_cxx)
 
@@ -132,45 +94,6 @@ target_include_directories(
     ${CLANG_INCLUDE_DIRS}
     ${EXTERNAL_INCLUDE_PATHS})
 
-if(LLVM_LINK_LLVM_DYLIB)
-  set(REQ_LLVM_LIBS LLVM)
-else()
-  llvm_map_components_to_libnames(REQ_LLVM_LIBS support core libdriver passes option)
-  foreach(LLVM_TARGET IN LIST LLVM_TARGETS_TO_BUILD)
-    get_property(lib_deps GLOBAL PROPERTY "LLVMBUILD_LIB_DEPS_LLVM${LLVM_TARGET}CodeGen")
-    list(APPEND REQ_LLVM_LIBS "LLVM${LLVM_TARGET}CodeGen")
-    list(APPEND REQ_LLVM_LIBS "${lib_deps}")
-    get_property(lib_deps GLOBAL PROPERTY "LLVMBUILD_LIB_DEPS_LLVM${LLVM_TARGET}AsmParser")
-    if(NOT "${lib_deps}" STREQUAL "")
-      list(APPEND REQ_LLVM_LIBS "LLVM${LLVM_TARGET}AsmParser")
-      list(APPEND REQ_LLVM_LIBS "${lib_deps}")
-    endif()
-  endforeach()
-endif()
-
-# Should be CLANG_LINK_CLANG_DYLIB in future LLVM release
-if(LLVM_LINK_LLVM_DYLIB)
-  set(CLANG_LIBRARIES clang-cpp)
-else()
-  set(CLANG_LIBRARIES
-      clangASTMatchers
-      clangFrontend
-      clangSerialization
-      clangDriver
-      clangTooling
-      clangParse
-      clangSema
-      clangStaticAnalyzerFrontend
-      clangStaticAnalyzerCheckers
-      clangStaticAnalyzerCore
-      clangAnalysis
-      clangRewriteFrontend
-      clangEdit
-      clangAST
-      clangLex
-      clangBasic)
-endif()
-
 target_link_libraries(
   Sourcetrail_lib_cxx
   PRIVATE
@@ -178,8 +101,8 @@ target_link_libraries(
     Sourcetrail::lib
     Sourcetrail::lib_utility
     Sourcetrail::scheduling
-    ${CLANG_LIBRARIES}
-    ${REQ_LLVM_LIBS}
+    clang-cpp
+    LLVM
     TinyXML::TinyXML
     Qt5::Core)
 
