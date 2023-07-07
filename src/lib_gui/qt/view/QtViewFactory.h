@@ -21,7 +21,6 @@ public:
   std::shared_ptr<CodeView> createCodeView(ViewLayout* viewLayout) const override;
   std::shared_ptr<CustomTrailView> createCustomTrailView(ViewLayout* viewLayout) const override;
   std::shared_ptr<ErrorView> createErrorView(ViewLayout* viewLayout) const override;
-  std::shared_ptr<ConsoleView> createConsoleView(ViewLayout* pViewLayout) const override;
   std::shared_ptr<GraphView> createGraphView(ViewLayout* viewLayout) const override;
   std::shared_ptr<RefreshView> createRefreshView(ViewLayout* viewLayout) const override;
   std::shared_ptr<ScreenSearchView> createScreenSearchView(ViewLayout* viewLayout) const override;

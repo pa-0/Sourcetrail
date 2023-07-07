@@ -149,10 +149,3 @@ if(${BUILD_CXX_LANGUAGE_PACKAGE})
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
   endforeach()
 endif()
-# ========================================================
-execute_process(
-  COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY_DIR}/test"
-)
-execute_process(
-  COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "${CMAKE_SOURCE_DIR}/bin/test/data" "${CMAKE_BINARY_DIR}/test/data"
-)

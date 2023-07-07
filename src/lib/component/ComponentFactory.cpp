@@ -6,9 +6,6 @@
 #include "CodeController.h"
 #include "CodeView.h"
 #include "Component.h"
-#include "ConsoleController.hpp"
-#include "ConsoleInterpreter.hpp"
-#include "ConsoleView.hpp"
 #include "CustomTrailController.h"
 #include "CustomTrailView.h"
 #include "ErrorController.h"
@@ -79,13 +76,6 @@ std::shared_ptr<Component> ComponentFactory::createErrorComponent(ViewLayout* vi
   std::shared_ptr<ErrorController> controller = std::make_shared<ErrorController>(m_storageAccess);
 
   return std::make_shared<Component>(view, controller);
-}
-
-std::shared_ptr<Component> ComponentFactory::createConsoleComponent(ViewLayout* pViewLayout) {
-  auto pView = m_viewFactory->createConsoleView(pViewLayout);
-  auto pController = std::make_shared<ConsoleController>(std::make_unique<ConsoleInterpreter>(m_storageAccess));
-
-  return std::make_shared<Component>(pView, pController);
 }
 
 std::shared_ptr<Component> ComponentFactory::createGraphComponent(ViewLayout* viewLayout) {

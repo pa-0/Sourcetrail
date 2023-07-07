@@ -221,8 +221,6 @@ add_files(
   qt/view/QtDialogView.h
   qt/view/QtErrorView.cpp
   qt/view/QtErrorView.h
-  qt/view/QtConsoleView.cpp
-  qt/view/QtConsoleView.hpp
   qt/view/QtGraphView.cpp
   qt/view/QtGraphView.h
   qt/view/QtGraphViewStyleImpl.cpp

@@ -20,7 +20,6 @@ set(
   CommandlineHelperTestSuite
   CommandLineParserTestSuite
   FileHandlerTestSuite
-  FindCommandTestSuite
   LocationTypeTestSuite
   SourceLocationCollectionTestSuite
   SourceLocationFileTestSuite

@@ -64,9 +64,6 @@ add_files(
   component/controller/UndoRedoController.cpp
   component/controller/UndoRedoController.h
 
-  component/controller/ConsoleController.cpp
-  component/controller/ConsoleController.hpp
-
   component/view/helper/CodeScrollParams.h
   component/view/helper/CodeSnippetParams.cpp
   component/view/helper/CodeSnippetParams.h
@@ -115,9 +112,6 @@ add_files(
   component/view/ViewLayout.h
   component/view/ViewWidgetWrapper.cpp
   component/view/ViewWidgetWrapper.h
-
-  component/view/ConsoleView.cpp
-  component/view/ConsoleView.hpp
 
   component/Component.cpp
   component/Component.h
@@ -519,12 +513,6 @@ add_files(
 
   utility/migration/Migration.h
   utility/migration/Migrator.h
-
-  utility/ConsoleInterpreter.cpp
-  utility/command/FindCommand.cpp
-  #utility/command/HelpCommand.cpp
-  #utility/command/SelectCommand.cpp
-  #utility/command/ShowCommand.cpp
 )
 
 if(WIN32)
