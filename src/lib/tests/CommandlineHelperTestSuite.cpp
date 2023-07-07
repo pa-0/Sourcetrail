@@ -23,6 +23,7 @@ TEST(CommandLineHelper, emptyVaraiblesMapParseConfigFile) {
   EXPECT_TRUE(variablesMap.empty());
 }
 
+#ifndef WIN32
 // NOLINTNEXTLINE
 TEST(CommandLineHelper, missingParseConfigFile) {
   po::options_description desc("Allowed options");
@@ -68,6 +69,7 @@ TEST(CommandLineHelper, goodCaseParseConfigFile) {
   EXPECT_EQ(1, variablesMap.count("config-file"));
   EXPECT_THAT(variablesMap["config-file"].as<std::string>(), StrEq("/tmp/config"));
 }
+#endif
 
 // NOLINTNEXTLINE
 TEST(CommandLineHelper, goodCaseExtractPaths) {

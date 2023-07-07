@@ -9,8 +9,8 @@
 class SourceLocationsGetCreatedWithOtherEnd : public testing::Test {
 public:
   void SetUp() override {
-    const uint StartLocation[] {2, 3};
-    const uint EndLocation[] {4, 5};
+    const uint32_t StartLocation[] {2, 3};
+    const uint32_t EndLocation[] {4, 5};
 
     FilePath filePath(L"file.c");
 

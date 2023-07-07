@@ -1,8 +1,11 @@
+#include <string>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "utilityString.h"
 
+using namespace std::string_literals;
 using namespace testing;
 
 TEST(Split, splitWithCharDelimiter) {
@@ -302,10 +305,10 @@ TEST(GenerateRandomString, goodCase) {
   constexpr auto StringLength0 = 16U;
   const auto result0 = utility::createRandomString(StringLength0);
   ASSERT_EQ(StringLength0, result0.size());
-  EXPECT_THAT(result0, MatchesRegex("([A-z]|[0-9]){16}"));
+  EXPECT_THAT(result0, MatchesRegex("([A-z]|[0-9]){16}"s));
 
   constexpr auto StringLength1 = 32U;
   const auto result1 = utility::createRandomString(StringLength1);
   ASSERT_EQ(StringLength1, result1.size());
-  EXPECT_THAT(result1, MatchesRegex("([A-z]|[0-9]){32}"));
+  EXPECT_THAT(result1, MatchesRegex("([A-z]|[0-9]){32}"s));
 }

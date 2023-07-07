@@ -20,6 +20,7 @@ target_link_libraries(
     project_options
     project_warnings
     Boost::system
+    Boost::locale
     Qt5::Core)
 
 if(UNIX AND NOT APPLE)

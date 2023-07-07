@@ -19,7 +19,7 @@ TEST(FileHandler, goodCaseEmptyFile) {
     ASSERT_TRUE(fs::exists(TemptyFilePath, errorCode));
     EXPECT_EQ(0, fs::file_size(TemptyFilePath, errorCode));
     EXPECT_EQ(0, fileHandler->fileSize());
-    EXPECT_THAT(fileHandler->filePath(), StrEq(TemptyFilePath));
+    EXPECT_THAT(fileHandler->filePath().string(), StrEq(TemptyFilePath));
   }
   EXPECT_FALSE(fs::exists(TemptyFilePath, errorCode));
 }

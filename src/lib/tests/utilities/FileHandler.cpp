@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <random>
 
 #include <system_error>
@@ -52,11 +53,11 @@ FileHandler::Ptr FileHandler::createFileWithRandomData(fs::path filepath, size_t
 std::vector<char> FileHandler::generateRandomBuffer(size_t bufferSize) {
   std::random_device random;
   std::mt19937 gen(random());
-  std::uniform_int_distribution<char> distribution;
+  std::uniform_int_distribution<short> distribution(std::numeric_limits<char>::min(), std::numeric_limits<char>::max());
 
   std::vector<char> buffer(bufferSize);
   std::for_each(std::begin(buffer), std::end(buffer), [&distribution, &gen](auto& value) {
-      value = distribution(gen);
+      value = static_cast<char>(distribution(gen));
   });
   return buffer;
 }
