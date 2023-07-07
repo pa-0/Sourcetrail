@@ -83,21 +83,21 @@ bool utility::isLocalVariable(const clang::VarDecl* d) {
   return false;
 }
 
-bool utility::isLocalVariable(const clang::ValueDecl* pValueDecl) {
-  if(!llvm::isa<clang::ParmVarDecl>(pValueDecl) &&
-     !(pValueDecl->getParentFunctionOrMethod() == nullptr)) {
-    return true;
-  }
-  return false;
-}
+// bool utility::isLocalVariable(const clang::ValueDecl* pValueDecl) {
+//   if(!llvm::isa<clang::ParmVarDecl>(pValueDecl) &&
+//      !(pValueDecl->getParentFunctionOrMethod() == nullptr)) {
+//     return true;
+//   }
+//   return false;
+// }
 
 bool utility::isParameter(const clang::VarDecl* d) {
   return llvm::isa<clang::ParmVarDecl>(d);
 }
 
-bool utility::isParameter(const clang::ValueDecl* pValueDecl) {
-  return llvm::isa<clang::ParmVarDecl>(pValueDecl);
-}
+// bool utility::isParameter(const clang::ValueDecl* pValueDecl) {
+//   return llvm::isa<clang::ParmVarDecl>(pValueDecl);
+// }
 
 SymbolKind utility::getSymbolKind(const clang::VarDecl* d) {
   SymbolKind symbolKind = SYMBOL_KIND_MAX;
