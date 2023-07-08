@@ -1,179 +1,154 @@
-#include <catch2/catch_all.hpp>
+#include <gtest/gtest.h>
 
+#include "IncludeDirective.h"
+#include "IncludeProcessing.h"
+#include "TextAccess.h"
 #include "language_packages.h"
+#include "utility.h"
 
-#if BUILD_CXX_LANGUAGE_PACKAGE
+TEST(CxxIncludeProcessing, includeDetectionFindsIncludeWithQuotes) {
+  std::vector<IncludeDirective> includeDirectives = IncludeProcessing::getIncludeDirectives(
+      TextAccess::createFromString("#include \"foo.h\"", FilePath(L"foo.cpp")));
 
-#	include "IncludeDirective.h"
-#	include "IncludeProcessing.h"
-#	include "TextAccess.h"
-#	include "utility.h"
+  EXPECT_TRUE(!includeDirectives.empty());
 
-TEST_CASE("include detection finds include with quotes")
-{
-	std::vector<IncludeDirective> includeDirectives = IncludeProcessing::getIncludeDirectives(
-		TextAccess::createFromString("#include \"foo.h\"", FilePath(L"foo.cpp")));
-
-	REQUIRE(!includeDirectives.empty());
-
-	if (!includeDirectives.empty())
-	{
-		REQUIRE(L"foo.h" == includeDirectives.front().getIncludedFile().wstr());
-		REQUIRE(L"foo.cpp" == includeDirectives.front().getIncludingFile().wstr());
-	}
+  if(!includeDirectives.empty()) {
+    EXPECT_TRUE(L"foo.h" == includeDirectives.front().getIncludedFile().wstr());
+    EXPECT_TRUE(L"foo.cpp" == includeDirectives.front().getIncludingFile().wstr());
+  }
 }
 
-TEST_CASE("include detection finds include with angle brackets")
-{
-	std::vector<IncludeDirective> includeDirectives = IncludeProcessing::getIncludeDirectives(
-		TextAccess::createFromString("#include <foo.h>", FilePath(L"foo.cpp")));
+TEST(CxxIncludeProcessing, includeDetectionFindsIncludeWithAngleBrackets) {
+  std::vector<IncludeDirective> includeDirectives = IncludeProcessing::getIncludeDirectives(
+      TextAccess::createFromString("#include <foo.h>", FilePath(L"foo.cpp")));
 
-	REQUIRE(!includeDirectives.empty());
+  EXPECT_TRUE(!includeDirectives.empty());
 
-	if (!includeDirectives.empty())
-	{
-		REQUIRE(L"foo.h" == includeDirectives.front().getIncludedFile().wstr());
-		REQUIRE(L"foo.cpp" == includeDirectives.front().getIncludingFile().wstr());
-	}
-}
-TEST_CASE("include detection finds include with quotes and space before keyword")
-{
-	std::vector<IncludeDirective> includeDirectives = IncludeProcessing::getIncludeDirectives(
-		TextAccess::createFromString("# include \"foo.h\"", FilePath(L"foo.cpp")));
-
-	REQUIRE(!includeDirectives.empty());
-
-	if (!includeDirectives.empty())
-	{
-		REQUIRE(L"foo.h" == includeDirectives.front().getIncludedFile().wstr());
-		REQUIRE(L"foo.cpp" == includeDirectives.front().getIncludingFile().wstr());
-	}
+  if(!includeDirectives.empty()) {
+    EXPECT_TRUE(L"foo.h" == includeDirectives.front().getIncludedFile().wstr());
+    EXPECT_TRUE(L"foo.cpp" == includeDirectives.front().getIncludingFile().wstr());
+  }
 }
 
-TEST_CASE("include detection does not find include in empty file")
-{
-	REQUIRE(IncludeProcessing::getIncludeDirectives(TextAccess::createFromString("")).empty());
+TEST(CxxIncludeProcessing, includeDetectionFindsIncludeWithQuotesAndSpaceBeforeKeyword) {
+  std::vector<IncludeDirective> includeDirectives = IncludeProcessing::getIncludeDirectives(
+      TextAccess::createFromString("# include \"foo.h\"", FilePath(L"foo.cpp")));
+
+  EXPECT_TRUE(!includeDirectives.empty());
+
+  if(!includeDirectives.empty()) {
+    EXPECT_TRUE(L"foo.h" == includeDirectives.front().getIncludedFile().wstr());
+    EXPECT_TRUE(L"foo.cpp" == includeDirectives.front().getIncludingFile().wstr());
+  }
 }
 
-TEST_CASE("include detection does not find include in file without preprocessor directive")
-{
-	REQUIRE(IncludeProcessing::getIncludeDirectives(TextAccess::createFromString("foo")).empty());
+TEST(CxxIncludeProcessing, includeDetectionDoesNotFindIncludeInEmptyFile) {
+  EXPECT_TRUE(IncludeProcessing::getIncludeDirectives(TextAccess::createFromString("")).empty());
 }
 
-TEST_CASE("include detection does not find include in file without include preprocessor directive")
-{
-	REQUIRE(
-		IncludeProcessing::getIncludeDirectives(TextAccess::createFromString("#ifdef xx\n#endif"))
-			.empty());
+TEST(CxxIncludeProcessing, includeDetectionDoesNotFindIncludeInFileWithoutPreprocessorDirective) {
+  EXPECT_TRUE(IncludeProcessing::getIncludeDirectives(TextAccess::createFromString("foo")).empty());
 }
 
-TEST_CASE("header search path detection does not find path relative to including file")
-{
-	std::vector<FilePath> headerSearchDirectories = utility::toVector(
-		IncludeProcessing::getHeaderSearchDirectories(
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_does_not_find_path_relative_to_including_"
-					  L"file/a.cpp")},
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_does_not_find_path_relative_to_including_"
-					  L"file")},
-			{},
-			1,
-			[](float) {}));
-
-	REQUIRE(headerSearchDirectories.empty());
+TEST(CxxIncludeProcessing, includeDetectionDoesNotFindIncludeInFileWithoutIncludePreprocessorDirective) {
+  EXPECT_TRUE(IncludeProcessing::getIncludeDirectives(TextAccess::createFromString("#ifdef xx\n#endif")).empty());
 }
 
-TEST_CASE("header search path detection finds path inside sub directory")
-{
-	std::vector<FilePath> headerSearchDirectories = utility::toVector(
-		IncludeProcessing::getHeaderSearchDirectories(
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_inside_sub_directory/a.cpp")},
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_inside_sub_directory")},
-			{},
-			1,
-			[](float) {}));
+TEST(CxxIncludeProcessing, headerSearchPathDetectionDoesNotFindPathRelativeToIncludingFile) {
+  std::vector<FilePath> headerSearchDirectories = utility::toVector(IncludeProcessing::getHeaderSearchDirectories(
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_does_not_find_path_relative_to_including_"
+                L"file/a.cpp")},
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_does_not_find_path_relative_to_including_"
+                L"file")},
+      {},
+      1,
+      [](float) {}));
 
-	REQUIRE(utility::containsElement<FilePath>(
-		headerSearchDirectories,
-		FilePath(L"data/CxxIncludeProcessingTestSuite/"
-				 L"test_header_search_path_detection_finds_path_inside_sub_directory/include")
-			.makeAbsolute()));
+  EXPECT_TRUE(headerSearchDirectories.empty());
 }
 
-TEST_CASE("header search path detection finds path relative to sub directory")
-{
-	std::vector<FilePath> headerSearchDirectories = utility::toVector(
-		IncludeProcessing::getHeaderSearchDirectories(
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_relative_to_sub_directory/"
-					  L"a.cpp")},
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_relative_to_sub_directory")},
-			{},
-			1,
-			[](float) {}));
+TEST(CxxIncludeProcessing, headerSearchPathDetectionFindsPathInsideSubDirectory) {
+  std::vector<FilePath> headerSearchDirectories = utility::toVector(IncludeProcessing::getHeaderSearchDirectories(
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_inside_sub_directory/a.cpp")},
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_inside_sub_directory")},
+      {},
+      1,
+      [](float) {}));
 
-	REQUIRE(utility::containsElement<FilePath>(
-		headerSearchDirectories,
-		FilePath(L"data/CxxIncludeProcessingTestSuite/"
-				 L"test_header_search_path_detection_finds_path_relative_to_sub_directory/include")
-			.makeAbsolute()));
+  EXPECT_TRUE(
+      utility::containsElement<FilePath>(headerSearchDirectories,
+                                         FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                                                  L"test_header_search_path_detection_finds_path_inside_sub_directory/include")
+                                             .makeAbsolute()));
 }
 
-TEST_CASE("header search path detection finds path included in header search path")
-{
-	std::vector<FilePath> headerSearchDirectories = utility::toVector(
-		IncludeProcessing::getHeaderSearchDirectories(
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_included_in_header_search_"
-					  L"path/a.cpp")},
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_included_in_header_search_"
-					  L"path/include_b")},
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_included_in_header_search_"
-					  L"path/include_a")},
-			1,
-			[](float) {}));
+TEST(CxxIncludeProcessing, headerSearchPathDetectionFindsPathRelativeToSubDirectory) {
+  std::vector<FilePath> headerSearchDirectories = utility::toVector(IncludeProcessing::getHeaderSearchDirectories(
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_relative_to_sub_directory/"
+                L"a.cpp")},
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_relative_to_sub_directory")},
+      {},
+      1,
+      [](float) {}));
 
-
-	REQUIRE(utility::containsElement<FilePath>(
-		headerSearchDirectories,
-		FilePath(L"data/CxxIncludeProcessingTestSuite/"
-				 L"test_header_search_path_detection_finds_path_included_in_header_search_path/"
-				 L"include_b")
-			.makeAbsolute()));
+  EXPECT_TRUE(utility::containsElement<FilePath>(
+      headerSearchDirectories,
+      FilePath(L"data/CxxIncludeProcessingTestSuite/"
+               L"test_header_search_path_detection_finds_path_relative_to_sub_directory/include")
+          .makeAbsolute()));
 }
 
-TEST_CASE("header search path detection finds path included in future header search path")
-{
-	std::vector<FilePath> headerSearchDirectories = utility::toVector(
-		IncludeProcessing::getHeaderSearchDirectories(
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_included_in_future_header_"
-					  L"search_path/a.cpp")},
-			{FilePath(L"data/CxxIncludeProcessingTestSuite/"
-					  L"test_header_search_path_detection_finds_path_included_in_future_header_"
-					  L"search_path")},
-			{},
-			1,
-			[](float) {}));
+TEST(CxxIncludeProcessing, headerSearchPathDetectionFindsPathIncludedInHeaderSearchPath) {
+  std::vector<FilePath> headerSearchDirectories = utility::toVector(IncludeProcessing::getHeaderSearchDirectories(
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_included_in_header_search_"
+                L"path/a.cpp")},
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_included_in_header_search_"
+                L"path/include_b")},
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_included_in_header_search_"
+                L"path/include_a")},
+      1,
+      [](float) {}));
 
-	REQUIRE(utility::containsElement<FilePath>(
-		headerSearchDirectories,
-		FilePath(L"data/CxxIncludeProcessingTestSuite/"
-				 L"test_header_search_path_detection_finds_path_included_in_future_header_search_"
-				 L"path/include_a")
-			.makeAbsolute()));
-	REQUIRE(utility::containsElement<FilePath>(
-		headerSearchDirectories,
-		FilePath(L"data/CxxIncludeProcessingTestSuite/"
-				 L"test_header_search_path_detection_finds_path_included_in_future_header_search_"
-				 L"path/include_b")
-			.makeAbsolute()));
+
+  EXPECT_TRUE(
+      utility::containsElement<FilePath>(headerSearchDirectories,
+                                         FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                                                  L"test_header_search_path_detection_finds_path_included_in_header_search_path/"
+                                                  L"include_b")
+                                             .makeAbsolute()));
 }
 
-#endif	  // BUILD_CXX_LANGUAGE_PACKAGE
+TEST(CxxIncludeProcessing, headerSearchPathDetectionFindsPathIncludedInFutureHeaderSearchPath) {
+  std::vector<FilePath> headerSearchDirectories = utility::toVector(IncludeProcessing::getHeaderSearchDirectories(
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_included_in_future_header_"
+                L"search_path/a.cpp")},
+      {FilePath(L"data/CxxIncludeProcessingTestSuite/"
+                L"test_header_search_path_detection_finds_path_included_in_future_header_"
+                L"search_path")},
+      {},
+      1,
+      [](float) {}));
+
+  EXPECT_TRUE(utility::containsElement<FilePath>(
+      headerSearchDirectories,
+      FilePath(L"data/CxxIncludeProcessingTestSuite/"
+               L"test_header_search_path_detection_finds_path_included_in_future_header_search_"
+               L"path/include_a")
+          .makeAbsolute()));
+  EXPECT_TRUE(utility::containsElement<FilePath>(
+      headerSearchDirectories,
+      FilePath(L"data/CxxIncludeProcessingTestSuite/"
+               L"test_header_search_path_detection_finds_path_included_in_future_header_search_"
+               L"path/include_b")
+          .makeAbsolute()));
+}
