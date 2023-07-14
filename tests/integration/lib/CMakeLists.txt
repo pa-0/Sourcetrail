@@ -15,7 +15,9 @@ foreach(test_name IN LISTS test_lib_names)
     ${test_name}
     PUBLIC
       catch2::catch2
-      Sourcetrail::messaging)
+      Qt5::Core
+      Sourcetrail::messaging
+      $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>)
 
   set_target_properties(
     ${test_name}
