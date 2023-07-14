@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "CxxParser.h"
 #include "IndexerCommandCxx.h"
@@ -7,22 +9,27 @@
 #include "TestFileRegister.h"
 #include "TestStorage.h"
 #include "TextAccess.h"
+#include "gmock/gmock.h"
 #include "language_packages.h"
 #include "utility.h"
 #include "utilityString.h"
 
 namespace {
-std::shared_ptr<TestStorage> parseCode(std::string code, std::vector<std::wstring> compilerFlags = {}) {
-  std::shared_ptr<IntermediateStorage> storage = std::make_shared<IntermediateStorage>();
+
+std::shared_ptr<TestStorage> parseCode(const std::string& code, const std::vector<std::wstring>& compilerFlags = {}) {
+  auto storage = std::make_shared<IntermediateStorage>();
+
   CxxParser parser(std::make_shared<ParserClientImpl>(storage.get()),
                    std::make_shared<TestFileRegister>(),
                    std::make_shared<IndexerStateInfo>());
-  parser.buildIndex(L"input.cc",
+
+  parser.buildIndex(L"temp.cpp",
                     TextAccess::createFromString(code),
-                    utility::concat(compilerFlags, std::vector<std::wstring>(1, L"-std=c++1z")));
+                    utility::concat(compilerFlags, std::vector<std::wstring>(1, L"-std=c++17")));
 
   return TestStorage::create(storage);
 }
+
 }    // namespace
 
 TEST(CxxParserTestSuite, cxxParserFindsGlobalVariableDeclaration) {
@@ -34,13 +41,13 @@ TEST(CxxParserTestSuite, cxxParserFindsGlobalVariableDeclaration) {
 TEST(CxxParserTestSuite, cxxParserFindsStaticGlobalVariableDeclaration) {
   std::shared_ptr<TestStorage> client = parseCode("static int x;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->globalVariables, L"int x (input.cc) <1:12 1:12>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->globalVariables, L"int x (temp.cpp) <1:12 1:12>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsStaticConstGlobalVariableDeclaration) {
   std::shared_ptr<TestStorage> client = parseCode("static const int x;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->globalVariables, L"const int x (input.cc) <1:18 1:18>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->globalVariables, L"const int x (temp.cpp) <1:18 1:18>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsGlobalClassDefinition) {
@@ -106,7 +113,7 @@ TEST(CxxParserTestSuite, cxxParserFindsFunctionDeclaration) {
       "	return 1;\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->functions, L"int ceil(float) <1:1 <1:1 <1:5 1:8> 1:17> 4:1>"));
+  EXPECT_THAT(client->functions, testing::Contains(testing::StrEq(L"int ceil(float) <1:1 <1:1 <1:5 1:8> 1:17> 4:1>")));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsStaticFunctionDeclaration) {
@@ -116,8 +123,7 @@ TEST(CxxParserTestSuite, cxxParserFindsStaticFunctionDeclaration) {
       "	return static_cast<int>(a) + 1;\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(
-      client->functions, L"static int ceil(float) (input.cc) <1:1 <1:1 <1:12 1:15> 1:24> 4:1>"));
+  EXPECT_THAT(client->functions, testing::Contains(testing::StrEq(L"static int ceil(float) (temp.cpp) <1:1 <1:1 <1:12 1:15> 1:24> 4:1>")));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMethodDeclaration) {
@@ -128,7 +134,7 @@ TEST(CxxParserTestSuite, cxxParserFindsMethodDeclaration) {
       "	B();\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->methods, L"public void B::B() <4:2 <4:2 4:2> 4:4>"));
+  EXPECT_THAT(client->methods, testing::Contains(testing::StrEq(L"public void B::B() <4:2 <4:2 4:2> 4:4>")));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsOverloadedOperatorDeclaration) {
@@ -193,7 +199,7 @@ TEST(CxxParserTestSuite, cxxParserFindsAnonymousNamespaceDeclaration) {
       "{\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (input.cc<1:1>) <1:1 <2:1 2:1> 3:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 3:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMultipleAnonymousNamespaceDeclarationsAsSameSymbol) {
@@ -205,9 +211,9 @@ TEST(CxxParserTestSuite, cxxParserFindsMultipleAnonymousNamespaceDeclarationsAsS
       "{\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (input.cc<1:1>) <1:1 <2:1 2:1> 3:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 3:1>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (input.cc<1:1>) <4:1 <5:1 5:1> 6:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <4:1 <5:1 5:1> 6:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMultipleNestedAnonymousNamespaceDeclarationsAsDifferentSymbol) {
@@ -219,11 +225,11 @@ TEST(CxxParserTestSuite, cxxParserFindsMultipleNestedAnonymousNamespaceDeclarati
       "	}\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (input.cc<1:1>) <1:1 <2:1 2:1> 6:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 6:1>"));
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(
       client->namespaces,
-      L"anonymous namespace (input.cc<1:1>)::anonymous namespace (input.cc<3:2>) <3:2 <4:2 4:2> "
+      L"anonymous namespace (temp.cpp<1:1>)::anonymous namespace (temp.cpp<3:2>) <3:2 <4:2 4:2> "
       L"5:2>"));
 }
 
@@ -245,12 +251,12 @@ TEST(CxxParserTestSuite, cxxParserFindsAnonymousNamespaceDeclarationsNestedInsid
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"a <1:1 <1:11 1:11> 6:1>"));
 
   EXPECT_TRUE(
-      utility::containsElement<std::wstring>(client->namespaces, L"a::anonymous namespace (input.cc<3:2>) <3:2 <4:2 4:2> 5:2>"));
+      utility::containsElement<std::wstring>(client->namespaces, L"a::anonymous namespace (temp.cpp<3:2>) <3:2 <4:2 4:2> 5:2>"));
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"b <7:1 <7:11 7:11> 12:1>"));
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(
-      client->namespaces, L"b::anonymous namespace (input.cc<9:2>) <9:2 <10:2 10:2> 11:2>"));
+      client->namespaces, L"b::anonymous namespace (temp.cpp<9:2>) <9:2 <10:2 10:2> 11:2>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsAnonymousNamespaceDeclarationsNestedInsideNamespacesWithSameNameAsSameSymbol) {
@@ -271,12 +277,12 @@ TEST(CxxParserTestSuite, cxxParserFindsAnonymousNamespaceDeclarationsNestedInsid
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"a <1:1 <1:11 1:11> 6:1>"));
 
   EXPECT_TRUE(
-      utility::containsElement<std::wstring>(client->namespaces, L"a::anonymous namespace (input.cc<3:2>) <3:2 <4:2 4:2> 5:2>"));
+      utility::containsElement<std::wstring>(client->namespaces, L"a::anonymous namespace (temp.cpp<3:2>) <3:2 <4:2 4:2> 5:2>"));
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"a <7:1 <7:11 7:11> 12:1>"));
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(
-      client->namespaces, L"a::anonymous namespace (input.cc<3:2>) <9:2 <10:2 10:2> 11:2>"));
+      client->namespaces, L"a::anonymous namespace (temp.cpp<3:2>) <9:2 <10:2 10:2> 11:2>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsAnonymousStructDeclaration) {
@@ -286,7 +292,7 @@ TEST(CxxParserTestSuite, cxxParserFindsAnonymousStructDeclaration) {
       "	int x;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->structs, L"anonymous struct (input.cc<1:9>) <1:9 <1:9 1:14> 4:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->structs, L"anonymous struct (temp.cpp<1:9>) <1:9 <1:9 1:14> 4:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMultipleAnonymousStructDeclarationsAsDistinctElements) {
@@ -313,7 +319,7 @@ TEST(CxxParserTestSuite, cxxParserFindsAnonymousUnionDeclaration) {
       "	float f;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->unions, L"anonymous union (input.cc<1:9>) <1:9 <1:9 1:13> 5:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->unions, L"anonymous union (temp.cpp<1:9>) <1:9 <1:9 1:13> 5:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNameOfAnonymousStructDeclaredInsideTypedef) {
@@ -448,7 +454,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypedefInAnonymousNamespace) {
       "	typedef unsigned int uint;\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->typedefs, L"anonymous namespace (input.cc<1:1>)::uint <3:23 3:26>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->typedefs, L"anonymous namespace (temp.cpp<1:1>)::uint <3:23 3:26>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeAliasInClass) {
@@ -478,7 +484,7 @@ TEST(CxxParserTestSuite, cxxParserFindsMacroUndefine) {
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"input.cc -> PI <1:8 1:9>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"temp.cpp -> PI <1:8 1:9>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMacroInIfdef) {
@@ -490,7 +496,7 @@ TEST(CxxParserTestSuite, cxxParserFindsMacroInIfdef) {
       "};\n"
       "#endif\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"input.cc -> PI <2:8 2:9>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"temp.cpp -> PI <2:8 2:9>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMacroInIfndef) {
@@ -502,7 +508,7 @@ TEST(CxxParserTestSuite, cxxParserFindsMacroInIfndef) {
       "};\n"
       "#endif\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"input.cc -> PI <2:9 2:10>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"temp.cpp -> PI <2:9 2:10>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMacroInIfdefined) {
@@ -514,7 +520,7 @@ TEST(CxxParserTestSuite, cxxParserFindsMacroInIfdefined) {
       "};\n"
       "#endif\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"input.cc -> PI <2:13 2:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"temp.cpp -> PI <2:13 2:14>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMacroExpand) {
@@ -525,7 +531,7 @@ TEST(CxxParserTestSuite, cxxParserFindsMacroExpand) {
       "double i = PI;"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"input.cc -> PI <4:12 4:13>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"temp.cpp -> PI <4:12 4:13>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMacroExpandWithinMacro) {
@@ -537,7 +543,7 @@ TEST(CxxParserTestSuite, cxxParserFindsMacroExpandWithinMacro) {
       "double i = TAU;"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"input.cc -> PI <2:18 2:19>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->macroUses, L"temp.cpp -> PI <2:18 2:19>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMacroDefineScope) {
@@ -553,7 +559,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfTemplate
       "template<class T>\n"
       "using MyType = int;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:16> <1:16 1:16>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:16> <1:16 1:16>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfClassTemplate) {
@@ -563,7 +569,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfClassTem
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <1:20 1:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <1:20 1:20>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfExplicitPartialClassTemplateSpecialization) {
@@ -577,9 +583,9 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfExplicit
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:20> <5:20 5:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:20> <5:20 5:20>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:20> <6:9 6:9>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:20> <6:9 6:9>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfVariableTemplate) {
@@ -587,7 +593,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfVariable
       "template <typename T>\n"
       "T v;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <1:20 1:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <1:20 1:20>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfExplicitPartialVariableTemplateSpecialization) {
@@ -598,9 +604,9 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfExplicit
       "template <typename R>\n"
       "int t<int, R> = 9;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:20> <4:20 4:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:20> <4:20 4:20>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:20> <5:12 5:12>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:20> <5:12 5:12>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinedWithClassKeyword) {
@@ -610,7 +616,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinedWithClassKeyw
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:17> <1:17 1:17>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:17> <1:17 1:17>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeIntTemplateParameterDefinitionOfTemplateClass) {
@@ -620,7 +626,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeIntTemplateParameterDefinitionOfTe
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:15> <1:15 1:15>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:15> <1:15 1:15>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeBoolTemplateParameterDefinitionOfTemplateClass) {
@@ -630,7 +636,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeBoolTemplateParameterDefinitionOfT
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:16> <1:16 1:16>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:16> <1:16 1:16>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomPointerTemplateParameterDefinitionOfTemplateClass) {
@@ -641,7 +647,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomPointerTemplateParameterDefi
       "class A\n"
       "{};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:14> <3:14 3:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:14> <3:14 3:14>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomReferenceTemplateParameterDefinitionOfTemplateClass) {
@@ -652,7 +658,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomReferenceTemplateParameterDe
       "class A\n"
       "{};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:14> <3:14 3:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:14> <3:14 3:14>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeTemplateParameterDefinitionThatDependsOnTypeTemplateParameterOfTemplateClass) {
@@ -661,10 +667,10 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeTemplateParameterDefinitionThatDep
       "class A\n"
       "{};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:28> <1:28 1:29>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:28> <1:28 1:29>"));
 
   // and usage
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <1:24 1:25>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <1:24 1:25>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeTemplateParameterDefinitionThatDependsOnTemplateTemplateParameterOfTemplateClass) {
@@ -673,9 +679,9 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeTemplateParameterDefinitionThatDep
       "class A\n"
       "{};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:49> <1:49 1:50>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:49> <1:49 1:50>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:36> <1:40 1:41>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:36> <1:40 1:41>"));
 }
 
 TEST(CxxParserTestSuite,
@@ -686,9 +692,9 @@ TEST(CxxParserTestSuite,
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:45> <1:45 1:45>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:45> <1:45 1:45>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:29> <1:32 1:32>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:29> <1:32 1:32>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTemplateArgumentOfDependentNonTypeTemplateParameter) {
@@ -735,7 +741,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTemplateTemplateParameterOfTemplateClass)
       "	B<A> ba;\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:36> <4:36 4:36>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:36> <4:36 4:36>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterPackTypeOfTemplateClass) {
@@ -745,7 +751,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterPackTypeOfTemplateCl
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:23> <1:23 1:23>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:23> <1:23 1:23>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeIntTemplateParameterPackTypeOfTemplateClass) {
@@ -755,7 +761,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeIntTemplateParameterPackTypeOfTemp
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:18> <1:18 1:18>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:18> <1:18 1:18>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTemplateTemplateParameterPackTypeOfTemplateClass) {
@@ -765,7 +771,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTemplateTemplateParameterPackTypeOfTempla
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:42> <1:42 1:42>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:42> <1:42 1:42>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParametersOfTemplateClassWithMultipleParameters) {
@@ -775,8 +781,8 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParametersOfTemplateClassWith
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <1:20 1:20>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:32> <1:32 1:32>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <1:20 1:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:32> <1:32 1:32>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserSkipsCreatingNodeForTemplateParameterWithoutAName) {
@@ -804,7 +810,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterOfTemplateMethodDefi
       "U A<T>::foo()\n"
       "{}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<8:20> <8:20 8:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<8:20> <8:20 8:20>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsExplicitClassTemplateSpecialization) {
@@ -883,7 +889,7 @@ TEST(CxxParserTestSuite, cxxParserFindsCorrectTypeOfFieldMemberOfTemplateClassIn
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"A<int> a -> int <6:3 6:5>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <4:2 4:2>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <4:2 4:2>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsCorrectMethodMemberNameOfTemplateClassInDeclaration) {
@@ -905,7 +911,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateParameterDefinitionOfTemplate
       "	return a;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <1:20 1:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <1:20 1:20>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeIntTemplateParameterDefinitionOfTemplateFunction) {
@@ -916,7 +922,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeIntTemplateParameterDefinitionOfTe
       "	return a + T;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:15> <1:15 1:15>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:15> <1:15 1:15>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeBoolTemplateParameterDefinitionOfTemplateFunction) {
@@ -927,7 +933,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeBoolTemplateParameterDefinitionOfT
       "	return T ? a : 0;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:16> <1:16 1:16>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:16> <1:16 1:16>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomPointerTemplateParameterDefinitionOfTemplateFunction) {
@@ -940,7 +946,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomPointerTemplateParameterDefi
       "	return a;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:14> <3:14 3:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:14> <3:14 3:14>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomReferenceTemplateParameterDefinitionOfTemplateFunction) {
@@ -953,7 +959,7 @@ TEST(CxxParserTestSuite, cxxParserFindsNonTypeCustomReferenceTemplateParameterDe
       "	return a;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:14> <3:14 3:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:14> <3:14 3:14>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTemplateTemplateParameterDefinitionOfTemplateFunction) {
@@ -967,7 +973,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTemplateTemplateParameterDefinitionOfTemp
       "	return a;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:36> <4:36 4:36>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:36> <4:36 4:36>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsFunctionForImplicitInstantiationOfTemplateFunction) {
@@ -1043,8 +1049,8 @@ TEST(CxxParserTestSuite, cxxParserFindsLocalVariableDeclaredInLambdaCapture) {
       "	[x(42)]() { return x; };\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:3> <3:3 3:3>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:3> <3:21 3:21>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:3> <3:3 3:3>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:3> <3:21 3:21>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsDefinitionOfLocalSymbolInFunctionParameterList) {
@@ -1053,7 +1059,7 @@ TEST(CxxParserTestSuite, cxxParserFindsDefinitionOfLocalSymbolInFunctionParamete
       "{\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:15> <1:15 1:15>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:15> <1:15 1:15>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsDefinitionOfLocalSymbolInFunctionScope) {
@@ -1063,7 +1069,7 @@ TEST(CxxParserTestSuite, cxxParserFindsDefinitionOfLocalSymbolInFunctionScope) {
       "	int a;\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:6> <3:6 3:6>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:6> <3:6 3:6>"));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1166,7 +1172,7 @@ TEST(CxxParserTestSuite, cxxParserFindsFunctionInAnonymousNamespace) {
       "}\n");
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(
-      client->functions, L"int anonymous namespace (input.cc<1:1>)::sum(int, int) <3:2 <3:6 3:8> 3:22>"));
+      client->functions, L"int anonymous namespace (temp.cpp<1:1>)::sum(int, int) <3:2 <3:6 3:8> 3:22>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMethodDeclaredInNestedClass) {
@@ -1394,7 +1400,7 @@ TEST(CxxParserTestSuite, cxxParserFindsCorrectFieldMemberTypeOfNestedTemplateCla
       "A<int> a;\n"
       "A<int>::B b;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <7:3 7:3>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <7:3 7:3>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"int A<int>::B::foo -> int <7:3 7:3>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"A<int> a -> A<int> <10:1 10:1>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"A<int> -> int <10:3 10:5>"));
@@ -1601,7 +1607,7 @@ TEST(CxxParserTestSuite, cxxParserFindsUsingDirectiveDeclInFunctionContext) {
 TEST(CxxParserTestSuite, cxxParserFindsUsingDirectiveDeclInFileContext) {
   std::shared_ptr<TestStorage> client = parseCode("using namespace std;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->usages, L"input.cc -> std <1:17 1:19>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->usages, L"temp.cpp -> std <1:17 1:19>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsUsingDeclInFunctionContext) {
@@ -1626,7 +1632,7 @@ TEST(CxxParserTestSuite, cxxParserFindsUsingDeclInFileContext) {
       "}\n"
       "using foo::a;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->usages, L"input.cc -> foo::a <5:12 5:12>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->usages, L"temp.cpp -> foo::a <5:12 5:12>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsCallInFunction) {
@@ -2056,8 +2062,8 @@ TEST(CxxParserTestSuite, cxxParserFindsUseOfDecayedParameterTypeInFunction) {
       "	VectorBase(T values[N]);\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:16> <5:13 5:13>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:32> <5:22 5:22>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:16> <5:13 5:13>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:32> <5:22 5:22>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserUsageOfInjectedTypeInMethodDeclaration) {
@@ -2200,11 +2206,11 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateParameterOfTemplateMemberV
       "template <typename T>\n"
       "const bool IsBaseType<T>::value;\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <1:20 1:20>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <1:20 1:20>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(    // TODO: fix FAIL because usage in name
                                                      // qualifier is not recorded
       client->localSymbols,
-      L"input.cc<5:20> <5:20 5:20>"));
+      L"temp.cpp<5:20> <5:20 5:20>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateParametersWithDifferentDepthOfTemplateFunction) {
@@ -2220,8 +2226,8 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateParametersWithDifferentDep
       "	}\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <7:3 7:3>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:21> <5:11 5:11>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <7:3 7:3>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:21> <5:11 5:11>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateParametersWithDifferentDepthOfPartialClassTemplateSpecialization) {
@@ -2242,8 +2248,8 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateParametersWithDifferentDep
       "	};\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <13:3 13:3>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<10:21> <13:9 13:9>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <13:3 13:3>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<10:21> <13:9 13:9>"));
 }
 
 TEST(CxxParserTestSuite,
@@ -2259,7 +2265,7 @@ TEST(CxxParserTestSuite,
       "	{}\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:36> <7:11 7:11>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:36> <7:11 7:11>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateTemplateParameterOfTemplateClassExplicitlyInstantiatedWithTemplateType) {
@@ -2275,7 +2281,7 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateTemplateParameterOfTemplat
       "	{}\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:36> <8:11 8:11>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:36> <8:11 8:11>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTypedefInOtherClassThatDependsOnOwnTemplateParameter) {
@@ -2312,7 +2318,7 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateParameterInQualifierOfOthe
       "	using f = typename find_if_impl<S>::template f<R::template f, Ts...>;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:20> <8:49 8:49>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:20> <8:49 8:49>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsUseOfDependentTemplateSpecializationType) {
@@ -2773,7 +2779,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTypeTemplateArgumentsOfExplicitPartialCla
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:20> <6:9 6:9>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:20> <6:9 6:9>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"A<typename T, int> -> int <6:12 6:14>"));
 }
 
@@ -2789,7 +2795,7 @@ TEST(CxxParserTestSuite,
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:15> <6:12 6:12>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:15> <6:12 6:12>"));
 }
 
 TEST(CxxParserTestSuite,
@@ -2804,7 +2810,7 @@ TEST(CxxParserTestSuite,
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:16> <6:15 6:15>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:16> <6:15 6:15>"));
 }
 
 TEST(CxxParserTestSuite,
@@ -2825,7 +2831,7 @@ TEST(CxxParserTestSuite,
       client->typeUses, L"A<&g_p, q> -> P g_p <8:10 8:12>"    // TODO: this is completely wrong?
                                                               // should be a normal usage
       ));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<7:14> <8:15 8:15>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<7:14> <8:15 8:15>"));
 }
 
 TEST(CxxParserTestSuite,
@@ -2843,7 +2849,7 @@ TEST(CxxParserTestSuite,
       "};\n");
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"A<g_p, q> -> P g_p <8:9 8:11>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<7:14> <8:14 8:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<7:14> <8:14 8:14>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTemplateArgumentForTemplateTemplateParameterOfExplicitPartialClassTemplateSpecialization) {
@@ -2861,7 +2867,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTemplateArgumentForTemplateTemplateParame
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(
       client->typeUses, L"B<A, template<typename> typename U> -> A<typename T> <8:9 8:9>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<7:36> <8:12 8:12>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<7:36> <8:12 8:12>"));
 }
 
 TEST(CxxParserTestSuite,
@@ -2876,7 +2882,7 @@ TEST(CxxParserTestSuite,
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:27> <6:16 6:17>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:27> <6:16 6:17>"));
 }
 
 TEST(CxxParserTestSuite,
@@ -2891,8 +2897,8 @@ TEST(CxxParserTestSuite,
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:36> <6:12 6:13>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<5:48> <6:16 6:17>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:36> <6:12 6:13>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<5:48> <6:16 6:17>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsImplicitTemplateClassSpecialization) {
@@ -2924,8 +2930,7 @@ TEST(CxxParserTestSuite, cxxParserFindsClassInheritanceFromImplicitTemplateClass
 }
 
 // TODO(Hussein): Fix the test case
-#if 0
-TEST(CxxParserTestSuite, record base class of implicit template class specialization")
+TEST(CxxParserTestSuite, DISABLED_recordBaseClassOfImplicitTemplateClassSpecialization)
 {
 	std::shared_ptr<TestStorage> client = parseCode(
 		"template<class T, unsigned int N>\n"
@@ -2938,10 +2943,8 @@ TEST(CxxParserTestSuite, record base class of implicit template class specializa
 		"\n"
 		"Vec2f v; \n");
 
-	EXPECT_TRUE(utility::containsElement<std::wstring>(
-		client->inheritances, L"Vector2<float> -> VectorBase<float, 2> <5:24 5:33>"));
+  EXPECT_THAT(client->inheritances, testing::Contains(testing::StrEq(L"Vector2<float> -> VectorBase<float, 2> <5:24 5:33>")));
 }
-#endif
 
 TEST(CxxParserTestSuite, cxxParserFindsTemplateClassSpecializationWithTemplateArgument) {
   std::shared_ptr<TestStorage> client = parseCode(
@@ -2956,7 +2959,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTemplateClassSpecializationWithTemplateAr
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<7:20> <8:19 8:19>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<7:20> <8:19 8:19>"));
   EXPECT_TRUE(client->inheritances.size() == 1);
   EXPECT_TRUE(client->classes.size() == 2);
   EXPECT_TRUE(client->fields.size() == 1);
@@ -3018,7 +3021,7 @@ TEST(CxxParserTestSuite, cxxParserFindsCorrectMethodReturnTypeOfTemplateClassInD
       "	T foo();\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<1:20> <4:2 4:2>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <4:2 4:2>"));
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->methods, L"private T A<typename T>::foo() <4:2 <4:4 4:6> 4:8>"));
 }
@@ -3254,7 +3257,7 @@ TEST(CxxParserTestSuite, cxxParserFindsLocalVariableInLambdaCapture) {
       "	[x]() { return 1; }();\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:6> <4:3 4:3>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:6> <4:3 4:3>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsUsageOfLocalVariableInMicrosoftInlineAssemblyStatement) {
@@ -3270,9 +3273,9 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfLocalVariableInMicrosoftInlineAsse
       "}\n",
       {L"--target=i686-pc-windows-msvc"});
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:6> <6:11 6:11>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:6> <6:11 6:11>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:6> <7:6 7:6>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:6> <7:6 7:6>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsTemplateArgumentOfUnresolvedLookupExpression) {
@@ -3288,7 +3291,7 @@ TEST(CxxParserTestSuite, cxxParserFindsTemplateArgumentOfUnresolvedLookupExpress
       "	a<MessageType>();\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<6:20> <9:4 9:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<6:20> <9:4 9:14>"));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3430,8 +3433,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesOfClassDecl) {
       "{\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:1> <2:1 2:1>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:1> <3:1 3:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:1> <2:1 2:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:1> <3:1 3:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsBracesOfNamespaceDecl) {
@@ -3440,8 +3443,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesOfNamespaceDecl) {
       "{\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:1> <2:1 2:1>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:1> <3:1 3:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:1> <2:1 2:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:1> <3:1 3:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsBracesOfFunctionDecl) {
@@ -3450,8 +3453,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesOfFunctionDecl) {
       "{\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:1> <2:1 2:1>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:1> <3:1 3:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:1> <2:1 2:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:1> <3:1 3:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsBracesOfMethodDecl) {
@@ -3462,8 +3465,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesOfMethodDecl) {
       "	App(int i) {}\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:13> <4:13 4:13>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:13> <4:14 4:14>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:13> <4:13 4:13>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:13> <4:14 4:14>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsBracesOfInitList) {
@@ -3471,8 +3474,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesOfInitList) {
       "int a = 0;\n"
       "int b[] = {a};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:11> <2:11 2:11>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<2:11> <2:13 2:13>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:11> <2:11 2:11>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<2:11> <2:13 2:13>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsBracesOfLambda) {
@@ -3482,8 +3485,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesOfLambda) {
       "	[](){}();\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:6> <3:6 3:6>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:6> <3:7 3:7>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:6> <3:6 3:6>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:6> <3:7 3:7>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsBracesOfAsmStmt) {
@@ -3497,8 +3500,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesOfAsmStmt) {
       "}\n",
       {L"--target=i686-pc-windows-msvc"});
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:2> <4:2 4:2>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<4:2> <6:2 6:2>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:2> <4:2 4:2>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<4:2> <6:2 6:2>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNoDuplicateBracesOfTemplateClassAndMethodDecl) {
@@ -3533,8 +3536,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesWithClosingBracketInMacro) {
       "CONSTANT(third, 3)\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:1> <3:1 3:1>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<3:1> <7:2 7:2>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:1> <3:1 3:1>"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<3:1> <7:2 7:2>"));
   // TS_ASSERT(utility::containsElement<std::wstring>(client->localSymbols, L"<0:0> <11:1
   // 11:1>")); // unwanted sideeffect
 
@@ -3550,8 +3553,8 @@ TEST(CxxParserTestSuite, cxxParserFindsBracesWithClosingBracketInMacro) {
       "CONSTANT(third, 3)\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<7:1> <7:1 7:1>"));
-  // TS_ASSERT(utility::containsElement<std::wstring>(client->localSymbols, L"input.cc<7:1> <10:1
+  EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<7:1> <7:1 7:1>"));
+  // TS_ASSERT(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<7:1> <10:1
   // 10:1>")); // missing TS_ASSERT(utility::containsElement<std::wstring>(client->localSymbols,
   // L"<0:0> <10:1 10:1>")); // unwanted sideeffect
 }
@@ -3624,5 +3627,5 @@ void _test_TEST() {
       "template <typename T>\n"
       "class C {};\n"
       "A<B> a;\n");
-  int ofo = 0;
+  [[maybe_unused]] int ofo = 0;
 }
