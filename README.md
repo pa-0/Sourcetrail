@@ -134,11 +134,11 @@ Building Sourcetrail requires several dependencies to be in place on your machin
 
 ### Required dependencies
 
-* __LLVM/Clang 11.0.0__
+* __LLVM/Clang 15.0.7__
     * __Reason__: Used for running the preprocessor on the indexed source code, building and traversing an Abstract Syntax Tree and generating error messages.
-    * __Building__: Make sure to check out the correct tag: `git checkout llvmorg-11.0.0`
-    * __Building for Windows__: Follow [these steps](https://clang.llvm.org/get_started.html) to build the project. Run the cmake command exactly as described.
-    * __Building for Unix__: Follow this [installation guide](http://clang.llvm.org/docs/LibASTMatchersTutorial.html) to build the project. Make sure to build with `-DLLVM_ENABLE_RTTI=ON`.
+    * __Building__: Make sure to check out the correct tag: `git checkout llvmorg-15.0.7`
+    * __Building for Windows__: Follow [these steps](https://clang.llvm.org/get_started.html) to build the project. Run the cmake command exactly as described. Make sure to build with `-DLLVM_ENABLE_PROJECTS:STRING=clang -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_TARGETS_TO_BUILD=host`.
+    * __Building for Unix__: Follow this [installation guide](http://clang.llvm.org/docs/LibASTMatchersTutorial.html) to build the project. Make sure to build with `-DLLVM_ENABLE_PROJECTS:STRING=clang -DLLVM_ENABLE_RTTI:BOOL=ON -DCLANG_LINK_CLANG_DYLIB:BOOL=ON -DLLVM_LINK_LLVM_DYLIB:BOOL=ON -DLLVM_TARGETS_TO_BUILD=host`.
 
 ### Building
 
@@ -149,7 +149,7 @@ Building Sourcetrail requires several dependencies to be in place on your machin
     ```
 * Build Sourcetrail as described [above](#building).
 
-## Enable Java Language Support
+## Enable Java Language Support **DEPRICATED**
 
 ### Required dependencies
 
@@ -176,7 +176,7 @@ Building Sourcetrail requires several dependencies to be in place on your machin
     ```
 * Build Sourcetrail as described [above](#building).
 
-## Enable Python Language Support
+## Enable Python Language Support  **DEPRICATED**
 
 ### Required Tools
 
@@ -234,7 +234,11 @@ Run `./setup/Linux/createPackages.sh` from the main directory, which creates bot
 
 # How to Run the Tests
 
-The automated test suite of Sourcetrail is powered by [Catch2](https://github.com/catchorg/Catch2). To run the tests, simply execute the `Sourcetrail_test` binary. Before executing, please make sure to set the working directory to `./bin/test`.
+The automated test suite of Sourcetrail is powered by [Catch2](https://github.com/catchorg/Catch2). To run the tests, simply execute the `ctest`.
+### Note:
+We currently moving to replace `CTest` with `GTest/GMock`
+
+
 
 
 # License
