@@ -57,6 +57,7 @@ foreach(test_name IN LISTS gtest_lib_names)
       GTest::gmock
       GTest::gtest
       GTest::gtest_main
+      lib::mocks
       Sourcetrail::core)
 
   set_target_properties(

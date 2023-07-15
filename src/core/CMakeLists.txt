@@ -6,12 +6,13 @@ target_sources(
   Sourcetrail_core
   PRIVATE
     ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FileInfo.cpp
-    ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FilePath.cpp
-    ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FileRegister.cpp
-    ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FileTree.cpp
     ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FileManager.cpp
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FilePath.cpp
     ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FilePathFilter.cpp
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FileRegister.cpp
     ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FileSystem.cpp
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/file/FileTree.cpp
+    ${CMAKE_SOURCE_DIR}/src/lib/utility/file/ScopedTemporaryFile.cpp
     ${CMAKE_SOURCE_DIR}/src/lib/utility/file/utilityFile.cpp
 
     ${CMAKE_SOURCE_DIR}/src/lib/utility/ConfigManager.cpp
