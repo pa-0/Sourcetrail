@@ -97,6 +97,7 @@ target_include_directories(
 target_link_libraries(
   Sourcetrail_lib_cxx
   PRIVATE
+    fmt::fmt
     Sourcetrail::core
     Sourcetrail::lib
     Sourcetrail::lib_utility

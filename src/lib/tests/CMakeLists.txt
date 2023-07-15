@@ -1,4 +1,6 @@
 # ${CMAKE_SOURCE_DIR}/src/lib/tests/CMakeLists.txt
+add_subdirectory(mocks)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
 add_library(

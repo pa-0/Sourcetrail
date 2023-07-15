@@ -48,8 +48,8 @@ std::shared_ptr<Task> createBuildPchTask(
 
 	utility::removeIncludePchFlag(compilerFlags);
 	compilerFlags.push_back(pchInputFilePath.wstr());
-	compilerFlags.push_back(L"-emit-pch");
-	compilerFlags.push_back(L"-o");
+	compilerFlags.emplace_back(L"-emit-pch");
+	compilerFlags.emplace_back(L"-o");
 	compilerFlags.push_back(pchOutputFilePath.wstr());
 
 	return std::make_shared<TaskLambda>(
@@ -87,7 +87,7 @@ std::shared_ptr<Task> createBuildPchTask(
 			CxxCompilationDatabaseSingle compilationDatabase(pchCommand);
 			clang::tooling::ClangTool tool(
 				compilationDatabase, {utility::encodeToUtf8(pchInputFilePath.wstr())});
-			GeneratePCHAction* action = new GeneratePCHAction(client, canonicalFilePathCache);
+			auto* action = new GeneratePCHAction(client, canonicalFilePathCache);
 
 			llvm::IntrusiveRefCntPtr<clang::DiagnosticOptions> options =
 				new clang::DiagnosticOptions();
@@ -107,7 +107,7 @@ std::shared_ptr<clang::tooling::JSONCompilationDatabase> loadCDB(
 {
 	if (cdbPath.empty() || !cdbPath.exists())
 	{
-		return std::shared_ptr<clang::tooling::JSONCompilationDatabase>();
+		return {};
 	}
 
 	std::string errorString;
@@ -118,7 +118,7 @@ std::shared_ptr<clang::tooling::JSONCompilationDatabase> loadCDB(
 				errorString,
 				clang::tooling::JSONCommandLineSyntax::AutoDetect));
 
-	if (error && !errorString.empty())
+	if ((error != nullptr) && !errorString.empty())
 	{
 		*error = errorString;
 	}
@@ -141,9 +141,9 @@ bool containsIncludePchFlags(std::shared_ptr<clang::tooling::JSONCompilationData
 bool containsIncludePchFlag(const std::vector<std::string>& args)
 {
 	const std::string includePchPrefix = "-include-pch";
-	for (size_t i = 0; i < args.size(); i++)
+	for (const auto & item : args)
 	{
-		const std::string arg = utility::trim(args[i]);
+		const auto arg = utility::trim(item);
 		if (utility::isPrefix(includePchPrefix, arg))
 		{
 			return true;
@@ -162,19 +162,19 @@ std::vector<std::wstring> getWithRemoveIncludePchFlag(const std::vector<std::wst
 void removeIncludePchFlag(std::vector<std::wstring>& args)
 {
 	const std::wstring includePchPrefix = L"-include-pch";
-	for (size_t i = 0; i < args.size(); i++)
+	for (size_t index = 0; index < args.size(); index++)
 	{
-		const std::wstring arg = utility::trim(args[i]);
+		const std::wstring arg = utility::trim(args[index]);
 		if (utility::isPrefix<std::wstring>(includePchPrefix, arg))
 		{
-			if (i + 1 < args.size() &&
-				!utility::isPrefix<std::wstring>(L"-", utility::trim(args[i + 1])) &&
+			if (index + 1 < args.size() &&
+				!utility::isPrefix<std::wstring>(L"-", utility::trim(args[index + 1])) &&
 				arg == includePchPrefix)
 			{
-				args.erase(args.begin() + i + 1);
+				args.erase(args.begin() + static_cast<long>(index) + 1);
 			}
-			args.erase(args.begin() + i);
-			i--;
+			args.erase(args.begin() + static_cast<long>(index));
+			index--;
 		}
 	}
 }
