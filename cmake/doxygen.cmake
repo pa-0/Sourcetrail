@@ -20,7 +20,7 @@ if(DOXYGEN_FOUND)
   configure_file(${DOXYGEN_HTML_IN} ${DOXYGEN_HTML_OUT} @ONLY)
 
   add_custom_target(
-    doxygen ALL
+    doxygen
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/docs/
     COMMENT "Generating API documentation with Doxygen")
