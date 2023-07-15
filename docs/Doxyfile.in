@@ -909,6 +909,7 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = @CMAKE_SOURCE_DIR@/src/lib         \
+                         @CMAKE_SOURCE_DIR@/src/lib_cxx     \
                          @CMAKE_SOURCE_DIR@/src/lib_gui     \
                          @CMAKE_SOURCE_DIR@/src/lib_utility \
                          @CMAKE_SOURCE_DIR@/DOCUMENTATION.md
@@ -1318,8 +1319,8 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  = @CMAKE_BINARY_DIR@/docs/doxygen-awesome-css-2.1.0/doxygen-awesome.css \
-                         @CMAKE_BINARY_DIR@/docs/doxygen-awesome-css-2.1.0/doxygen-awesome-sidebar-only-darkmode-toggle.css
+HTML_EXTRA_STYLESHEET  = @CMAKE_BINARY_DIR@/docs/html/doxygen-awesome-css-2.1.0/doxygen-awesome.css \
+                         @CMAKE_BINARY_DIR@/docs/html/doxygen-awesome-css-2.1.0/doxygen-awesome-sidebar-only-darkmode-toggle.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1329,7 +1330,7 @@ HTML_EXTRA_STYLESHEET  = @CMAKE_BINARY_DIR@/docs/doxygen-awesome-css-2.1.0/doxyg
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = @CMAKE_BINARY_DIR@/docs/doxygen-awesome-css-2.1.0/doxygen-awesome-darkmode-toggle.js
+HTML_EXTRA_FILES       = @CMAKE_BINARY_DIR@/docs/html/doxygen-awesome-css-2.1.0/doxygen-awesome-darkmode-toggle.js
 
 # The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
 # should be rendered with a dark or light theme. Default setting AUTO_LIGHT

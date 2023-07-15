@@ -9,9 +9,11 @@
   <meta name="generator" content="Doxygen $doxygenversion" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!--BEGIN PROJECT_NAME-->
-  <title>$projectname: $title</title><!--END PROJECT_NAME-->
+  <title>$projectname: $title</title>
+  <!--END PROJECT_NAME-->
   <!--BEGIN !PROJECT_NAME-->
-  <title>$title</title><!--END !PROJECT_NAME-->
+  <title>$title</title>
+  <!--END !PROJECT_NAME-->
   <link href="$relpath^tabs.css" rel="stylesheet" type="text/css" />
   <!--BEGIN DISABLE_INDEX-->
   <!--BEGIN FULL_SIDEBAR-->
@@ -20,7 +22,7 @@
   <!--END DISABLE_INDEX-->
   <script type="text/javascript" src="$relpath^jquery.js"></script>
   <script type="text/javascript" src="$relpath^dynsections.js"></script>
-  <script type="text/javascript" src="$relpath^doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="$relpath^doxygen-awesome-css-2.1.0/doxygen-awesome-darkmode-toggle.js"></script>
   <script type="text/javascript">
       DoxygenAwesomeDarkModeToggle.init()
   </script>
@@ -47,7 +49,7 @@
           <tbody>
             <tr id="projectrow">
               <!--BEGIN PROJECT_LOGO-->
-              <td id="projectlogo"><img alt="Logo" src="$relpath^$projectlogo" /></td>
+              <td id="projectlogo"><img alt="Logo" src="$relpath^$projectlogo" width="55" height="55"/></td>
               <!--END PROJECT_LOGO-->
               <!--BEGIN PROJECT_NAME-->
               <td id="projectalign">
