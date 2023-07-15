@@ -1,4 +1,5 @@
-#include <catch2/catch_all.hpp>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include "TextAccess.h"
 
@@ -21,117 +22,117 @@ std::string getTestText() {
 }    // namespace
 
 // NOLINTNEXTLINE(cert-err58-cpp)
-TEST_CASE("textAccessString constructor", "[core]") {
+TEST(TextAccess, textAccessStringConstructor) {
   std::string text = getTestText();
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
 
-  REQUIRE(textAccess.get() != nullptr);
+  EXPECT_TRUE(textAccess.get() != nullptr);
 }
 
-TEST_CASE("textAccessString lines count", "[core]") {
+TEST(TextAccess, textAccessStringLinesCount) {
   std::string text = getTestText();
   const unsigned int lineCount = 8;
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
 
-  REQUIRE(textAccess->getLineCount() == lineCount);
+  EXPECT_TRUE(textAccess->getLineCount() == lineCount);
 }
 
-TEST_CASE("textAccessString lines content", "[core]") {
+TEST(TextAccess, textAccessStringLinesContent) {
   std::string text = getTestText();
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
   std::vector<std::string> lines = textAccess->getLines(1, 4);
 
-  REQUIRE(lines.size() == 4);
-  REQUIRE(lines[0] == "\"But the plans were on display . . .\"\n");
-  REQUIRE(lines[1] == "\"On display? I eventually had to go down to the cellar to find them.\"\n");
-  REQUIRE(lines[2] == "\"That's the display department.\"\n");
-  REQUIRE(lines[3] == "\"With a torch.\"\n");
+  EXPECT_TRUE(lines.size() == 4);
+  EXPECT_TRUE(lines[0] == "\"But the plans were on display . . .\"\n");
+  EXPECT_TRUE(lines[1] == "\"On display? I eventually had to go down to the cellar to find them.\"\n");
+  EXPECT_TRUE(lines[2] == "\"That's the display department.\"\n");
+  EXPECT_TRUE(lines[3] == "\"With a torch.\"\n");
 }
 
-TEST_CASE("textAccessString lines content error handling", "[core]") {
+TEST(TextAccess, textAccessStringLinesContentErrorHandling) {
   std::string text = getTestText();
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
   std::vector<std::string> lines = textAccess->getLines(3, 2);
 
-  REQUIRE(lines.empty());
+  EXPECT_TRUE(lines.empty());
 
   lines = textAccess->getLines(10, 3);
 
-  REQUIRE(lines.empty());
+  EXPECT_TRUE(lines.empty());
 
   lines = textAccess->getLines(1, 10);
 
-  REQUIRE(lines.empty());
+  EXPECT_TRUE(lines.empty());
 
   std::string line = textAccess->getLine(0);
 
-  REQUIRE(line.empty());
+  EXPECT_TRUE(line.empty());
 
   lines = textAccess->getLines(0, 2);
 
-  REQUIRE(line.empty());
+  EXPECT_TRUE(line.empty());
 }
 
-TEST_CASE("textAccessString single line content", "[core]") {
+TEST(TextAccess, TextAccessStringSingleLineContent) {
   std::string text = getTestText();
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
   const std::string line = textAccess->getLine(6);
 
-  REQUIRE(line == "\"So had the stairs.\"\n");
+  EXPECT_TRUE(line == "\"So had the stairs.\"\n");
 }
 
-TEST_CASE("textAccessString all lines", "[core]") {
+TEST(TextAccess, textAccessStringAllLines) {
   std::string text = getTestText();
   const unsigned int lineCount = 8;
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
   std::vector<std::string> lines = textAccess->getAllLines();
 
-  REQUIRE(lines.size() == lineCount);
+  EXPECT_TRUE(lines.size() == lineCount);
 }
 
-TEST_CASE("textAccessFile constructor", "[core]") {
+TEST(TextAccess, textAccessFileConstructor) {
   FilePath filePath(L"data/TextAccessTestSuite/text.txt");
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
 
-  REQUIRE(textAccess.get() != nullptr);
+  EXPECT_TRUE(textAccess.get() != nullptr);
 }
 
-TEST_CASE("textAccessFile lines count", "[core]") {
+TEST(TextAccess, textAccessFileLinesCount) {
   FilePath filePath(L"data/TextAccessTestSuite/text.txt");
   const unsigned int lineCount = 7;
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
 
-  REQUIRE(textAccess->getLineCount() == lineCount);
+  EXPECT_TRUE(textAccess->getLineCount() == lineCount);
 }
 
-TEST_CASE("textAccessFile lines content", "[core]") {
+TEST(TextAccess, textAccessFileLinesContent) {
   FilePath filePath(L"data/TextAccessTestSuite/text.txt");
 
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
   std::vector<std::string> lines = textAccess->getLines(1, 4);
 
-  REQUIRE(lines.size() == 4);
-  REQUIRE(lines[0] ==
-          "\"If you're a researcher on this book thing and you were on Earth, you must have been "
-          "gathering material on it.\"\n");
-  REQUIRE(lines[1] == "\"Well, I was able to extend the original entry a bit, yes.\"\n");
-  REQUIRE(lines[2] == "\"Let me see what it says in this edition, then. I've got to see it.\"\n");
-  REQUIRE(lines[3] ==
-          "... \"What? Harmless! Is that all it's got to say? Harmless! One word! ... Well, for "
-          "God's sake I hope you managed to rectify that a bit.\"\n");
+  EXPECT_TRUE(lines.size() == 4);
+  EXPECT_TRUE(lines[0] ==
+              "\"If you're a researcher on this book thing and you were on Earth, you must have been "
+              "gathering material on it.\"\n");
+  EXPECT_TRUE(lines[1] == "\"Well, I was able to extend the original entry a bit, yes.\"\n");
+  EXPECT_TRUE(lines[2] == "\"Let me see what it says in this edition, then. I've got to see it.\"\n");
+  EXPECT_TRUE(lines[3] ==
+              "... \"What? Harmless! Is that all it's got to say? Harmless! One word! ... Well, for "
+              "God's sake I hope you managed to rectify that a bit.\"\n");
 }
 
-TEST_CASE("textAccessFile get filePath", "[core]") {
+TEST(TextAccess, textAccessFileGetFilePath) {
   FilePath filePath(L"data/TextAccessTestSuite/text.txt");
   std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
 
-  REQUIRE(textAccess->getFilePath() == filePath);
+  EXPECT_TRUE(textAccess->getFilePath() == filePath);
 }

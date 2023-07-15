@@ -6,9 +6,7 @@ set(
   FilePathTestSuite
   FileSystemTestSuite
 
-  ConfigManagerTestSuite
-
-  TextAccessTestSuite)
+  ConfigManagerTestSuite)
 
 foreach(test_name IN LISTS test_lib_names)
   add_executable(${test_name} ${test_name}.cpp)
@@ -46,7 +44,9 @@ target_link_libraries(
     PRIVATE
       Sourcetrail::lib_utility)
 
-set(gtest_lib_names LoggerTestSuite)
+set(gtest_lib_names
+    LoggerTestSuite
+    TextAccessTestSuite)
 
 foreach(test_name IN LISTS gtest_lib_names)
   add_executable(${test_name} ${test_name}.cpp)
