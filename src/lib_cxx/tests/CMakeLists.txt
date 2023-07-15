@@ -1,7 +1,8 @@
 # ${CMAKE_SOURCE_DIR}/src/lib_cxx/tests/CMakeLists.txt
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
-set(test_cxx_names "")
+set(test_cxx_names
+      CompilationDatabaseTestSuite)
 
 foreach(test_name IN LISTS test_cxx_names)
   add_executable(${test_name} ${test_name}.cpp)
@@ -10,6 +11,7 @@ foreach(test_name IN LISTS test_cxx_names)
     ${test_name}
     PUBLIC
     testHelper
+    lib::mocks
     GTest::gtest
     GTest::gtest_main
     Sourcetrail::lib
