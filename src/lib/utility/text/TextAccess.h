@@ -1,5 +1,4 @@
-#ifndef TEXT_ACCESS_H
-#define TEXT_ACCESS_H
+#pragma once
 
 #include <memory>
 #include <string>
@@ -7,48 +6,47 @@
 
 #include "FilePath.h"
 
-class TextAccess
-{
+class TextAccess final {
 public:
-	static std::shared_ptr<TextAccess> createFromFile(const FilePath& filePath);
-	static std::shared_ptr<TextAccess> createFromString(
-		const std::string& text, const FilePath& filePath = FilePath());
-	static std::shared_ptr<TextAccess> createFromLines(
-		const std::vector<std::string>& lines, const FilePath& filePath = FilePath());
+  static std::shared_ptr<TextAccess> createFromFile(const FilePath& filePath);
+  static std::shared_ptr<TextAccess> createFromString(const std::string& text, const FilePath& filePath = FilePath());
+  static std::shared_ptr<TextAccess> createFromLines(const std::vector<std::string>& lines, const FilePath& filePath = FilePath());
 
-	virtual ~TextAccess() = default;
+  TextAccess(const TextAccess&) = delete;
+  TextAccess& operator=(const TextAccess&) = delete;
 
-	unsigned int getLineCount() const;
-	bool isEmpty() const;
+  ~TextAccess();
 
-	FilePath getFilePath() const;
+  [[nodiscard]] uint32_t getLineCount() const;
 
-	/**
-	 * @param lineNumber: starts with 1
-	 */
-	std::string getLine(const unsigned int lineNumber) const;
-	/**
-	 * @param firstLineNumber: starts with 1
-	 * @param lastLineNumber: starts with 1
-	 */
-	std::vector<std::string> getLines(
-		const unsigned int firstLineNumber, const unsigned int lastLineNumber);
-	const std::vector<std::string>& getAllLines() const;
-	std::string getText() const;
+  [[nodiscard]] bool isEmpty() const;
+
+  [[nodiscard]] FilePath getFilePath() const;
+
+  /**
+   * @param lineNumber: starts with 1
+   */
+  [[nodiscard]] std::string getLine(const uint32_t lineNumber) const;
+
+  /**
+   * @param firstLineNumber: starts with 1
+   * @param lastLineNumber: starts with 1
+   */
+  std::vector<std::string> getLines(const uint32_t firstLineNumber, const uint32_t lastLineNumber);
+
+  const std::vector<std::string>& getAllLines() const;
+
+  [[nodiscard]] std::string getText() const;
 
 private:
-	static std::vector<std::string> readFile(const FilePath& filePath);
-	static std::vector<std::string> splitStringByLines(const std::string& text);
+  static std::vector<std::string> readFile(const FilePath& filePath);
+  static std::vector<std::string> splitStringByLines(const std::string& text);
 
-	TextAccess();
-	TextAccess(const TextAccess&);
-	TextAccess operator=(const TextAccess&);
+  TextAccess();
 
-	bool checkIndexInRange(const unsigned int index) const;
-	bool checkIndexIntervalInRange(const unsigned int firstIndex, const unsigned int lastIndex) const;
+  bool checkIndexInRange(const uint32_t index) const;
+  bool checkIndexIntervalInRange(const uint32_t firstIndex, const uint32_t lastIndex) const;
 
-	FilePath m_filePath;
-	std::vector<std::string> m_lines;
+  FilePath m_filePath;
+  std::vector<std::string> m_lines;
 };
-
-#endif	  // TEXT_ACCESS_H

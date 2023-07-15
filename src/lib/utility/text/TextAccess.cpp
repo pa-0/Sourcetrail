@@ -1,7 +1,7 @@
 #include "TextAccess.h"
-// STL
+
 #include <fstream>
-// internal
+
 #include "logging.h"
 
 namespace {
@@ -49,8 +49,7 @@ std::shared_ptr<TextAccess> TextAccess::createFromFile(const FilePath& filePath)
   return result;
 }
 
-std::shared_ptr<TextAccess> TextAccess::createFromString(const std::string& text,
-                                                         const FilePath& filePath) {
+std::shared_ptr<TextAccess> TextAccess::createFromString(const std::string& text, const FilePath& filePath) {
   std::shared_ptr<TextAccess> result(new TextAccess());
 
   result->m_lines = splitStringByLines(text);
@@ -59,8 +58,7 @@ std::shared_ptr<TextAccess> TextAccess::createFromString(const std::string& text
   return result;
 }
 
-std::shared_ptr<TextAccess> TextAccess::createFromLines(const std::vector<std::string>& lines,
-                                                        const FilePath& filePath) {
+std::shared_ptr<TextAccess> TextAccess::createFromLines(const std::vector<std::string>& lines, const FilePath& filePath) {
   std::shared_ptr<TextAccess> result(new TextAccess());
 
   result->m_lines = lines;
@@ -69,8 +67,10 @@ std::shared_ptr<TextAccess> TextAccess::createFromLines(const std::vector<std::s
   return result;
 }
 
-unsigned int TextAccess::getLineCount() const {
-  return static_cast<unsigned int>(m_lines.size());
+TextAccess::~TextAccess() = default;
+
+uint32_t TextAccess::getLineCount() const {
+  return static_cast<uint32_t>(m_lines.size());
 }
 
 bool TextAccess::isEmpty() const {
@@ -81,7 +81,7 @@ FilePath TextAccess::getFilePath() const {
   return m_filePath;
 }
 
-std::string TextAccess::getLine(const unsigned int lineNumber) const {
+std::string TextAccess::getLine(const uint32_t lineNumber) const {
   if(!checkIndexInRange(lineNumber)) {
     return "";
   }
@@ -89,8 +89,7 @@ std::string TextAccess::getLine(const unsigned int lineNumber) const {
   return m_lines[lineNumber - 1];    // -1 to correct for use as index
 }
 
-std::vector<std::string> TextAccess::getLines(const unsigned int firstLineNumber,
-                                              const unsigned int lastLineNumber) {
+std::vector<std::string> TextAccess::getLines(const uint32_t firstLineNumber, const uint32_t lastLineNumber) {
   if(!checkIndexIntervalInRange(firstLineNumber, lastLineNumber)) {
     return {};
   }
@@ -134,8 +133,7 @@ std::vector<std::string> TextAccess::readFile(const FilePath& filePath) {
 
     srcFile.close();
   } catch(std::exception& e) {
-    LOG_ERROR_STREAM(<< "Exception thrown while reading file \"" << filePath.str()
-                     << "\": " << e.what());
+    LOG_ERROR_STREAM(<< "Exception thrown while reading file \"" << filePath.str() << "\": " << e.what());
     result.clear();
   } catch(...) {
     LOG_ERROR_STREAM(<< "Unknown exception thrown while reading file \"" << filePath.str() << "\"");
@@ -172,28 +170,25 @@ std::vector<std::string> TextAccess::splitStringByLines(const std::string& text)
   return result;
 }
 
-TextAccess::TextAccess() : m_filePath(L"") {}
+TextAccess::TextAccess() = default;
 
-bool TextAccess::checkIndexInRange(const unsigned int index) const {
+bool TextAccess::checkIndexInRange(const uint32_t index) const {
   if(index < 1) {
     LOG_WARNING_STREAM(<< "Line numbers start with one, is " << index);
     return false;
   } else if(index > m_lines.size()) {
-    LOG_WARNING_STREAM(<< "Tried to access index " << index << ". Maximum index is "
-                       << m_lines.size());
+    LOG_WARNING_STREAM(<< "Tried to access index " << index << ". Maximum index is " << m_lines.size());
     return false;
   }
 
   return true;
 }
 
-bool TextAccess::checkIndexIntervalInRange(const unsigned int firstIndex,
-                                           const unsigned int lastIndex) const {
+bool TextAccess::checkIndexIntervalInRange(const uint32_t firstIndex, const uint32_t lastIndex) const {
   if(!checkIndexInRange(firstIndex) || !checkIndexInRange(lastIndex)) {
     return false;
   } else if(firstIndex > lastIndex) {
-    LOG_WARNING_STREAM(<< "Index 'firstLine' has to be lower or equal index 'lastLine', is "
-                       << firstIndex << " > " << lastIndex);
+    LOG_WARNING_STREAM(<< "Index 'firstLine' has to be lower or equal index 'lastLine', is " << firstIndex << " > " << lastIndex);
     return false;
   }
 

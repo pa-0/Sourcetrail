@@ -1,6 +1,5 @@
-// STL
 #include <catch2/catch_all.hpp>
-// internal
+
 #include "TextAccess.h"
 
 namespace {
