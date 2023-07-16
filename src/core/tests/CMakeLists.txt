@@ -60,13 +60,9 @@ foreach(test_name IN LISTS gtest_lib_names)
       lib::mocks
       Sourcetrail::core)
 
-  set_target_properties(
-    ${test_name}
-    PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
-
   gtest_discover_tests(
     ${test_name}
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/"
     TEST_PREFIX "unittests.")
 endforeach()
 

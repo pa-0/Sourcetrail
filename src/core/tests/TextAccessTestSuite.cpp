@@ -4,6 +4,7 @@
 #include "TextAccess.h"
 
 namespace {
+
 std::string getTestText() {
   std::string text =
       "\"But the plans were on display . . .\"\n"
@@ -19,44 +20,43 @@ std::string getTestText() {
 
   return text;
 }
+
 }    // namespace
 
-// NOLINTNEXTLINE(cert-err58-cpp)
 TEST(TextAccess, textAccessStringConstructor) {
-  std::string text = getTestText();
-
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
+  const auto text = getTestText();
+  const auto textAccess = TextAccess::createFromString(text);
 
   EXPECT_TRUE(textAccess.get() != nullptr);
 }
 
 TEST(TextAccess, textAccessStringLinesCount) {
-  std::string text = getTestText();
-  const unsigned int lineCount = 8;
+  const auto text = getTestText();
+  constexpr uint32_t lineCount = 8;
 
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
+  const auto textAccess = TextAccess::createFromString(text);
 
-  EXPECT_TRUE(textAccess->getLineCount() == lineCount);
+  EXPECT_EQ(textAccess->getLineCount(), lineCount);
 }
 
 TEST(TextAccess, textAccessStringLinesContent) {
-  std::string text = getTestText();
+  const auto text = getTestText();
 
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
-  std::vector<std::string> lines = textAccess->getLines(1, 4);
+  const auto textAccess = TextAccess::createFromString(text);
+  const auto lines = textAccess->getLines(1, 4);
 
-  EXPECT_TRUE(lines.size() == 4);
-  EXPECT_TRUE(lines[0] == "\"But the plans were on display . . .\"\n");
-  EXPECT_TRUE(lines[1] == "\"On display? I eventually had to go down to the cellar to find them.\"\n");
-  EXPECT_TRUE(lines[2] == "\"That's the display department.\"\n");
-  EXPECT_TRUE(lines[3] == "\"With a torch.\"\n");
+  ASSERT_EQ(4, lines.size());
+  EXPECT_THAT(lines[0], testing::StrEq("\"But the plans were on display . . .\"\n"));
+  EXPECT_THAT(lines[1], testing::StrEq("\"On display? I eventually had to go down to the cellar to find them.\"\n"));
+  EXPECT_THAT(lines[2], testing::StrEq("\"That's the display department.\"\n"));
+  EXPECT_THAT(lines[3], testing::StrEq("\"With a torch.\"\n"));
 }
 
 TEST(TextAccess, textAccessStringLinesContentErrorHandling) {
-  std::string text = getTestText();
+  const auto text = getTestText();
 
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
-  std::vector<std::string> lines = textAccess->getLines(3, 2);
+  const auto textAccess = TextAccess::createFromString(text);
+  auto lines = textAccess->getLines(3, 2);
 
   EXPECT_TRUE(lines.empty());
 
@@ -68,71 +68,63 @@ TEST(TextAccess, textAccessStringLinesContentErrorHandling) {
 
   EXPECT_TRUE(lines.empty());
 
-  std::string line = textAccess->getLine(0);
+  const auto line = textAccess->getLine(0);
 
   EXPECT_TRUE(line.empty());
 
   lines = textAccess->getLines(0, 2);
 
-  EXPECT_TRUE(line.empty());
+  EXPECT_TRUE(lines.empty());
 }
 
 TEST(TextAccess, TextAccessStringSingleLineContent) {
-  std::string text = getTestText();
+  const auto text = getTestText();
 
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
-  const std::string line = textAccess->getLine(6);
+  const auto textAccess = TextAccess::createFromString(text);
+  const auto line = textAccess->getLine(6);
 
-  EXPECT_TRUE(line == "\"So had the stairs.\"\n");
+  EXPECT_THAT(line, testing::StrEq("\"So had the stairs.\"\n"));
 }
 
 TEST(TextAccess, textAccessStringAllLines) {
-  std::string text = getTestText();
-  const unsigned int lineCount = 8;
+  const auto text = getTestText();
+  constexpr uint32_t lineCount = 8;
 
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromString(text);
-  std::vector<std::string> lines = textAccess->getAllLines();
+  const auto textAccess = TextAccess::createFromString(text);
+  const auto lines = textAccess->getAllLines();
 
-  EXPECT_TRUE(lines.size() == lineCount);
+  EXPECT_EQ(lineCount, lines.size());
 }
 
-TEST(TextAccess, textAccessFileConstructor) {
-  FilePath filePath(L"data/TextAccessTestSuite/text.txt");
+class TextAccessFix : public testing::Test {
+public:
+  void SetUp() override {
+    ASSERT_TRUE(filePath.exists());
+    mTextAccess = TextAccess::createFromFile(filePath);
+    ASSERT_TRUE(mTextAccess.get() != nullptr);
+  }
 
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
+  void TearDown() override {}
 
-  EXPECT_TRUE(textAccess.get() != nullptr);
-}
+  FilePath filePath = FilePath {L"data/TextAccessTestSuite/text.txt"};
+  std::shared_ptr<TextAccess> mTextAccess;
+};
 
-TEST(TextAccess, textAccessFileLinesCount) {
-  FilePath filePath(L"data/TextAccessTestSuite/text.txt");
-  const unsigned int lineCount = 7;
+TEST_F(TextAccessFix, textAccessFileLinesCount) {
+  constexpr uint32_t lineCount = 7;
+  EXPECT_EQ(lineCount, mTextAccess->getLineCount());
 
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
+  const auto lines = mTextAccess->getLines(1, 4);
 
-  EXPECT_TRUE(textAccess->getLineCount() == lineCount);
-}
+  ASSERT_EQ(4, lines.size());
+  EXPECT_THAT(lines[0],
+              testing::StrEq("\"If you're a researcher on this book thing and you were on Earth, you must have been "
+                             "gathering material on it.\"\n"));
+  EXPECT_THAT(lines[1], testing::StrEq("\"Well, I was able to extend the original entry a bit, yes.\"\n"));
+  EXPECT_THAT(lines[2], testing::StrEq("\"Let me see what it says in this edition, then. I've got to see it.\"\n"));
+  EXPECT_THAT(lines[3],
+              testing::StrEq("... \"What? Harmless! Is that all it's got to say? Harmless! One word! ... Well, for "
+                             "God's sake I hope you managed to rectify that a bit.\"\n"));
 
-TEST(TextAccess, textAccessFileLinesContent) {
-  FilePath filePath(L"data/TextAccessTestSuite/text.txt");
-
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
-  std::vector<std::string> lines = textAccess->getLines(1, 4);
-
-  EXPECT_TRUE(lines.size() == 4);
-  EXPECT_TRUE(lines[0] ==
-              "\"If you're a researcher on this book thing and you were on Earth, you must have been "
-              "gathering material on it.\"\n");
-  EXPECT_TRUE(lines[1] == "\"Well, I was able to extend the original entry a bit, yes.\"\n");
-  EXPECT_TRUE(lines[2] == "\"Let me see what it says in this edition, then. I've got to see it.\"\n");
-  EXPECT_TRUE(lines[3] ==
-              "... \"What? Harmless! Is that all it's got to say? Harmless! One word! ... Well, for "
-              "God's sake I hope you managed to rectify that a bit.\"\n");
-}
-
-TEST(TextAccess, textAccessFileGetFilePath) {
-  FilePath filePath(L"data/TextAccessTestSuite/text.txt");
-  std::shared_ptr<TextAccess> textAccess = TextAccess::createFromFile(filePath);
-
-  EXPECT_TRUE(textAccess->getFilePath() == filePath);
+  EXPECT_EQ(mTextAccess->getFilePath(), filePath);
 }
