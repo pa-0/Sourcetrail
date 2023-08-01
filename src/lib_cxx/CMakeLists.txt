@@ -94,6 +94,46 @@ target_include_directories(
     ${CLANG_INCLUDE_DIRS}
     ${EXTERNAL_INCLUDE_PATHS})
 
+if(LLVM_LINK_LLVM_DYLIB)
+  set(REQ_LLVM_LIBS LLVM)
+else()
+  llvm_map_components_to_libnames(REQ_LLVM_LIBS support core libdriver passes option)
+  foreach(LLVM_TARGET IN LISTS LLVM_TARGETS_TO_BUILD)
+    get_property(lib_deps GLOBAL PROPERTY "LLVMBUILD_LIB_DEPS_LLVM${LLVM_TARGET}CodeGen")
+    list(APPEND REQ_LLVM_LIBS "LLVM${LLVM_TARGET}CodeGen")
+    list(APPEND REQ_LLVM_LIBS "${lib_deps}")
+    get_property(lib_deps GLOBAL PROPERTY "LLVMBUILD_LIB_DEPS_LLVM${LLVM_TARGET}AsmParser")
+    if(NOT "${lib_deps}" STREQUAL "")
+      list(APPEND REQ_LLVM_LIBS "LLVM${LLVM_TARGET}AsmParser")
+      list(APPEND REQ_LLVM_LIBS "${lib_deps}")
+    endif()
+  endforeach()
+  list(APPEND REQ_LLVM_LIBS "LLVMX86AsmParser")
+endif()
+
+# Should be CLANG_LINK_CLANG_DYLIB in future LLVM release
+if(LLVM_LINK_LLVM_DYLIB)
+  set(CLANG_LIBRARIES clang-cpp)
+else()
+  set(CLANG_LIBRARIES
+      clangASTMatchers
+      clangFrontend
+      clangSerialization
+      clangDriver
+      clangTooling
+      clangParse
+      clangSema
+      clangStaticAnalyzerFrontend
+      clangStaticAnalyzerCheckers
+      clangStaticAnalyzerCore
+      clangAnalysis
+      clangRewriteFrontend
+      clangEdit
+      clangAST
+      clangLex
+      clangBasic)
+endif()
+
 target_link_libraries(
   Sourcetrail_lib_cxx
   PRIVATE
@@ -102,8 +142,8 @@ target_link_libraries(
     Sourcetrail::lib
     Sourcetrail::lib_utility
     Sourcetrail::scheduling
-    clang-cpp
-    LLVM
+    ${REQ_LLVM_LIBS}
+    ${CLANG_LIBRARIES}
     TinyXML::TinyXML
     Qt5::Core)
 
