@@ -183,6 +183,9 @@ add_files(
   qt/project_wizard/QtProjectWizardWindow.cpp
   qt/project_wizard/QtProjectWizardWindow.h
 
+  qt/project_wizard/content/path/ProjectWizardModel.hpp
+  qt/project_wizard/content/path/ProjectWizardModel.cpp
+
   qt/utility/compatibilityQt.cpp
   qt/utility/compatibilityQt.h
   qt/utility/QtContextMenu.cpp

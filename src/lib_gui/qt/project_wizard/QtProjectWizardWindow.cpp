@@ -9,7 +9,9 @@
 #include "utilityQt.h"
 
 QtProjectWizardWindow::QtProjectWizardWindow(QWidget* pParent, bool showSeparator)
-    : QtWindow(false, pParent), m_content(nullptr), m_showSeparator(showSeparator) {}
+    : QtWindow(false, pParent)
+    , m_content(nullptr)
+    , m_showSeparator(showSeparator) {}
 
 QSize QtProjectWizardWindow::sizeHint() const {
   if(m_preferredSize.width() <= 1) {

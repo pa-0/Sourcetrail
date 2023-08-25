@@ -11,6 +11,8 @@
 // internal
 #include "MessageLoadProject.h"
 #include "MessageStatus.h"
+#include "ProjectSettings.h"
+#include "ProjectWizardModel.hpp"
 #include "QtProjectWizardContent.h"
 #include "QtProjectWizardContentCustomCommand.h"
 #include "QtProjectWizardContentExtensions.h"
@@ -60,16 +62,14 @@ namespace {
 
 bool applicationSettingsContainVisualStudioHeaderSearchPaths() {
   std::vector<FilePath> expandedPaths;
-  const std::shared_ptr<CombinedPathDetector> headerPathDetector =
-      utility::getCxxVsHeaderPathDetector();
+  const std::shared_ptr<CombinedPathDetector> headerPathDetector = utility::getCxxVsHeaderPathDetector();
   for(const std::string& detectorName : headerPathDetector->getWorkingDetectorNames()) {
     for(const FilePath& path : headerPathDetector->getPathsForDetector(detectorName)) {
       utility::append(expandedPaths, path.expandEnvironmentVariables());
     }
   }
 
-  std::vector<FilePath> usedExpandedGlobalHeaderSearchPaths =
-      ApplicationSettings::getInstance()->getHeaderSearchPathsExpanded();
+  std::vector<FilePath> usedExpandedGlobalHeaderSearchPaths = ApplicationSettings::getInstance()->getHeaderSearchPathsExpanded();
   for(const FilePath& usedExpandedPath : usedExpandedGlobalHeaderSearchPaths) {
     for(const FilePath& expandedPath : expandedPaths) {
       if(expandedPath == usedExpandedPath) {
@@ -81,8 +81,7 @@ bool applicationSettingsContainVisualStudioHeaderSearchPaths() {
   return false;
 }
 
-void addMsvcCompatibilityFlagsOnDemand(
-    std::shared_ptr<SourceGroupSettingsWithCxxPathsAndFlags> settings) {
+void addMsvcCompatibilityFlagsOnDemand(std::shared_ptr<SourceGroupSettingsWithCxxPathsAndFlags> settings) {
   if(applicationSettingsContainVisualStudioHeaderSearchPaths()) {
     std::vector<std::wstring> flags = settings->getCompilerFlags();
     flags.push_back(L"-fms-extensions");
@@ -130,10 +129,9 @@ void addSourceGroupContents<SourceGroupSettingsCEmpty>(QtProjectWizardContentGro
 }
 
 template <>
-void addSourceGroupContents<SourceGroupSettingsCppEmpty>(
-    QtProjectWizardContentGroup* group,
-    std::shared_ptr<SourceGroupSettingsCppEmpty> settings,
-    QtProjectWizardWindow* window) {
+void addSourceGroupContents<SourceGroupSettingsCppEmpty>(QtProjectWizardContentGroup* group,
+                                                         std::shared_ptr<SourceGroupSettingsCppEmpty> settings,
+                                                         QtProjectWizardWindow* window) {
   group->addContent(new QtProjectWizardContentCppStandard(settings, window));
   group->addContent(new QtProjectWizardContentCrossCompilationOptions(settings, window));
   group->addSpace();
@@ -162,9 +160,7 @@ template <>
 void addSourceGroupContents<SourceGroupSettingsCxxCdb>(QtProjectWizardContentGroup* group,
                                                        std::shared_ptr<SourceGroupSettingsCxxCdb> settings,
                                                        QtProjectWizardWindow* window) {
-  group->addContent(new QtProjectWizardContentPathCDB(settings, window));
-  group->addContent(
-      new QtProjectWizardContentPathsIndexedHeaders(settings, window, "Compilation Database"));
+  group->addContent(new QtProjectWizardContentPathsIndexedHeaders(settings, window, "Compilation Database"));
   group->addContent(new QtProjectWizardContentPathsExclude(settings, window));
   group->addSpace();
 
@@ -184,17 +180,15 @@ void addSourceGroupContents<SourceGroupSettingsCxxCdb>(QtProjectWizardContentGro
 }
 
 template <>
-void addSourceGroupContents<SourceGroupSettingsCxxCodeblocks>(
-    QtProjectWizardContentGroup* group,
-    std::shared_ptr<SourceGroupSettingsCxxCodeblocks> settings,
-    QtProjectWizardWindow* window) {
+void addSourceGroupContents<SourceGroupSettingsCxxCodeblocks>(QtProjectWizardContentGroup* group,
+                                                              std::shared_ptr<SourceGroupSettingsCxxCodeblocks> settings,
+                                                              QtProjectWizardWindow* window) {
   group->addContent(new QtProjectWizardContentCppStandard(settings, window));
   group->addContent(new QtProjectWizardContentCStandard(settings, window));
   group->addContent(new QtProjectWizardContentPathCodeblocksProject(settings, window));
   group->addSpace();
 
-  group->addContent(
-      new QtProjectWizardContentPathsIndexedHeaders(settings, window, "Code::Blocks Project"));
+  group->addContent(new QtProjectWizardContentPathsIndexedHeaders(settings, window, "Code::Blocks Project"));
   group->addContent(new QtProjectWizardContentPathsExclude(settings, window));
   group->addContent(new QtProjectWizardContentExtensions(settings, window));
   group->addSpace();
@@ -215,10 +209,9 @@ void addSourceGroupContents<SourceGroupSettingsCxxCodeblocks>(
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
 template <>
-void addSourceGroupContents<SourceGroupSettingsCustomCommand>(
-    QtProjectWizardContentGroup* group,
-    std::shared_ptr<SourceGroupSettingsCustomCommand> settings,
-    QtProjectWizardWindow* window) {
+void addSourceGroupContents<SourceGroupSettingsCustomCommand>(QtProjectWizardContentGroup* group,
+                                                              std::shared_ptr<SourceGroupSettingsCustomCommand> settings,
+                                                              QtProjectWizardWindow* window) {
   group->addContent(new QtProjectWizardContentCustomCommand(settings, window));
   group->addContent(new QtProjectWizardContentPathsSource(settings, window));
   group->addContent(new QtProjectWizardContentPathsExclude(settings, window));
@@ -226,20 +219,17 @@ void addSourceGroupContents<SourceGroupSettingsCustomCommand>(
 }
 
 template <>
-void addSourceGroupContents<SourceGroupSettingsUnloadable>(
-    QtProjectWizardContentGroup* group,
-    std::shared_ptr<SourceGroupSettingsUnloadable> settings,
-    QtProjectWizardWindow* window) {
+void addSourceGroupContents<SourceGroupSettingsUnloadable>(QtProjectWizardContentGroup* group,
+                                                           std::shared_ptr<SourceGroupSettingsUnloadable> settings,
+                                                           QtProjectWizardWindow* window) {
   group->addContent(new QtProjectWizardContentUnloadable(settings, window));
 }
 }    // namespace
 
 QtProjectWizard::QtProjectWizard(QWidget* pParent)
     : QtProjectWizardWindow(pParent, false)
-    , m_windowStack(this)
-    , m_editing(false)
-    , m_previouslySelectedIndex(-1)
-    , m_contentWidget(nullptr) {
+    , m_windowStack(this) {
+  setObjectName("QtProjectWizard");
   setScrollAble(true);
 
   connect(&m_windowStack, &QtWindowStack::push, this, &QtProjectWizard::windowStackChanged);
@@ -268,11 +258,10 @@ void QtProjectWizard::newProjectFromCDB([[maybe_unused]] const FilePath& filePat
   }
 
   if(m_projectSettings->getProjectFilePath().empty()) {
-    m_projectSettings->setProjectFilePath(
-        filePath.withoutExtension().fileName(), filePath.getParentDirectory());
+    m_projectSettings->setProjectFilePath(filePath.withoutExtension().fileName(), filePath.getParentDirectory());
   }
 
-  if(!m_contentWidget) {
+  if(m_contentWidget == nullptr) {
     setup();
   } else {
     loadContent();
@@ -280,8 +269,8 @@ void QtProjectWizard::newProjectFromCDB([[maybe_unused]] const FilePath& filePat
 
   cancelSourceGroup();
 
-  std::shared_ptr<SourceGroupSettingsCxxCdb> sourceGroupSettings =
-      std::make_shared<SourceGroupSettingsCxxCdb>(utility::getUuidString(), m_projectSettings.get());
+  std::shared_ptr<SourceGroupSettingsCxxCdb> sourceGroupSettings = std::make_shared<SourceGroupSettingsCxxCdb>(
+      utility::getUuidString(), m_projectSettings.get());
   sourceGroupSettings->setCompilationDatabasePath(filePath);
 
   createSourceGroup(sourceGroupSettings);
@@ -328,10 +317,7 @@ void QtProjectWizard::populateWindow(QWidget* widget) {
 
     m_sourceGroupList = new QListWidget();
     m_sourceGroupList->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    connect(m_sourceGroupList,
-            &QListWidget::currentRowChanged,
-            this,
-            &QtProjectWizard::selectedSourceGroupChanged);
+    connect(m_sourceGroupList, &QListWidget::currentRowChanged, this, &QtProjectWizard::selectedSourceGroupChanged);
     menuLayout->addWidget(m_sourceGroupList);
 
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
@@ -342,13 +328,11 @@ void QtProjectWizard::populateWindow(QWidget* widget) {
         ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_add.png"),
         ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_add_hover.png"));
 
-    m_removeButton = new QtIconButton(
-        ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_delete.png"),
-        ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_delete_hover.png"));
+    m_removeButton = new QtIconButton(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_delete.png"),
+                                      ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_delete_hover.png"));
 
-    m_duplicateButton = new QtIconButton(
-        ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_copy.png"),
-        ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_copy_hover.png"));
+    m_duplicateButton = new QtIconButton(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_copy.png"),
+                                         ResourcePaths::getGuiDirectoryPath().concatenate(L"window/source_group_copy_hover.png"));
 
     addButton->setIconSize(QSize(20, 20));
     m_removeButton->setIconSize(QSize(20, 20));
@@ -367,10 +351,7 @@ void QtProjectWizard::populateWindow(QWidget* widget) {
 
     connect(addButton, &QPushButton::clicked, this, &QtProjectWizard::newSourceGroup);
     connect(m_removeButton, &QPushButton::clicked, this, &QtProjectWizard::removeSelectedSourceGroup);
-    connect(m_duplicateButton,
-            &QPushButton::clicked,
-            this,
-            &QtProjectWizard::duplicateSelectedSourceGroup);
+    connect(m_duplicateButton, &QPushButton::clicked, this, &QtProjectWizard::duplicateSelectedSourceGroup);
 
     buttonsLayout->addWidget(addButton);
     buttonsLayout->addWidget(m_removeButton);
@@ -433,8 +414,7 @@ void QtProjectWizard::handlePrevious() {
   QtWindow::handlePrevious();
 }
 
-QtProjectWizardWindow* QtProjectWizard::createWindowWithContent(
-    std::function<QtProjectWizardContent*(QtProjectWizardWindow*)> func) {
+QtProjectWizardWindow* QtProjectWizard::createWindowWithContent(std::function<QtProjectWizardContent*(QtProjectWizardWindow*)> func) {
   QtProjectWizardWindow* window = new QtProjectWizardWindow(parentWidget());
 
   connect(window, &QtProjectWizardWindow::previous, &m_windowStack, &QtWindowStack::popWindow);
@@ -532,35 +512,29 @@ void QtProjectWizard::selectedSourceGroupChanged(int index) {
 
   QtProjectWizardContentGroup* summary = new QtProjectWizardContentGroup(this);
 
-  QtProjectWizardContentSourceGroupData* content = new QtProjectWizardContentSourceGroupData(
-      group, this);
-  connect(content,
-          &QtProjectWizardContentSourceGroupData::nameUpdated,
-          this,
-          &QtProjectWizard::selectedSourceGroupNameChanged);
+  QtProjectWizardContentSourceGroupData* content = new QtProjectWizardContentSourceGroupData(group, this);
+  connect(content, &QtProjectWizardContentSourceGroupData::nameUpdated, this, &QtProjectWizard::selectedSourceGroupNameChanged);
   summary->addContent(content);
   summary->addSpace();
 
-  if(std::shared_ptr<SourceGroupSettingsCustomCommand> settings =
-         std::dynamic_pointer_cast<SourceGroupSettingsCustomCommand>(group)) {
+  if(auto settings = std::dynamic_pointer_cast<SourceGroupSettingsCustomCommand>(group)) {
     addSourceGroupContents(summary, settings, this);
-  } else if(std::shared_ptr<SourceGroupSettingsUnloadable> settings =
-                std::dynamic_pointer_cast<SourceGroupSettingsUnloadable>(group)) {
-    addSourceGroupContents(summary, settings, this);
+  } else if(auto settingsUnloadable = std::dynamic_pointer_cast<SourceGroupSettingsUnloadable>(group)) {
+    addSourceGroupContents(summary, settingsUnloadable, this);
   }
 #if BUILD_CXX_LANGUAGE_PACKAGE
-  else if(std::shared_ptr<SourceGroupSettingsCEmpty> settings =
-              std::dynamic_pointer_cast<SourceGroupSettingsCEmpty>(group)) {
-    addSourceGroupContents(summary, settings, this);
-  } else if(std::shared_ptr<SourceGroupSettingsCppEmpty> settings =
-                std::dynamic_pointer_cast<SourceGroupSettingsCppEmpty>(group)) {
-    addSourceGroupContents(summary, settings, this);
-  } else if(std::shared_ptr<SourceGroupSettingsCxxCdb> settings =
-                std::dynamic_pointer_cast<SourceGroupSettingsCxxCdb>(group)) {
-    addSourceGroupContents(summary, settings, this);
-  } else if(std::shared_ptr<SourceGroupSettingsCxxCodeblocks> settings =
-                std::dynamic_pointer_cast<SourceGroupSettingsCxxCodeblocks>(group)) {
-    addSourceGroupContents(summary, settings, this);
+  else if(auto settingsCEmpty = std::dynamic_pointer_cast<SourceGroupSettingsCEmpty>(group)) {
+    addSourceGroupContents(summary, settingsCEmpty, this);
+  } else if(auto settingsCppEmpty = std::dynamic_pointer_cast<SourceGroupSettingsCppEmpty>(group)) {
+    addSourceGroupContents(summary, settingsCppEmpty, this);
+  } else if(auto settingsCxxCdb = std::dynamic_pointer_cast<SourceGroupSettingsCxxCdb>(group)) {
+    if(!m_model) {
+      m_model = std::make_shared<ProjectWizardModel>(settingsCxxCdb);
+    }
+    summary->addContent(new QtProjectWizardContentPathCDB(m_model, this));
+    addSourceGroupContents(summary, std::move(settingsCxxCdb), this);
+  } else if(auto CxxCodeblocks = std::dynamic_pointer_cast<SourceGroupSettingsCxxCodeblocks>(group)) {
+    addSourceGroupContents(summary, CxxCodeblocks, this);
   }
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
@@ -588,8 +562,7 @@ void QtProjectWizard::removeSelectedSourceGroup() {
 
   QMessageBox msgBox(this);
   msgBox.setText(QStringLiteral("Remove Source Group"));
-  msgBox.setInformativeText(
-      QStringLiteral("Do you really want to remove this source group from the project?"));
+  msgBox.setInformativeText(QStringLiteral("Do you really want to remove this source group from the project?"));
   msgBox.addButton(QStringLiteral("Yes"), QMessageBox::ButtonRole::YesRole);
   msgBox.addButton(QStringLiteral("No"), QMessageBox::ButtonRole::NoRole);
   msgBox.setIcon(QMessageBox::Icon::Question);
@@ -624,8 +597,7 @@ void QtProjectWizard::duplicateSelectedSourceGroup() {
     return;
   }
 
-  std::shared_ptr<const SourceGroupSettings> oldSourceGroup =
-      m_allSourceGroupSettings[m_sourceGroupList->currentRow()];
+  std::shared_ptr<const SourceGroupSettings> oldSourceGroup = m_allSourceGroupSettings[m_sourceGroupList->currentRow()];
 
   std::shared_ptr<SourceGroupSettings> newSourceGroup = oldSourceGroup->createCopy();
 
@@ -725,8 +697,7 @@ void QtProjectWizard::newSourceGroupFromVS() {
   });
   window->resize(QSize(560, 320));
 
-  connect(
-      window, &QtProjectWizardWindow::next, [this]() { selectedProjectType(SOURCE_GROUP_CXX_CDB); });
+  connect(window, &QtProjectWizardWindow::next, [this]() { selectedProjectType(SOURCE_GROUP_CXX_CDB); });
 
   window->show();
   window->setNextEnabled(true);
@@ -742,14 +713,14 @@ void QtProjectWizard::selectedProjectType(SourceGroupType sourceGroupType) {
   switch(sourceGroupType) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
   case SOURCE_GROUP_C_EMPTY: {
-    std::shared_ptr<SourceGroupSettingsCEmpty> cxxSettings =
-        std::make_shared<SourceGroupSettingsCEmpty>(sourceGroupId, m_projectSettings.get());
+    std::shared_ptr<SourceGroupSettingsCEmpty> cxxSettings = std::make_shared<SourceGroupSettingsCEmpty>(
+        sourceGroupId, m_projectSettings.get());
     addMsvcCompatibilityFlagsOnDemand(cxxSettings);
     settings = cxxSettings;
   } break;
   case SOURCE_GROUP_CPP_EMPTY: {
-    std::shared_ptr<SourceGroupSettingsCppEmpty> cxxSettings =
-        std::make_shared<SourceGroupSettingsCppEmpty>(sourceGroupId, m_projectSettings.get());
+    std::shared_ptr<SourceGroupSettingsCppEmpty> cxxSettings = std::make_shared<SourceGroupSettingsCppEmpty>(
+        sourceGroupId, m_projectSettings.get());
     addMsvcCompatibilityFlagsOnDemand(cxxSettings);
     settings = cxxSettings;
   } break;
@@ -757,8 +728,8 @@ void QtProjectWizard::selectedProjectType(SourceGroupType sourceGroupType) {
     settings = std::make_shared<SourceGroupSettingsCxxCdb>(sourceGroupId, m_projectSettings.get());
     break;
   case SOURCE_GROUP_CXX_CODEBLOCKS: {
-    std::shared_ptr<SourceGroupSettingsCxxCodeblocks> cxxSettings =
-        std::make_shared<SourceGroupSettingsCxxCodeblocks>(sourceGroupId, m_projectSettings.get());
+    std::shared_ptr<SourceGroupSettingsCxxCodeblocks> cxxSettings = std::make_shared<SourceGroupSettingsCxxCodeblocks>(
+        sourceGroupId, m_projectSettings.get());
     addMsvcCompatibilityFlagsOnDemand(cxxSettings);
     settings = cxxSettings;
   } break;
@@ -768,8 +739,7 @@ void QtProjectWizard::selectedProjectType(SourceGroupType sourceGroupType) {
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
   case SOURCE_GROUP_CUSTOM_COMMAND:
-    settings = std::make_shared<SourceGroupSettingsCustomCommand>(
-        sourceGroupId, m_projectSettings.get());
+    settings = std::make_shared<SourceGroupSettingsCustomCommand>(sourceGroupId, m_projectSettings.get());
     break;
   case SOURCE_GROUP_UNKNOWN:
     break;
@@ -781,7 +751,7 @@ void QtProjectWizard::selectedProjectType(SourceGroupType sourceGroupType) {
 }
 
 void QtProjectWizard::createSourceGroup(std::shared_ptr<SourceGroupSettings> settings) {
-  m_allSourceGroupSettings.push_back(settings);
+  m_allSourceGroupSettings.push_back(std::move(settings));
 
   updateSourceGroupList();
   cancelSourceGroup();
@@ -803,9 +773,9 @@ void QtProjectWizard::createProject() {
 
     QMessageBox msgBox(this);
     msgBox.setText(QStringLiteral("Could not create Project"));
-    msgBox.setInformativeText(QString::fromStdWString(
-        L"<p>Sourcetrail was unable to save the project to the specified path. Please pick a "
-        L"different project location.</p>"));
+    msgBox.setInformativeText(
+        QString::fromStdWString(L"<p>Sourcetrail was unable to save the project to the specified path. Please pick a "
+                                L"different project location.</p>"));
     msgBox.addButton(QStringLiteral("Ok"), QMessageBox::ButtonRole::AcceptRole);
     msgBox.exec();
 
@@ -816,8 +786,7 @@ void QtProjectWizard::createProject() {
   if(m_editing) {
     std::shared_ptr<const Project> currentProject = Application::getInstance()->getCurrentProject();
     if(currentProject) {
-      settingsChanged = !(
-          currentProject->settingsEqualExceptNameAndLocation(*(m_projectSettings.get())));
+      settingsChanged = !(currentProject->settingsEqualExceptNameAndLocation(*(m_projectSettings.get())));
     }
 
     settingsChanged |= !(m_appSettings == *ApplicationSettings::getInstance().get());

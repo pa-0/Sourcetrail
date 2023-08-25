@@ -1,29 +1,31 @@
 #pragma once
 // STL
 #include <functional>
-// Qt5
-#include <QWidget>
 // internal
 #include "ApplicationSettings.h"
-#include "ProjectSettings.h"
 #include "QtProjectWizardWindow.h"
-#include "QtWindow.h"
+#include "QtWindowStack.h"
+#include "SourceGroupType.h"
 
+class QWidget;
 class QListWidget;
 class QPushButton;
 class QtProjectWizardContent;
-class QtProjectWizardContentGroup;
-class QtProjectWizardWindow;
+
+class SourceGroupSettings;
+class ProjectSettings;
+class ProjectWizardModel;
 
 class QtProjectWizard : public QtProjectWizardWindow {
+  // NOLINTNEXTLINE(readability-identifier-length)
   Q_OBJECT
 
 public:
   explicit QtProjectWizard(QWidget* pParent = nullptr);
 
-  virtual QSize sizeHint() const override;
+  QSize sizeHint() const override;
 
-public slots:
+  // public slots:
   void newProject();
 
   void newProjectFromCDB(const FilePath& filePath);
@@ -32,34 +34,36 @@ public slots:
   void editProject(std::shared_ptr<ProjectSettings> settings);
 
 protected:
-  virtual void populateWindow(QWidget* widget) override;
-  virtual void windowReady() override;
+  void populateWindow(QWidget* widget) override;
+  void windowReady() override;
 
-  virtual void handlePrevious() override;
+  void handlePrevious() override;
 
 private:
-  QtProjectWizardWindow* createWindowWithContent(
-      std::function<QtProjectWizardContent*(QtProjectWizardWindow*)> func);
+  QtProjectWizardWindow* createWindowWithContent(std::function<QtProjectWizardContent*(QtProjectWizardWindow*)> func);
 
   void updateSourceGroupList();
   bool canExitContent();
 
   QtWindowStack m_windowStack;
 
+  // TODO: They should be moved to `ProjectWizardModel`
   std::shared_ptr<ProjectSettings> m_projectSettings;
   std::vector<std::shared_ptr<SourceGroupSettings>> m_allSourceGroupSettings;
   ApplicationSettings m_appSettings;
 
-  bool m_editing;
-  int m_previouslySelectedIndex;
+  bool m_editing = false;
+  int m_previouslySelectedIndex = -1;
 
-  QPushButton* m_generalButton;
-  QPushButton* m_removeButton;
-  QPushButton* m_duplicateButton;
-  QListWidget* m_sourceGroupList;
-  QWidget* m_contentWidget;
+  QPushButton* m_generalButton = nullptr;
+  QPushButton* m_removeButton = nullptr;
+  QPushButton* m_duplicateButton = nullptr;
+  QListWidget* m_sourceGroupList = nullptr;
+  QWidget* m_contentWidget = nullptr;
 
-private slots:
+  std::shared_ptr<ProjectWizardModel> m_model;
+
+  // private slots:
   void generalButtonClicked();
   void selectedSourceGroupChanged(int index);
   void selectedSourceGroupNameChanged(const QString& name);

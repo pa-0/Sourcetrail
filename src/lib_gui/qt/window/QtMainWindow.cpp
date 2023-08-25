@@ -519,8 +519,8 @@ void QtMainWindow::newProject() {
 }
 
 void QtMainWindow::newProjectFromCDB(const FilePath& filePath) {
-  QtProjectWizard* wizard = dynamic_cast<QtProjectWizard*>(m_windowStack.getTopWindow());
-  if(!wizard) {
+  auto* wizard = dynamic_cast<QtProjectWizard*>(m_windowStack.getTopWindow());
+  if(wizard == nullptr) {
     wizard = createWindow<QtProjectWizard>();
   }
 

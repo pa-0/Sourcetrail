@@ -8,7 +8,8 @@ class QtProjectWizardContent;
  * @brief
  */
 class QtProjectWizardWindow : public QtWindow {
-  Q_OBJECT    // NOLINT(readability-identifier-length)
+  // NOLINTNEXTLINE(readability-identifier-length)
+  Q_OBJECT
 
 public:
   /**

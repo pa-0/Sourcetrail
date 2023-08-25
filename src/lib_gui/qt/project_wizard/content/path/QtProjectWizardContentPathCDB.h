@@ -1,16 +1,18 @@
 #pragma once
 
 #include "QtProjectWizardContentPath.h"
-#include "SingleValueCache.h"
 
-class SourceGroupSettingsCxxCdb;
+class ProjectWizardModel;
 
-class QtProjectWizardContentPathCDB : public QtProjectWizardContentPath {
+class QtProjectWizardContentPathCDB final : public QtProjectWizardContentPath {
+  // NOLINTNEXTLINE(readability-identifier-length)
   Q_OBJECT
 
 public:
-  QtProjectWizardContentPathCDB(std::shared_ptr<SourceGroupSettingsCxxCdb> settings,
+  QtProjectWizardContentPathCDB(std::shared_ptr<ProjectWizardModel> model,
                                 QtProjectWizardWindow* window);
+
+  ~QtProjectWizardContentPathCDB() override;
 
   // QtProjectWizardContent implementation
   void populate(QGridLayout* layout, int& row) override;
@@ -19,18 +21,13 @@ public:
   void save() override;
   void refresh() override;
 
-  std::vector<FilePath> getFilePaths() const override;
-  QString getFileNamesTitle() const override;
-  QString getFileNamesDescription() const override;
-
-private slots:
-  void pickedPath();
-  void onPickerTextChanged(const QString& text);
+  [[nodiscard]] std::vector<FilePath> getFilePaths() const override;
+  [[nodiscard]] QString getFileNamesTitle() const override;
+  [[nodiscard]] QString getFileNamesDescription() const override;
 
 private:
   std::shared_ptr<SourceGroupSettings> getSourceGroupSettings() override;
 
-  std::shared_ptr<SourceGroupSettingsCxxCdb> m_settings;
-  QLabel* m_fileCountLabel;
-  mutable SingleValueCache<std::vector<FilePath>> m_filePaths;
+  std::shared_ptr<ProjectWizardModel> m_model;
+  QLabel* m_fileCountLabel = nullptr;
 };
