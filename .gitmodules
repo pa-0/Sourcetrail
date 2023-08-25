@@ -1,3 +1,6 @@
 [submodule "bin"]
 	path = bin
 	url = https://github.com/OpenSourceSourceTrail/resources.git
+[submodule "src/external/tracy"]
+	path = src/external/tracy
+	url = https://github.com/wolfpld/tracy.git
