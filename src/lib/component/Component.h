@@ -1,5 +1,4 @@
-#ifndef COMPONENT_H
-#define COMPONENT_H
+#pragma once
 
 #include <memory>
 
@@ -8,43 +7,53 @@
 class View;
 class Controller;
 
-class Component
-{
+class Component {
 public:
-	Component(std::shared_ptr<View> view, std::shared_ptr<Controller> controller);
-	~Component();
+  Component(std::shared_ptr<View> view, std::shared_ptr<Controller> controller);
 
-	template <typename ControllerType>
-	ControllerType* getController() const;
+  Component(const Component&) = delete;
+  Component(Component&&) = delete;
+  Component& operator=(const Component&) = delete;
+  Component& operator=(Component&&) = delete;
 
-	Controller* getControllerPtr() const;
+  ~Component();
 
-	template <typename ViewType>
-	ViewType* getView() const;
+  template <typename ControllerType>
+  ControllerType* getController() const;
 
-	View* getViewPtr() const;
+  [[nodiscard]] Controller* getControllerPtr() const;
 
-	void setTabId(Id tabId);
-	Id getTabId() const;
+  template <typename ViewType>
+  ViewType* getView() const;
+
+  [[nodiscard]] View* getViewPtr() const;
+
+  void setTabId(Id tabId) {
+    m_tabId = tabId;
+  }
+  [[nodiscard]] Id getTabId() const {
+    return m_tabId;
+  }
 
 private:
-	const std::shared_ptr<Controller> m_controller;
-	const std::shared_ptr<View> m_view;
+  std::shared_ptr<Controller> m_controller;
+  std::shared_ptr<View> m_view;
 
-	Id m_tabId;
+  Id m_tabId;
 };
 
-
 template <typename ControllerType>
-ControllerType* Component::getController() const
-{
-	return dynamic_cast<ControllerType*>(m_controller.get());
+ControllerType* Component::getController() const {
+  if(m_controller) {
+    return dynamic_cast<ControllerType*>(m_controller.get());
+  }
+  return nullptr;
 }
 
 template <typename ViewType>
-ViewType* Component::getView() const
-{
-	return dynamic_cast<ViewType*>(m_view.get());
+ViewType* Component::getView() const {
+  if(m_view) {
+    return dynamic_cast<ViewType*>(m_view.get());
+  }
+  return nullptr;
 }
-
-#endif	  // COMPONENT_H

@@ -21,6 +21,7 @@ set(
   CommandlineCommandTestSuite
   CommandlineHelperTestSuite
   CommandLineParserTestSuite
+  ComponentTestSuite
   FileHandlerTestSuite
   LocationTypeTestSuite
   SingleValueCacheTestSuite
@@ -29,8 +30,8 @@ set(
   SourceLocationTestSuite
   StatusTestSuite
   TimeStampTestSuite
-  UnorderedCacheTestSuite
   TreeTestSuite
+  UnorderedCacheTestSuite
 )
 
 foreach(test_name IN LISTS test_lib_names)
