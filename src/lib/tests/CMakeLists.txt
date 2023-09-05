@@ -27,6 +27,7 @@ set(
   SourceLocationCollectionTestSuite
   SourceLocationFileTestSuite
   SourceLocationTestSuite
+  StatusTestSuite
 )
 
 foreach(test_name IN LISTS test_lib_names)
