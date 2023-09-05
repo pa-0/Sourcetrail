@@ -23,6 +23,7 @@ set(
   CommandLineParserTestSuite
   FileHandlerTestSuite
   LocationTypeTestSuite
+  SingleValueCacheTestSuite
   SourceLocationCollectionTestSuite
   SourceLocationFileTestSuite
   SourceLocationTestSuite
