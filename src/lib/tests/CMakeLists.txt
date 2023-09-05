@@ -28,6 +28,7 @@ set(
   SourceLocationFileTestSuite
   SourceLocationTestSuite
   StatusTestSuite
+  TimeStampTestSuite
 )
 
 foreach(test_name IN LISTS test_lib_names)
