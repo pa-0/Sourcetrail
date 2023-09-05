@@ -121,13 +121,6 @@ Vector4<T> Vector4<T>::normalized() const {
   return VectorBase<T, 4>::normalized();
 }
 
-// template<class T>
-// template<class U>
-// void Vector4<T>::operator=(Vector4<U>& other)
-//{
-//	this->assign(other);
-//}
-
 template <class T>
 template <class U>
 void Vector4<T>::operator=(const Vector4<U>& other) {
