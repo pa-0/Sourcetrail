@@ -30,6 +30,7 @@ set(
   StatusTestSuite
   TimeStampTestSuite
   UnorderedCacheTestSuite
+  TreeTestSuite
 )
 
 foreach(test_name IN LISTS test_lib_names)
