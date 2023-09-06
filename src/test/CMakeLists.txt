@@ -81,6 +81,7 @@ endforeach()
 
 set(test_lib_names
     AppPathTestSuite
+    UserPathsTestSuite
     ResourcePathsTestSuite
     Vector2TestSuite
     Vector4TestSuite)
