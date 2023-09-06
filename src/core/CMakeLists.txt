@@ -37,6 +37,7 @@ target_include_directories(
   Sourcetrail_core
   PUBLIC
     ${CMAKE_SOURCE_DIR}/src/lib/utility/
+    ${CMAKE_SOURCE_DIR}/src/lib/app/paths/
     ${CMAKE_SOURCE_DIR}/src/lib/utility/file/
     ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/
     ${CMAKE_SOURCE_DIR}/src/lib/utility/text/)
