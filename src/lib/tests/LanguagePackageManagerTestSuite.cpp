@@ -5,6 +5,7 @@
 #include "LanguagePackage.h"
 #include "LanguagePackageManager.h"
 #include "ScopedFunctor.h"
+#include "mocks/MockedIndexer.hpp"
 
 using namespace testing;
 
@@ -12,14 +13,6 @@ struct MockedLanguagePackage : public LanguagePackage {
   ~MockedLanguagePackage() override = default;
   using VecOfIndexer = std::vector<std::shared_ptr<IndexerBase>>;
   MOCK_METHOD(VecOfIndexer, instantiateSupportedIndexers, (), (const, override));
-};
-
-struct MockedIndexer : public IndexerBase {
-  MOCK_METHOD(IndexerCommandType, getSupportedIndexerCommandType, (), (const, override));
-  using IntermediateStoragePtr = std::shared_ptr<IntermediateStorage>;
-  using IndexerCommandPtr = std::shared_ptr<IndexerCommand>;
-  MOCK_METHOD(IntermediateStoragePtr, index, (IndexerCommandPtr), (override));
-  MOCK_METHOD(void, interrupt, (), (override));
 };
 
 TEST(LanguagePackageManager, instance) {

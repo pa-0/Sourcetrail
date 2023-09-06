@@ -81,8 +81,9 @@ endforeach()
 
 set(test_lib_names
     AppPathTestSuite
-    UserPathsTestSuite
+    IndexerCompositeTestSuite
     ResourcePathsTestSuite
+    UserPathsTestSuite
     Vector2TestSuite
     Vector4TestSuite)
 
@@ -92,6 +93,7 @@ foreach(test_name IN LISTS test_lib_names)
   target_link_libraries(
     ${test_name}
     PUBLIC
+      lib::mocks
       GTest::gmock
       GTest::gtest
       GTest::gtest_main
