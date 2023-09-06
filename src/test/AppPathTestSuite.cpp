@@ -7,7 +7,7 @@
 
 TEST(AppPath, CxxIndexer) {
 #ifdef D_WINDOWS
-  const auto exec = "sourcetrail_indexer.exe"
+  const auto exec = "sourcetrail_indexer.exe";
 #else
   const auto exec = "sourcetrail_indexer";
 #endif

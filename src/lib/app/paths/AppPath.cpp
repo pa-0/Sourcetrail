@@ -19,7 +19,7 @@ bool AppPath::setSharedDataDirectoryPath(const FilePath& path) {
 
 FilePath AppPath::getCxxIndexerFilePath() {
 #ifdef D_WINDOWS
-  const std::wstringcxxIndexerName = L"sourcetrail_indexer.exe";
+  const std::wstring cxxIndexerName = L"sourcetrail_indexer.exe";
 #else
   const std::wstring cxxIndexerName = L"sourcetrail_indexer";
 #endif
