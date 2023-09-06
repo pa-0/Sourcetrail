@@ -79,7 +79,11 @@ foreach(test_name IN LISTS test_lib_names)
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
 endforeach()
 
-set(test_lib_names AppPathTestSuite Vector2TestSuite Vector4TestSuite)
+set(test_lib_names
+    AppPathTestSuite
+    ResourcePathsTestSuite
+    Vector2TestSuite
+    Vector4TestSuite)
 
 foreach(test_name IN LISTS test_lib_names)
   add_executable(${test_name} ${test_name}.cpp)
