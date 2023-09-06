@@ -3,36 +3,31 @@
 #include "IndexerComposite.h"
 #include "LanguagePackage.h"
 
-std::shared_ptr<LanguagePackageManager> LanguagePackageManager::getInstance()
-{
-	if (!s_instance)
-	{
-		s_instance = std::shared_ptr<LanguagePackageManager>(new LanguagePackageManager());
-	}
-	return s_instance;
+LanguagePackageManager::Ptr LanguagePackageManager::getInstance() {
+  if(!s_instance) {
+    s_instance = std::shared_ptr<LanguagePackageManager>(new LanguagePackageManager());
+  }
+  return s_instance;
 }
 
-void LanguagePackageManager::destroyInstance()
-{
-	s_instance.reset();
+void LanguagePackageManager::destroyInstance() {
+  s_instance.reset();
 }
 
-void LanguagePackageManager::addPackage(std::shared_ptr<LanguagePackage> package)
-{
-	m_packages.push_back(package);
+void LanguagePackageManager::addPackage(std::shared_ptr<LanguagePackage> package) {
+  m_packages.push_back(std::move(package));
 }
 
-std::shared_ptr<IndexerComposite> LanguagePackageManager::instantiateSupportedIndexers()
-{
-	std::shared_ptr<IndexerComposite> composite = std::make_shared<IndexerComposite>();
-	for (std::shared_ptr<LanguagePackage> package: m_packages)
-	{
-		for (std::shared_ptr<IndexerBase> indexer: package->instantiateSupportedIndexers())
-		{
-			composite->addIndexer(indexer);
-		}
-	}
-	return composite;
+std::shared_ptr<IndexerComposite> LanguagePackageManager::instantiateSupportedIndexers() {
+  auto composite = std::make_shared<IndexerComposite>();
+  for(const auto& package : m_packages) {
+    for(const auto& indexer : package->instantiateSupportedIndexers()) {
+      composite->addIndexer(indexer);
+    }
+  }
+  return composite;
 }
 
-std::shared_ptr<LanguagePackageManager> LanguagePackageManager::s_instance;
+LanguagePackageManager::Ptr LanguagePackageManager::s_instance;
+
+LanguagePackageManager::LanguagePackageManager() = default;
