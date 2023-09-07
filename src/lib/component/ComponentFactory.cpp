@@ -1,5 +1,7 @@
 #include "ComponentFactory.h"
 
+#include <memory>
+
 #include "ActivationController.h"
 #include "BookmarkController.h"
 #include "BookmarkView.h"
@@ -29,7 +31,6 @@
 #include "UndoRedoController.h"
 #include "UndoRedoView.h"
 #include "ViewFactory.h"
-#include <memory>
 
 ComponentFactory::ComponentFactory(const ViewFactory* viewFactory, StorageAccess* storageAccess)
     : m_viewFactory(viewFactory), m_storageAccess(storageAccess) {}
@@ -50,8 +51,7 @@ std::shared_ptr<Component> ComponentFactory::createActivationComponent() {
 
 std::shared_ptr<Component> ComponentFactory::createBookmarkComponent(ViewLayout* viewLayout) {
   std::shared_ptr<BookmarkView> view = m_viewFactory->createBookmarkView(viewLayout);
-  std::shared_ptr<BookmarkController> controller = std::make_shared<BookmarkController>(
-      m_storageAccess);
+  std::shared_ptr<BookmarkController> controller = std::make_shared<BookmarkController>(m_storageAccess);
 
   return std::make_shared<Component>(view, controller);
 }
@@ -65,8 +65,7 @@ std::shared_ptr<Component> ComponentFactory::createCodeComponent(ViewLayout* vie
 
 std::shared_ptr<Component> ComponentFactory::createCustomTrailComponent(ViewLayout* viewLayout) {
   std::shared_ptr<CustomTrailView> view = m_viewFactory->createCustomTrailView(viewLayout);
-  std::shared_ptr<CustomTrailController> controller = std::make_shared<CustomTrailController>(
-      m_storageAccess);
+  std::shared_ptr<CustomTrailController> controller = std::make_shared<CustomTrailController>(m_storageAccess);
 
   return std::make_shared<Component>(view, controller);
 }
@@ -108,8 +107,7 @@ std::shared_ptr<Component> ComponentFactory::createSearchComponent(ViewLayout* v
 
 std::shared_ptr<Component> ComponentFactory::createStatusBarComponent(ViewLayout* viewLayout) {
   std::shared_ptr<StatusBarView> view = m_viewFactory->createStatusBarView(viewLayout);
-  std::shared_ptr<StatusBarController> controller = std::make_shared<StatusBarController>(
-      m_storageAccess);
+  std::shared_ptr<StatusBarController> controller = std::make_shared<StatusBarController>(m_storageAccess);
 
   return std::make_shared<Component>(view, controller);
 }
@@ -121,8 +119,7 @@ std::shared_ptr<Component> ComponentFactory::createStatusComponent(ViewLayout* v
   return std::make_shared<Component>(view, controller);
 }
 
-std::shared_ptr<Component> ComponentFactory::createTabsComponent(
-    ViewLayout* viewLayout, ScreenSearchSender* screenSearchSender) {
+std::shared_ptr<Component> ComponentFactory::createTabsComponent(ViewLayout* viewLayout, ScreenSearchSender* screenSearchSender) {
   std::shared_ptr<TabsView> view = m_viewFactory->createTabsView(viewLayout);
   std::shared_ptr<Controller> controller = std::make_shared<TabsController>(
       viewLayout, m_viewFactory, m_storageAccess, screenSearchSender);
@@ -139,8 +136,7 @@ std::shared_ptr<Component> ComponentFactory::createTooltipComponent(ViewLayout* 
 
 std::shared_ptr<Component> ComponentFactory::createUndoRedoComponent(ViewLayout* viewLayout) {
   std::shared_ptr<UndoRedoView> view = m_viewFactory->createUndoRedoView(viewLayout);
-  std::shared_ptr<UndoRedoController> controller = std::make_shared<UndoRedoController>(
-      m_storageAccess);
+  std::shared_ptr<UndoRedoController> controller = std::make_shared<UndoRedoController>(m_storageAccess);
 
   return std::make_shared<Component>(view, controller);
 }
