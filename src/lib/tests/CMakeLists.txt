@@ -1,8 +1,6 @@
 # ${CMAKE_SOURCE_DIR}/src/lib/tests/CMakeLists.txt
 add_subdirectory(mocks)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
-
 add_library(
   lib_test_utilities
   utilities/FileHandler.cpp
@@ -11,8 +9,7 @@ add_library(
 target_include_directories(
   lib_test_utilities
   PUBLIC
-  ${CMAKE_CURRENT_LIST_DIR}
-)
+  ${CMAKE_CURRENT_LIST_DIR})
 
 set(
   test_lib_names
@@ -30,6 +27,7 @@ set(
   SourceLocationFileTestSuite
   SourceLocationTestSuite
   StatusTestSuite
+  TabIdTestSuite
   TimeStampTestSuite
   TreeTestSuite
   UnorderedCacheTestSuite)
@@ -45,6 +43,11 @@ foreach(test_name IN LISTS test_lib_names)
       GTest::gtest
       GTest::gtest_main
       Sourcetrail::lib)
+  
+  set_target_properties(
+    ${test_name}
+    PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
   gtest_discover_tests(
     ${test_name}
