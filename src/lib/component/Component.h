@@ -31,6 +31,7 @@ public:
   void setTabId(Id tabId) {
     m_tabId = tabId;
   }
+
   [[nodiscard]] Id getTabId() const {
     return m_tabId;
   }
@@ -39,7 +40,7 @@ private:
   std::shared_ptr<Controller> m_controller;
   std::shared_ptr<View> m_view;
 
-  Id m_tabId;
+  Id m_tabId = 0;
 };
 
 template <typename ControllerType>
