@@ -17,7 +17,11 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "USE_ALTERNATE_LINKER": "mold",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "ENABLE_COVERAGE": "ON"
+                "ENABLE_COVERAGE": "ON",
+                "ENABLE_UNIT_TEST": "ON",
+                "ENABLE_INTEGRATION_TEST": "ON",
+                "ENABLE_E2E_TEST": "ON",
+                "BUILD_CXX_LANGUAGE_PACKAGE": "ON"
             }
         },
         {
@@ -81,31 +85,6 @@
                 "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
                 "Boost_DIR": "C:/local/boost_1_81_0/lib64-msvc-14.3/cmake/Boost-1.81.0"
             }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "default",
-            "configurePreset": "default"
-        }
-    ],
-    "testPresets": [
-        {
-            "name": "default",
-            "configurePreset": "default",
-            "output": {
-                "outputOnFailure": true
-            },
-            "execution": {
-                "noTestsAction": "error",
-                "stopOnFailure": true
-            }
-        },
-        {
-            "name": "vc++ test",
-            "description": "",
-            "displayName": "",
-            "configurePreset": "vc_release"
         }
     ]
 }
