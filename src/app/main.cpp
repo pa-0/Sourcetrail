@@ -49,7 +49,7 @@ void signalHandler(int /*signum*/) {
 void setupLogging() {
   auto* logManager = LogManager::getInstance().get();
 
-  if(qgetenv("ST_DISABLE_LOG_CONSOLE").isEmpty()) {
+  if(qEnvironmentVariableIsEmpty("ST_DISABLE_LOG_CONSOLE")) {
     auto consoleLogger = std::make_shared<ConsoleLogger>();
     auto defaultLogLevel = Logger::LogLevel::LOG_INFOS;
     if(auto logLevel = qgetenv("ST_CONSOLE_LOG_LEVEL"); !logLevel.isEmpty()) {
@@ -86,7 +86,7 @@ void addLanguagePackages() {
 void checkRunFromScript() {
 #ifndef _WIN32
   const auto expectedShareDirectory = FilePath(QCoreApplication::applicationDirPath().toStdWString() + L"/../share");
-  if(qgetenv("SOURCETRAIL_VIA_SCRIPT").isEmpty() && !expectedShareDirectory.exists()) {
+  if(qEnvironmentVariableIsEmpty("SOURCETRAIL_VIA_SCRIPT") && !expectedShareDirectory.exists()) {
     LOG_WARNING("Please run Sourcetrail via the Sourcetrail.sh script!");
   }
 #endif
