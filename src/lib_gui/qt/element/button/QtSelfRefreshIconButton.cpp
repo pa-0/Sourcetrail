@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include <QDebug>
 #include <QResizeEvent>
 
 #include "utilityQt.h"
@@ -14,8 +15,8 @@ QtSelfRefreshIconButton::QtSelfRefreshIconButton(const QString& text, FilePath i
 
   m_updateTimer.setSingleShot(true);
   m_blockTimer.setSingleShot(true);
-  connect(&m_updateTimer, &QTimer::timeout, [this]() { updateText(width()); });
-  connect(&m_blockTimer, &QTimer::timeout, [this]() { m_blockUpdate = false; });
+  connect(&m_updateTimer, &QTimer::timeout, this, [this]() { updateText(width()); });
+  connect(&m_blockTimer, &QTimer::timeout, this, [this]() { m_blockUpdate = false; });
 }
 
 QtSelfRefreshIconButton::~QtSelfRefreshIconButton() = default;
@@ -31,6 +32,7 @@ void QtSelfRefreshIconButton::setText(const QString& text) {
 
 void QtSelfRefreshIconButton::setIconPath(const FilePath& iconPath) {
   if(iconPath != m_iconPath) {
+    qDebug() << "iconPath";
     m_iconPath = iconPath;
     refresh();
   }

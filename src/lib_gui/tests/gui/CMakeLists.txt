@@ -1,7 +1,5 @@
 # ${CMAKE_SOURCE_DIR}/src/lib_gui/tests/CMakeLists.txt
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY )
-
-set(test_lib_gui_names QtScreenSearchBoxTestSuite)
+set(test_lib_gui_names QtScreenSearchBoxTestSuite QtSelfRefreshIconButtonTestSuite)
 
 foreach(test_name IN LISTS test_lib_gui_names)
   add_executable(${test_name} ${test_name}.cpp)
@@ -19,6 +17,6 @@ foreach(test_name IN LISTS test_lib_gui_names)
       AUTOMOC ON
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
-  add_test(${test_name} ${test_name})
+  add_test(${test_name} ${test_name} WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 endforeach()
 

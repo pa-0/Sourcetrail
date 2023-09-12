@@ -15,6 +15,8 @@ public:
   QtSelfRefreshIconButton(const QString& text, FilePath iconPath, std::string buttonKey, QWidget* parent = nullptr);
   ~QtSelfRefreshIconButton() override;
 
+  Q_DISABLE_COPY_MOVE(QtSelfRefreshIconButton)
+
   void setText(const QString& text);
   void setIconPath(const FilePath& iconPath);
 
