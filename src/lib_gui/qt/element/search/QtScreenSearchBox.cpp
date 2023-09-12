@@ -1,5 +1,6 @@
 #include "QtScreenSearchBox.h"
 
+#include <QDebug>
 #include <QApplication>
 #include <QCheckBox>
 #include <QFocusEvent>
@@ -58,11 +59,11 @@ void QtScreenSearchBox::setMatchIndex(size_t matchIndex) {
 }
 
 void QtScreenSearchBox::addResponder(const std::string& name) {
-  if(m_checkBoxes.find(name) != m_checkBoxes.end()) {
+  if(name.empty() || m_checkBoxes.find(name) != m_checkBoxes.end()) {
     return;
   }
 
-  QCheckBox* box = new QCheckBox(name.c_str());
+  auto* box = new QCheckBox(name.c_str());
   box->setObjectName(QStringLiteral("filter_checkbox"));
   box->setChecked(true);
   m_checkBoxes.emplace(name, box);
@@ -74,7 +75,7 @@ void QtScreenSearchBox::addResponder(const std::string& name) {
 void QtScreenSearchBox::setFocus() {
   m_searchBox->setFocus();
 
-  if(m_searchBox->text().size() != 0) {
+  if(!m_searchBox->text().isEmpty()) {
     m_searchBox->selectAll();
     searchQueryChanged();
   }
@@ -134,33 +135,31 @@ void QtScreenSearchBox::updateMatchLabel() {
 }
 
 void QtScreenSearchBox::createSearchField(QHBoxLayout* layout) {
-  {
-    m_searchButton = new QtSelfRefreshIconButton(
-        QLatin1String(""),
-        ResourcePaths::getGuiDirectoryPath().concatenate(L"search_view/images/search.png"),
-        "screen_search/button");
-    m_searchButton->setObjectName(QStringLiteral("search_button"));
-    m_searchButton->setIconSize(QSize(12, 12));
-    layout->addWidget(m_searchButton);
+  m_searchButton = new QtSelfRefreshIconButton(
+      QLatin1String(""),
+      ResourcePaths::getGuiDirectoryPath().concatenate(L"search_view/images/search.png"),
+      "screen_search/button");
+  m_searchButton->setObjectName(QStringLiteral("search_button"));
+  m_searchButton->setIconSize(QSize(12, 12));
+  layout->addWidget(m_searchButton);
 
-    connect(m_searchButton, &QPushButton::clicked, this, &QtScreenSearchBox::setFocus);
+  connect(m_searchButton, &QPushButton::clicked, this, &QtScreenSearchBox::setFocus);
 
-    m_searchBox = new QLineEdit(this);
-    m_searchBox->setObjectName(QStringLiteral("search_box"));
-    m_searchBox->setAttribute(Qt::WA_MacShowFocusRect, 0);    // remove blue focus box on Mac
-    layout->addWidget(m_searchBox);
+  m_searchBox = new QLineEdit(this);
+  m_searchBox->setObjectName(QStringLiteral("search_box"));
+  m_searchBox->setAttribute(Qt::WA_MacShowFocusRect, 0);    // remove blue focus box on Mac
+  layout->addWidget(m_searchBox);
 
-    connect(m_searchBox, &QLineEdit::textChanged, this, &QtScreenSearchBox::searchQueryChanged);
-    connect(m_searchBox, &QLineEdit::returnPressed, this, &QtScreenSearchBox::returnPressed);
+  connect(m_searchBox, &QLineEdit::textChanged, this, &QtScreenSearchBox::searchQueryChanged);
+  connect(m_searchBox, &QLineEdit::returnPressed, this, &QtScreenSearchBox::returnPressed);
 
-    auto* filter = new QtFocusInFilter(m_searchBox);
-    m_searchBox->installEventFilter(filter);
-    connect(filter, &QtFocusInFilter::focusIn, this, &QtScreenSearchBox::findMatches);
-  }
+  auto* filter = new QtFocusInFilter(m_searchBox);
+  m_searchBox->installEventFilter(filter);
+  connect(filter, &QtFocusInFilter::focusIn, this, &QtScreenSearchBox::findMatches);
 }
 
 void QtScreenSearchBox::createMatchButton(QHBoxLayout* layout) {
-  m_matchLabel = new QPushButton();
+  m_matchLabel = new QPushButton;
   m_matchLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
   m_matchLabel->setObjectName(QStringLiteral("match_label"));
   layout->addWidget(m_matchLabel);
@@ -205,7 +204,10 @@ void QtScreenSearchBox::createCloseButton(QHBoxLayout* layout) {
   m_closeButton->setIconSize(QSize(15, 15));
   layout->addWidget(m_closeButton);
 
-  connect(m_closeButton, &QPushButton::clicked, [this]() { emit closePressed(); });
+  connect(m_closeButton, &QPushButton::clicked,
+  this, [this]() {
+    emit closePressed();
+  });
 }
 
 void QtScreenSearchBox::createTimer() {
