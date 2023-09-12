@@ -51,7 +51,7 @@ class QtMainWindow : public QMainWindow {
 
 public:
   QtMainWindow();
-  ~QtMainWindow();
+  ~QtMainWindow() override;
 
   void addView(View* view);
   void overrideView(View* view);
