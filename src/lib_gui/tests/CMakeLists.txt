@@ -41,3 +41,5 @@ foreach(test_name IN LISTS test_lib_gui_names)
     OUTPUT_SUFFIX .xml
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
 endforeach()
+
+add_subdirectory(gui)
