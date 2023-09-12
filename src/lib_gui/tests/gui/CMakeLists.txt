@@ -1,5 +1,9 @@
 # ${CMAKE_SOURCE_DIR}/src/lib_gui/tests/CMakeLists.txt
-set(test_lib_gui_names QtScreenSearchBoxTestSuite QtSelfRefreshIconButtonTestSuite)
+set(test_lib_gui_names
+    QtContextMenuTestSuite
+    QtScreenSearchBoxTestSuite
+    QtSelfRefreshIconButtonTestSuite
+)
 
 foreach(test_name IN LISTS test_lib_gui_names)
   add_executable(${test_name} ${test_name}.cpp)
