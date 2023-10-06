@@ -18,6 +18,7 @@ set(
   CommandlineCommandTestSuite
   CommandlineHelperTestSuite
   ComponentFactoryTestSuite
+  ComponentManagerTestSuite
   ComponentTestSuite
   FileHandlerTestSuite
   LanguagePackageManagerTestSuite
