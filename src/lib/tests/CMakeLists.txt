@@ -12,11 +12,11 @@ target_include_directories(
 
 set(
   test_lib_names
-  CommandLineParserTestSuite
   CommandlineCommandConfigTestSuite
   CommandlineCommandIndexTestSuite
   CommandlineCommandTestSuite
   CommandlineHelperTestSuite
+  CommandLineParserTestSuite
   ComponentFactoryTestSuite
   ComponentManagerTestSuite
   ComponentTestSuite
@@ -29,6 +29,7 @@ set(
   SourceLocationTestSuite
   StatusTestSuite
   TabIdTestSuite
+  TabTestSuite
   TimeStampTestSuite
   TreeTestSuite
   UnorderedCacheTestSuite)

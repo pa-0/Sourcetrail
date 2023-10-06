@@ -3,10 +3,7 @@
 #include "CodeView.h"
 #include "GraphView.h"
 
-Tab::Tab(Id tabId,
-         const ViewFactory* viewFactory,
-         StorageAccess* storageAccess,
-         ScreenSearchSender* screenSearchSender)
+Tab::Tab(Id tabId, const ViewFactory* viewFactory, StorageAccess* storageAccess, ScreenSearchSender* screenSearchSender)
     : m_tabId(tabId)
     , m_componentManager(viewFactory, storageAccess)
     , m_parentLayout(nullptr)
@@ -26,7 +23,7 @@ Id Tab::getSchedulerId() const {
 void Tab::setParentLayout(ViewLayout* parentLayout) {
   m_parentLayout = parentLayout;
 
-  if(parentLayout) {
+  if(parentLayout != nullptr) {
     for(View* view : m_views) {
       parentLayout->overrideView(view);
     }
@@ -38,42 +35,42 @@ void Tab::addView(View* view) {
 }
 
 void Tab::removeView(View* view) {
-  std::vector<View*>::iterator it = std::find(m_views.begin(), m_views.end(), view);
-  if(it == m_views.end()) {
+  auto iterator = std::find(m_views.begin(), m_views.end(), view);
+  if(iterator == m_views.end()) {
     return;
   }
 
-  m_views.erase(it);
+  m_views.erase(iterator);
 }
 
 void Tab::showView(View* view) {
-  if(m_parentLayout) {
+  if(m_parentLayout != nullptr) {
     m_parentLayout->showView(view);
   }
 }
 
 void Tab::hideView(View* view) {
-  if(m_parentLayout) {
+  if(m_parentLayout != nullptr) {
     m_parentLayout->hideView(view);
   }
 }
 
 void Tab::setViewEnabled(View* view, bool enabled) {
-  if(m_parentLayout) {
+  if(m_parentLayout != nullptr) {
     m_parentLayout->setViewEnabled(view, enabled);
   }
 }
 
 void Tab::handleMessage(MessageFocusView* message) {
-  GraphView* graphView = dynamic_cast<GraphView*>(m_componentManager.getView(GraphView::VIEW_NAME));
-  CodeView* codeView = dynamic_cast<CodeView*>(m_componentManager.getView(CodeView::VIEW_NAME));
+  auto* graphView = dynamic_cast<GraphView*>(m_componentManager.getView(GraphView::VIEW_NAME));
+  auto* codeView = dynamic_cast<CodeView*>(m_componentManager.getView(CodeView::VIEW_NAME));
 
-  if(!graphView || !codeView) {
+  if((graphView == nullptr) || (codeView == nullptr)) {
     LOG_ERROR("Tab has no code or graph view.");
     return;
   }
 
-  MessageFocusView::ViewType type = message->type;
+  auto type = message->type;
   if(type == MessageFocusView::ViewType::TOGGLE) {
     if(graphView->hasNavigationFocus()) {
       type = MessageFocusView::ViewType::CODE;
