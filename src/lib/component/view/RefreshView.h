@@ -1,20 +1,16 @@
-#ifndef REFRESH_VIEW_H
-#define REFRESH_VIEW_H
+#pragma once
 
 #include "View.h"
 
 class RefreshController;
 
-class RefreshView: public View
-{
+class RefreshView : public View {
 public:
-	RefreshView(ViewLayout* viewLayout);
-	virtual ~RefreshView();
+  explicit RefreshView(ViewLayout* viewLayout);
+  ~RefreshView() override;
 
-	virtual std::string getName() const;
+  [[nodiscard]] std::string getName() const override;
 
 private:
-	RefreshController* getController();
+  RefreshController* getController();
 };
-
-#endif	  // REFRESH_VIEW_H

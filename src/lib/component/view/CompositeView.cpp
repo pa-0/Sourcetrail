@@ -2,62 +2,50 @@
 
 #include <algorithm>
 
-CompositeView::CompositeView(
-	ViewLayout* viewLayout, CompositeDirection direction, const std::string& name, Id tabId)
-	: View(viewLayout), m_direction(direction), m_name(name), m_tabId(tabId)
-{
+CompositeView::CompositeView(ViewLayout* viewLayout, CompositeDirection direction, const std::string& name, Id tabId)
+    : View(viewLayout), m_direction(direction), m_name(name), m_tabId(tabId) {}
+
+CompositeView::~CompositeView() = default;
+
+Id CompositeView::getSchedulerId() const {
+  return m_tabId;
 }
 
-CompositeView::~CompositeView() {}
-
-Id CompositeView::getSchedulerId() const
-{
-	return m_tabId;
+CompositeView::CompositeDirection CompositeView::getDirection() const {
+  return m_direction;
 }
 
-CompositeView::CompositeDirection CompositeView::getDirection() const
-{
-	return m_direction;
+const std::vector<View*>& CompositeView::getViews() const {
+  return m_views;
 }
 
-const std::vector<View*>& CompositeView::getViews() const
-{
-	return m_views;
+std::string CompositeView::getName() const {
+  return m_name;
 }
 
-std::string CompositeView::getName() const
-{
-	return m_name;
+void CompositeView::addView(View* view) {
+  m_views.push_back(view);
+
+  addViewWidget(view);
 }
 
-void CompositeView::addView(View* view)
-{
-	m_views.push_back(view);
+void CompositeView::removeView(View* view) {
+  auto iterator = std::find(m_views.begin(), m_views.end(), view);
+  if(iterator == m_views.end()) {
+    return;
+  }
 
-	addViewWidget(view);
-}
-
-void CompositeView::removeView(View* view)
-{
-	std::vector<View*>::iterator it = std::find(m_views.begin(), m_views.end(), view);
-	if (it == m_views.end())
-	{
-		return;
-	}
-
-	m_views.erase(it);
+  m_views.erase(iterator);
 }
 
 void CompositeView::showView(View* /*view*/) {}
 
 void CompositeView::hideView(View* /*view*/) {}
 
-void CompositeView::setViewEnabled(View* view, bool enabled)
-{
-	getViewLayout()->setViewEnabled(view, enabled);
+void CompositeView::setViewEnabled(View* view, bool enabled) {
+  getViewLayout()->setViewEnabled(view, enabled);
 }
 
-void CompositeView::handleMessage(MessageFocusedSearchView* message)
-{
-	showFocusIndicator(message->focusIn);
+void CompositeView::handleMessage(MessageFocusedSearchView* message) {
+  showFocusIndicator(message->focusIn);
 }

@@ -7,6 +7,8 @@ TabbedView::TabbedView(ViewLayout* viewLayout, const std::string& name)
 {
 }
 
+TabbedView::~TabbedView() = default;
+
 const std::vector<View*>& TabbedView::getViews() const
 {
 	return m_views;

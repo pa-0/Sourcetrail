@@ -1,5 +1,4 @@
-#ifndef TABBED_VIEW_H
-#define TABBED_VIEW_H
+#pragma once
 
 #include <vector>
 
@@ -7,32 +6,29 @@
 #include "ViewLayout.h"
 
 class TabbedView
-	: public View
-	, public ViewLayout
-{
+    : public View
+    , public ViewLayout {
 public:
-	TabbedView(ViewLayout* viewLayout, const std::string& name);
-	virtual ~TabbedView() = default;
+  TabbedView(ViewLayout* viewLayout, const std::string& name);
+  ~TabbedView() override;
 
-	const std::vector<View*>& getViews() const;
+  [[nodiscard]] const std::vector<View*>& getViews() const;
 
-	virtual void addViewWidget(View* view) = 0;
+  virtual void addViewWidget(View* view) = 0;
 
-	// View implementation
-	virtual std::string getName() const;
+  // View implementation
+  [[nodiscard]] std::string getName() const override;
 
-	// ViewLayout implementation
-	virtual void addView(View* view);
-	virtual void removeView(View* view);
+  // ViewLayout implementation
+  void addView(View* view) override;
+  void removeView(View* view) override;
 
-	virtual void showView(View* view);
-	virtual void hideView(View* view);
+  void showView(View* view) override;
+  void hideView(View* view) override;
 
-	virtual void setViewEnabled(View* view, bool enabled);
+  void setViewEnabled(View* view, bool enabled) override;
 
 private:
-	std::vector<View*> m_views;
-	std::string m_name;
+  std::vector<View*> m_views;
+  std::string m_name;
 };
-
-#endif	  // TABBED_VIEW_H
