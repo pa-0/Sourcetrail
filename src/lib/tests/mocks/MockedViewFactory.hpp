@@ -4,7 +4,7 @@
 
 #include "ViewFactory.h"
 
-struct MockedViewFactory final : public ViewFactory {
+struct MockedViewFactory : public ViewFactory {
   using MainViewPtr = std::shared_ptr<MainView>;
   MOCK_METHOD(MainViewPtr, createMainView, (StorageAccess* storageAccess), (const, override));
 
