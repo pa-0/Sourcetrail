@@ -21,6 +21,8 @@ foreach(test_name IN LISTS test_lib_gui_names)
       AUTOMOC ON
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
-  add_test(${test_name} ${test_name} WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
+  add_test(NAME ${test_name}
+           COMMAND ${test_name}
+           WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 endforeach()
 
