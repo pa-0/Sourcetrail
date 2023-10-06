@@ -1,29 +1,24 @@
-#ifndef UNDO_REDO_VIEW_H
-#define UNDO_REDO_VIEW_H
+#pragma once
 
 #include <vector>
 
 #include "View.h"
-#include <vector>
 
 class UndoRedoController;
 struct SearchMatch;
 
-class UndoRedoView: public View
-{
+class UndoRedoView : public View {
 public:
-	UndoRedoView(ViewLayout* viewLayout);
-	~UndoRedoView(void);
+  UndoRedoView(ViewLayout* viewLayout);
+  ~UndoRedoView() override;
 
-	virtual std::string getName() const;
+  std::string getName() const override;
 
-	virtual void setRedoButtonEnabled(bool enabled) = 0;
-	virtual void setUndoButtonEnabled(bool enabled) = 0;
+  virtual void setRedoButtonEnabled(bool enabled) = 0;
+  virtual void setUndoButtonEnabled(bool enabled) = 0;
 
-	virtual void updateHistory(const std::vector<SearchMatch>& searchMatches, size_t currentIndex) = 0;
+  virtual void updateHistory(const std::vector<SearchMatch>& searchMatches, size_t currentIndex) = 0;
 
 protected:
-	UndoRedoController* getController();
+  UndoRedoController* getController();
 };
-
-#endif	  // UNDO_REDO_VIEW_H
