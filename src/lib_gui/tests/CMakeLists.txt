@@ -12,9 +12,9 @@ foreach(test_name IN LISTS test_lib_gui_names)
   target_link_libraries(
     ${test_name}
     PUBLIC
-      testHelper
-      catch2::catch2
-      trompeloeil::trompeloeil
+      GTest::gmock
+      GTest::gtest
+      GTest::gtest_main
       Sourcetrail::lib
       Sourcetrail::lib_gui
       $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>)
@@ -29,17 +29,10 @@ foreach(test_name IN LISTS test_lib_gui_names)
       ${EXTERNAL_INCLUDE_PATHS}
       ${CMAKE_BINARY_DIR}/src/lib)
 
-  # automatically discover ${test_name} that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
-  # to whatever you want, or use different for different binaries
-  catch_discover_tests(
+  gtest_discover_tests(
     ${test_name}
-    TEST_PREFIX
-    "unittests."
-    REPORTER XML
-    OUTPUT_DIR .
-    OUTPUT_PREFIX "unittests."
-    OUTPUT_SUFFIX .xml
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/"
+    TEST_PREFIX "unittests.")
 endforeach()
 
 add_subdirectory(gui)
