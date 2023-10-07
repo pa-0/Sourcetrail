@@ -1,5 +1,3 @@
 #include "NetworkFactory.h"
 
-NetworkFactory::NetworkFactory() {}
-
-NetworkFactory::~NetworkFactory() {}
+NetworkFactory::~NetworkFactory() = default;

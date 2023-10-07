@@ -4,6 +4,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 set(
   test_lib_gui_names
   globalStringsTestSuite
+  QtNetworkFactoryTestSuite
 )
 
 foreach(test_name IN LISTS test_lib_gui_names)

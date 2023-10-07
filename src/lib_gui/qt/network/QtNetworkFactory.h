@@ -1,16 +1,10 @@
-#ifndef QT_NETWORK_FACTORY_H
-#define QT_NETWORK_FACTORY_H
+#pragma once
 
 #include "NetworkFactory.h"
 
-class QtNetworkFactory: public NetworkFactory
-{
+class QtNetworkFactory final : public NetworkFactory {
 public:
-	QtNetworkFactory();
-	virtual ~QtNetworkFactory();
+  ~QtNetworkFactory() override;
 
-	virtual std::shared_ptr<IDECommunicationController> createIDECommunicationController(
-		StorageAccess* storageAccess) const override;
+  std::shared_ptr<IDECommunicationController> createIDECommunicationController(StorageAccess* storageAccess) const override;
 };
-
-#endif	  // QT_NETWORK_FACTORY_H
