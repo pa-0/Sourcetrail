@@ -3,10 +3,12 @@
 #include <map>
 #include <memory>
 // internal
-#include "Vector2.h"
 #include "AccessKind.h"
+#include "FilePath.h"
 #include "GroupType.h"
-#include "Node.h"
+#include "Vector2.h"
+#include "NodeType.h"
+#include "Edge.h"
 
 class GraphViewStyleImpl;
 
@@ -113,13 +115,8 @@ public:
   static NodeMargins getMarginsOfTextNode(int fontSizeDiff);
   static NodeMargins getMarginsOfGroupNode(GroupType type, bool hasName);
 
-  static NodeStyle getStyleForNodeType(NodeType type,
-                                       bool defined,
-                                       bool isActive,
-                                       bool isFocused,
-                                       bool isCoFocused,
-                                       bool hasChildren,
-                                       bool hasQualifier);
+  static NodeStyle getStyleForNodeType(
+      NodeType type, bool defined, bool isActive, bool isFocused, bool isCoFocused, bool hasChildren, bool hasQualifier);
   static NodeStyle getStyleOfAccessNode();
   static NodeStyle getStyleOfExpandToggleNode();
   static NodeStyle getStyleOfCountCircle();
@@ -128,8 +125,7 @@ public:
   static NodeStyle getStyleOfTextNode(int fontSizeDiff);
   static NodeStyle getStyleOfGroupNode(GroupType type, bool isCoFocused);
 
-  static EdgeStyle getStyleForEdgeType(
-      Edge::EdgeType type, bool isActive, bool isFocused, bool isTrailEdge, bool isAmbiguous);
+  static EdgeStyle getStyleForEdgeType(Edge::EdgeType type, bool isActive, bool isFocused, bool isTrailEdge, bool isAmbiguous);
 
   static int toGridOffset(int x);
   static int toGridSize(int x);
