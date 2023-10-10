@@ -16,15 +16,13 @@ StatusView* StatusController::getView() const {
 
 void StatusController::clear() {}
 
-void StatusController::handleMessage(MessageClearStatusView*  /*message*/)
-{
-	m_status.clear();
-	getView()->clear();
+void StatusController::handleMessage(MessageClearStatusView* /*message*/) {
+  m_status.clear();
+  getView()->clear();
 }
 
-void StatusController::handleMessage(MessageShowStatus*  /*message*/)
-{
-	getView()->showDockWidget();
+void StatusController::handleMessage(MessageShowStatus* /*message*/) {
+  getView()->showDockWidget();
 }
 
 void StatusController::handleMessage(MessageStatus* message) {
@@ -49,7 +47,7 @@ void StatusController::handleMessage(MessageStatusFilterChanged* message) {
   getView()->clear();
   addStatus(m_status);
 
-  ApplicationSettings* settings = ApplicationSettings::getInstance().get();
+  auto* settings = ApplicationSettings::getInstance().get();
   settings->setStatusFilter(m_statusFilter);
   settings->save();
 }
