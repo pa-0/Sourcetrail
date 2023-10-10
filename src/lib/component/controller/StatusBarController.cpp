@@ -4,10 +4,9 @@
 #include "StorageAccess.h"
 #include "logging.h"
 
-StatusBarController::StatusBarController(StorageAccess* storageAccess)
-    : m_storageAccess(storageAccess) {}
+StatusBarController::StatusBarController(StorageAccess* storageAccess) : m_storageAccess(storageAccess) {}
 
-StatusBarController::~StatusBarController() {}
+StatusBarController::~StatusBarController() = default;
 
 StatusBarView* StatusBarController::getView() {
   return Controller::getView<StatusBarView>();
@@ -18,7 +17,7 @@ void StatusBarController::clear() {
 }
 
 void StatusBarController::handleMessage(MessageErrorCountClear* /*message*/) {
-  getView()->setErrorCount(ErrorCountInfo());
+  clear();
 }
 
 void StatusBarController::handleMessage(MessageErrorCountUpdate* message) {
