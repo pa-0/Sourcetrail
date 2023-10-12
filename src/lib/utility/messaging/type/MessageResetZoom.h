@@ -1,17 +1,9 @@
-#ifndef MESSAGE_RESET_ZOOM_H
-#define MESSAGE_RESET_ZOOM_H
-
+#pragma once
 #include "Message.h"
 
-class MessageResetZoom: public Message<MessageResetZoom>
-{
+class MessageResetZoom : public Message<MessageResetZoom> {
 public:
-	MessageResetZoom() {}
-
-	static const std::string getStaticType()
-	{
-		return "MessageResetZoom";
-	}
+  static std::string getStaticType() {
+    return "MessageResetZoom";
+  }
 };
-
-#endif	  // MESSAGE_RESET_ZOOM_H
