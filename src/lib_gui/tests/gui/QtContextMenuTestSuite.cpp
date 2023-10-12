@@ -7,24 +7,7 @@
 #include <QTest>
 
 #include "QtContextMenu.h"
-
-namespace {
-template <class Type>
-Type* getChildByText(const QtContextMenu& object, const QString& name) {
-  auto types = object.findChildren<Type*>();
-  if(types.empty()) {
-    return nullptr;
-  }
-  if(types.size() == 1) {
-    auto* type = types.front();
-    return (type->text() == name) ? type : nullptr;
-  }
-  auto itr = std::find_if(std::cbegin(types), std::cend(types), [&name](auto* type) {
-    return type->text() == name;
-  });
-  return (itr == std::cend(types)) ? nullptr : *itr;
-}
-}    // namespace
+#include "utilities.hpp"
 
 void QtContextMenuTest::testingStructure() {
   auto* instance = QtContextMenu::getInstance();
@@ -52,18 +35,18 @@ void QtContextMenuTest::testingAddileActions() {
   auto* instance = QtContextMenu::getInstance();
   instance->addFileActions(FilePath{"/tmp"});
 
-  auto* action = getChildByText<QAction>(*instance, "Copy Full Path");
+  auto* action = utilities::getChildByText<QAction>(*instance, "Copy Full Path");
   QVERIFY(action != nullptr);
   QVERIFY(action->isEnabled());
 
-  action = getChildByText<QAction>(*instance, "Open Containing Folder");
+  action = utilities::getChildByText<QAction>(*instance, "Open Containing Folder");
   QVERIFY(action != nullptr);
   QVERIFY(action->isEnabled());
 }
 
 void QtContextMenuTest::testingEnableUndo() {
   auto* instance = QtContextMenu::getInstance();
-  auto* action = getChildByText<QAction>(*instance, "Back");
+  auto* action = utilities::getChildByText<QAction>(*instance, "Back");
   QVERIFY(action != nullptr);
   QVERIFY(action->isEnabled());
   instance->enableUndo(false);
@@ -72,7 +55,7 @@ void QtContextMenuTest::testingEnableUndo() {
 
 void QtContextMenuTest::testingEnableRedo() {
   auto* instance = QtContextMenu::getInstance();
-  auto* action = getChildByText<QAction>(*instance, "Forward");
+  auto* action = utilities::getChildByText<QAction>(*instance, "Forward");
   QVERIFY(action != nullptr);
   QVERIFY(action->isEnabled());
   instance->enableRedo(false);

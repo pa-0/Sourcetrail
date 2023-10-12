@@ -1,42 +1,39 @@
-#ifndef QT_GRAPH_NODE_QUALIFIER_H
-#define QT_GRAPH_NODE_QUALIFIER_H
+#pragma once
 
 #include <QGraphicsPolygonItem>
 #include <QGraphicsRectItem>
 
+#include "NameHierarchy.h"
 #include "QtGraphNode.h"
 
-class QtGraphNodeQualifier: public QtGraphNode
-{
-	Q_OBJECT
+class QtGraphNodeQualifier : public QtGraphNode {
+  Q_OBJECT
 public:
-	QtGraphNodeQualifier(const NameHierarchy& name);
-	virtual ~QtGraphNodeQualifier();
+  QtGraphNodeQualifier(const NameHierarchy& name);
+  virtual ~QtGraphNodeQualifier();
 
-	// QtGraphNode implementation
-	virtual bool isQualifierNode() const;
+  // QtGraphNode implementation
+  virtual bool isQualifierNode() const;
 
-	virtual bool setPosition(const Vec2i& pos);
+  virtual bool setPosition(const Vec2i& pos);
 
-	virtual void onClick();
-	virtual void updateStyle();
+  virtual void onClick();
+  virtual void updateStyle();
 
 protected:
-	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
-	virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+  virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+  virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 
-	virtual void matchName(const std::wstring& /*query*/, std::vector<QtGraphNode*>* /*matchedNodes*/) {}
+  virtual void matchName(const std::wstring& /*query*/, std::vector<QtGraphNode*>* /*matchedNodes*/) {}
 
 private:
-	const NameHierarchy m_qualifierName;
+  const NameHierarchy m_qualifierName;
 
-	QGraphicsRectItem* m_background;
-	QGraphicsRectItem* m_leftBorder;
-	QGraphicsPolygonItem* m_rightArrow;
-	QGraphicsPolygonItem* m_rightArrowSmall;
-	QGraphicsSimpleTextItem* m_name;
+  QGraphicsRectItem* m_background;
+  QGraphicsRectItem* m_leftBorder;
+  QGraphicsPolygonItem* m_rightArrow;
+  QGraphicsPolygonItem* m_rightArrowSmall;
+  QGraphicsSimpleTextItem* m_name;
 
-	Vec2i m_pos;
+  Vec2i m_pos;
 };
-
-#endif	  // QT_GRAPH_NODE_QUALIFIER_H
