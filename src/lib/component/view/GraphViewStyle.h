@@ -43,6 +43,13 @@ public:
     std::string text;
     std::string icon;
     std::string hatching;
+    bool operator==(const NodeColor& node) const {
+        return fill == node.fill &&
+          border == node.border &&
+          text == node.text &&
+          icon == node.icon &&
+          hatching == node.hatching;
+    }
   };
 
   struct NodeStyle {
