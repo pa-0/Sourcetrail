@@ -2,14 +2,14 @@
 
 #include "StatusBarController.h"
 
-StatusBarView::StatusBarView(ViewLayout* viewLayout): View(viewLayout) {}
+StatusBarView::StatusBarView(ViewLayout* viewLayout) : View(viewLayout) {}
 
-std::string StatusBarView::getName() const
-{
-	return "StatusBarView";
+StatusBarView::~StatusBarView() = default;
+
+std::string StatusBarView::getName() const {
+  return "StatusBarView";
 }
 
-StatusBarController* StatusBarView::getController()
-{
-	return View::getController<StatusBarController>();
+StatusBarController* StatusBarView::getStatusBarController() {
+  return View::getController<StatusBarController>();
 }
