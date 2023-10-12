@@ -10,6 +10,8 @@ then
     mkdir $BUILD_DIR/coverage
 fi
 
+CORES_COUNT=`nproc --all`
+
 ctest --progress
 cd $BUILD_DIR/coverage
 gcovr -r $SOURCE_DIR/src/                  \
@@ -26,4 +28,4 @@ gcovr -r $SOURCE_DIR/src/                  \
       -e $SOURCE_DIR/src/test              \
       --html-details index.html            \
       --gcov-ignore-errors=no_working_dir_found \
-      -j 12 ..
+      -j $CORES_COUNT ..
