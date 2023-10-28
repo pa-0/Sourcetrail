@@ -1,9 +1,9 @@
 #pragma once
-// STL
+
 #include <memory>
 #include <string>
 #include <vector>
-// internal
+
 #include "ConfigManager.h"
 #include "FilePath.h"
 
@@ -17,12 +17,12 @@ public:
   Settings& operator=(Settings&& other) noexcept;
   virtual ~Settings();
 
-  bool load(const FilePath& filePath, bool readOnly = false);
-  bool loadFromString(const std::string& text, bool readOnly = false);
-  bool save();
-  bool save(const FilePath& filePath);
+  virtual bool load(const FilePath& filePath, bool readOnly = false);
+  virtual bool loadFromString(const std::string& text, bool readOnly = false);
+  virtual bool save();
+  virtual bool save(const FilePath& filePath);
 
-  void clear();
+  virtual void clear();
 
   virtual const FilePath& getFilePath() const;
 

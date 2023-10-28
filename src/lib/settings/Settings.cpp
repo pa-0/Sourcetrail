@@ -1,5 +1,5 @@
 #include "Settings.h"
-// internal
+
 #include "TextAccess.h"
 #include "logging.h"
 
@@ -7,8 +7,7 @@ Settings::Settings() {
   clear();
 }
 
-Settings::Settings(const Settings& other)
-    : m_config(other.m_config->createCopy()), m_filePath(other.m_filePath) {}
+Settings::Settings(const Settings& other) : m_config(other.m_config->createCopy()), m_filePath(other.m_filePath) {}
 
 Settings& Settings::operator=(const Settings& other) {
   if(&other != this) {
