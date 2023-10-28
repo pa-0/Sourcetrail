@@ -1,9 +1,9 @@
-// internal
-#include "StorageAccess.h"
-#include "NodeTypeSet.h"
-#include "FileInfo.h"
-// trompeloeil
+#pragma once
 #include <gmock/gmock.h>
+
+#include "FileInfo.h"
+#include "NodeTypeSet.h"
+#include "StorageAccess.h"
 
 class MockedStorageAccess : public StorageAccess {
 public:
@@ -62,7 +62,7 @@ public:
   MOCK_METHOD(TypeMask, getAvailableEdgeTypes, (), (const, override));
 
   MOCK_METHOD(Ids, getActiveTokenIdsForId, (Id, Id*), (const, override));
-  
+
   MOCK_METHOD(Ids, getNodeIdsForLocationIds, (const Ids&), (const, override));
 
   MOCK_METHOD(SourceLocationCollectionPtr, getSourceLocationsForTokenIds, (const Ids&), (const, override));
