@@ -7,7 +7,6 @@
 #include "SettingsMigrationMoveKey.h"
 #include "SettingsMigrator.h"
 #include "Status.h"
-#include "TimeStamp.h"
 #include "UserPaths.h"
 #include "Version.h"
 #include "utility.h"
@@ -34,75 +33,58 @@ bool ApplicationSettings::load(const FilePath& filePath, bool readOnly) {
   SettingsMigrator migrator;
 
   migrator.addMigration(1,
-                        std::make_shared<SettingsMigrationMoveKey>(
-                            "source/header_search_paths/header_search_path",
-                            "indexing/cxx/header_search_paths/header_search_path"));
+                        std::make_shared<SettingsMigrationMoveKey>("source/header_search_paths/header_search_path",
+                                                                   "indexing/cxx/header_search_paths/header_search_path"));
   migrator.addMigration(1,
-                        std::make_shared<SettingsMigrationMoveKey>(
-                            "source/framework_search_paths/framework_search_path",
-                            "indexing/cxx/framework_search_paths/framework_search_path"));
-  migrator.addMigration(1,
-                        std::make_shared<SettingsMigrationMoveKey>(
-                            "application/indexer_thread_count", "indexing/indexer_thread_count"));
+                        std::make_shared<SettingsMigrationMoveKey>("source/framework_search_paths/framework_search_path",
+                                                                   "indexing/cxx/framework_search_paths/framework_search_path"));
   migrator.addMigration(
-      2,
-      std::make_shared<SettingsMigrationMoveKey>("network/coati_port", "network/sourcetrail_port"));
-  migrator.addMigration(
-      4,
-      std::make_shared<SettingsMigrationLambda>([](const SettingsMigration* migration,
-                                                   Settings* settings) {
-        std::wstring colorSchemePathString = migration->getValueFromSettings<std::wstring>(
-            settings, "application/color_scheme", L"");
-        if(!colorSchemePathString.empty()) {
-          FilePath colorSchemePath(colorSchemePathString);
-          migration->setValueInSettings(
-              settings, "application/color_scheme", colorSchemePath.withoutExtension().fileName());
-        }
-      }));
-  migrator.addMigration(
-      7,
-      std::make_shared<SettingsMigrationLambda>(
-          [](const SettingsMigration* migration, Settings* settings) {
-            std::vector<std::string> recentProjects;
-            recentProjects.push_back("./projects/tictactoe_py/tictactoe_py.srctrlprj");
-            utility::append(
-                recentProjects,
-                migration->getValuesFromSettings(
-                    settings, "user/recent_projects/recent_project", std::vector<std::string>()));
+      1, std::make_shared<SettingsMigrationMoveKey>("application/indexer_thread_count", "indexing/indexer_thread_count"));
+  migrator.addMigration(2, std::make_shared<SettingsMigrationMoveKey>("network/coati_port", "network/sourcetrail_port"));
+  migrator.addMigration(4, std::make_shared<SettingsMigrationLambda>([](const SettingsMigration* migration, Settings* settings) {
+                          std::wstring colorSchemePathString = migration->getValueFromSettings<std::wstring>(
+                              settings, "application/color_scheme", L"");
+                          if(!colorSchemePathString.empty()) {
+                            FilePath colorSchemePath(colorSchemePathString);
+                            migration->setValueInSettings(
+                                settings, "application/color_scheme", colorSchemePath.withoutExtension().fileName());
+                          }
+                        }));
+  migrator.addMigration(7, std::make_shared<SettingsMigrationLambda>([](const SettingsMigration* migration, Settings* settings) {
+                          std::vector<std::string> recentProjects;
+                          recentProjects.push_back("./projects/tictactoe_py/tictactoe_py.srctrlprj");
+                          utility::append(recentProjects,
+                                          migration->getValuesFromSettings(
+                                              settings, "user/recent_projects/recent_project", std::vector<std::string>()));
 
-            for(size_t i = 0; i < recentProjects.size(); i++) {
-              if(recentProjects[i] == "./projects/tictactoe/tictactoe.srctrlprj") {
-                recentProjects[i] = "./projects/tictactoe_cpp/tictactoe_cpp.srctrlprj";
-              }
-            }
-            migration->setValuesInSettings(
-                settings, "user/recent_projects/recent_project", recentProjects);
-          }));
-  migrator.addMigration(
-      8,
-      std::make_shared<SettingsMigrationLambda>([](const SettingsMigration* migration,
-                                                   Settings* settings) {
-        std::vector<FilePath> cxxHeaderSearchPaths = migration->getValuesFromSettings(
-            settings, "indexing/cxx/header_search_paths/header_search_path", std::vector<FilePath>());
+                          for(size_t i = 0; i < recentProjects.size(); i++) {
+                            if(recentProjects[i] == "./projects/tictactoe/tictactoe.srctrlprj") {
+                              recentProjects[i] = "./projects/tictactoe_cpp/tictactoe_cpp.srctrlprj";
+                            }
+                          }
+                          migration->setValuesInSettings(settings, "user/recent_projects/recent_project", recentProjects);
+                        }));
+  migrator.addMigration(8, std::make_shared<SettingsMigrationLambda>([](const SettingsMigration* migration, Settings* settings) {
+                          std::vector<FilePath> cxxHeaderSearchPaths = migration->getValuesFromSettings(
+                              settings, "indexing/cxx/header_search_paths/header_search_path", std::vector<FilePath>());
 
-        std::vector<FilePath> newCxxHeaderSearchPaths;
-        for(const FilePath& path : cxxHeaderSearchPaths) {
-          if(path.getCanonical().getConcatenated(L"/stdarg.h").exists() &&
-             path.str().find("data/cxx/include") != std::string::npos) {
-            continue;
-          }
+                          std::vector<FilePath> newCxxHeaderSearchPaths;
+                          for(const FilePath& path : cxxHeaderSearchPaths) {
+                            if(path.getCanonical().getConcatenated(L"/stdarg.h").exists() &&
+                               path.str().find("data/cxx/include") != std::string::npos) {
+                              continue;
+                            }
 
-          newCxxHeaderSearchPaths.push_back(path);
-        }
+                            newCxxHeaderSearchPaths.push_back(path);
+                          }
 
-        migration->setValuesInSettings(
-            settings, "indexing/cxx/header_search_paths/header_search_path", newCxxHeaderSearchPaths);
+                          migration->setValuesInSettings(
+                              settings, "indexing/cxx/header_search_paths/header_search_path", newCxxHeaderSearchPaths);
 
-        if(newCxxHeaderSearchPaths.size() == 0) {
-          migration->setValueInSettings(
-              settings, "indexing/cxx/has_prefilled_header_search_paths", false);
-        }
-      }));
+                          if(newCxxHeaderSearchPaths.size() == 0) {
+                            migration->setValueInSettings(settings, "indexing/cxx/has_prefilled_header_search_paths", false);
+                          }
+                        }));
   bool migrated = migrator.migrate(this, ApplicationSettings::VERSION);
   if(migrated) {
     save();
@@ -174,8 +156,7 @@ std::wstring ApplicationSettings::getColorSchemeName() const {
 
 FilePath ApplicationSettings::getColorSchemePath() const {
   FilePath defaultPath(ResourcePaths::getColorSchemesDirectoryPath().concatenate(L"bright.xml"));
-  FilePath path(
-      ResourcePaths::getColorSchemesDirectoryPath().concatenate(getColorSchemeName() + L".xml"));
+  FilePath path(ResourcePaths::getColorSchemesDirectoryPath().concatenate(getColorSchemeName() + L".xml"));
 
   if(path != defaultPath && !path.exists()) {
     return defaultPath;
@@ -237,8 +218,7 @@ void ApplicationSettings::setGraphControlsVisible(bool visible) {
 }
 
 GroupType ApplicationSettings::getGraphGrouping() const {
-  return stringToGroupType(
-      getValue<std::wstring>("application/graph_grouping", groupTypeToString(GroupType::NONE)));
+  return stringToGroupType(getValue<std::wstring>("application/graph_grouping", groupTypeToString(GroupType::NONE)));
 }
 
 void ApplicationSettings::setGraphGrouping(GroupType type) {
@@ -278,8 +258,7 @@ void ApplicationSettings::setVerboseIndexerLoggingEnabled(bool value) {
 }
 
 FilePath ApplicationSettings::getLogDirectoryPath() const {
-  return FilePath(getValue<std::wstring>(
-      "application/log_directory_path", UserPaths::getLogDirectoryPath().getAbsolute().wstr()));
+  return FilePath(getValue<std::wstring>("application/log_directory_path", UserPaths::getLogDirectoryPath().getAbsolute().wstr()));
 }
 
 void ApplicationSettings::setLogDirectoryPath(const FilePath& path) {
@@ -295,8 +274,7 @@ void ApplicationSettings::setStatusFilter(int mask) {
 }
 
 int ApplicationSettings::getStatusFilter() const {
-  return getValue<int>(
-      "application/status_filter", StatusType::STATUS_INFO | StatusType::STATUS_ERROR);
+  return getValue<int>("application/status_filter", StatusType::STATUS_INFO | StatusType::STATUS_ERROR);
 }
 
 int ApplicationSettings::getLogFilter() const {
@@ -348,8 +326,7 @@ std::vector<FilePath> ApplicationSettings::getFrameworkSearchPathsExpanded() con
 }
 
 bool ApplicationSettings::setFrameworkSearchPaths(const std::vector<FilePath>& frameworkSearchPaths) {
-  return setPathValues(
-      "indexing/cxx/framework_search_paths/framework_search_path", frameworkSearchPaths);
+  return setPathValues("indexing/cxx/framework_search_paths/framework_search_path", frameworkSearchPaths);
 }
 
 bool ApplicationSettings::getHasPrefilledFrameworkSearchPaths() const {

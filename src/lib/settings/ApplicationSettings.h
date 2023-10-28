@@ -15,8 +15,9 @@ public:
   static const size_t VERSION;
 
   ApplicationSettings() = default;
+  ~ApplicationSettings() override = default;
 
-  bool load(const FilePath& filePath, bool readOnly = false);
+  bool load(const FilePath& filePath, bool readOnly = false) override;
 
   bool operator==(const ApplicationSettings& other) const;
 
