@@ -1,15 +1,9 @@
 #pragma once
-// STL
 #include <set>
-// internal
+
 #include "FilePath.h"
 
-enum RefreshMode {
-  REFRESH_NONE,
-  REFRESH_UPDATED_FILES,
-  REFRESH_UPDATED_AND_INCOMPLETE_FILES,
-  REFRESH_ALL_FILES
-};
+enum RefreshMode { REFRESH_NONE, REFRESH_UPDATED_FILES, REFRESH_UPDATED_AND_INCOMPLETE_FILES, REFRESH_ALL_FILES };
 
 struct RefreshInfo {
   std::set<FilePath> filesToIndex;
