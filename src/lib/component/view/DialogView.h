@@ -19,11 +19,11 @@ public:
   DialogView(UseCase useCase, StorageAccess* storageAccess);
   virtual ~DialogView() = default;
 
-  UseCase getUseCase() const;
+  [[nodiscard]] UseCase getUseCase() const;
 
   void setDialogsHideable(bool hideable);
 
-  virtual bool dialogsHidden() const;
+  [[nodiscard]] virtual bool dialogsHidden() const;
   virtual void clearDialogs();
 
   virtual void showUnknownProgressDialog(const std::wstring& title, const std::wstring& message);
@@ -60,7 +60,7 @@ public:
   virtual int confirm(const std::wstring& message, const std::vector<std::wstring>& options);
 
 protected:
-  const UseCase m_useCase;
+  UseCase m_useCase;
   StorageAccess* m_storageAccess;
 
   bool m_dialogsHideable = false;
