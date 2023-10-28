@@ -1,8 +1,8 @@
 #pragma once
-// STL
+
 #include <memory>
 #include <vector>
-// internal
+
 #include "FullTextSearchIndex.h"
 #include "HierarchyCache.h"
 #include "SearchIndex.h"
@@ -42,7 +42,7 @@ public:
 
   void addElementComponent(const StorageElementComponent& component) override;
   void addElementComponents(const std::vector<StorageElementComponent>& components) override;
-  
+
   Id addError(const StorageErrorData& data) override;
 
   void removeElement(const Id id);
@@ -90,8 +90,7 @@ public:
   std::set<FilePath> getReferencing(const std::set<FilePath>& filePaths) const;
 
   void clearAllErrors();
-  void clearFileElements(const std::vector<FilePath>& filePaths,
-                         std::function<void(int)> updateStatusCallback);
+  void clearFileElements(const std::vector<FilePath>& filePaths, std::function<void(int)> updateStatusCallback);
 
   std::vector<FileInfo> getFileInfoForAllFiles() const;
   std::set<FilePath> getIncompleteFiles() const;
@@ -104,20 +103,18 @@ public:
   // StorageAccess implementation
   Id getNodeIdForFileNode(const FilePath& filePath) const override;
   Id getNodeIdForNameHierarchy(const NameHierarchy& nameHierarchy) const override;
-  std::vector<Id> getNodeIdsForNameHierarchies(
-      const std::vector<NameHierarchy> nameHierarchies) const override;
+  std::vector<Id> getNodeIdsForNameHierarchies(const std::vector<NameHierarchy> nameHierarchies) const override;
 
   NameHierarchy getNameHierarchyForNodeId(Id nodeId) const override;
   std::vector<NameHierarchy> getNameHierarchiesForNodeIds(const std::vector<Id>& nodeIds) const override;
-  std::map<Id, std::pair<Id, NameHierarchy>> getNodeIdToParentFileMap(
-      const std::vector<Id>& nodeIds) const override;
+  std::map<Id, std::pair<Id, NameHierarchy>> getNodeIdToParentFileMap(const std::vector<Id>& nodeIds) const override;
 
   NodeType getNodeTypeForNodeWithId(Id nodeId) const override;
 
   StorageEdge getEdgeById(Id edgeId) const override;
 
-  std::shared_ptr<SourceLocationCollection> getFullTextSearchLocations(
-      const std::wstring& searchTerm, bool caseSensitive) const override;
+  std::shared_ptr<SourceLocationCollection> getFullTextSearchLocations(const std::wstring& searchTerm,
+                                                                       bool caseSensitive) const override;
 
   std::vector<SearchMatch> getAutocompletionMatches(const std::wstring& query,
                                                     NodeTypeSet acceptedNodeTypes,
@@ -126,10 +123,8 @@ public:
                                                           const NodeTypeSet& acceptedNodeTypes,
                                                           size_t maxResultsCount,
                                                           size_t maxBestScoredResultsLength) const;
-  std::vector<SearchMatch> getAutocompletionFileMatches(const std::wstring& query,
-                                                        size_t maxResultsCount) const;
-  std::vector<SearchMatch> getAutocompletionCommandMatches(const std::wstring& query,
-                                                           NodeTypeSet acceptedNodeTypes) const;
+  std::vector<SearchMatch> getAutocompletionFileMatches(const std::wstring& query, size_t maxResultsCount) const;
+  std::vector<SearchMatch> getAutocompletionCommandMatches(const std::wstring& query, NodeTypeSet acceptedNodeTypes) const;
   std::vector<SearchMatch> getSearchMatchesForTokenIds(const std::vector<Id>& elementIds) const override;
 
   /**
@@ -200,20 +195,16 @@ public:
   std::vector<Id> getActiveTokenIdsForId(Id tokenId, Id* declarationId) const override;
   std::vector<Id> getNodeIdsForLocationIds(const std::vector<Id>& locationIds) const override;
 
-  std::shared_ptr<SourceLocationCollection> getSourceLocationsForTokenIds(
-      const std::vector<Id>& tokenIds) const override;
-  std::shared_ptr<SourceLocationCollection> getSourceLocationsForLocationIds(
-      const std::vector<Id>& locationIds) const override;
+  std::shared_ptr<SourceLocationCollection> getSourceLocationsForTokenIds(const std::vector<Id>& tokenIds) const override;
+  std::shared_ptr<SourceLocationCollection> getSourceLocationsForLocationIds(const std::vector<Id>& locationIds) const override;
 
   std::shared_ptr<SourceLocationFile> getSourceLocationsForFile(const FilePath& filePath) const override;
   std::shared_ptr<SourceLocationFile> getSourceLocationsForLinesInFile(const FilePath& filePath,
                                                                        size_t startLine,
                                                                        size_t endLine) const override;
-  std::shared_ptr<SourceLocationFile> getSourceLocationsOfTypeInFile(const FilePath& filePath,
-                                                                     LocationType type) const override;
+  std::shared_ptr<SourceLocationFile> getSourceLocationsOfTypeInFile(const FilePath& filePath, LocationType type) const override;
 
-  std::shared_ptr<TextAccess> getFileContent(const FilePath& filePath,
-                                             bool showsErrors) const override;
+  std::shared_ptr<TextAccess> getFileContent(const FilePath& filePath, bool showsErrors) const override;
   bool hasContentForFile(const FilePath& filePath) const;
 
   FileInfo getFileInfoForFileId(Id id) const override;
@@ -225,10 +216,8 @@ public:
 
   ErrorCountInfo getErrorCount() const override;
   std::vector<ErrorInfo> getErrorsLimited(const ErrorFilter& filter) const override;
-  std::vector<ErrorInfo> getErrorsForFileLimited(const ErrorFilter& filter,
-                                                 const FilePath& filePath) const override;
-  std::shared_ptr<SourceLocationCollection> getErrorSourceLocations(
-      const std::vector<ErrorInfo>& errors) const override;
+  std::vector<ErrorInfo> getErrorsForFileLimited(const ErrorFilter& filter, const FilePath& filePath) const override;
+  std::shared_ptr<SourceLocationCollection> getErrorSourceLocations(const std::vector<ErrorInfo>& errors) const override;
 
   Id addNodeBookmark(const NodeBookmark& bookmark) override;
   Id addEdgeBookmark(const EdgeBookmark& bookmark) override;
@@ -245,11 +234,10 @@ public:
   std::vector<EdgeBookmark> getAllEdgeBookmarks() const override;
   std::vector<BookmarkCategory> getAllBookmarkCategories() const override;
 
-  TooltipInfo getTooltipInfoForTokenIds(const std::vector<Id>& tokenIds,
-                                        TooltipOrigin origin) const override;
+  TooltipInfo getTooltipInfoForTokenIds(const std::vector<Id>& tokenIds, TooltipOrigin origin) const override;
   TooltipSnippet getTooltipSnippetForNode(const StorageNode& node) const;
-  TooltipInfo getTooltipInfoForSourceLocationIdsAndLocalSymbolIds(
-      const std::vector<Id>& locationIds, const std::vector<Id>& localSymbolIds) const override;
+  TooltipInfo getTooltipInfoForSourceLocationIdsAndLocalSymbolIds(const std::vector<Id>& locationIds,
+                                                                  const std::vector<Id>& localSymbolIds) const override;
 
 private:
   mutable struct {
@@ -276,10 +264,8 @@ private:
   std::unordered_map<Id, std::set<Id>> getFileIdToIncludingFileIdMap() const;
   std::unordered_map<Id, std::set<Id>> getFileIdToIncludedFileIdMap() const;
   std::unordered_map<Id, std::set<Id>> getFileIdToImportingFileIdMap() const;
-  std::set<Id> getReferenced(const std::set<Id>& filePaths,
-                             std::unordered_map<Id, std::set<Id>> idToReferencingIdMap) const;
-  std::set<Id> getReferencing(const std::set<Id>& filePaths,
-                              std::unordered_map<Id, std::set<Id>> idToReferencingIdMap) const;
+  std::set<Id> getReferenced(const std::set<Id>& filePaths, std::unordered_map<Id, std::set<Id>> idToReferencingIdMap) const;
+  std::set<Id> getReferencing(const std::set<Id>& filePaths, std::unordered_map<Id, std::set<Id>> idToReferencingIdMap) const;
 
   std::set<FilePath> getReferencedByIncludes(const std::set<FilePath>& filePaths) const;
   std::set<FilePath> getReferencedByImports(const std::set<FilePath>& filePaths) const;
@@ -294,13 +280,8 @@ private:
                                           Graph* graph,
                                           bool addChildCount) const;
   inline void addFileNodeToGraph(const StorageNode& storageNode, Graph* const graph) const;
-  void addNodeToGraph(const StorageNode& newNode,
-                      const NodeType& type,
-                      Graph* graph,
-                      bool addChildCount) const;
-  void addBundledEdgesToGraph(Id nodeId,
-                              const std::vector<StorageEdge>& edgesToBundle,
-                              Graph* graph) const;
+  void addNodeToGraph(const StorageNode& newNode, const NodeType& type, Graph* graph, bool addChildCount) const;
+  void addBundledEdgesToGraph(Id nodeId, const std::vector<StorageEdge>& edgesToBundle, Graph* graph) const;
   void addFileContentsToGraph(Id fileId, Graph* graph) const;
   void addComponentAccessToGraph(Graph* graph) const;
   void addComponentIsAmbiguousToGraph(Graph* graph) const;
