@@ -12,17 +12,18 @@ target_include_directories(
 
 set(
   test_lib_names
+  CommandLineParserTestSuite
   CommandlineCommandConfigTestSuite
   CommandlineCommandIndexTestSuite
   CommandlineCommandTestSuite
   CommandlineHelperTestSuite
-  CommandLineParserTestSuite
   ComponentFactoryTestSuite
   ComponentManagerTestSuite
   ComponentTestSuite
   FileHandlerTestSuite
   LanguagePackageManagerTestSuite
   LocationTypeTestSuite
+  ProjectTestSuite
   SingleValueCacheTestSuite
   SourceLocationCollectionTestSuite
   SourceLocationFileTestSuite
@@ -50,6 +51,11 @@ foreach(test_name IN LISTS test_lib_names)
     ${test_name}
     PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
+
+  target_compile_definitions(
+    ${test_name}
+    PUBLIC
+      ST_TESTING=1)
 
   gtest_discover_tests(
     ${test_name}
