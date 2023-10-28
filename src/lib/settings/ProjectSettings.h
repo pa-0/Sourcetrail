@@ -1,9 +1,8 @@
 #pragma once
-// STL
 #include <memory>
-#include <vector>
 #include <string>
-// internal
+#include <vector>
+
 #include "LanguageType.h"
 #include "Settings.h"
 #include "SettingsMigrator.h"
@@ -32,31 +31,31 @@ public:
   /**  @} */
   ~ProjectSettings() override;
 
-  bool equalsExceptNameAndLocation(const ProjectSettings& other) const;
+  [[nodiscard]] bool equalsExceptNameAndLocation(const ProjectSettings& other) const;
 
-  bool needMigration() const;
+  [[nodiscard]] bool needMigration() const;
   void migrate();
 
   bool reload();
 
-  FilePath getProjectFilePath() const;
+  [[nodiscard]] FilePath getProjectFilePath() const;
   void setProjectFilePath(std::wstring projectName, const FilePath& projectFileLocation);
-  FilePath getDependenciesDirectoryPath() const;
+  [[nodiscard]] FilePath getDependenciesDirectoryPath() const;
 
-  FilePath getDBFilePath() const;
-  FilePath getTempDBFilePath() const;
-  FilePath getBookmarkDBFilePath() const;
+  [[nodiscard]] FilePath getDBFilePath() const;
+  [[nodiscard]] FilePath getTempDBFilePath() const;
+  [[nodiscard]] FilePath getBookmarkDBFilePath() const;
 
-  std::wstring getProjectName() const;
-  FilePath getProjectDirectoryPath() const;
+  [[nodiscard]] std::wstring getProjectName() const;
+  [[nodiscard]] FilePath getProjectDirectoryPath() const;
 
-  std::string getDescription() const;
+  [[nodiscard]] std::string getDescription() const;
 
-  std::vector<std::shared_ptr<SourceGroupSettings>> getAllSourceGroupSettings() const;
+  [[nodiscard]] std::vector<std::shared_ptr<SourceGroupSettings>> getAllSourceGroupSettings() const;
   void setAllSourceGroupSettings(const std::vector<std::shared_ptr<SourceGroupSettings>>& allSettings);
 
-  std::vector<FilePath> makePathsExpandedAndAbsolute(const std::vector<FilePath>& paths) const;
-  FilePath makePathExpandedAndAbsolute(const FilePath& path) const;
+  [[nodiscard]] std::vector<FilePath> makePathsExpandedAndAbsolute(const std::vector<FilePath>& paths) const;
+  [[nodiscard]] FilePath makePathExpandedAndAbsolute(const FilePath& path) const;
 
 private:
   SettingsMigrator getMigrations() const;
