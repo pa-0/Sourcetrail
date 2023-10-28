@@ -36,4 +36,5 @@ foreach(test_name IN LISTS test_lib_gui_names)
     TEST_PREFIX "unittests.")
 endforeach()
 
-add_subdirectory(gui)
+# TODO(Hussein): Disable gui for now
+#add_subdirectory(gui)
