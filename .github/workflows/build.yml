@@ -8,18 +8,6 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      matrix:
-        config:
-          - {
-            name: "Ubuntu Latest GCC",
-            cc: "gcc",
-            cxx: "g++"
-          }
-          - {
-            name: "Ubuntu Latest CLang",
-            cc: "clang",
-            cxx: "clang++"
-          }
   
     name: ${{ matrix.config.name }}
     runs-on: ubuntu-22.04
