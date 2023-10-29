@@ -33,13 +33,13 @@ jobs:
       run: git fetch --tags origin
     
     - name: Install dependencies
-      run: sudo apt install -y clang libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev python3-pip
+      run: sudo apt install -y clang libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev python3-pip libclang-15-dev
 
     - name: Install conan
       run: sudo pip install conan==1.59.0
 
     - name: Configure CMake
-      run: cmake -G Ninja -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_BUILD_TYPE=Release -B ${{github.workspace}}/build
+      run: cmake -G Ninja -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_BUILD_TYPE=Release -DBUILD_CXX_LANGUAGE_PACKAGE=ON -B ${{github.workspace}}/build
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build
