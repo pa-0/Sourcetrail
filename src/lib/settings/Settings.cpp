@@ -19,6 +19,7 @@ Settings& Settings::operator=(const Settings& other) {
 }
 
 Settings::Settings(Settings&& other) noexcept = default;
+
 Settings& Settings::operator=(Settings&& other) noexcept = default;
 
 Settings::~Settings() = default;

@@ -15,11 +15,15 @@ public:
   Settings& operator=(const Settings& other);
   Settings(Settings&& other) noexcept;
   Settings& operator=(Settings&& other) noexcept;
+
   virtual ~Settings();
 
   virtual bool load(const FilePath& filePath, bool readOnly = false);
+
   virtual bool loadFromString(const std::string& text, bool readOnly = false);
+
   virtual bool save();
+
   virtual bool save(const FilePath& filePath);
 
   virtual void clear();
@@ -27,6 +31,7 @@ public:
   virtual const FilePath& getFilePath() const;
 
   size_t getVersion() const;
+
   void setVersion(size_t version);
 
 protected:

@@ -38,7 +38,6 @@ set(
   ProjectSettingsTestSuite
   SearchIndexTestSuite
   SettingsMigratorTestSuite
-  SettingsTestSuite
   SharedMemoryTestSuite
   UtilityTestSuite)
 
@@ -83,6 +82,7 @@ set(test_lib_names
     AppPathTestSuite
     IndexerCompositeTestSuite
     ResourcePathsTestSuite
+    SettingsTestSuite
     UserPathsTestSuite
     Vector2TestSuite
     Vector4TestSuite)

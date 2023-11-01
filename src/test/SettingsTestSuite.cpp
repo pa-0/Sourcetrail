@@ -1,6 +1,5 @@
-// catch2
-#include <catch2/catch_all.hpp>
-// internal
+#include <gtest/gtest.h>
+
 #include "Settings.h"
 
 namespace {
@@ -57,118 +56,115 @@ public:
 };
 }    // namespace
 
-// NOLINTNEXTLINE(cert-err58-cpp)
-TEST_CASE("settings get loaded from file", "[lib]") {
+TEST(Settings, settingsGetLoadedFromFile) {
   TestSettings settings;
-  REQUIRE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
 }
 
-TEST_CASE("settings get not loaded from file", "[lib]") {
+TEST(Settings, settingsGetNotLoadedFromFile) {
   TestSettings settings;
-  REQUIRE(!settings.load(FilePath(L"data/SettingsTestSuite/wrong_settings.xml")));
+  EXPECT_TRUE(!settings.load(FilePath(L"data/SettingsTestSuite/wrong_settings.xml")));
 }
 
-TEST_CASE("settings get loaded value", "[lib]") {
+TEST(Settings, settingsGetLoadedValue) {
   constexpr auto FloatValue = 3.1416F;
 
   TestSettings settings;
-  REQUIRE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
 
-  REQUIRE(settings.getBool()    == true);
-  REQUIRE(settings.getInt()     == 42);
-  REQUIRE(settings.getFloat()   == FloatValue);
-  REQUIRE(settings.getString()  == "Hello World!");
-  REQUIRE(settings.getWString() == L"Hello World!");
+  EXPECT_TRUE(settings.getBool()    == true);
+  EXPECT_TRUE(settings.getInt()     == 42);
+  EXPECT_TRUE(settings.getFloat()   == FloatValue);
+  EXPECT_TRUE(settings.getString()  == "Hello World!");
+  EXPECT_TRUE(settings.getWString() == L"Hello World!");
 }
 
-TEST_CASE("settings get default value when not loaded", "[lib]") {
+TEST(Settings, settingsGetDefaultValueWhenNotLoaded) {
   constexpr auto FloatValue = 0.01F;
 
   const TestSettings settings;
-  REQUIRE(settings.getBool()    == false);
-  REQUIRE(settings.getInt()     == -1);
-  REQUIRE(settings.getFloat()   == FloatValue);
-  REQUIRE(settings.getString()  == "<empty>");
-  REQUIRE(settings.getWString() == L"<empty>");
+  EXPECT_TRUE(settings.getBool()    == false);
+  EXPECT_TRUE(settings.getInt()     == -1);
+  EXPECT_TRUE(settings.getFloat()   == FloatValue);
+  EXPECT_TRUE(settings.getString()  == "<empty>");
+  EXPECT_TRUE(settings.getWString() == L"<empty>");
 }
 
-TEST_CASE("settings get default value when wrongly loaded", "[lib]") {
+TEST(Settings, settingsGetDefaultValueWhenWronglyLoaded) {
   constexpr auto FloatValue = 0.01F;
 
   TestSettings settings;
-  REQUIRE(!settings.load(FilePath(L"data/SettingsTestSuite/wrong_settings.xml")));
+  EXPECT_TRUE(!settings.load(FilePath(L"data/SettingsTestSuite/wrong_settings.xml")));
 
-  REQUIRE(settings.getBool()    == false);
-  REQUIRE(settings.getInt()     == -1);
-  REQUIRE(settings.getFloat()   == FloatValue);
-  REQUIRE(settings.getString()  == "<empty>");
-  REQUIRE(settings.getWString() == L"<empty>");
+  EXPECT_TRUE(settings.getBool()    == false);
+  EXPECT_TRUE(settings.getInt()     == -1);
+  EXPECT_TRUE(settings.getFloat()   == FloatValue);
+  EXPECT_TRUE(settings.getString()  == "<empty>");
+  EXPECT_TRUE(settings.getWString() == L"<empty>");
 }
 
-TEST_CASE("settings get default value after clearing", "[lib]") {
+TEST(Settings, settingsGetDefaultValueAfterClearing) {
   constexpr auto FloatValue = 0.01F;
 
   TestSettings settings;
-  REQUIRE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
 
   settings.clear();
-  REQUIRE(settings.getBool()    == false);
-  REQUIRE(settings.getInt()     == -1);
-  REQUIRE(settings.getFloat()   == FloatValue);
-  REQUIRE(settings.getString()  == "<empty>");
-  REQUIRE(settings.getWString() == L"<empty>");
+  EXPECT_TRUE(settings.getBool()    == false);
+  EXPECT_TRUE(settings.getInt()     == -1);
+  EXPECT_TRUE(settings.getFloat()   == FloatValue);
+  EXPECT_TRUE(settings.getString()  == "<empty>");
+  EXPECT_TRUE(settings.getWString() == L"<empty>");
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-TEST_CASE("settings can be set when not loaded", "[lib]") {
+TEST(Settings, settingsCanBeSetWhenNotLoaded) {
   constexpr auto FloatValue = 2.5F;
 
   TestSettings settings;
 
-  REQUIRE(settings.setBool(false));
-  REQUIRE(settings.getBool() == false);
+  EXPECT_TRUE(settings.setBool(false));
+  EXPECT_TRUE(settings.getBool() == false);
 
-  REQUIRE(settings.setInt(2));
-  REQUIRE(settings.getInt() == 2);
+  EXPECT_TRUE(settings.setInt(2));
+  EXPECT_TRUE(settings.getInt() == 2);
 
-  REQUIRE(settings.setFloat(FloatValue));
-  REQUIRE(settings.getFloat() == FloatValue);
+  EXPECT_TRUE(settings.setFloat(FloatValue));
+  EXPECT_TRUE(settings.getFloat() == FloatValue);
 
-  REQUIRE(settings.setString("foo"));
-  REQUIRE(settings.getString() == "foo");
+  EXPECT_TRUE(settings.setString("foo"));
+  EXPECT_TRUE(settings.getString() == "foo");
 
-  REQUIRE(settings.setWString(L"bar"));
-  REQUIRE(settings.getWString() == L"bar");
+  EXPECT_TRUE(settings.setWString(L"bar"));
+  EXPECT_TRUE(settings.getWString() == L"bar");
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-TEST_CASE("settings can be replaced when loaded", "[lib]") {
+TEST(Settings, settingsCanBeReplacedWhenLoaded) {
   constexpr auto FloatValue = 2.5F;
 
   TestSettings settings;
-  REQUIRE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
 
-  REQUIRE(settings.setBool(false));
-  REQUIRE(settings.getBool() == false);
+  EXPECT_TRUE(settings.setBool(false));
+  EXPECT_TRUE(settings.getBool() == false);
 
-  REQUIRE(settings.setInt(2));
-  REQUIRE(settings.getInt() == 2);
+  EXPECT_TRUE(settings.setInt(2));
+  EXPECT_TRUE(settings.getInt() == 2);
 
-  REQUIRE(settings.setFloat(FloatValue));
-  REQUIRE(settings.getFloat() == FloatValue);
+  EXPECT_TRUE(settings.setFloat(FloatValue));
+  EXPECT_TRUE(settings.getFloat() == FloatValue);
 
-  REQUIRE(settings.setString("foo"));
-  REQUIRE(settings.getString() == "foo");
+  EXPECT_TRUE(settings.setString("foo"));
+  EXPECT_TRUE(settings.getString() == "foo");
 
-  REQUIRE(settings.setWString(L"bar"));
-  REQUIRE(settings.getWString() == L"bar");
+  EXPECT_TRUE(settings.setWString(L"bar"));
+  EXPECT_TRUE(settings.getWString() == L"bar");
 }
 
-TEST_CASE("settings can be added when loaded", "[lib]") {
+TEST(Settings, settingsCanBeAddedWhenLoaded) {
   TestSettings settings;
-  REQUIRE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
 
-  REQUIRE(settings.getNewBool() == false);
-  REQUIRE(settings.setNewBool(true));
-  REQUIRE(settings.getNewBool() == true);
+  EXPECT_TRUE(settings.getNewBool() == false);
+  EXPECT_TRUE(settings.setNewBool(true));
+  EXPECT_TRUE(settings.getNewBool() == true);
 }
