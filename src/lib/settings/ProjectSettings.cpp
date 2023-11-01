@@ -31,7 +31,7 @@ LanguageType ProjectSettings::getLanguageOfProject(const FilePath& filePath) {
 
   ProjectSettings projectSettings;
   projectSettings.load(filePath);
-  for(const std::shared_ptr<SourceGroupSettings>& sourceGroupSettings : projectSettings.getAllSourceGroupSettings()) {
+  for(const auto& sourceGroupSettings : projectSettings.getAllSourceGroupSettings()) {
     const LanguageType currentLanguageType = getLanguageTypeForSourceGroupType(sourceGroupSettings->getType());
     if(languageType == LANGUAGE_UNKNOWN) {
       languageType = currentLanguageType;
@@ -205,16 +205,12 @@ std::vector<FilePath> ProjectSettings::makePathsExpandedAndAbsolute(const std::v
   return absPaths;
 }
 
-FilePath ProjectSettings::makePathExpandedAndAbsolute(const FilePath& path) const {
-  return utility::getExpandedAndAbsolutePath(path, getProjectDirectoryPath());
-}
-
 SettingsMigrator ProjectSettings::getMigrations() const {
   SettingsMigrator migrator;
   migrator.addMigration(
       1, std::make_shared<SettingsMigrationLambda>([](const SettingsMigration* migration, Settings* settings) {
-        const std::string language = migration->getValueFromSettings<std::string>(settings, "language_settings/language", "");
-        const std::string standard = migration->getValueFromSettings<std::string>(settings, "language_settings/standard", "");
+        const auto language = migration->getValueFromSettings<std::string>(settings, "language_settings/language", "");
+        const auto standard = migration->getValueFromSettings<std::string>(settings, "language_settings/standard", "");
 
         if(language == "C" && !utility::isPrefix<std::string>("c", standard)) {
           migration->setValueInSettings(settings, "language_settings/standard", "c" + standard);
@@ -284,25 +280,27 @@ SettingsMigrator ProjectSettings::getMigrations() const {
   migrator.addMigration(4, std::make_shared<SettingsMigrationDeleteKey>("source/build_file_path/vs_solution_path"));
   migrator.addMigration(4, std::make_shared<SettingsMigrationDeleteKey>("source/extensions/header_extensions"));
 
-  for(std::shared_ptr<SourceGroupSettings> sourceGroupSettings : getAllSourceGroupSettings()) {
-    const std::string key = SourceGroupSettings::s_keyPrefix + sourceGroupSettings->getId();
+  for(const auto& sourceGroupSettings : getAllSourceGroupSettings()) {
+    const auto key = SourceGroupSettings::s_keyPrefix + sourceGroupSettings->getId();
+    constexpr auto TargetVersion = 5;
     migrator.addMigration(
-        5,
+        TargetVersion,
         std::make_shared<SettingsMigrationMoveKey>(key + "/exclude_paths/exclude_path", key + "/exclude_filters/exclude_filter"));
   }
 
-  for(std::shared_ptr<SourceGroupSettings> sourceGroupSettings : getAllSourceGroupSettings()) {
+  for(const auto& sourceGroupSettings : getAllSourceGroupSettings()) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
     if(sourceGroupSettings->getType() == SOURCE_GROUP_CXX_CDB) {
       const std::string key = SourceGroupSettings::s_keyPrefix + sourceGroupSettings->getId();
-      migrator.addMigration(6,
+      constexpr auto TargetVersion = 6;
+      migrator.addMigration(TargetVersion,
                             std::make_shared<SettingsMigrationMoveKey>(
                                 key + "/source_paths/source_path", key + "/indexed_header_paths/indexed_header_path"));
     }
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
   }
 
-  for(std::shared_ptr<SourceGroupSettings> sourceGroupSettings : getAllSourceGroupSettings()) {
+  for(const auto& sourceGroupSettings : getAllSourceGroupSettings()) {
     std::string languageName;
     switch(getLanguageTypeForSourceGroupType(sourceGroupSettings->getType())) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
@@ -318,8 +316,10 @@ SettingsMigrator ProjectSettings::getMigrations() const {
       continue;
     }
 
-    std::string key = SourceGroupSettings::s_keyPrefix + sourceGroupSettings->getId();
-    migrator.addMigration(7, std::make_shared<SettingsMigrationMoveKey>(key + "/standard", key + "/" + languageName + "_standard"));
+    std::string const key = SourceGroupSettings::s_keyPrefix + sourceGroupSettings->getId();
+    constexpr auto TargetVersion = 7;
+    migrator.addMigration(
+        TargetVersion, std::make_shared<SettingsMigrationMoveKey>(key + "/standard", key + "/" + languageName + "_standard"));
   }
 
   return migrator;

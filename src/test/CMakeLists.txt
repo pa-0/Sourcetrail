@@ -35,7 +35,6 @@ set(
   MatrixBaseTestSuite
   MatrixDynamicBaseTestSuite
   NetworkProtocolHelperTestSuite
-  ProjectSettingsTestSuite
   SearchIndexTestSuite
   SettingsMigratorTestSuite
   SharedMemoryTestSuite
@@ -81,6 +80,7 @@ endforeach()
 set(test_lib_names
     AppPathTestSuite
     IndexerCompositeTestSuite
+    ProjectSettingsTestSuite
     ResourcePathsTestSuite
     SettingsTestSuite
     UserPathsTestSuite
