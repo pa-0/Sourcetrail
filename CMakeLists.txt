@@ -342,6 +342,8 @@ set_property(SOURCE ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h PROPERTY SK
 add_subdirectory(src/indexer)
 # App --------------------------------------------------------------------------
 add_subdirectory(src/app)
+# Console ----------------------------------------------------------------------
+add_subdirectory(src/console)
 # Tests ------------------------------------------------------------------------
 if(ENABLE_UNIT_TEST
    OR ENABLE_GUI_TEST
