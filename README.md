@@ -232,19 +232,14 @@ After building, run the `bundle_install.sh` script within the build directory wh
 Run `./setup/Linux/createPackages.sh` from the main directory, which creates both a `.tar.gz` and a `.AppImage` package in the main directory. Packaging depends on [linuxdeployqt](https://github.com/probonopd/linuxdeployqt).
 
 
-# How to Run the Tests
+### How to Run the Tests
 
-The automated test suite of Sourcetrail is powered by [Catch2](https://github.com/catchorg/Catch2). To run the tests, simply execute the `ctest`.
-### Note:
-We currently moving to replace `CTest` with `GTest/GMock`
+The automated test suite of Sourcetrail is powered by [GTest](https://github.com/google/googletest). To run the tests, simply execute the `ctest`.
 
-
-
-
-# License
+### License
 
 Sourcetrail is licensed under the [GNU General Public License Version 3](LICENSE.txt).
 
-# Trademark
+### Trademark
 
 The "Sourcetrail" name is a trademark owned by Coati Software and is not included within the assets licensed under the GNU GPLv3.
