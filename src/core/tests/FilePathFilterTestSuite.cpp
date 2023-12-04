@@ -1,105 +1,103 @@
-// catch2
-#include <catch2/catch_all.hpp>
-// internal
+#include <gtest/gtest.h>
+
 #include "FilePathFilter.h"
 
-// NOLINTNEXTLINE(cert-err58-cpp)
-TEST_CASE("file path filter finds exact match", "[core]") {
+TEST(FilePathFilter, findsExactMatch) {
   FilePathFilter filter(L"test.h");
 
-  REQUIRE(filter.isMatching(FilePath(L"test.h")));
+  EXPECT_TRUE(filter.isMatching(FilePath(L"test.h")));
 }
 
-TEST_CASE("file path filter finds match with single asterisk in same level", "[core]") {
+TEST(FilePathFilter, findsMatchWithSingleAsteriskInSameLevel) {
   FilePathFilter filter(L"*test.*");
 
-  REQUIRE(filter.isMatching(FilePath(L"this_is_a_test.h")));
+  EXPECT_TRUE(filter.isMatching(FilePath(L"this_is_a_test.h")));
 }
 
-TEST_CASE("file path filter finds match with single asterisk in different level", "[core]") {
+TEST(FilePathFilter, findsMatchWithSingleAsteriskInDifferentLevel) {
   FilePathFilter filter(L"*/this_is_a_test.h");
 
-  REQUIRE(filter.isMatching(FilePath(L"folder/this_is_a_test.h")));
+  EXPECT_TRUE(filter.isMatching(FilePath(L"folder/this_is_a_test.h")));
 }
 
-TEST_CASE("file path filter does not find match with single asterisk in different level", "[core]") {
+TEST(FilePathFilter, doesNotFindMatchWithSingleAsteriskInDifferentLevel) {
   FilePathFilter filter(L"*/test.h");
 
-  REQUIRE(!filter.isMatching(FilePath(L"test.h")));
+  EXPECT_TRUE(!filter.isMatching(FilePath(L"test.h")));
 }
 
-TEST_CASE("file path filter finds match with multiple asterisk in same level", "[core]") {
+TEST(FilePathFilter, findsMatchWithMultipleAsteriskInSameLevel) {
   FilePathFilter filter(L"**test.h");
 
-  REQUIRE(filter.isMatching(FilePath(L"folder/this_is_a_test.h")));
+  EXPECT_TRUE(filter.isMatching(FilePath(L"folder/this_is_a_test.h")));
 }
 
-TEST_CASE("file path filter finds match with multiple asterisk in different level", "[core]") {
+TEST(FilePathFilter, findsMatchWithMultipleAsteriskInDifferentLevel) {
   FilePathFilter filter(L"root/**/test.h");
 
-  REQUIRE(filter.isMatching(FilePath(L"root/folder1/folder2/test.h")));
+  EXPECT_TRUE(filter.isMatching(FilePath(L"root/folder1/folder2/test.h")));
 }
 
-TEST_CASE("file path filter does not find match with multiple asterisk in different level", "[core]") {
+TEST(FilePathFilter, doesNotFindMatchWithMultipleAsteriskInDifferentLevel) {
   FilePathFilter filter(L"**/test.h");
 
-  REQUIRE(!filter.isMatching(FilePath(L"folder/this_is_a_test.h")));
+  EXPECT_TRUE(!filter.isMatching(FilePath(L"folder/this_is_a_test.h")));
 }
 
-TEST_CASE("file path filter escapes dot character", "[core]") {
+TEST(FilePathFilter, escapesDotCharacter) {
   FilePathFilter filter(L"test.h");
 
-  REQUIRE(!filter.isMatching(FilePath(L"testyh")));
+  EXPECT_TRUE(!filter.isMatching(FilePath(L"testyh")));
 }
 
-TEST_CASE("file path filter escapes plus character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test+.h").isMatching(FilePath(L"folder/test+.h")));
+TEST(FilePathFilter, escapesPlusCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test+.h").isMatching(FilePath(L"folder/test+.h")));
 }
 
-TEST_CASE("file path filter escapes minus character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test[-].h").isMatching(FilePath(L"folder/test[-].h")));
+TEST(FilePathFilter, escapesMinusCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test[-].h").isMatching(FilePath(L"folder/test[-].h")));
 }
 
-TEST_CASE("file path filter escapes dollar character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test$.h").isMatching(FilePath(L"folder/test$.h")));
+TEST(FilePathFilter, escapesDollarCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test$.h").isMatching(FilePath(L"folder/test$.h")));
 }
 
-TEST_CASE("file path filter escapes circumflex character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test^.h").isMatching(FilePath(L"folder/test^.h")));
+TEST(FilePathFilter, escapesCircumflexCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test^.h").isMatching(FilePath(L"folder/test^.h")));
 }
 
-TEST_CASE("file path filter escapes open round brace character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test(.h").isMatching(FilePath(L"folder/test(.h")));
+TEST(FilePathFilter, escapesOpenRoundBraceCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test(.h").isMatching(FilePath(L"folder/test(.h")));
 }
 
-TEST_CASE("file path filter escapes close round brace character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder\\test).h").isMatching(FilePath(L"folder/test).h")));
+TEST(FilePathFilter, escapesCloseRoundBraceCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder\\test).h").isMatching(FilePath(L"folder/test).h")));
 }
 
-TEST_CASE("file path filter escapes open curly brace character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test{.h").isMatching(FilePath(L"folder/test{.h")));
+TEST(FilePathFilter, escapesOpenCurlyBraceCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test{.h").isMatching(FilePath(L"folder/test{.h")));
 }
 
-TEST_CASE("file path filter escapes close curly brace character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test}.h").isMatching(FilePath(L"folder/test}.h")));
+TEST(FilePathFilter, escapesCloseCurlyBraceCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test}.h").isMatching(FilePath(L"folder/test}.h")));
 }
 
-TEST_CASE("file path filter escapes open squared brace character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder/test[.h").isMatching(FilePath(L"folder/test[.h")));
+TEST(FilePathFilter, escapesOpenSquaredBraceCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder/test[.h").isMatching(FilePath(L"folder/test[.h")));
 }
 
-TEST_CASE("file path filter escapes close squared brace character", "[core]") {
-  REQUIRE(FilePathFilter(L"folder\\test].h").isMatching(FilePath(L"folder/test].h")));
+TEST(FilePathFilter, escapesCloseSquaredBraceCharacter) {
+  EXPECT_TRUE(FilePathFilter(L"folder\\test].h").isMatching(FilePath(L"folder/test].h")));
 }
 
-TEST_CASE("file path filter finds backslash if slash was provided", "[core]") {
+TEST(FilePathFilter, findsBackslashIfSlashWasProvided) {
   FilePathFilter filter(L"folder/test.h");
 
-  REQUIRE(filter.isMatching(FilePath(L"folder\\test.h")));
+  EXPECT_TRUE(filter.isMatching(FilePath(L"folder\\test.h")));
 }
 
-TEST_CASE("file path filter finds slash if backslash was provided", "[core]") {
+TEST(FilePathFilter, findsSlashIfBackslashWasProvided) {
   FilePathFilter filter(L"folder\\test.h");
 
-  REQUIRE(filter.isMatching(FilePath(L"folder/test.h")));
+  EXPECT_TRUE(filter.isMatching(FilePath(L"folder/test.h")));
 }

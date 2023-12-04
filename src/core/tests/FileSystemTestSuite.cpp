@@ -1,12 +1,11 @@
-// STL
 #include <algorithm>
 #include <any>
 #include <iterator>
 #include <string>
 #include <vector>
-// catch2
-#include <catch2/catch_all.hpp>
-// internal
+
+#include <gtest/gtest.h>
+
 #include "FileSystem.h"
 #include "utility.h"
 
@@ -16,16 +15,12 @@ bool isInFiles(const std::set<FilePath>& files, const FilePath& filename) {
 }
 
 bool isInFileInfos(const std::vector<FileInfo>& infos, const std::wstring& filename) {
-  return std::any_of(std::cbegin(infos),
-                     std::cend(infos),
-                     [wFileName = FilePath(filename).getCanonical().wstr()](const auto& info) {
-                       return info.path.getAbsolute().wstr() == wFileName;
-                     });
+  return std::any_of(std::cbegin(infos), std::cend(infos), [wFileName = FilePath(filename).getCanonical().wstr()](const auto& info) {
+    return info.path.getAbsolute().wstr() == wFileName;
+  });
 }
 
-bool isInFileInfos(const std::vector<FileInfo>& infos,
-                   const std::wstring& filename,
-                   const std::wstring& filename2) {
+bool isInFileInfos(const std::vector<FileInfo>& infos, const std::wstring& filename, const std::wstring& filename2) {
   return std::any_of(std::cbegin(infos),
                      std::cend(infos),
                      [wFileName = FilePath(filename).getCanonical().wstr(),
@@ -36,100 +31,82 @@ bool isInFileInfos(const std::vector<FileInfo>& infos,
 }
 }    // namespace
 
-// NOLINTNEXTLINE(cert-err58-cpp)
-TEST_CASE("find cpp files", "[core]") {
+TEST(FileSystem, findCppFiles) {
   std::vector<std::wstring> cppFiles = utility::convert<FilePath, std::wstring>(
       FileSystem::getFilePathsFromDirectory(FilePath(L"data/FileSystemTestSuite"), {L".cpp"}),
       [](const FilePath& filePath) { return filePath.wstr(); });
 
-  REQUIRE(cppFiles.size() == 4);
-  REQUIRE(utility::containsElement<std::wstring>(cppFiles, L"data/FileSystemTestSuite/main.cpp"));
-  REQUIRE(utility::containsElement<std::wstring>(
-      cppFiles, L"data/FileSystemTestSuite/Settings/sample.cpp"));
-  REQUIRE(
-      utility::containsElement<std::wstring>(cppFiles, L"data/FileSystemTestSuite/src/main.cpp"));
-  REQUIRE(
-      utility::containsElement<std::wstring>(cppFiles, L"data/FileSystemTestSuite/src/test.cpp"));
+  EXPECT_TRUE(cppFiles.size() == 4);
+  EXPECT_TRUE(utility::containsElement<std::wstring>(cppFiles, L"data/FileSystemTestSuite/main.cpp"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(cppFiles, L"data/FileSystemTestSuite/Settings/sample.cpp"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(cppFiles, L"data/FileSystemTestSuite/src/main.cpp"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(cppFiles, L"data/FileSystemTestSuite/src/test.cpp"));
 }
 
-TEST_CASE("find h files", "[core]") {
+TEST(FileSystem, findHFiles) {
   std::vector<std::wstring> headerFiles = utility::convert<FilePath, std::wstring>(
       FileSystem::getFilePathsFromDirectory(FilePath(L"data/FileSystemTestSuite"), {L".h"}),
       [](const FilePath& filePath) { return filePath.wstr(); });
 
-  REQUIRE(headerFiles.size() == 3);
-  REQUIRE(
-      utility::containsElement<std::wstring>(headerFiles, L"data/FileSystemTestSuite/tictactoe.h"));
-  REQUIRE(utility::containsElement<std::wstring>(
-      headerFiles, L"data/FileSystemTestSuite/Settings/player.h"));
-  REQUIRE(
-      utility::containsElement<std::wstring>(headerFiles, L"data/FileSystemTestSuite/src/test.h"));
+  EXPECT_TRUE(headerFiles.size() == 3);
+  EXPECT_TRUE(utility::containsElement<std::wstring>(headerFiles, L"data/FileSystemTestSuite/tictactoe.h"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(headerFiles, L"data/FileSystemTestSuite/Settings/player.h"));
+  EXPECT_TRUE(utility::containsElement<std::wstring>(headerFiles, L"data/FileSystemTestSuite/src/test.h"));
 }
 
-TEST_CASE("find all source files", "[core]") {
+TEST(FileSystem, findAllSourceFiles) {
   std::vector<std::wstring> sourceFiles = utility::convert<FilePath, std::wstring>(
-      FileSystem::getFilePathsFromDirectory(
-          FilePath(L"data/FileSystemTestSuite"), {L".h", L".hpp", L".cpp"}),
+      FileSystem::getFilePathsFromDirectory(FilePath(L"data/FileSystemTestSuite"), {L".h", L".hpp", L".cpp"}),
       [](const FilePath& filePath) { return filePath.wstr(); });
 
-  REQUIRE(sourceFiles.size() == 8);
+  EXPECT_TRUE(sourceFiles.size() == 8);
 }
 
 // TODO(Hussein): Fix next test
 #if DISABLED
-TEST_CASE("find file infos", "[core]") {
-#ifndef _WIN32
-  std::vector<FilePath> directoryPaths;
-  directoryPaths.emplace_back(L"./data/FileSystemTestSuite/src");
-
-  std::vector<FileInfo> files = FileSystem::getFileInfosFromPaths(
-      directoryPaths, {L".h", L".hpp", L".cpp"}, false);
-
-  REQUIRE(files.size() == 3);
-  REQUIRE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.cpp"));
-  REQUIRE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/main.cpp"));
-  REQUIRE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.h"));
-#endif
-}
-
-TEST_CASE("find file infos with symlinks", "[core]") {
+TEST(FileSystem, find file infos) {
 #  ifndef _WIN32
   std::vector<FilePath> directoryPaths;
   directoryPaths.emplace_back(L"./data/FileSystemTestSuite/src");
 
-  const auto files = FileSystem::getFileInfosFromPaths(
-      directoryPaths, {L".h", L".hpp", L".cpp"}, true);
+  std::vector<FileInfo> files = FileSystem::getFileInfosFromPaths(directoryPaths, {L".h", L".hpp", L".cpp"}, false);
 
-  REQUIRE(files.size() == 5);
-  REQUIRE(isInFileInfos(files,
-                        L"./data/FileSystemTestSuite/src/Settings/player.h",
-                        L"./data/FileSystemTestSuite/player.h"));
-  REQUIRE(isInFileInfos(files,
-                        L"./data/FileSystemTestSuite/src/Settings/sample.cpp",
-                        L"./data/FileSystemTestSuite/sample.cpp"));
-  REQUIRE(isInFileInfos(files,
-                        L"./data/FileSystemTestSuite/src/main.cpp",
-                        L"./data/FileSystemTestSuite/src/Settings/src/main.cpp"));
-  REQUIRE(isInFileInfos(files,
-                        L"./data/FileSystemTestSuite/src/test.cpp",
-                        L"./data/FileSystemTestSuite/src/Settings/src/test.cpp"));
-  REQUIRE(isInFileInfos(files,
-                        L"./data/FileSystemTestSuite/src/test.h",
-                        L"./data/FileSystemTestSuite/src/Settings/src/test.h"));
+  EXPECT_TRUE(files.size() == 3);
+  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.cpp"));
+  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/main.cpp"));
+  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.h"));
+#  endif
+}
+
+TEST(FileSystem, find file infos with symlinks) {
+#  ifndef _WIN32
+  std::vector<FilePath> directoryPaths;
+  directoryPaths.emplace_back(L"./data/FileSystemTestSuite/src");
+
+  const auto files = FileSystem::getFileInfosFromPaths(directoryPaths, {L".h", L".hpp", L".cpp"}, true);
+
+  EXPECT_TRUE(files.size() == 5);
+  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/Settings/player.h", L"./data/FileSystemTestSuite/player.h"));
+  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/Settings/sample.cpp", L"./data/FileSystemTestSuite/sample.cpp"));
+  EXPECT_TRUE(
+      isInFileInfos(files, L"./data/FileSystemTestSuite/src/main.cpp", L"./data/FileSystemTestSuite/src/Settings/src/main.cpp"));
+  EXPECT_TRUE(
+      isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.cpp", L"./data/FileSystemTestSuite/src/Settings/src/test.cpp"));
+  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.h", L"./data/FileSystemTestSuite/src/Settings/src/test.h"));
 #  endif
 }
 #endif
 
 // TODO(Hussein): Fix next test
 #if DISABLED
-TEST_CASE("find symlinked directories") {
+TEST(FileSystem, find symlinked directories") {
 #  ifndef _WIN32
   std::vector<FilePath> directoryPaths;
   directoryPaths.emplace_back("./data/FileSystemTestSuite/src");
 
   const auto dirs = FileSystem::getSymLinkedDirectories(directoryPaths);
 
-  REQUIRE(dirs.size() == 2);
+  EXPECT_TRUE(dirs.size() == 2);
 #  endif
 }
 #endif
