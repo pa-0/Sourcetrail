@@ -1,0 +1,876 @@
+        -:    0:Source:/home/ahussein/.conan/data/fmt/8.1.1/_/_/package/4e043b46e52cbedd19a1d7cc9bb409b6f47f9cde/include/fmt/color.h
+        -:    0:Graph:/home/ahussein/Documents/Sourcetrail/build/Coverage/GNU/src/console/CMakeFiles/SourcetrailConsole.dir/main.cpp.gcno
+        -:    0:Data:/home/ahussein/Documents/Sourcetrail/build/Coverage/GNU/src/console/CMakeFiles/SourcetrailConsole.dir/main.cpp.gcda
+        -:    0:Runs:0
+        -:    1:// Formatting library for C++ - color support
+        -:    2://
+        -:    3:// Copyright (c) 2018 - present, Victor Zverovich and fmt contributors
+        -:    4:// All rights reserved.
+        -:    5://
+        -:    6:// For the license information refer to format.h.
+        -:    7:
+        -:    8:#ifndef FMT_COLOR_H_
+        -:    9:#define FMT_COLOR_H_
+        -:   10:
+        -:   11:#include "format.h"
+        -:   12:
+        -:   13:// __declspec(deprecated) is broken in some MSVC versions.
+        -:   14:#if FMT_MSC_VER
+        -:   15:#  define FMT_DEPRECATED_NONMSVC
+        -:   16:#else
+        -:   17:#  define FMT_DEPRECATED_NONMSVC FMT_DEPRECATED
+        -:   18:#endif
+        -:   19:
+        -:   20:FMT_BEGIN_NAMESPACE
+        -:   21:FMT_MODULE_EXPORT_BEGIN
+        -:   22:
+        -:   23:enum class color : uint32_t {
+        -:   24:  alice_blue = 0xF0F8FF,               // rgb(240,248,255)
+        -:   25:  antique_white = 0xFAEBD7,            // rgb(250,235,215)
+        -:   26:  aqua = 0x00FFFF,                     // rgb(0,255,255)
+        -:   27:  aquamarine = 0x7FFFD4,               // rgb(127,255,212)
+        -:   28:  azure = 0xF0FFFF,                    // rgb(240,255,255)
+        -:   29:  beige = 0xF5F5DC,                    // rgb(245,245,220)
+        -:   30:  bisque = 0xFFE4C4,                   // rgb(255,228,196)
+        -:   31:  black = 0x000000,                    // rgb(0,0,0)
+        -:   32:  blanched_almond = 0xFFEBCD,          // rgb(255,235,205)
+        -:   33:  blue = 0x0000FF,                     // rgb(0,0,255)
+        -:   34:  blue_violet = 0x8A2BE2,              // rgb(138,43,226)
+        -:   35:  brown = 0xA52A2A,                    // rgb(165,42,42)
+        -:   36:  burly_wood = 0xDEB887,               // rgb(222,184,135)
+        -:   37:  cadet_blue = 0x5F9EA0,               // rgb(95,158,160)
+        -:   38:  chartreuse = 0x7FFF00,               // rgb(127,255,0)
+        -:   39:  chocolate = 0xD2691E,                // rgb(210,105,30)
+        -:   40:  coral = 0xFF7F50,                    // rgb(255,127,80)
+        -:   41:  cornflower_blue = 0x6495ED,          // rgb(100,149,237)
+        -:   42:  cornsilk = 0xFFF8DC,                 // rgb(255,248,220)
+        -:   43:  crimson = 0xDC143C,                  // rgb(220,20,60)
+        -:   44:  cyan = 0x00FFFF,                     // rgb(0,255,255)
+        -:   45:  dark_blue = 0x00008B,                // rgb(0,0,139)
+        -:   46:  dark_cyan = 0x008B8B,                // rgb(0,139,139)
+        -:   47:  dark_golden_rod = 0xB8860B,          // rgb(184,134,11)
+        -:   48:  dark_gray = 0xA9A9A9,                // rgb(169,169,169)
+        -:   49:  dark_green = 0x006400,               // rgb(0,100,0)
+        -:   50:  dark_khaki = 0xBDB76B,               // rgb(189,183,107)
+        -:   51:  dark_magenta = 0x8B008B,             // rgb(139,0,139)
+        -:   52:  dark_olive_green = 0x556B2F,         // rgb(85,107,47)
+        -:   53:  dark_orange = 0xFF8C00,              // rgb(255,140,0)
+        -:   54:  dark_orchid = 0x9932CC,              // rgb(153,50,204)
+        -:   55:  dark_red = 0x8B0000,                 // rgb(139,0,0)
+        -:   56:  dark_salmon = 0xE9967A,              // rgb(233,150,122)
+        -:   57:  dark_sea_green = 0x8FBC8F,           // rgb(143,188,143)
+        -:   58:  dark_slate_blue = 0x483D8B,          // rgb(72,61,139)
+        -:   59:  dark_slate_gray = 0x2F4F4F,          // rgb(47,79,79)
+        -:   60:  dark_turquoise = 0x00CED1,           // rgb(0,206,209)
+        -:   61:  dark_violet = 0x9400D3,              // rgb(148,0,211)
+        -:   62:  deep_pink = 0xFF1493,                // rgb(255,20,147)
+        -:   63:  deep_sky_blue = 0x00BFFF,            // rgb(0,191,255)
+        -:   64:  dim_gray = 0x696969,                 // rgb(105,105,105)
+        -:   65:  dodger_blue = 0x1E90FF,              // rgb(30,144,255)
+        -:   66:  fire_brick = 0xB22222,               // rgb(178,34,34)
+        -:   67:  floral_white = 0xFFFAF0,             // rgb(255,250,240)
+        -:   68:  forest_green = 0x228B22,             // rgb(34,139,34)
+        -:   69:  fuchsia = 0xFF00FF,                  // rgb(255,0,255)
+        -:   70:  gainsboro = 0xDCDCDC,                // rgb(220,220,220)
+        -:   71:  ghost_white = 0xF8F8FF,              // rgb(248,248,255)
+        -:   72:  gold = 0xFFD700,                     // rgb(255,215,0)
+        -:   73:  golden_rod = 0xDAA520,               // rgb(218,165,32)
+        -:   74:  gray = 0x808080,                     // rgb(128,128,128)
+        -:   75:  green = 0x008000,                    // rgb(0,128,0)
+        -:   76:  green_yellow = 0xADFF2F,             // rgb(173,255,47)
+        -:   77:  honey_dew = 0xF0FFF0,                // rgb(240,255,240)
+        -:   78:  hot_pink = 0xFF69B4,                 // rgb(255,105,180)
+        -:   79:  indian_red = 0xCD5C5C,               // rgb(205,92,92)
+        -:   80:  indigo = 0x4B0082,                   // rgb(75,0,130)
+        -:   81:  ivory = 0xFFFFF0,                    // rgb(255,255,240)
+        -:   82:  khaki = 0xF0E68C,                    // rgb(240,230,140)
+        -:   83:  lavender = 0xE6E6FA,                 // rgb(230,230,250)
+        -:   84:  lavender_blush = 0xFFF0F5,           // rgb(255,240,245)
+        -:   85:  lawn_green = 0x7CFC00,               // rgb(124,252,0)
+        -:   86:  lemon_chiffon = 0xFFFACD,            // rgb(255,250,205)
+        -:   87:  light_blue = 0xADD8E6,               // rgb(173,216,230)
+        -:   88:  light_coral = 0xF08080,              // rgb(240,128,128)
+        -:   89:  light_cyan = 0xE0FFFF,               // rgb(224,255,255)
+        -:   90:  light_golden_rod_yellow = 0xFAFAD2,  // rgb(250,250,210)
+        -:   91:  light_gray = 0xD3D3D3,               // rgb(211,211,211)
+        -:   92:  light_green = 0x90EE90,              // rgb(144,238,144)
+        -:   93:  light_pink = 0xFFB6C1,               // rgb(255,182,193)
+        -:   94:  light_salmon = 0xFFA07A,             // rgb(255,160,122)
+        -:   95:  light_sea_green = 0x20B2AA,          // rgb(32,178,170)
+        -:   96:  light_sky_blue = 0x87CEFA,           // rgb(135,206,250)
+        -:   97:  light_slate_gray = 0x778899,         // rgb(119,136,153)
+        -:   98:  light_steel_blue = 0xB0C4DE,         // rgb(176,196,222)
+        -:   99:  light_yellow = 0xFFFFE0,             // rgb(255,255,224)
+        -:  100:  lime = 0x00FF00,                     // rgb(0,255,0)
+        -:  101:  lime_green = 0x32CD32,               // rgb(50,205,50)
+        -:  102:  linen = 0xFAF0E6,                    // rgb(250,240,230)
+        -:  103:  magenta = 0xFF00FF,                  // rgb(255,0,255)
+        -:  104:  maroon = 0x800000,                   // rgb(128,0,0)
+        -:  105:  medium_aquamarine = 0x66CDAA,        // rgb(102,205,170)
+        -:  106:  medium_blue = 0x0000CD,              // rgb(0,0,205)
+        -:  107:  medium_orchid = 0xBA55D3,            // rgb(186,85,211)
+        -:  108:  medium_purple = 0x9370DB,            // rgb(147,112,219)
+        -:  109:  medium_sea_green = 0x3CB371,         // rgb(60,179,113)
+        -:  110:  medium_slate_blue = 0x7B68EE,        // rgb(123,104,238)
+        -:  111:  medium_spring_green = 0x00FA9A,      // rgb(0,250,154)
+        -:  112:  medium_turquoise = 0x48D1CC,         // rgb(72,209,204)
+        -:  113:  medium_violet_red = 0xC71585,        // rgb(199,21,133)
+        -:  114:  midnight_blue = 0x191970,            // rgb(25,25,112)
+        -:  115:  mint_cream = 0xF5FFFA,               // rgb(245,255,250)
+        -:  116:  misty_rose = 0xFFE4E1,               // rgb(255,228,225)
+        -:  117:  moccasin = 0xFFE4B5,                 // rgb(255,228,181)
+        -:  118:  navajo_white = 0xFFDEAD,             // rgb(255,222,173)
+        -:  119:  navy = 0x000080,                     // rgb(0,0,128)
+        -:  120:  old_lace = 0xFDF5E6,                 // rgb(253,245,230)
+        -:  121:  olive = 0x808000,                    // rgb(128,128,0)
+        -:  122:  olive_drab = 0x6B8E23,               // rgb(107,142,35)
+        -:  123:  orange = 0xFFA500,                   // rgb(255,165,0)
+        -:  124:  orange_red = 0xFF4500,               // rgb(255,69,0)
+        -:  125:  orchid = 0xDA70D6,                   // rgb(218,112,214)
+        -:  126:  pale_golden_rod = 0xEEE8AA,          // rgb(238,232,170)
+        -:  127:  pale_green = 0x98FB98,               // rgb(152,251,152)
+        -:  128:  pale_turquoise = 0xAFEEEE,           // rgb(175,238,238)
+        -:  129:  pale_violet_red = 0xDB7093,          // rgb(219,112,147)
+        -:  130:  papaya_whip = 0xFFEFD5,              // rgb(255,239,213)
+        -:  131:  peach_puff = 0xFFDAB9,               // rgb(255,218,185)
+        -:  132:  peru = 0xCD853F,                     // rgb(205,133,63)
+        -:  133:  pink = 0xFFC0CB,                     // rgb(255,192,203)
+        -:  134:  plum = 0xDDA0DD,                     // rgb(221,160,221)
+        -:  135:  powder_blue = 0xB0E0E6,              // rgb(176,224,230)
+        -:  136:  purple = 0x800080,                   // rgb(128,0,128)
+        -:  137:  rebecca_purple = 0x663399,           // rgb(102,51,153)
+        -:  138:  red = 0xFF0000,                      // rgb(255,0,0)
+        -:  139:  rosy_brown = 0xBC8F8F,               // rgb(188,143,143)
+        -:  140:  royal_blue = 0x4169E1,               // rgb(65,105,225)
+        -:  141:  saddle_brown = 0x8B4513,             // rgb(139,69,19)
+        -:  142:  salmon = 0xFA8072,                   // rgb(250,128,114)
+        -:  143:  sandy_brown = 0xF4A460,              // rgb(244,164,96)
+        -:  144:  sea_green = 0x2E8B57,                // rgb(46,139,87)
+        -:  145:  sea_shell = 0xFFF5EE,                // rgb(255,245,238)
+        -:  146:  sienna = 0xA0522D,                   // rgb(160,82,45)
+        -:  147:  silver = 0xC0C0C0,                   // rgb(192,192,192)
+        -:  148:  sky_blue = 0x87CEEB,                 // rgb(135,206,235)
+        -:  149:  slate_blue = 0x6A5ACD,               // rgb(106,90,205)
+        -:  150:  slate_gray = 0x708090,               // rgb(112,128,144)
+        -:  151:  snow = 0xFFFAFA,                     // rgb(255,250,250)
+        -:  152:  spring_green = 0x00FF7F,             // rgb(0,255,127)
+        -:  153:  steel_blue = 0x4682B4,               // rgb(70,130,180)
+        -:  154:  tan = 0xD2B48C,                      // rgb(210,180,140)
+        -:  155:  teal = 0x008080,                     // rgb(0,128,128)
+        -:  156:  thistle = 0xD8BFD8,                  // rgb(216,191,216)
+        -:  157:  tomato = 0xFF6347,                   // rgb(255,99,71)
+        -:  158:  turquoise = 0x40E0D0,                // rgb(64,224,208)
+        -:  159:  violet = 0xEE82EE,                   // rgb(238,130,238)
+        -:  160:  wheat = 0xF5DEB3,                    // rgb(245,222,179)
+        -:  161:  white = 0xFFFFFF,                    // rgb(255,255,255)
+        -:  162:  white_smoke = 0xF5F5F5,              // rgb(245,245,245)
+        -:  163:  yellow = 0xFFFF00,                   // rgb(255,255,0)
+        -:  164:  yellow_green = 0x9ACD32              // rgb(154,205,50)
+        -:  165:};                                     // enum class color
+        -:  166:
+        -:  167:enum class terminal_color : uint8_t {
+        -:  168:  black = 30,
+        -:  169:  red,
+        -:  170:  green,
+        -:  171:  yellow,
+        -:  172:  blue,
+        -:  173:  magenta,
+        -:  174:  cyan,
+        -:  175:  white,
+        -:  176:  bright_black = 90,
+        -:  177:  bright_red,
+        -:  178:  bright_green,
+        -:  179:  bright_yellow,
+        -:  180:  bright_blue,
+        -:  181:  bright_magenta,
+        -:  182:  bright_cyan,
+        -:  183:  bright_white
+        -:  184:};
+        -:  185:
+        -:  186:enum class emphasis : uint8_t {
+        -:  187:  bold = 1,
+        -:  188:  faint = 1 << 1,
+        -:  189:  italic = 1 << 2,
+        -:  190:  underline = 1 << 3,
+        -:  191:  blink = 1 << 4,
+        -:  192:  reverse = 1 << 5,
+        -:  193:  conceal = 1 << 6,
+        -:  194:  strikethrough = 1 << 7,
+        -:  195:};
+        -:  196:
+        -:  197:// rgb is a struct for red, green and blue colors.
+        -:  198:// Using the name "rgb" makes some editors show the color in a tooltip.
+        -:  199:struct rgb {
+        -:  200:  FMT_CONSTEXPR rgb() : r(0), g(0), b(0) {}
+        -:  201:  FMT_CONSTEXPR rgb(uint8_t r_, uint8_t g_, uint8_t b_) : r(r_), g(g_), b(b_) {}
+function fmt::v8::rgb::rgb(unsigned int) called 0 returned 0% blocks executed 0%
+    #####:  202:  FMT_CONSTEXPR rgb(uint32_t hex)
+    #####:  203:      : r((hex >> 16) & 0xFF), g((hex >> 8) & 0xFF), b(hex & 0xFF) {}
+        -:  204:  FMT_CONSTEXPR rgb(color hex)
+        -:  205:      : r((uint32_t(hex) >> 16) & 0xFF),
+        -:  206:        g((uint32_t(hex) >> 8) & 0xFF),
+        -:  207:        b(uint32_t(hex) & 0xFF) {}
+        -:  208:  uint8_t r;
+        -:  209:  uint8_t g;
+        -:  210:  uint8_t b;
+        -:  211:};
+        -:  212:
+        -:  213:FMT_BEGIN_DETAIL_NAMESPACE
+        -:  214:
+        -:  215:// color is a struct of either a rgb color or a terminal color.
+        -:  216:struct color_type {
+function fmt::v8::detail::color_type::color_type() called 0 returned 0% blocks executed 0%
+    #####:  217:  FMT_CONSTEXPR color_type() FMT_NOEXCEPT : is_rgb(), value{} {}
+function fmt::v8::detail::color_type::color_type(fmt::v8::color) called 0 returned 0% blocks executed 0%
+    #####:  218:  FMT_CONSTEXPR color_type(color rgb_color) FMT_NOEXCEPT : is_rgb(true),
+    #####:  219:                                                           value{} {
+    #####:  220:    value.rgb_color = static_cast<uint32_t>(rgb_color);
+    #####:  221:  }
+        -:  222:  FMT_CONSTEXPR color_type(rgb rgb_color) FMT_NOEXCEPT : is_rgb(true), value{} {
+        -:  223:    value.rgb_color = (static_cast<uint32_t>(rgb_color.r) << 16) |
+        -:  224:                      (static_cast<uint32_t>(rgb_color.g) << 8) | rgb_color.b;
+        -:  225:  }
+        -:  226:  FMT_CONSTEXPR color_type(terminal_color term_color) FMT_NOEXCEPT : is_rgb(),
+        -:  227:                                                                     value{} {
+        -:  228:    value.term_color = static_cast<uint8_t>(term_color);
+        -:  229:  }
+        -:  230:  bool is_rgb;
+        -:  231:  union color_union {
+        -:  232:    uint8_t term_color;
+        -:  233:    uint32_t rgb_color;
+        -:  234:  } value;
+        -:  235:};
+        -:  236:
+        -:  237:FMT_END_DETAIL_NAMESPACE
+        -:  238:
+        -:  239:/** A text style consisting of foreground and background colors and emphasis. */
+        -:  240:class text_style {
+        -:  241: public:
+        -:  242:  FMT_CONSTEXPR text_style(emphasis em = emphasis()) FMT_NOEXCEPT
+        -:  243:      : set_foreground_color(),
+        -:  244:        set_background_color(),
+        -:  245:        ems(em) {}
+        -:  246:
+        -:  247:  FMT_CONSTEXPR text_style& operator|=(const text_style& rhs) {
+        -:  248:    if (!set_foreground_color) {
+        -:  249:      set_foreground_color = rhs.set_foreground_color;
+        -:  250:      foreground_color = rhs.foreground_color;
+        -:  251:    } else if (rhs.set_foreground_color) {
+        -:  252:      if (!foreground_color.is_rgb || !rhs.foreground_color.is_rgb)
+        -:  253:        FMT_THROW(format_error("can't OR a terminal color"));
+        -:  254:      foreground_color.value.rgb_color |= rhs.foreground_color.value.rgb_color;
+        -:  255:    }
+        -:  256:
+        -:  257:    if (!set_background_color) {
+        -:  258:      set_background_color = rhs.set_background_color;
+        -:  259:      background_color = rhs.background_color;
+        -:  260:    } else if (rhs.set_background_color) {
+        -:  261:      if (!background_color.is_rgb || !rhs.background_color.is_rgb)
+        -:  262:        FMT_THROW(format_error("can't OR a terminal color"));
+        -:  263:      background_color.value.rgb_color |= rhs.background_color.value.rgb_color;
+        -:  264:    }
+        -:  265:
+        -:  266:    ems = static_cast<emphasis>(static_cast<uint8_t>(ems) |
+        -:  267:                                static_cast<uint8_t>(rhs.ems));
+        -:  268:    return *this;
+        -:  269:  }
+        -:  270:
+        -:  271:  friend FMT_CONSTEXPR text_style operator|(text_style lhs,
+        -:  272:                                            const text_style& rhs) {
+        -:  273:    return lhs |= rhs;
+        -:  274:  }
+        -:  275:
+        -:  276:  FMT_DEPRECATED_NONMSVC FMT_CONSTEXPR text_style& operator&=(
+        -:  277:      const text_style& rhs) {
+        -:  278:    return and_assign(rhs);
+        -:  279:  }
+        -:  280:
+        -:  281:  FMT_DEPRECATED_NONMSVC friend FMT_CONSTEXPR text_style
+        -:  282:  operator&(text_style lhs, const text_style& rhs) {
+        -:  283:    return lhs.and_assign(rhs);
+        -:  284:  }
+        -:  285:
+function fmt::v8::text_style::has_foreground() const called 0 returned 0% blocks executed 0%
+    #####:  286:  FMT_CONSTEXPR bool has_foreground() const FMT_NOEXCEPT {
+    #####:  287:    return set_foreground_color;
+        -:  288:  }
+function fmt::v8::text_style::has_background() const called 0 returned 0% blocks executed 0%
+    #####:  289:  FMT_CONSTEXPR bool has_background() const FMT_NOEXCEPT {
+    #####:  290:    return set_background_color;
+        -:  291:  }
+function fmt::v8::text_style::has_emphasis() const called 0 returned 0% blocks executed 0%
+    #####:  292:  FMT_CONSTEXPR bool has_emphasis() const FMT_NOEXCEPT {
+    #####:  293:    return static_cast<uint8_t>(ems) != 0;
+        -:  294:  }
+function fmt::v8::text_style::get_foreground() const called 0 returned 0% blocks executed 0%
+    #####:  295:  FMT_CONSTEXPR detail::color_type get_foreground() const FMT_NOEXCEPT {
+    #####:  296:    FMT_ASSERT(has_foreground(), "no foreground specified for this style");
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+call    3 never executed
+    #####:  297:    return foreground_color;
+        -:  298:  }
+function fmt::v8::text_style::get_background() const called 0 returned 0% blocks executed 0%
+    #####:  299:  FMT_CONSTEXPR detail::color_type get_background() const FMT_NOEXCEPT {
+    #####:  300:    FMT_ASSERT(has_background(), "no background specified for this style");
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+call    3 never executed
+    #####:  301:    return background_color;
+        -:  302:  }
+function fmt::v8::text_style::get_emphasis() const called 0 returned 0% blocks executed 0%
+    #####:  303:  FMT_CONSTEXPR emphasis get_emphasis() const FMT_NOEXCEPT {
+    #####:  304:    FMT_ASSERT(has_emphasis(), "no emphasis specified for this style");
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+call    3 never executed
+    #####:  305:    return ems;
+        -:  306:  }
+        -:  307:
+        -:  308: private:
+function fmt::v8::text_style::text_style(bool, fmt::v8::detail::color_type) called 0 returned 0% blocks executed 0%
+    #####:  309:  FMT_CONSTEXPR text_style(bool is_foreground,
+        -:  310:                           detail::color_type text_color) FMT_NOEXCEPT
+    #####:  311:      : set_foreground_color(),
+    #####:  312:        set_background_color(),
+    #####:  313:        ems() {
+call    0 never executed
+call    1 never executed
+    #####:  314:    if (is_foreground) {
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    #####:  315:      foreground_color = text_color;
+    #####:  316:      set_foreground_color = true;
+        -:  317:    } else {
+    #####:  318:      background_color = text_color;
+    #####:  319:      set_background_color = true;
+        -:  320:    }
+    #####:  321:  }
+        -:  322:
+        -:  323:  // DEPRECATED!
+        -:  324:  FMT_CONSTEXPR text_style& and_assign(const text_style& rhs) {
+        -:  325:    if (!set_foreground_color) {
+        -:  326:      set_foreground_color = rhs.set_foreground_color;
+        -:  327:      foreground_color = rhs.foreground_color;
+        -:  328:    } else if (rhs.set_foreground_color) {
+        -:  329:      if (!foreground_color.is_rgb || !rhs.foreground_color.is_rgb)
+        -:  330:        FMT_THROW(format_error("can't AND a terminal color"));
+        -:  331:      foreground_color.value.rgb_color &= rhs.foreground_color.value.rgb_color;
+        -:  332:    }
+        -:  333:
+        -:  334:    if (!set_background_color) {
+        -:  335:      set_background_color = rhs.set_background_color;
+        -:  336:      background_color = rhs.background_color;
+        -:  337:    } else if (rhs.set_background_color) {
+        -:  338:      if (!background_color.is_rgb || !rhs.background_color.is_rgb)
+        -:  339:        FMT_THROW(format_error("can't AND a terminal color"));
+        -:  340:      background_color.value.rgb_color &= rhs.background_color.value.rgb_color;
+        -:  341:    }
+        -:  342:
+        -:  343:    ems = static_cast<emphasis>(static_cast<uint8_t>(ems) &
+        -:  344:                                static_cast<uint8_t>(rhs.ems));
+        -:  345:    return *this;
+        -:  346:  }
+        -:  347:
+        -:  348:  friend FMT_CONSTEXPR_DECL text_style fg(detail::color_type foreground)
+        -:  349:      FMT_NOEXCEPT;
+        -:  350:
+        -:  351:  friend FMT_CONSTEXPR_DECL text_style bg(detail::color_type background)
+        -:  352:      FMT_NOEXCEPT;
+        -:  353:
+        -:  354:  detail::color_type foreground_color;
+        -:  355:  detail::color_type background_color;
+        -:  356:  bool set_foreground_color;
+        -:  357:  bool set_background_color;
+        -:  358:  emphasis ems;
+        -:  359:};
+        -:  360:
+        -:  361:/** Creates a text style from the foreground (text) color. */
+function fmt::v8::fg(fmt::v8::detail::color_type) called 0 returned 0% blocks executed 0%
+    #####:  362:FMT_CONSTEXPR inline text_style fg(detail::color_type foreground) FMT_NOEXCEPT {
+    #####:  363:  return text_style(true, foreground);
+call    0 never executed
+        -:  364:}
+        -:  365:
+        -:  366:/** Creates a text style from the background color. */
+        -:  367:FMT_CONSTEXPR inline text_style bg(detail::color_type background) FMT_NOEXCEPT {
+        -:  368:  return text_style(false, background);
+        -:  369:}
+        -:  370:
+        -:  371:FMT_CONSTEXPR inline text_style operator|(emphasis lhs,
+        -:  372:                                          emphasis rhs) FMT_NOEXCEPT {
+        -:  373:  return text_style(lhs) | rhs;
+        -:  374:}
+        -:  375:
+        -:  376:FMT_BEGIN_DETAIL_NAMESPACE
+        -:  377:
+        -:  378:template <typename Char> struct ansi_color_escape {
+function fmt::v8::detail::ansi_color_escape<char>::ansi_color_escape(fmt::v8::detail::color_type, char const*) called 0 returned 0% blocks executed 0%
+    #####:  379:  FMT_CONSTEXPR ansi_color_escape(detail::color_type text_color,
+        -:  380:                                  const char* esc) FMT_NOEXCEPT {
+        -:  381:    // If we have a terminal color, we need to output another escape code
+        -:  382:    // sequence.
+    #####:  383:    if (!text_color.is_rgb) {
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    #####:  384:      bool is_background = esc == string_view("\x1b[48;2;");
+call    0 never executed
+    #####:  385:      uint32_t value = text_color.value.term_color;
+        -:  386:      // Background ASCII codes are the same as the foreground ones but with
+        -:  387:      // 10 more.
+    #####:  388:      if (is_background) value += 10u;
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  389:
+    #####:  390:      size_t index = 0;
+    #####:  391:      buffer[index++] = static_cast<Char>('\x1b');
+    #####:  392:      buffer[index++] = static_cast<Char>('[');
+        -:  393:
+    #####:  394:      if (value >= 100u) {
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    #####:  395:        buffer[index++] = static_cast<Char>('1');
+    #####:  396:        value %= 100u;
+        -:  397:      }
+    #####:  398:      buffer[index++] = static_cast<Char>('0' + value / 10u);
+    #####:  399:      buffer[index++] = static_cast<Char>('0' + value % 10u);
+        -:  400:
+    #####:  401:      buffer[index++] = static_cast<Char>('m');
+    #####:  402:      buffer[index++] = static_cast<Char>('\0');
+    #####:  403:      return;
+        -:  404:    }
+        -:  405:
+    #####:  406:    for (int i = 0; i < 7; i++) {
+branch  0 never executed
+branch  1 never executed (fallthrough)
+    #####:  407:      buffer[i] = static_cast<Char>(esc[i]);
+        -:  408:    }
+    #####:  409:    rgb color(text_color.value.rgb_color);
+call    0 never executed
+    #####:  410:    to_esc(color.r, buffer + 7, ';');
+call    0 never executed
+    #####:  411:    to_esc(color.g, buffer + 11, ';');
+call    0 never executed
+    #####:  412:    to_esc(color.b, buffer + 15, 'm');
+call    0 never executed
+    #####:  413:    buffer[19] = static_cast<Char>(0);
+        -:  414:  }
+function fmt::v8::detail::ansi_color_escape<char>::ansi_color_escape(fmt::v8::emphasis) called 0 returned 0% blocks executed 0%
+    #####:  415:  FMT_CONSTEXPR ansi_color_escape(emphasis em) FMT_NOEXCEPT {
+    #####:  416:    uint8_t em_codes[num_emphases] = {};
+    #####:  417:    if (has_emphasis(em, emphasis::bold)) em_codes[0] = 1;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  418:    if (has_emphasis(em, emphasis::faint)) em_codes[1] = 2;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  419:    if (has_emphasis(em, emphasis::italic)) em_codes[2] = 3;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  420:    if (has_emphasis(em, emphasis::underline)) em_codes[3] = 4;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  421:    if (has_emphasis(em, emphasis::blink)) em_codes[4] = 5;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  422:    if (has_emphasis(em, emphasis::reverse)) em_codes[5] = 7;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  423:    if (has_emphasis(em, emphasis::conceal)) em_codes[6] = 8;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  424:    if (has_emphasis(em, emphasis::strikethrough)) em_codes[7] = 9;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  425:
+    #####:  426:    size_t index = 0;
+    #####:  427:    for (size_t i = 0; i < num_emphases; ++i) {
+branch  0 never executed
+branch  1 never executed (fallthrough)
+    #####:  428:      if (!em_codes[i]) continue;
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    #####:  429:      buffer[index++] = static_cast<Char>('\x1b');
+    #####:  430:      buffer[index++] = static_cast<Char>('[');
+    #####:  431:      buffer[index++] = static_cast<Char>('0' + em_codes[i]);
+    #####:  432:      buffer[index++] = static_cast<Char>('m');
+        -:  433:    }
+    #####:  434:    buffer[index++] = static_cast<Char>(0);
+    #####:  435:  }
+        -:  436:  FMT_CONSTEXPR operator const Char*() const FMT_NOEXCEPT { return buffer; }
+        -:  437:
+function fmt::v8::detail::ansi_color_escape<char>::begin() const called 0 returned 0% blocks executed 0%
+    #####:  438:  FMT_CONSTEXPR const Char* begin() const FMT_NOEXCEPT { return buffer; }
+function fmt::v8::detail::ansi_color_escape<char>::end() const called 0 returned 0% blocks executed 0%
+    #####:  439:  FMT_CONSTEXPR_CHAR_TRAITS const Char* end() const FMT_NOEXCEPT {
+    #####:  440:    return buffer + std::char_traits<Char>::length(buffer);
+call    0 never executed
+        -:  441:  }
+        -:  442:
+        -:  443: private:
+        -:  444:  static constexpr size_t num_emphases = 8;
+        -:  445:  Char buffer[7u + 3u * num_emphases + 1u];
+        -:  446:
+function fmt::v8::detail::ansi_color_escape<char>::to_esc(unsigned char, char*, char) called 0 returned 0% blocks executed 0%
+    #####:  447:  static FMT_CONSTEXPR void to_esc(uint8_t c, Char* out,
+        -:  448:                                   char delimiter) FMT_NOEXCEPT {
+    #####:  449:    out[0] = static_cast<Char>('0' + c / 100);
+    #####:  450:    out[1] = static_cast<Char>('0' + c / 10 % 10);
+    #####:  451:    out[2] = static_cast<Char>('0' + c % 10);
+    #####:  452:    out[3] = static_cast<Char>(delimiter);
+    #####:  453:  }
+function fmt::v8::detail::ansi_color_escape<char>::has_emphasis(fmt::v8::emphasis, fmt::v8::emphasis) called 0 returned 0% blocks executed 0%
+    #####:  454:  static FMT_CONSTEXPR bool has_emphasis(emphasis em,
+        -:  455:                                         emphasis mask) FMT_NOEXCEPT {
+    #####:  456:    return static_cast<uint8_t>(em) & static_cast<uint8_t>(mask);
+        -:  457:  }
+        -:  458:};
+        -:  459:
+        -:  460:template <typename Char>
+function fmt::v8::detail::ansi_color_escape<char> fmt::v8::detail::make_foreground_color<char>(fmt::v8::detail::color_type) called 0 returned 0% blocks executed 0%
+    #####:  461:FMT_CONSTEXPR ansi_color_escape<Char> make_foreground_color(
+        -:  462:    detail::color_type foreground) FMT_NOEXCEPT {
+    #####:  463:  return ansi_color_escape<Char>(foreground, "\x1b[38;2;");
+call    0 never executed
+        -:  464:}
+        -:  465:
+        -:  466:template <typename Char>
+function fmt::v8::detail::ansi_color_escape<char> fmt::v8::detail::make_background_color<char>(fmt::v8::detail::color_type) called 0 returned 0% blocks executed 0%
+    #####:  467:FMT_CONSTEXPR ansi_color_escape<Char> make_background_color(
+        -:  468:    detail::color_type background) FMT_NOEXCEPT {
+    #####:  469:  return ansi_color_escape<Char>(background, "\x1b[48;2;");
+call    0 never executed
+        -:  470:}
+        -:  471:
+        -:  472:template <typename Char>
+function fmt::v8::detail::ansi_color_escape<char> fmt::v8::detail::make_emphasis<char>(fmt::v8::emphasis) called 0 returned 0% blocks executed 0%
+    #####:  473:FMT_CONSTEXPR ansi_color_escape<Char> make_emphasis(emphasis em) FMT_NOEXCEPT {
+    #####:  474:  return ansi_color_escape<Char>(em);
+call    0 never executed
+        -:  475:}
+        -:  476:
+        -:  477:template <typename Char>
+function void fmt::v8::detail::fputs<char>(char const*, _IO_FILE*) called 0 returned 0% blocks executed 0%
+    #####:  478:inline void fputs(const Char* chars, FILE* stream) FMT_NOEXCEPT {
+    #####:  479:  std::fputs(chars, stream);
+call    0 never executed
+    #####:  480:}
+        -:  481:
+        -:  482:template <>
+        -:  483:inline void fputs<wchar_t>(const wchar_t* chars, FILE* stream) FMT_NOEXCEPT {
+        -:  484:  std::fputws(chars, stream);
+        -:  485:}
+        -:  486:
+        -:  487:template <typename Char> inline void reset_color(FILE* stream) FMT_NOEXCEPT {
+        -:  488:  fputs("\x1b[0m", stream);
+        -:  489:}
+        -:  490:
+        -:  491:template <> inline void reset_color<wchar_t>(FILE* stream) FMT_NOEXCEPT {
+        -:  492:  fputs(L"\x1b[0m", stream);
+        -:  493:}
+        -:  494:
+        -:  495:template <typename Char>
+function void fmt::v8::detail::reset_color<char>(fmt::v8::detail::buffer<char>&) called 0 returned 0% blocks executed 0%
+    #####:  496:inline void reset_color(buffer<Char>& buffer) FMT_NOEXCEPT {
+    #####:  497:  auto reset_color = string_view("\x1b[0m");
+    #####:  498:  buffer.append(reset_color.begin(), reset_color.end());
+call    0 never executed
+    #####:  499:}
+        -:  500:
+        -:  501:template <typename Char>
+function void fmt::v8::detail::vformat_to<char>(fmt::v8::detail::buffer<char>&, fmt::v8::text_style const&, fmt::v8::basic_string_view<char>, fmt::v8::basic_format_args<fmt::v8::basic_format_context<std::conditional<std::is_same<fmt::v8::type_identity<char>::type, char>::value, fmt::v8::appender, std::back_insert_iterator<fmt::v8::detail::buffer<fmt::v8::type_identity<char>::type> > >::type, fmt::v8::type_identity<char>::type> >) called 0 returned 0% blocks executed 0%
+    #####:  502:void vformat_to(buffer<Char>& buf, const text_style& ts,
+        -:  503:                basic_string_view<Char> format_str,
+        -:  504:                basic_format_args<buffer_context<type_identity_t<Char>>> args) {
+    #####:  505:  bool has_style = false;
+    #####:  506:  if (ts.has_emphasis()) {
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  507:    has_style = true;
+    #####:  508:    auto emphasis = detail::make_emphasis<Char>(ts.get_emphasis());
+call    0 never executed
+call    1 never executed
+    #####:  509:    buf.append(emphasis.begin(), emphasis.end());
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+        -:  510:  }
+    #####:  511:  if (ts.has_foreground()) {
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  512:    has_style = true;
+    #####:  513:    auto foreground = detail::make_foreground_color<Char>(ts.get_foreground());
+call    0 never executed
+call    1 never executed
+    #####:  514:    buf.append(foreground.begin(), foreground.end());
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+        -:  515:  }
+    #####:  516:  if (ts.has_background()) {
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    #####:  517:    has_style = true;
+    #####:  518:    auto background = detail::make_background_color<Char>(ts.get_background());
+call    0 never executed
+call    1 never executed
+    #####:  519:    buf.append(background.begin(), background.end());
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+        -:  520:  }
+    #####:  521:  detail::vformat_to(buf, format_str, args, {});
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  522:  if (has_style) detail::reset_color<Char>(buf);
+branch  0 never executed (fallthrough)
+branch  1 never executed
+call    2 never executed
+    #####:  523:}
+        -:  524:
+        -:  525:FMT_END_DETAIL_NAMESPACE
+        -:  526:
+        -:  527:template <typename S, typename Char = char_t<S>>
+    #####:  528:void vprint(std::FILE* f, const text_style& ts, const S& format,
+        -:  529:            basic_format_args<buffer_context<type_identity_t<Char>>> args) {
+    #####:  530:  basic_memory_buffer<Char> buf;
+    #####:  531:  detail::vformat_to(buf, ts, to_string_view(format), args);
+    #####:  532:  buf.push_back(Char(0));
+    #####:  533:  detail::fputs(buf.data(), f);
+    #####:  534:}
+------------------
+void fmt::v8::vprint<char [42], char>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [42], fmt::v8::basic_format_args<fmt::v8::basic_format_context<std::conditional<std::is_same<fmt::v8::type_identity<char>::type, char>::value, fmt::v8::appender, std::back_insert_iterator<fmt::v8::detail::buffer<fmt::v8::type_identity<char>::type> > >::type, fmt::v8::type_identity<char>::type> >):
+function void fmt::v8::vprint<char [42], char>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [42], fmt::v8::basic_format_args<fmt::v8::basic_format_context<std::conditional<std::is_same<fmt::v8::type_identity<char>::type, char>::value, fmt::v8::appender, std::back_insert_iterator<fmt::v8::detail::buffer<fmt::v8::type_identity<char>::type> > >::type, fmt::v8::type_identity<char>::type> >) called 0 returned 0% blocks executed 0%
+    #####:  528:void vprint(std::FILE* f, const text_style& ts, const S& format,
+        -:  529:            basic_format_args<buffer_context<type_identity_t<Char>>> args) {
+    #####:  530:  basic_memory_buffer<Char> buf;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  531:  detail::vformat_to(buf, ts, to_string_view(format), args);
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  532:  buf.push_back(Char(0));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  533:  detail::fputs(buf.data(), f);
+call    0 never executed
+    #####:  534:}
+call    0 never executed
+call    1 never executed
+------------------
+void fmt::v8::vprint<char [62], char>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [62], fmt::v8::basic_format_args<fmt::v8::basic_format_context<std::conditional<std::is_same<fmt::v8::type_identity<char>::type, char>::value, fmt::v8::appender, std::back_insert_iterator<fmt::v8::detail::buffer<fmt::v8::type_identity<char>::type> > >::type, fmt::v8::type_identity<char>::type> >):
+function void fmt::v8::vprint<char [62], char>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [62], fmt::v8::basic_format_args<fmt::v8::basic_format_context<std::conditional<std::is_same<fmt::v8::type_identity<char>::type, char>::value, fmt::v8::appender, std::back_insert_iterator<fmt::v8::detail::buffer<fmt::v8::type_identity<char>::type> > >::type, fmt::v8::type_identity<char>::type> >) called 0 returned 0% blocks executed 0%
+    #####:  528:void vprint(std::FILE* f, const text_style& ts, const S& format,
+        -:  529:            basic_format_args<buffer_context<type_identity_t<Char>>> args) {
+    #####:  530:  basic_memory_buffer<Char> buf;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  531:  detail::vformat_to(buf, ts, to_string_view(format), args);
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  532:  buf.push_back(Char(0));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  533:  detail::fputs(buf.data(), f);
+call    0 never executed
+    #####:  534:}
+call    0 never executed
+call    1 never executed
+------------------
+void fmt::v8::vprint<char [56], char>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [56], fmt::v8::basic_format_args<fmt::v8::basic_format_context<std::conditional<std::is_same<fmt::v8::type_identity<char>::type, char>::value, fmt::v8::appender, std::back_insert_iterator<fmt::v8::detail::buffer<fmt::v8::type_identity<char>::type> > >::type, fmt::v8::type_identity<char>::type> >):
+function void fmt::v8::vprint<char [56], char>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [56], fmt::v8::basic_format_args<fmt::v8::basic_format_context<std::conditional<std::is_same<fmt::v8::type_identity<char>::type, char>::value, fmt::v8::appender, std::back_insert_iterator<fmt::v8::detail::buffer<fmt::v8::type_identity<char>::type> > >::type, fmt::v8::type_identity<char>::type> >) called 0 returned 0% blocks executed 0%
+    #####:  528:void vprint(std::FILE* f, const text_style& ts, const S& format,
+        -:  529:            basic_format_args<buffer_context<type_identity_t<Char>>> args) {
+    #####:  530:  basic_memory_buffer<Char> buf;
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  531:  detail::vformat_to(buf, ts, to_string_view(format), args);
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  532:  buf.push_back(Char(0));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  533:  detail::fputs(buf.data(), f);
+call    0 never executed
+    #####:  534:}
+call    0 never executed
+call    1 never executed
+------------------
+        -:  535:
+        -:  536:/**
+        -:  537:  \rst
+        -:  538:  Formats a string and prints it to the specified file stream using ANSI
+        -:  539:  escape sequences to specify text formatting.
+        -:  540:
+        -:  541:  **Example**::
+        -:  542:
+        -:  543:    fmt::print(fmt::emphasis::bold | fg(fmt::color::red),
+        -:  544:               "Elapsed time: {0:.2f} seconds", 1.23);
+        -:  545:  \endrst
+        -:  546: */
+        -:  547:template <typename S, typename... Args,
+        -:  548:          FMT_ENABLE_IF(detail::is_string<S>::value)>
+    #####:  549:void print(std::FILE* f, const text_style& ts, const S& format_str,
+        -:  550:           const Args&... args) {
+    #####:  551:  vprint(f, ts, format_str,
+    #####:  552:         fmt::make_args_checked<Args...>(format_str, args...));
+    #####:  553:}
+------------------
+void fmt::v8::print<char [42], , 0>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [42]):
+function void fmt::v8::print<char [42], , 0>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [42]) called 0 returned 0% blocks executed 0%
+    #####:  549:void print(std::FILE* f, const text_style& ts, const S& format_str,
+        -:  550:           const Args&... args) {
+    #####:  551:  vprint(f, ts, format_str,
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  552:         fmt::make_args_checked<Args...>(format_str, args...));
+    #####:  553:}
+------------------
+void fmt::v8::print<char [62], , 0>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [62]):
+function void fmt::v8::print<char [62], , 0>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [62]) called 0 returned 0% blocks executed 0%
+    #####:  549:void print(std::FILE* f, const text_style& ts, const S& format_str,
+        -:  550:           const Args&... args) {
+    #####:  551:  vprint(f, ts, format_str,
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  552:         fmt::make_args_checked<Args...>(format_str, args...));
+    #####:  553:}
+------------------
+void fmt::v8::print<char [56], , 0>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [56]):
+function void fmt::v8::print<char [56], , 0>(_IO_FILE*, fmt::v8::text_style const&, char const (&) [56]) called 0 returned 0% blocks executed 0%
+    #####:  549:void print(std::FILE* f, const text_style& ts, const S& format_str,
+        -:  550:           const Args&... args) {
+    #####:  551:  vprint(f, ts, format_str,
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  552:         fmt::make_args_checked<Args...>(format_str, args...));
+    #####:  553:}
+------------------
+        -:  554:
+        -:  555:/**
+        -:  556:  \rst
+        -:  557:  Formats a string and prints it to stdout using ANSI escape sequences to
+        -:  558:  specify text formatting.
+        -:  559:
+        -:  560:  **Example**::
+        -:  561:
+        -:  562:    fmt::print(fmt::emphasis::bold | fg(fmt::color::red),
+        -:  563:               "Elapsed time: {0:.2f} seconds", 1.23);
+        -:  564:  \endrst
+        -:  565: */
+        -:  566:template <typename S, typename... Args,
+        -:  567:          FMT_ENABLE_IF(detail::is_string<S>::value)>
+    #####:  568:void print(const text_style& ts, const S& format_str, const Args&... args) {
+    #####:  569:  return print(stdout, ts, format_str, args...);
+        -:  570:}
+        -:  571:
+        -:  572:template <typename S, typename Char = char_t<S>>
+        -:  573:inline std::basic_string<Char> vformat(
+        -:  574:    const text_style& ts, const S& format_str,
+        -:  575:    basic_format_args<buffer_context<type_identity_t<Char>>> args) {
+        -:  576:  basic_memory_buffer<Char> buf;
+        -:  577:  detail::vformat_to(buf, ts, to_string_view(format_str), args);
+        -:  578:  return fmt::to_string(buf);
+        -:  579:}
+        -:  580:
+        -:  581:/**
+        -:  582:  \rst
+        -:  583:  Formats arguments and returns the result as a string using ANSI
+        -:  584:  escape sequences to specify text formatting.
+        -:  585:
+        -:  586:  **Example**::
+        -:  587:
+        -:  588:    #include <fmt/color.h>
+        -:  589:    std::string message = fmt::format(fmt::emphasis::bold | fg(fmt::color::red),
+        -:  590:                                      "The answer is {}", 42);
+        -:  591:  \endrst
+        -:  592:*/
+        -:  593:template <typename S, typename... Args, typename Char = char_t<S>>
+        -:  594:inline std::basic_string<Char> format(const text_style& ts, const S& format_str,
+        -:  595:                                      const Args&... args) {
+        -:  596:  return fmt::vformat(ts, to_string_view(format_str),
+        -:  597:                      fmt::make_args_checked<Args...>(format_str, args...));
+        -:  598:}
+        -:  599:
+        -:  600:/**
+        -:  601:  Formats a string with the given text_style and writes the output to ``out``.
+        -:  602: */
+        -:  603:template <typename OutputIt, typename Char,
+        -:  604:          FMT_ENABLE_IF(detail::is_output_iterator<OutputIt, Char>::value)>
+        -:  605:OutputIt vformat_to(
+        -:  606:    OutputIt out, const text_style& ts, basic_string_view<Char> format_str,
+        -:  607:    basic_format_args<buffer_context<type_identity_t<Char>>> args) {
+        -:  608:  auto&& buf = detail::get_buffer<Char>(out);
+        -:  609:  detail::vformat_to(buf, ts, format_str, args);
+        -:  610:  return detail::get_iterator(buf);
+        -:  611:}
+        -:  612:
+        -:  613:/**
+        -:  614:  \rst
+        -:  615:  Formats arguments with the given text_style, writes the result to the output
+        -:  616:  iterator ``out`` and returns the iterator past the end of the output range.
+        -:  617:
+        -:  618:  **Example**::
+        -:  619:
+        -:  620:    std::vector<char> out;
+        -:  621:    fmt::format_to(std::back_inserter(out),
+        -:  622:                   fmt::emphasis::bold | fg(fmt::color::red), "{}", 42);
+        -:  623:  \endrst
+        -:  624:*/
+        -:  625:template <typename OutputIt, typename S, typename... Args,
+        -:  626:          bool enable = detail::is_output_iterator<OutputIt, char_t<S>>::value&&
+        -:  627:              detail::is_string<S>::value>
+        -:  628:inline auto format_to(OutputIt out, const text_style& ts, const S& format_str,
+        -:  629:                      Args&&... args) ->
+        -:  630:    typename std::enable_if<enable, OutputIt>::type {
+        -:  631:  return vformat_to(out, ts, to_string_view(format_str),
+        -:  632:                    fmt::make_args_checked<Args...>(format_str, args...));
+        -:  633:}
+        -:  634:
+        -:  635:FMT_MODULE_EXPORT_END
+        -:  636:FMT_END_NAMESPACE
+        -:  637:
+        -:  638:#endif  // FMT_COLOR_H_

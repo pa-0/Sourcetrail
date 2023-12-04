@@ -1,9 +1,8 @@
-// STL
 #include <chrono>
 #include <thread>
-// catch2
-#include <catch2/catch_all.hpp>
-// internal
+
+#include <gtest/gtest.h>
+
 #include "Blackboard.h"
 #include "Task.h"
 #include "TaskGroupSelector.h"
@@ -87,38 +86,37 @@ void waitForThread(TaskScheduler& scheduler) {
 }
 }    // namespace
 
-// NOLINTNEXTLINE(cert-err58-cpp)
-TEST_CASE("scheduler loop starts and stops", "[scheduling]") {
+TEST(TaskScheduler, loopStartsAndStops) {
   TaskScheduler scheduler(0);
-  REQUIRE(!scheduler.loopIsRunning());
+  EXPECT_TRUE(!scheduler.loopIsRunning());
 
   scheduler.startSchedulerLoopThreaded();
 
   waitForThread(scheduler);
 
-  REQUIRE(scheduler.loopIsRunning());
+  EXPECT_TRUE(scheduler.loopIsRunning());
 
   scheduler.stopSchedulerLoop();
 
   waitForThread(scheduler);
 
-  REQUIRE(!scheduler.loopIsRunning());
+  EXPECT_TRUE(!scheduler.loopIsRunning());
 }
 
-TEST_CASE("tasks get executed without scheduling in correct order", "[scheduling]") {
+TEST(TaskScheduler, tasksGetExecutedWithoutSchedulingInCorrectOrder) {
   int order = 0;
   TestTask task(&order, 1);
 
   executeTask(task);
 
-  REQUIRE(3 == order);
+  EXPECT_TRUE(3 == order);
 
-  REQUIRE(1 == task.enterCallOrder);
-  REQUIRE(2 == task.updateCallOrder);
-  REQUIRE(3 == task.exitCallOrder);
+  EXPECT_TRUE(1 == task.enterCallOrder);
+  EXPECT_TRUE(2 == task.updateCallOrder);
+  EXPECT_TRUE(3 == task.exitCallOrder);
 }
 
-TEST_CASE("scheduled tasks get processed with callbacks in correct order", "[scheduling]") {
+TEST(TaskScheduler, tasksGetProcessedWithCallbacksInCorrectOrder) {
   TaskScheduler scheduler(0);
   scheduler.startSchedulerLoopThreaded();
 
@@ -131,15 +129,14 @@ TEST_CASE("scheduled tasks get processed with callbacks in correct order", "[sch
 
   scheduler.stopSchedulerLoop();
 
-  REQUIRE(3 == order);
+  EXPECT_TRUE(3 == order);
 
-  REQUIRE(1 == task->enterCallOrder);
-  REQUIRE(2 == task->updateCallOrder);
-  REQUIRE(3 == task->exitCallOrder);
+  EXPECT_TRUE(1 == task->enterCallOrder);
+  EXPECT_TRUE(2 == task->updateCallOrder);
+  EXPECT_TRUE(3 == task->exitCallOrder);
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-TEST_CASE("sequential task group to process tasks in correct order", "[scheduling]") {
+TEST(TaskScheduler, sequentialTaskGroupToProcessTasksInCorrectOrder) {
   TaskScheduler scheduler(0);
   scheduler.startSchedulerLoopThreaded();
 
@@ -157,18 +154,18 @@ TEST_CASE("sequential task group to process tasks in correct order", "[schedulin
 
   scheduler.stopSchedulerLoop();
 
-  REQUIRE(6 == order);
+  EXPECT_TRUE(6 == order);
 
-  REQUIRE(1 == task1->enterCallOrder);
-  REQUIRE(2 == task1->updateCallOrder);
-  REQUIRE(3 == task1->exitCallOrder);
+  EXPECT_TRUE(1 == task1->enterCallOrder);
+  EXPECT_TRUE(2 == task1->updateCallOrder);
+  EXPECT_TRUE(3 == task1->exitCallOrder);
 
-  REQUIRE(4 == task2->enterCallOrder);
-  REQUIRE(5 == task2->updateCallOrder);
-  REQUIRE(6 == task2->exitCallOrder);
+  EXPECT_TRUE(4 == task2->enterCallOrder);
+  EXPECT_TRUE(5 == task2->updateCallOrder);
+  EXPECT_TRUE(6 == task2->exitCallOrder);
 }
 
-TEST_CASE("sequential task group does not evaluate tasks after failure", "[scheduling]") {
+TEST(TaskScheduler, sequentialTaskGroupDoesNotEvaluateTasksAfterFailure) {
   TaskScheduler scheduler(0);
   scheduler.startSchedulerLoopThreaded();
 
@@ -186,17 +183,16 @@ TEST_CASE("sequential task group does not evaluate tasks after failure", "[sched
 
   scheduler.stopSchedulerLoop();
 
-  REQUIRE(1 == task1->enterCallOrder);
-  REQUIRE(2 == task1->updateCallOrder);
-  REQUIRE(3 == task1->exitCallOrder);
+  EXPECT_TRUE(1 == task1->enterCallOrder);
+  EXPECT_TRUE(2 == task1->updateCallOrder);
+  EXPECT_TRUE(3 == task1->exitCallOrder);
 
-  REQUIRE(0 == task2->enterCallOrder);
-  REQUIRE(0 == task2->updateCallOrder);
-  REQUIRE(0 == task2->exitCallOrder);
+  EXPECT_TRUE(0 == task2->enterCallOrder);
+  EXPECT_TRUE(0 == task2->updateCallOrder);
+  EXPECT_TRUE(0 == task2->exitCallOrder);
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-TEST_CASE("sequential task group does not evaluate tasks after success", "[scheduling]") {
+TEST(TaskScheduler, sequentialTaskGroupDoesNotEvaluateTasksAfterSuccess) {
   TaskScheduler scheduler(0);
   scheduler.startSchedulerLoopThreaded();
 
@@ -216,21 +212,20 @@ TEST_CASE("sequential task group does not evaluate tasks after success", "[sched
 
   scheduler.stopSchedulerLoop();
 
-  REQUIRE(1 == task1->enterCallOrder);
-  REQUIRE(2 == task1->updateCallOrder);
-  REQUIRE(3 == task1->exitCallOrder);
+  EXPECT_TRUE(1 == task1->enterCallOrder);
+  EXPECT_TRUE(2 == task1->updateCallOrder);
+  EXPECT_TRUE(3 == task1->exitCallOrder);
 
-  REQUIRE(4 == task2->enterCallOrder);
-  REQUIRE(5 == task2->updateCallOrder);
-  REQUIRE(6 == task2->exitCallOrder);
+  EXPECT_TRUE(4 == task2->enterCallOrder);
+  EXPECT_TRUE(5 == task2->updateCallOrder);
+  EXPECT_TRUE(6 == task2->exitCallOrder);
 
-  REQUIRE(0 == task3->enterCallOrder);
-  REQUIRE(0 == task3->updateCallOrder);
-  REQUIRE(0 == task3->exitCallOrder);
+  EXPECT_TRUE(0 == task3->enterCallOrder);
+  EXPECT_TRUE(0 == task3->updateCallOrder);
+  EXPECT_TRUE(0 == task3->exitCallOrder);
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-TEST_CASE("task scheduling within task processing", "[scheduling]") {
+TEST(TaskScheduler, taskSchedulingWithinTaskProcessing) {
   TaskScheduler scheduler(0);
   scheduler.startSchedulerLoopThreaded();
 
@@ -243,13 +238,13 @@ TEST_CASE("task scheduling within task processing", "[scheduling]") {
 
   scheduler.stopSchedulerLoop();
 
-  REQUIRE(6 == order);
+  EXPECT_TRUE(6 == order);
 
-  REQUIRE(1 == task->enterCallOrder);
-  REQUIRE(2 == task->updateCallOrder);
-  REQUIRE(3 == task->exitCallOrder);
+  EXPECT_TRUE(1 == task->enterCallOrder);
+  EXPECT_TRUE(2 == task->updateCallOrder);
+  EXPECT_TRUE(3 == task->exitCallOrder);
 
-  REQUIRE(4 == task->subTask->enterCallOrder);
-  REQUIRE(5 == task->subTask->updateCallOrder);
-  REQUIRE(6 == task->subTask->exitCallOrder);
+  EXPECT_TRUE(4 == task->subTask->enterCallOrder);
+  EXPECT_TRUE(5 == task->subTask->updateCallOrder);
+  EXPECT_TRUE(6 == task->subTask->exitCallOrder);
 }
