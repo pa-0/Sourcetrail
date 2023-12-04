@@ -5,9 +5,12 @@
 * Build: Upload docs to github page.
 * Build: Upload coverage to github page.
 * Docs: Add doxygen support and awesome-doxygen-css.
-* C/C++: Migrate clang to v14.
-* Code: Update Catch to v2.13.10.
+* C/C++: Migrate clang to v15.
+* Code: Port test suite from Catch to gtest.
 * Build: Add Github action.
+* Build: Update cmake to 3.20.
+* Build: Update Qt to 15.5.
+
 
 #### 2021.4.19
 released 2021-11-30

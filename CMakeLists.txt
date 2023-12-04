@@ -96,27 +96,15 @@ endif()
 
 project_options(
   ENABLE_CONAN
-  # CONAN_OPTIONS    # Extra options to pass to conan
-  # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
-  # CLANG_WARNINGS   # Override the defaults for the CLANG warnings
-  # GCC_WARNINGS     # Override the defaults for the GCC warnings
   ${ENABLE_CPPCHECK}
   ${ENABLE_CLANG_TIDY}
   ${ENABLE_COVERAGE}
   ENABLE_VS_ANALYSIS
-  # ENABLE_INTERPROCEDURAL_OPTIMIZATION
-  # ENABLE_NATIVE_OPTIMIZATION
   ${ENABLE_DOXYGEN}
   ${ENABLE_SANITIZER_ADDRESS}
   ${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR}
   ${ENABLE_SANITIZER_THREAD}
   ${ENABLE_SANITIZER_MEMORY}
-  # ENABLE_PCH
-  # PCH_HEADERS
-  # WARNINGS_AS_ERRORS
-  # ENABLE_INCLUDE_WHAT_YOU_USE
-  # ENABLE_BUILD_WITH_TIME_TRACE
-  # ENABLE_UNITY
 )
 
 #RPATH
@@ -136,8 +124,8 @@ set(Boost_USE_STATIC_LIBS ON CACHE BOOL "Set to ON to force the use of the stati
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.67 COMPONENTS system program_options filesystem date_time locale REQUIRED)
 # Qt ---------------------------------------------------------------------------
-set(QT_MIN_VERSION     "5.12.0")
-set(QT_MIN_VERSION_HEX 0x051200)
+set(QT_MIN_VERSION     "5.15.0")
+set(QT_MIN_VERSION_HEX 0x051500)
 find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Widgets PrintSupport Network Svg REQUIRED)
 
 if(WIN32)
