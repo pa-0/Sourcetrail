@@ -6,7 +6,7 @@
 
 struct LogMessage;
 
-class MockedLogger final : public Logger {
+class MockedLogger : public Logger {
 public:
   MockedLogger() : Logger("MockedLogger") {}
 

@@ -1,6 +1,6 @@
-#include <catch2/catch_all.hpp>
-
 #include <thread>
+
+#include <gtest/gtest.h>
 
 #include "LogManagerImplementation.h"
 #include "Logger.h"
@@ -88,8 +88,7 @@ void TestLogger::logError(const LogMessage& message) {
 }
 
 
-void addTestLogger(LogManagerImplementation* logManagerImplementation,
-                   const unsigned int loggerCount) {
+void addTestLogger(LogManagerImplementation* logManagerImplementation, const unsigned int loggerCount) {
   for(unsigned int i = 0; i < loggerCount; i++) {
     std::shared_ptr<Logger> logger = std::make_shared<TestLogger>();
     logManagerImplementation->addLogger(logger);
@@ -101,8 +100,7 @@ void removeTestLoggers(LogManagerImplementation* logManagerImplementation) {
   logManagerImplementation->removeLoggersByType(logger->getType());
 }
 
-void addAndRemoveTestLogger(LogManagerImplementation* logManagerImplementation,
-                            const unsigned int loggerCount) {
+void addAndRemoveTestLogger(LogManagerImplementation* logManagerImplementation, const unsigned int loggerCount) {
   addTestLogger(logManagerImplementation, loggerCount);
   removeTestLoggers(logManagerImplementation);
 }
@@ -118,7 +116,7 @@ void logSomeMessages(LogManagerImplementation* logManagerImplementation,
 }
 }    // namespace
 
-TEST_CASE("new logger can be added to manager") {
+TEST(LogManagerTestSuite, newLoggerCanBeAddedToManager) {
   LogManagerImplementation logManagerImplementation;
 
   std::shared_ptr<Logger> logger = std::make_shared<TestLogger>();
@@ -128,10 +126,10 @@ TEST_CASE("new logger can be added to manager") {
   int countAfterAdd = logManagerImplementation.getLoggerCount();
   logManagerImplementation.removeLogger(logger);
 
-  REQUIRE(1 == countAfterAdd - countBeforeAdd);
+  EXPECT_TRUE(1 == countAfterAdd - countBeforeAdd);
 }
 
-TEST_CASE("logger can be removed from manager") {
+TEST(LogManagerTestSuite, loggerCanBeRemovedFromManager) {
   LogManagerImplementation logManagerImplementation;
 
   std::shared_ptr<Logger> logger = std::make_shared<TestLogger>();
@@ -141,10 +139,10 @@ TEST_CASE("logger can be removed from manager") {
   logManagerImplementation.removeLogger(logger);
   int countAfterRemove = logManagerImplementation.getLoggerCount();
 
-  REQUIRE(countBeforeAdd == countAfterRemove);
+  EXPECT_TRUE(countBeforeAdd == countAfterRemove);
 }
 
-TEST_CASE("logger logs message") {
+TEST(LogManagerTestSuite, loggerLogsMessage) {
   LogManagerImplementation logManagerImplementation;
 
   const std::wstring log = L"test";
@@ -155,11 +153,11 @@ TEST_CASE("logger logs message") {
   const int logCount = logger->getMessageCount();
   const std::wstring lastLog = logger->getLastInfo();
 
-  REQUIRE(1 == logCount);
-  REQUIRE(log == lastLog);
+  EXPECT_TRUE(1 == logCount);
+  EXPECT_TRUE(log == lastLog);
 }
 
-TEST_CASE("logger logs warning") {
+TEST(LogManagerTestSuite, loggerLogsWarning) {
   LogManagerImplementation logManagerImplementation;
 
   const std::wstring log = L"test";
@@ -171,11 +169,11 @@ TEST_CASE("logger logs warning") {
   const int logCount = logger->getWarningCount();
   const std::wstring lastLog = logger->getLastWarning();
 
-  REQUIRE(1 == logCount);
-  REQUIRE(log == lastLog);
+  EXPECT_TRUE(1 == logCount);
+  EXPECT_TRUE(log == lastLog);
 }
 
-TEST_CASE("logger logs error") {
+TEST(LogManagerTestSuite, loggerLogsError) {
   LogManagerImplementation logManagerImplementation;
 
   std::wstring log = L"test";
@@ -187,11 +185,11 @@ TEST_CASE("logger logs error") {
   const int logCount = logger->getErrorCount();
   const std::wstring lastLog = logger->getLastError();
 
-  REQUIRE(1 == logCount);
-  REQUIRE(log == lastLog);
+  EXPECT_TRUE(1 == logCount);
+  EXPECT_TRUE(log == lastLog);
 }
 
-TEST_CASE("logger logs only logs of defined log level") {
+TEST(LogManagerTestSuite, loggerLogsOnlyLogsOfDefinedLogLevel) {
   LogManagerImplementation logManagerImplementation;
 
   std::wstring info = L"info";
@@ -208,15 +206,15 @@ TEST_CASE("logger logs only logs of defined log level") {
   logManagerImplementation.logWarning(warning, __FILE__, __FUNCTION__, __LINE__);
   logManagerImplementation.logError(error, __FILE__, __FUNCTION__, __LINE__);
 
-  REQUIRE(1 == logger->getMessageCount());
-  REQUIRE(0 == logger->getWarningCount());
-  REQUIRE(1 == logger->getErrorCount());
+  EXPECT_TRUE(1 == logger->getMessageCount());
+  EXPECT_TRUE(0 == logger->getWarningCount());
+  EXPECT_TRUE(1 == logger->getErrorCount());
 
-  REQUIRE(info == logger->getLastInfo());
-  REQUIRE(error == logger->getLastError());
+  EXPECT_TRUE(info == logger->getLastInfo());
+  EXPECT_TRUE(error == logger->getLastError());
 }
 
-TEST_CASE("new logger can be added to manager threaded") {
+TEST(LogManagerTestSuite, newLoggerCanBeAddedToManagerThreaded) {
   LogManagerImplementation logManagerImplementation;
   unsigned int loggerCount = 100;
 
@@ -226,10 +224,10 @@ TEST_CASE("new logger can be added to manager threaded") {
   thread0.join();
   thread1.join();
 
-  REQUIRE(loggerCount * 2 == logManagerImplementation.getLoggerCount());
+  EXPECT_TRUE(loggerCount * 2 == logManagerImplementation.getLoggerCount());
 }
 
-TEST_CASE("logger can be removed from manager threaded") {
+TEST(LogManagerTestSuite, loggerCanBeRemovedFromManagerThreaded) {
   LogManagerImplementation logManagerImplementation;
   unsigned int loggerCount = 100;
 
@@ -239,10 +237,10 @@ TEST_CASE("logger can be removed from manager threaded") {
   thread0.join();
   thread1.join();
 
-  REQUIRE(0 == logManagerImplementation.getLoggerCount());
+  EXPECT_TRUE(0 == logManagerImplementation.getLoggerCount());
 }
 
-TEST_CASE("logger logs threaded") {
+TEST(LogManagerTestSuite, loggerLogsThreaded) {
   LogManagerImplementation logManagerImplementation;
 
   std::wstring log = L"foo";
@@ -256,7 +254,6 @@ TEST_CASE("logger logs threaded") {
   thread0.join();
   thread1.join();
 
-  REQUIRE(logger->getLastError() == log);
-  REQUIRE(messageCount * 6 ==
-          logger->getErrorCount() + logger->getWarningCount() + logger->getMessageCount());
+  EXPECT_TRUE(logger->getLastError() == log);
+  EXPECT_TRUE(messageCount * 6 == logger->getErrorCount() + logger->getWarningCount() + logger->getMessageCount());
 }
