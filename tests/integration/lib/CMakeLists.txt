@@ -14,7 +14,8 @@ foreach(test_name IN LISTS test_lib_names)
   target_link_libraries(
     ${test_name}
     PUBLIC
-      catch2::catch2
+      GTest::gtest
+      GTest::gtest_main
       Qt5::Core
       Sourcetrail::messaging
       $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>)
@@ -24,15 +25,8 @@ foreach(test_name IN LISTS test_lib_names)
     PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
-  # automatically discover ${test_name} that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
-  # to whatever you want, or use different for different binaries
-  catch_discover_tests(
+  gtest_discover_tests(
     ${test_name}
-    TEST_PREFIX
-    "integration."
-    REPORTER XML
-    OUTPUT_DIR .
-    OUTPUT_PREFIX "integration."
-    OUTPUT_SUFFIX .xml
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test")
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/"
+    TEST_PREFIX "integration.")
 endforeach()

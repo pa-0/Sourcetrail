@@ -1,9 +1,8 @@
-// STL
 #include <chrono>
 #include <thread>
-// catch2
-#include <catch2/catch_all.hpp>
-// internal
+
+#include <gtest/gtest.h>
+
 #include "Message.h"
 #include "MessageListener.h"
 #include "MessageQueue.h"
@@ -98,24 +97,23 @@ void waitForThread() {
 }
 }    // namespace
 
-// NOLINTNEXTLINE(cert-err58-cpp)
-TEST_CASE("message loop starts and stops", "[messaging]") {
-  REQUIRE(!MessageQueue::getInstance()->loopIsRunning());
+TEST(MessageQueue, messageLoopStartsAndStops) {
+  EXPECT_TRUE(!MessageQueue::getInstance()->loopIsRunning());
 
   MessageQueue::getInstance()->startMessageLoopThreaded();
 
   waitForThread();
 
-  REQUIRE(MessageQueue::getInstance()->loopIsRunning());
+  EXPECT_TRUE(MessageQueue::getInstance()->loopIsRunning());
 
   MessageQueue::getInstance()->stopMessageLoop();
 
   waitForThread();
 
-  REQUIRE(!MessageQueue::getInstance()->loopIsRunning());
+  EXPECT_TRUE(!MessageQueue::getInstance()->loopIsRunning());
 }
 
-TEST_CASE("registered listener receives messages", "[messaging]") {
+TEST(MessageQueue, registeredListenerReceivesMessages) {
   MessageQueue::getInstance()->startMessageLoopThreaded();
 
   TestMessageListener listener;
@@ -129,11 +127,11 @@ TEST_CASE("registered listener receives messages", "[messaging]") {
 
   MessageQueue::getInstance()->stopMessageLoop();
 
-  REQUIRE(3 == listener.m_messageCount);
-  REQUIRE(0 == listener2.m_messageCount);
+  EXPECT_TRUE(3 == listener.m_messageCount);
+  EXPECT_TRUE(0 == listener2.m_messageCount);
 }
 
-TEST_CASE("message dispatching within message handling", "[messaging]") {
+TEST(MessageQueue, messageDispatchingWithinMessageHandling) {
   MessageQueue::getInstance()->startMessageLoopThreaded();
 
   TestMessageListener listener;
@@ -145,11 +143,11 @@ TEST_CASE("message dispatching within message handling", "[messaging]") {
 
   MessageQueue::getInstance()->stopMessageLoop();
 
-  REQUIRE(1 == listener.m_messageCount);
-  REQUIRE(1 == listener2.m_messageCount);
+  EXPECT_TRUE(1 == listener.m_messageCount);
+  EXPECT_TRUE(1 == listener2.m_messageCount);
 }
 
-TEST_CASE("listener registration within message handling", "[messaging]") {
+TEST(MessageQueue, listenerRegistrationWithinMessageHandling) {
   MessageQueue::getInstance()->startMessageLoopThreaded();
 
   Test3MessageListener listener;
@@ -161,13 +159,13 @@ TEST_CASE("listener registration within message handling", "[messaging]") {
 
   MessageQueue::getInstance()->stopMessageLoop();
 
-  REQUIRE(listener.m_listener);
+  EXPECT_TRUE(listener.m_listener);
   if(listener.m_listener) {
-    REQUIRE(1 == listener.m_listener->m_messageCount);
+    EXPECT_TRUE(1 == listener.m_listener->m_messageCount);
   }
 }
 
-TEST_CASE("listener unregistration within message handling", "[messaging]") {
+TEST(MessageQueue, listenerUnregistrationWithinMessageHandling) {
   MessageQueue::getInstance()->startMessageLoopThreaded();
 
   Test4MessageListener listener;
@@ -184,13 +182,13 @@ TEST_CASE("listener unregistration within message handling", "[messaging]") {
 
   MessageQueue::getInstance()->stopMessageLoop();
 
-  REQUIRE(listener.m_listener);
+  EXPECT_TRUE(listener.m_listener);
   if(listener.m_listener) {
-    REQUIRE(2 == listener.m_listener->m_messageCount);
+    EXPECT_TRUE(2 == listener.m_listener->m_messageCount);
   }
 }
 
-TEST_CASE("listener registration to front and back within message handling", "[messaging]") {
+TEST(MessageQueue, listenerRegistrationToFrontAndBackWithinMessageHandling) {
   MessageQueue::getInstance()->startMessageLoopThreaded();
 
   Test5MessageListener listener;
@@ -203,10 +201,10 @@ TEST_CASE("listener registration to front and back within message handling", "[m
 
   MessageQueue::getInstance()->stopMessageLoop();
 
-  REQUIRE(5 == listener.m_listeners.size());
-  REQUIRE(2 == listener.m_listeners[0]->m_messageCount);
-  REQUIRE(2 == listener.m_listeners[1]->m_messageCount);
-  REQUIRE(2 == listener.m_listeners[2]->m_messageCount);
-  REQUIRE(2 == listener.m_listeners[3]->m_messageCount);
-  REQUIRE(2 == listener.m_listeners[4]->m_messageCount);
+  EXPECT_TRUE(5 == listener.m_listeners.size());
+  EXPECT_TRUE(2 == listener.m_listeners[0]->m_messageCount);
+  EXPECT_TRUE(2 == listener.m_listeners[1]->m_messageCount);
+  EXPECT_TRUE(2 == listener.m_listeners[2]->m_messageCount);
+  EXPECT_TRUE(2 == listener.m_listeners[3]->m_messageCount);
+  EXPECT_TRUE(2 == listener.m_listeners[4]->m_messageCount);
 }

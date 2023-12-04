@@ -1,10 +1,9 @@
-// catch2
-#include <catch2/catch_all.hpp>
-// internal
+#include <gtest/gtest.h>
+
 #include "FileSystem.h"
 #include "SqliteIndexStorage.h"
 
-TEST_CASE("storage adds node successfully", "[lib]") {
+TEST(SqliteIndexStorage, addsNodeSuccessfully) {
   FilePath databasePath(L"data/SQLiteTestSuite/test.sqlite");
   int nodeCount = -1;
   {
@@ -17,10 +16,10 @@ TEST_CASE("storage adds node successfully", "[lib]") {
   }
   FileSystem::remove(databasePath);
 
-  REQUIRE(1 == nodeCount);
+  EXPECT_TRUE(1 == nodeCount);
 }
 
-TEST_CASE("storage removes node successfully", "[lib]") {
+TEST(SqliteIndexStorage, removesNodeSuccessfully) {
   FilePath databasePath(L"data/SQLiteTestSuite/test.sqlite");
   int nodeCount = -1;
   {
@@ -34,10 +33,10 @@ TEST_CASE("storage removes node successfully", "[lib]") {
   }
   FileSystem::remove(databasePath);
 
-  REQUIRE(0 == nodeCount);
+  EXPECT_TRUE(0 == nodeCount);
 }
 
-TEST_CASE("storage adds edge successfully", "[lib]") {
+TEST(SqliteIndexStorage, addsEdgeSuccessfully) {
   FilePath databasePath(L"data/SQLiteTestSuite/test.sqlite");
   int edgeCount = -1;
   {
@@ -52,10 +51,10 @@ TEST_CASE("storage adds edge successfully", "[lib]") {
   }
   FileSystem::remove(databasePath);
 
-  REQUIRE(1 == edgeCount);
+  EXPECT_TRUE(1 == edgeCount);
 }
 
-TEST_CASE("storage removes edge successfully", "[lib]") {
+TEST(SqliteIndexStorage, removesEdgeSuccessfully) {
   FilePath databasePath(L"data/SQLiteTestSuite/test.sqlite");
   int edgeCount = -1;
   {
@@ -71,5 +70,5 @@ TEST_CASE("storage removes edge successfully", "[lib]") {
   }
   FileSystem::remove(databasePath);
 
-  REQUIRE(0 == edgeCount);
+  EXPECT_TRUE(0 == edgeCount);
 }
