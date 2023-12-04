@@ -1,5 +1,5 @@
 #${CMAKE_SOURCE_DIR}/CMakeLists.txt
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 include(cmake/version.cmake)
 
 project(Sourcetrail

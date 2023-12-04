@@ -64,7 +64,7 @@ Building Sourcetrail requires several dependencies to be in place on your machin
 
 ### Required Tools
 
-* __CMake v3.12 (required for Windows, Linux and MacOS)__
+* __CMake v3.20 (required for Windows, Linux and MacOS)__
     * __Reason__: Used to generate a build configuration for your build system
     * __Download__: https://cmake.org/download
 
@@ -92,7 +92,7 @@ Building Sourcetrail requires several dependencies to be in place on your machin
         $ ./b2 --link=static --variant=release --threading=multi --runtime-link=static --cxxflags=-fPIC
         ```
 
-* __Qt 5.12.3__
+* __Qt 5.15__
     * __Reason__: Used for rendering the GUI and for starting additional (indexer) processes.
     * __Prebuilt Download__: http://download.qt.io/official_releases/qt/
 
@@ -149,54 +149,13 @@ Building Sourcetrail requires several dependencies to be in place on your machin
     ```
 * Build Sourcetrail as described [above](#building).
 
-## Enable Java Language Support **DEPRICATED**
-
-### Required dependencies
-
-* __JDK 1.8__
-    * __Reason__: Used to build the Java indexer and make it callable from the C++ code via JNI.
-    * __Remarks__: Make sure that `<jdk_root>/bin` is available in your `PATH` environment variable and that the `JAVA_HOME` environment variable is set:
-        ```
-        JAVA_HOME=<path/to/Java>/jdk1.x.x_xxx
-        ```
-
-* __Maven__
-    * __REASON__: Used within Sourcetrail's automated tests.
-    * __Remarks__:  Make sure `.../apache-maven-x.x.x/bin` is available in your `PATH` environment variable and that both `M2_HOME` and `MAVEN_HOME` environment variables are set:
-        ```
-        M2_HOME=.../apache-maven-x.x.x
-        MAVEN_HOME=.../apache-maven-x.x.x
-        ```
-
-### Building
-
-* Run CMake with these additional options:
-    ```
-    -DBUILD_JAVA_LANGUAGE_PACKAGE=ON
-    ```
-* Build Sourcetrail as described [above](#building).
-
-## Enable Python Language Support  **DEPRICATED**
-
-### Required Tools
-
-* __7z (required for Windows)__
-    * __REASON__: Used to extract the prebuilt SourcetrailPythonIndexer which is downloaded automatically during build execution.
-
-### Building
-
-* Run CMake with these additional options:
-    ```
-    -DBUILD_PYTHON_LANGUAGE_PACKAGE=ON
-    ```
-* Build Sourcetrail as described [above](#building).
-
-
 ## Creating the deployment Package
 
 ### Windows
 
 #### Required Tools
+
+`Moving to qt installer framework`
 
 * __Visual Studio (required for Windows)__
     * __Reason__: Used for building the Sourcetrail Windows installer.
@@ -212,12 +171,6 @@ Building Sourcetrail requires several dependencies to be in place on your machin
     * __Reason__: Used to run Wix from the Visual Studio build environment.
     * __Download__: https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2017Extension
 
-* __JRE__
-    * __Reason__: Used for indexing the java sample project that ships with the package.
-
-* __WinRAR__
-    * __Reason__: Used for creating the final zip files for the installer and the portable package.
-    * __Remarks__: Make sure to add `<path/to>/WinRAR` to your `PATH` environment variable.
 
 #### Building
 
