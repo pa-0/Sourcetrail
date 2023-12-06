@@ -16,12 +16,8 @@ Sourcetrail is:
 * free
 * working offline
 * operating on Windows, macOS and Linux
-* supporting C, C++, Java and Python
+* supporting C/C++
 * offering an SDK ([SourcetrailDB](https://github.com/CoatiSoftware/SourcetrailDB)) to write custom language extensions
-
-## Sourcetrail on Patreon
-
-The open-source development and regular software releases are made possible entirely by the support of [these awesome patrons](SPONSORS.md)!
 
 ## Using Sourcetrail
 
@@ -171,7 +167,6 @@ Building Sourcetrail requires several dependencies to be in place on your machin
     * __Reason__: Used to run Wix from the Visual Studio build environment.
     * __Download__: https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2017Extension
 
-
 #### Building
 
 * Run `./script/deploy_windows.sh` from your Developer Command Prompt for Visual Studio. The script which will generate a 64bit build and packages it into a portable `.zip` file and a Wix-based Windows installer, each.
@@ -183,7 +178,6 @@ After building, run the `bundle_install.sh` script within the build directory wh
 ### Linux
 
 Run `./setup/Linux/createPackages.sh` from the main directory, which creates both a `.tar.gz` and a `.AppImage` package in the main directory. Packaging depends on [linuxdeployqt](https://github.com/probonopd/linuxdeployqt).
-
 
 ### How to Run the Tests
 
