@@ -1,5 +1,5 @@
 #include "QtMainWindow.h"
-// Qt5
+
 #include <QApplication>
 #include <QDesktopServices>
 #include <QDir>
@@ -9,7 +9,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QToolTip>
-// internal
+
 #include "Application.h"
 #include "ApplicationSettings.h"
 #include "Bookmark.h"
@@ -52,12 +52,12 @@
 #include "TabbedView.h"
 #include "UserPaths.h"
 #include "View.h"
+#include "globalStrings.h"
 #include "logging.h"
 #include "tracing.h"
 #include "utilityApp.h"
 #include "utilityQt.h"
 #include "utilityString.h"
-
 
 QtViewToggle::QtViewToggle(View* view, QWidget* parent) : QWidget(parent), m_view(view) {}
 
@@ -434,7 +434,7 @@ void QtMainWindow::openSettings() {
 }
 
 void QtMainWindow::showDocumentation() {
-  QDesktopServices::openUrl(QUrl(QString::fromStdString(utility::getDocumentationLink())));
+  QDesktopServices::openUrl(QUrl(QString::fromStdString("documentation"_g)));
 }
 
 void QtMainWindow::showKeyboardShortcuts() {
@@ -827,7 +827,7 @@ void QtMainWindow::setupHistoryMenu() {
     }
 
     const SearchMatch match = msg->getSearchMatches()[0];
-    const std::wstring name = utility::elide(match.getFullName(), utility::ELIDE_RIGHT, 50);
+    const std::wstring name = utility::elide(match.getFullName(), utility::ElideMode::RIGHT, 50);
 
     QAction* action = new QAction();
     action->setText(QString::fromStdWString(name));
@@ -857,7 +857,7 @@ void QtMainWindow::setupBookmarksMenu() {
 
   for(size_t i = 0; i < m_bookmarks.size(); i++) {
     Bookmark* bookmark = m_bookmarks[i].get();
-    std::wstring name = utility::elide(bookmark->getName(), utility::ELIDE_RIGHT, 50);
+    std::wstring name = utility::elide(bookmark->getName(), utility::ElideMode::RIGHT, 50);
 
     QAction* action = new QAction();
     action->setText(QString::fromStdWString(name));

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 
 #include "ApplicationArchitectureType.h"
@@ -7,21 +8,20 @@
 #include "OsType.h"
 
 namespace utility {
-struct ProcessOutput {
+
+struct ProcessOutput final {
   std::wstring output;
   std::wstring error;
   int exitCode;
 };
 
-std::string getDocumentationLink();
+std::filesystem::path searchPath(const std::filesystem::path& bin, bool& ok);
 
-std::wstring searchPath(const std::wstring& bin, bool& ok);
-
-std::wstring searchPath(const std::wstring& bin);
+std::filesystem::path searchPath(const std::filesystem::path& bin);
 
 ProcessOutput executeProcess(const std::wstring& command,
                              const std::vector<std::wstring>& arguments,
-                             const FilePath& workingDirectory = FilePath(),
+                             const FilePath& workingDirectory = {},
                              const bool waitUntilNoOutput = false,
                              const int timeout = 30000,
                              bool logProcessOutput = false);
@@ -42,11 +42,8 @@ constexpr OsType getOsType() {
 #endif
 }
 
-std::string getOsTypeString();
-
 constexpr ApplicationArchitectureType getApplicationArchitectureType() {
-#if defined(__x86_64) || defined(__x86_64__) || defined(__amd64) || defined(_M_X64) ||             \
-    defined(WIN64)
+#if defined(__x86_64) || defined(__x86_64__) || defined(__amd64) || defined(_M_X64) || defined(WIN64)
   return APPLICATION_ARCHITECTURE_X86_64;
 #else
   return APPLICATION_ARCHITECTURE_X86_32;

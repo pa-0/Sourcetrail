@@ -1,10 +1,10 @@
 #include "QtProjectWizardContentVS.h"
-// Qt5
+
 #include <QLabel>
 #include <QGridLayout>
-// internal
+
 #include "MessageIDECreateCDB.h"
-#include "utilityApp.h"
+#include "globalStrings.h"
 
 QtProjectWizardContentVS::QtProjectWizardContentVS(QtProjectWizardWindow* window)
     : QtProjectWizardContent(window) {}
@@ -28,10 +28,9 @@ void QtProjectWizardContentVS::populate(QGridLayout* layout, int& row) {
       row);
 
   QLabel* descriptionLabel = createFormSubLabel(QString::fromStdString(
-      "Call Visual Studio to create a Compilation Database from the loaded Solution (requires "
+      std::string{"Call Visual Studio to create a Compilation Database from the loaded Solution (requires "
       "installed "
-      "<a href=\"" +
-      utility::getDocumentationLink() +
+      "<a href=\""} + "documentation"_g +
       "#visual-studio\">Sourcetrail  Visual Studio  Extension</a>)."));
   descriptionLabel->setObjectName(QStringLiteral("description"));
   descriptionLabel->setOpenExternalLinks(true);

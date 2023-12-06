@@ -1606,7 +1606,7 @@ Vec4i GraphController::layoutNestingRecursive(DummyNode* node, int relayoutAcces
   int height = 0;
 
   if(node->isGraphNode()) {
-    node->name = utility::elide(node->name, utility::ELIDE_RIGHT, node->active ? 100 : 50);
+    node->name = utility::elide(node->name, utility::ElideMode::RIGHT, node->active ? 100 : 50);
     width = static_cast<int>(margins.charWidth * node->name.size());
 
     if(node->data->getType().isCollapsible() && node->data->getChildCount() > 0) {

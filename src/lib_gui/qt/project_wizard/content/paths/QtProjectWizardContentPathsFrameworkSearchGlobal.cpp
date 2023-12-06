@@ -1,8 +1,8 @@
 #include "QtProjectWizardContentPathsFrameworkSearchGlobal.h"
 
 #include "ApplicationSettings.h"
-#include "utilityApp.h"
 #include "utilityPathDetection.h"
+#include "globalStrings.h"
 
 QtProjectWizardContentPathsFrameworkSearchGlobal::QtProjectWizardContentPathsFrameworkSearchGlobal(
 	QtProjectWizardWindow* window)
@@ -14,13 +14,13 @@ QtProjectWizardContentPathsFrameworkSearchGlobal::QtProjectWizardContentPathsFra
 {
 	setTitleString(QStringLiteral("Global Framework Search Paths"));
 	setHelpString(QString::fromStdString(
-		"The Global Framework Search Paths will be used in all your projects - in addition to the "
+		std::string{"The Global Framework Search Paths will be used in all your projects - in addition to the "
 		"project specific "
 		"Framework Search Paths.<br />"
 		"<br />"
 		"They define where MacOS framework containers (.framework) are found "
-		"(See <a href=\"" +
-		utility::getDocumentationLink() +
+		"(See <a href=\""} +
+      "documentation"_g +
 		"#finding-system-header-locations\">"
 		"Finding System Header Locations</a> or use the auto detection below)."));
 
