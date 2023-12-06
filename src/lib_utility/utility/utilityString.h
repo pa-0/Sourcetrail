@@ -18,10 +18,15 @@ template <typename ContainerType>
 ContainerType split(const std::wstring& str, const std::wstring& delimiter);
 
 std::deque<std::string> split(const std::string& str, char delimiter);
+
 std::deque<std::string> split(const std::string& str, const std::string& delimiter);
+
 std::vector<std::string> splitToVector(const std::string& str, char delimiter);
+
 std::vector<std::string> splitToVector(const std::string& str, const std::string& delimiter);
+
 std::vector<std::wstring> splitToVector(const std::wstring& str, wchar_t delimiter);
+
 std::vector<std::wstring> splitToVector(const std::wstring& str, const std::wstring& delimiter);
 
 template <typename ContainerType>
@@ -31,21 +36,31 @@ template <typename ContainerType>
 std::wstring join(const ContainerType& list, const std::wstring& delimiter);
 
 std::string join(const std::deque<std::string>& list, char delimiter);
+
 std::string join(const std::deque<std::string>& list, const std::string& delimiter);
+
 std::string join(const std::vector<std::string>& list, char delimiter);
+
 std::string join(const std::vector<std::string>& list, const std::string& delimiter);
 
 std::deque<std::string> tokenize(const std::string& str, char delimiter);
+
 std::deque<std::string> tokenize(const std::string& str, const std::string& delimiter);
+
 std::deque<std::string> tokenize(const std::deque<std::string>& list, char delimiter);
+
 std::deque<std::string> tokenize(const std::deque<std::string>& list, const std::string& delimiter);
 
 std::string substrBeforeFirst(const std::string& str, char delimiter);
+
 std::string substrBeforeFirst(const std::string& str, const std::string& delimiter);
+
 std::string substrBeforeLast(const std::string& str, char delimiter);
+
 std::wstring substrBeforeLast(const std::wstring& str, wchar_t delimiter);
-std::wstring substrAfterLast(const std::wstring& str, wchar_t delimiter);
+
 std::string substrAfter(const std::string& str, char delimiter);
+
 std::string substrAfter(const std::string& str, const std::string& delimiter);
 
 template <typename StringType>
@@ -57,31 +72,36 @@ bool isPrefix(const StringType& prefix, const StringType& text);
 template <typename StringType>
 bool isPostfix(const StringType& postfix, const StringType& text);
 
-std::string toUpperCase(const std::string& in);
-std::wstring toUpperCase(const std::wstring& in);
 std::string toLowerCase(const std::string& in);
+
 std::wstring toLowerCase(const std::wstring& in);
 
 template <typename StringType>
 bool equalsCaseInsensitive(const std::string& a, const std::string& b);
 
 std::string replace(std::string str, const std::string& from, const std::string& to);
+
 std::wstring replace(std::wstring str, const std::wstring& from, const std::wstring& to);
 
 std::string replaceBetween(const std::string& str, char startDelimiter, char endDelimiter, const std::string& to);
+
 std::wstring replaceBetween(const std::wstring& str, wchar_t startDelimiter, wchar_t endDelimiter, const std::wstring& to);
 
 std::string insertLineBreaksAtBlankSpaces(const std::string& s, size_t maxLineLength);
+
 std::wstring breakSignature(std::wstring signature, size_t maxLineLength, size_t tabWidth);
+
 std::wstring breakSignature(
     std::wstring returnPart, std::wstring namePart, std::wstring paramPart, size_t maxLineLength, size_t tabWidth);
 
 std::string trim(const std::string& str);
+
 std::wstring trim(const std::wstring& str);
 
-enum ElideMode { ELIDE_LEFT, ELIDE_MIDDLE, ELIDE_RIGHT };
+enum class ElideMode { LEFT, MIDDLE, RIGHT };
 
 std::string elide(const std::string& str, ElideMode mode, size_t size);
+
 std::wstring elide(const std::wstring& str, ElideMode mode, size_t size);
 
 std::wstring convertWhiteSpacesToSingleSpaces(const std::wstring& str);
@@ -133,7 +153,6 @@ std::string join(const ContainerType& list, const std::string& delimiter) {
   return sstream.str();
 }
 
-
 template <typename ContainerType>
 std::wstring join(const ContainerType& list, const std::wstring& delimiter) {
   std::wstringstream sstream;
@@ -149,7 +168,6 @@ std::wstring join(const ContainerType& list, const std::wstring& delimiter) {
   return sstream.str();
 }
 
-
 template <typename StringType>
 StringType substrBetween(const StringType& str, const StringType& delimiter1, const StringType& delimiter2) {
   size_t found_delimiter1 = str.find(delimiter1);
@@ -160,7 +178,6 @@ StringType substrBetween(const StringType& str, const StringType& delimiter1, co
   }
   return StringType();
 }
-
 
 template <typename StringType>
 bool isPrefix(const StringType& prefix, const StringType& text) {

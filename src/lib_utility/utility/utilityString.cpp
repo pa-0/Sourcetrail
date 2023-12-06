@@ -2,14 +2,13 @@
 
 #include <algorithm>
 #include <cctype>
-#include <cstdint>
-#include <iterator>
 #include <random>
 #include <string>
 
 #include <boost/locale/encoding_utf.hpp>
 
 namespace {
+
 template <typename StringType>
 StringType doReplace(StringType str, const StringType& from, const StringType& to) {
   size_t pos = 0;
@@ -55,9 +54,11 @@ StringType doReplaceBetween(const StringType& str,
 
   return str;
 }
+
 }    // namespace
 
 namespace utility {
+
 std::string encodeToUtf8(const std::wstring& text) {
   return boost::locale::conv::utf_to_utf<char>(text.c_str(), text.c_str() + text.size());
 }
@@ -181,14 +182,6 @@ std::wstring substrBeforeLast(const std::wstring& str, wchar_t delimiter) {
   return str;
 }
 
-std::wstring substrAfterLast(const std::wstring& str, wchar_t delimiter) {
-  size_t pos = str.rfind(delimiter);
-  if(pos != std::wstring::npos) {
-    return str.substr(pos + 1, std::wstring::npos);
-  }
-  return str;
-}
-
 std::string substrAfter(const std::string& str, char delimiter) {
   size_t pos = str.find(delimiter);
   if(pos != std::string::npos) {
@@ -203,18 +196,6 @@ std::string substrAfter(const std::string& str, const std::string& delimiter) {
     return str.substr(pos + delimiter.size(), str.size());
   }
   return str;
-}
-
-std::string toUpperCase(const std::string& in) {
-  std::string out;
-  std::transform(in.begin(), in.end(), std::back_inserter(out), toupper);
-  return out;
-}
-
-std::wstring toUpperCase(const std::wstring& in) {
-  std::wstring out;
-  std::transform(in.begin(), in.end(), std::back_inserter(out), towupper);
-  return out;
 }
 
 std::string toLowerCase(const std::string& in) {
@@ -448,11 +429,11 @@ std::string elide(const std::string& str, ElideMode mode, size_t size) {
   }
 
   switch(mode) {
-  case ELIDE_LEFT:
+  case ElideMode::LEFT:
     return "..." + str.substr(str.size() - size - 3, str.size());
-  case ELIDE_MIDDLE:
+  case ElideMode::MIDDLE:
     return str.substr(0, size / 2 - 1) + "..." + str.substr(str.size() - (size / 2 - 2), str.size());
-  case ELIDE_RIGHT:
+  case ElideMode::RIGHT:
     return str.substr(0, size - 3) + "...";
   }
 
@@ -465,11 +446,11 @@ std::wstring elide(const std::wstring& str, ElideMode mode, size_t size) {
   }
 
   switch(mode) {
-  case ELIDE_LEFT:
+  case ElideMode::LEFT:
     return L"..." + str.substr(str.size() - size - 3, str.size());
-  case ELIDE_MIDDLE:
+  case ElideMode::MIDDLE:
     return str.substr(0, size / 2 - 1) + L"..." + str.substr(str.size() - (size / 2 - 2), str.size());
-  case ELIDE_RIGHT:
+  case ElideMode::RIGHT:
     return str.substr(0, size - 3) + L"...";
   }
 
@@ -515,7 +496,7 @@ std::string createRandomString(size_t stringLength) {
 
   std::random_device random;
   std::mt19937 gen(random());
-  std::uniform_int_distribution<uint32_t> distribution(0, Template.size()-1);
+  std::uniform_int_distribution<uint32_t> distribution(0, Template.size() - 1);
 
   std::string output(stringLength, 0);
   std::for_each(std::begin(output), std::end(output), [&distribution, &gen](auto& item) { item = Template[distribution(gen)]; });
