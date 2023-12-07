@@ -1,25 +1,45 @@
-#include "QtScreenSearchBoxTestSuite.hpp"
-
+#include <QApplication>
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QSignalSpy>
+#include <QTestEvent>
 
+#include <gtest/gtest.h>
+
+#include "ControllerProxy.h"
+#include "MockedView.hpp"
+#include "MockedViewLayout.hpp"
 #include "QtScreenSearchBox.h"
 #include "QtSelfRefreshIconButton.h"
-#include "utilities.hpp"
+#include "ScreenSearchController.h"
+#include "gui/utilities.hpp"
 
-void QtScreenSearchBoxTest::init() {
-  viewLayout = std::make_unique<MockedViewLayout>();
-  view = std::make_unique<MockedView>(viewLayout.get());
-  controllerProxy = std::make_unique<ControllerProxy<ScreenSearchController>>(view.get(), TabId::app());
-  searchBox = std::make_unique<QtScreenSearchBox>(controllerProxy.get());
-}
+struct QtScreenSearchBoxFix : testing::Test {
+  void SetUp() override {
+    viewLayout = std::make_unique<MockedViewLayout>();
+    view = std::make_unique<MockedView>(viewLayout.get());
+    controllerProxy = std::make_unique<ControllerProxy<ScreenSearchController>>(view.get(), TabId::app());
+    searchBox = std::make_unique<QtScreenSearchBox>(controllerProxy.get());
+  }
 
-void QtScreenSearchBoxTest::testingStructure() {
+  void TearDown() override {
+    viewLayout.reset();
+    view.reset();
+    controllerProxy.reset();
+    searchBox.reset();
+  }
+
+  std::unique_ptr<MockedViewLayout> viewLayout;
+  std::unique_ptr<MockedView> view;
+  std::unique_ptr<ControllerProxy<ScreenSearchController>> controllerProxy;
+  std::unique_ptr<QtScreenSearchBox> searchBox;
+};
+
+TEST_F(QtScreenSearchBoxFix, testingStructure) {
   auto* childLayout = searchBox->findChild<QHBoxLayout*>();
-  QVERIFY2(childLayout != nullptr, "A QHBoxLayout will be created");
-  QVERIFY2(searchBox->layout() == childLayout, "QHBoxLayout is the widget layout");
+  ASSERT_NE(nullptr, childLayout) << "A QHBoxLayout will be created";
+  ASSERT_EQ(childLayout, searchBox->layout()) << "QHBoxLayout is the widget layout";
 
   auto buttons = searchBox->findChildren<QtSelfRefreshIconButton*>();
   ASSERT_EQ(buttons.size(), 5);
@@ -29,20 +49,21 @@ void QtScreenSearchBoxTest::testingStructure() {
     auto buttonName = button->objectName().toStdString();
     auto found = buttonsNames.find(buttonName);
     EXPECT_NE(found, buttonsNames.end()) << "Button name \"" << buttonName << "\" is not found in the list";
-    QVERIFY2(childLayout->indexOf(button) != -1, "QLineEdit is member of the layout");
+    ASSERT_NE(-1, childLayout->indexOf(button)) << "QLineEdit is member of the layout";
   }
 
   auto layouts = searchBox->findChildren<QHBoxLayout*>();
   ASSERT_EQ(layouts.size(), 2);
 
   auto* searchEdit = searchBox->findChild<QLineEdit*>();
-  QVERIFY2(searchEdit != nullptr, "QLineEdit is created");
-  QVERIFY2(childLayout->indexOf(searchEdit) != -1, "QLineEdit is member of the layout");
+  EXPECT_NE(nullptr, searchEdit) << "QLineEdit is created";
+  EXPECT_NE(-1, childLayout->indexOf(searchEdit)) << "QLineEdit is member of the layout";
 
   // TODO: Check install event filter
 }
 
-void QtScreenSearchBoxTest::testingSetMatchCountZero() {
+
+TEST_F(QtScreenSearchBoxFix, testingSetMatchCountZero) {
   searchBox->setMatchCount(0);
   const std::set<std::string> buttonsNames = {"prev_button", "next_button"};
   auto buttons = searchBox->findChildren<QtSelfRefreshIconButton*>();
@@ -52,14 +73,14 @@ void QtScreenSearchBoxTest::testingSetMatchCountZero() {
     if(found == buttonsNames.end()) {
       continue;
     }
-    QVERIFY(button->isEnabled() == false);
+    ASSERT_FALSE(button->isEnabled());
   }
   const auto* matchButton = utilities::getChildByObjectName<QPushButton>(*searchBox, "match_label");
-  QVERIFY(matchButton != nullptr);
+  EXPECT_NE(nullptr, matchButton);
   ASSERT_EQ(matchButton->text(), "0 matches");
 }
 
-void QtScreenSearchBoxTest::testingSetMatchCount() {
+TEST_F(QtScreenSearchBoxFix, testingSetMatchCount) {
   searchBox->setMatchCount(2);
   const std::set<std::string> buttonsNames = {"prev_button", "next_button"};
   auto buttons = searchBox->findChildren<QtSelfRefreshIconButton*>();
@@ -69,34 +90,35 @@ void QtScreenSearchBoxTest::testingSetMatchCount() {
     if(found == buttonsNames.end()) {
       continue;
     }
-    QVERIFY(button->isEnabled());
+    ASSERT_TRUE(button->isEnabled());
   }
   const auto* matchButton = utilities::getChildByObjectName<QPushButton>(*searchBox, "match_label");
-  QVERIFY(matchButton != nullptr);
+  EXPECT_NE(nullptr, matchButton);
   ASSERT_EQ(matchButton->text(), "2 matches");
 }
 
-void QtScreenSearchBoxTest::testingSetMatchIndexZero() {
+TEST_F(QtScreenSearchBoxFix, testingSetMatchIndexZero) {
   searchBox->setMatchIndex(0);
   const auto* matchButton = utilities::getChildByObjectName<QPushButton>(*searchBox, "match_label");
-  QVERIFY(matchButton != nullptr);
+  EXPECT_NE(nullptr, matchButton);
   ASSERT_EQ(matchButton->text(), "0 matches");
 }
 
-void QtScreenSearchBoxTest::testingSetMatchIndex() {
+TEST_F(QtScreenSearchBoxFix, testingSetMatchIndex) {
   searchBox->setMatchIndex(2);
   const auto* matchButton = utilities::getChildByObjectName<QPushButton>(*searchBox, "match_label");
-  QVERIFY(matchButton != nullptr);
+  EXPECT_NE(nullptr, matchButton);
   ASSERT_EQ(matchButton->text(), "2 of 0 matches");
 }
 
-void QtScreenSearchBoxTest::testingAddResponderEmpty() {
+
+TEST_F(QtScreenSearchBoxFix, testingAddResponderEmpty) {
   searchBox->addResponder({});
   auto buttons = searchBox->findChildren<QCheckBox*>();
   ASSERT_EQ(0, buttons.size());
 }
 
-void QtScreenSearchBoxTest::testingAddResponderExists() {
+TEST_F(QtScreenSearchBoxFix, testingAddResponderExists) {
   searchBox->addResponder("code");
   auto buttons = searchBox->findChildren<QCheckBox*>();
   ASSERT_EQ(1, buttons.size());
@@ -105,22 +127,22 @@ void QtScreenSearchBoxTest::testingAddResponderExists() {
   ASSERT_EQ(1, buttons.size());
 }
 
-void QtScreenSearchBoxTest::testingCloseSignal() {
+TEST_F(QtScreenSearchBoxFix, testingCloseSignal) {
   auto* closeButton = utilities::getChildByObjectName<QtSelfRefreshIconButton>(*searchBox, "close_button");
-  QVERIFY(closeButton != nullptr);
+  EXPECT_NE(nullptr, closeButton);
   QSignalSpy spy(closeButton, &QPushButton::clicked);
   QTest::mouseClick(closeButton, Qt::MouseButton::LeftButton);
   QCOMPARE(1, spy.count());
 }
 
-void QtScreenSearchBoxTest::testingTextChangedSignal() {
+TEST_F(QtScreenSearchBoxFix, testingTextChangedSignal) {
   auto* searchButton = utilities::getChildByObjectName<QLineEdit>(*searchBox, "search_box");
   QVERIFY(searchButton != nullptr);
   QTest::keyClicks(searchButton, "hello world");
   // TODO: missing checks
 }
 
-void QtScreenSearchBoxTest::testingReturnPressedSignal() {
+TEST_F(QtScreenSearchBoxFix, testingReturnPressedSignal) {
   auto* searchButton = utilities::getChildByObjectName<QLineEdit>(*searchBox, "search_box");
   QVERIFY(searchButton != nullptr);
   QTest::keyClick(searchButton, Qt::Key_Enter);
@@ -128,11 +150,14 @@ void QtScreenSearchBoxTest::testingReturnPressedSignal() {
   // TODO: missing checks
 }
 
-void QtScreenSearchBoxTest::cleanup() {
-  viewLayout.reset();
-  view.reset();
-  controllerProxy.reset();
-  searchBox.reset();
-}
+int main(int argc, char* argv[]) {
+  const QApplication application {argc, argv};
 
-QTEST_MAIN(QtScreenSearchBoxTest)
+  QTimer::singleShot(0, &application, [&]() {
+    testing::InitGoogleTest(&argc, argv);
+    const auto code = RUN_ALL_TESTS();
+    QApplication::exit(code);
+  });
+
+  return QApplication::exec();
+}

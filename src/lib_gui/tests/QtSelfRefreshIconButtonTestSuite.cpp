@@ -1,29 +1,37 @@
-#include "QtSelfRefreshIconButtonTestSuite.hpp"
+#include <QApplication>
+#include <QTest>
+
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "QtSelfRefreshIconButton.h"
 #include "ResourcePaths.h"
 
-void QtSelfRefreshIconButtonTest::testingConstructWithEmptyString() {
+using namespace testing;
+
+struct QtScreenSearchBoxFix : testing::Test {};
+
+TEST_F(QtScreenSearchBoxFix, testingConstructWithEmptyString) {
   QtSelfRefreshIconButton button({}, FilePath {}, {});
 
   QResizeEvent resizeEvent(QSize(800, 600), QSize(400, 300));
   QCoreApplication::sendEvent(&button, &resizeEvent);
   QTest::qSleep(50);
 
-  QCOMPARE(std::string {""}, button.text().toStdString());
+  EXPECT_THAT(button.text().toStdString(), IsEmpty());
 }
 
-void QtSelfRefreshIconButtonTest::testingConstruct() {
+TEST_F(QtScreenSearchBoxFix, testingConstruct) {
   QtSelfRefreshIconButton button("button", FilePath {}, {});
 
   QResizeEvent resizeEvent(QSize(800, 600), QSize(400, 300));
   QCoreApplication::sendEvent(&button, &resizeEvent);
   QTest::qSleep(50);
 
-  QCOMPARE(std::string {"button"}, button.text().toStdString());
+  EXPECT_THAT(button.text().toStdString(), StrEq("button"));
 }
 
-void QtSelfRefreshIconButtonTest::testingSetText() {
+TEST_F(QtScreenSearchBoxFix, testingSetText) {
   QtSelfRefreshIconButton button({}, FilePath {}, {});
   button.setText("Hello");
   QCOMPARE(std::string {"Hello"}, button.text().toStdString());
@@ -35,27 +43,37 @@ void QtSelfRefreshIconButtonTest::testingSetText() {
   QCoreApplication::sendEvent(&button, &resizeEvent);
   QTest::qSleep(50);
 
-  QCOMPARE(std::string {"…111111"}, button.text().toStdString());
+  EXPECT_THAT(button.text().toStdString(), StrEq("…111111"));
 }
 
-void QtSelfRefreshIconButtonTest::testingSetTextWithEmptyString() {
+TEST_F(QtScreenSearchBoxFix, testingSetTextWithEmptyString) {
   QtSelfRefreshIconButton button({}, FilePath {}, {});
   button.setText({});
-  QCOMPARE(std::string {""}, button.text().toStdString());
+  EXPECT_THAT(button.text().toStdString(), IsEmpty());
 }
 
-void QtSelfRefreshIconButtonTest::testingSetIconPath() {
+TEST_F(QtScreenSearchBoxFix, testingSetIconPath) {
   QtSelfRefreshIconButton button({}, FilePath {}, "search/button");
   // HACK
   auto iconPath = FilePath{"../app"}.concatenate(ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/graph_custom.png"));
   button.setIconPath(iconPath);
-  QVERIFY(!button.icon().isNull());
+  EXPECT_FALSE(button.icon().isNull());
 }
 
-void QtSelfRefreshIconButtonTest::testingSetIconPathWithEmptyString() {
+TEST_F(QtScreenSearchBoxFix, testingSetIconPathWithEmptyString) {
   QtSelfRefreshIconButton button({}, FilePath {}, "search/button");
   button.setIconPath({});
-  QVERIFY(button.icon().isNull());
+  EXPECT_TRUE(button.icon().isNull());
 }
 
-QTEST_MAIN(QtSelfRefreshIconButtonTest)
+int main(int argc, char* argv[]) {
+  const QApplication application {argc, argv};
+
+  QTimer::singleShot(0, &application, [&]() {
+    testing::InitGoogleTest(&argc, argv);
+    const auto code = RUN_ALL_TESTS();
+    QApplication::exit(code);
+  });
+
+  return QApplication::exec();
+}

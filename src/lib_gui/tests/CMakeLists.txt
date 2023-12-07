@@ -3,10 +3,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
 set(
   test_lib_gui_names
+  QtContextMenuTestSuite
   QtNetworkFactoryTestSuite
+  QtScreenSearchBoxTestSuite
+  QtSelfRefreshIconButtonTestSuite
   globalStringsTestSuite
-  utilityAppTestSuite
-)
+  utilityAppTestSuite)
 
 foreach(test_name IN LISTS test_lib_gui_names)
   add_executable(${test_name} ${test_name}.cpp)
@@ -14,6 +16,8 @@ foreach(test_name IN LISTS test_lib_gui_names)
   target_link_libraries(
     ${test_name}
     PUBLIC
+      lib::mocks
+      Qt5::Test
       GTest::gmock
       GTest::gtest
       GTest::gtest_main
@@ -36,6 +40,3 @@ foreach(test_name IN LISTS test_lib_gui_names)
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/"
     TEST_PREFIX "unittests.")
 endforeach()
-
-# TODO(Hussein): Disable gui for now
-#add_subdirectory(gui)

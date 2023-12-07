@@ -19,7 +19,9 @@ public:
 	~QtContextMenu() override;
 
   void addAction(QAction* action);
+
   void addUndoActions();
+
   void addFileActions(const FilePath& filePath);
 
   static QtContextMenu* getInstance();
@@ -29,6 +31,7 @@ public:
   void show();
 
   void enableUndo(bool enabled);
+
   void enableRedo(bool enabled);
 
 private:
@@ -36,9 +39,11 @@ private:
 
   // slots:
   void undoActionTriggered();
+
   void redoActionTriggered();
 
   void copyFullPathActionTriggered();
+
   void openContainingFolderActionTriggered();
 
   static QtContextMenu* s_instance;
