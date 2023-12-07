@@ -32,6 +32,7 @@ TEST(LanguagePackageManager, emptyIndexers) {
   auto indexers = instance->instantiateSupportedIndexers();
 }
 
+#if BUILD_CXX_LANGUAGE_PACKAGE
 TEST(LanguagePackageManager, goodCase) {
   auto instance = LanguagePackageManager::getInstance();
   [[maybe_unused]] ScopedFunctor func([]() { LanguagePackageManager::destroyInstance(); });
@@ -45,3 +46,4 @@ TEST(LanguagePackageManager, goodCase) {
   instance->addPackage(mockedPackage);
   auto indexers = instance->instantiateSupportedIndexers();
 }
+#endif

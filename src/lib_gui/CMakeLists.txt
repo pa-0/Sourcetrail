@@ -183,9 +183,6 @@ add_files(
   qt/project_wizard/QtProjectWizardWindow.cpp
   qt/project_wizard/QtProjectWizardWindow.h
 
-  qt/project_wizard/content/path/ProjectWizardModel.hpp
-  qt/project_wizard/content/path/ProjectWizardModel.cpp
-
   qt/utility/compatibilityQt.cpp
   qt/utility/compatibilityQt.h
   qt/utility/QtContextMenu.cpp
@@ -305,6 +302,9 @@ add_files(
 if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_files(
     LIB_GUI
+
+    qt/project_wizard/content/path/ProjectWizardModel.hpp
+    qt/project_wizard/content/path/ProjectWizardModel.cpp
 
     qt/project_wizard/content/path/QtProjectWizardContentPathCDB.cpp
     qt/project_wizard/content/path/QtProjectWizardContentPathCDB.h

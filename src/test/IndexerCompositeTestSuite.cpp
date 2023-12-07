@@ -31,6 +31,7 @@ TEST(IndexerComposite, getSupportedIndexerCommandType) {
   EXPECT_EQ(INDEXER_COMMAND_UNKNOWN, IndexerComposite{}.getSupportedIndexerCommandType());
 }
 
+#if BUILD_CXX_LANGUAGE_PACKAGE
 TEST_F(IndexerCompositeFix, missingIndexer) {
   IndexerComposite indexerComposite;
   EXPECT_CALL(*mMockedLogger, logError(_)).WillOnce(Return());
@@ -41,7 +42,9 @@ TEST_F(IndexerCompositeFix, missingIndexer) {
     .WillOnce(Return(INDEXER_COMMAND_CXX));
   EXPECT_FALSE(indexerComposite.index(mockedIndexerCommand));
 }
+#endif
 
+#if BUILD_CXX_LANGUAGE_PACKAGE
 TEST(IndexerComposite, goodCase) {
   IndexerComposite indexerComposite;
 
@@ -59,3 +62,4 @@ TEST(IndexerComposite, goodCase) {
   EXPECT_CALL(*mockedIndexer, interrupt).WillOnce(Return());
   indexerComposite.interrupt();
 }
+#endif
