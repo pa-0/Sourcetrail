@@ -1,7 +1,7 @@
 #include "QtStartScreen.h"
-// fmt
-#include <fmt/format.h>
-// Qt5
+
+#include <format>
+
 #include <QDesktopServices>
 #include <QHBoxLayout>
 #include <QIcon>
@@ -9,12 +9,11 @@
 #include <QPushButton>
 #include <QString>
 #include <QVBoxLayout>
-// internal
+
 #include "ApplicationSettings.h"
 #include "LanguageType.h"
 #include "ProjectSettings.h"
 #include "QtRecentProjectButton.h"
-#include "ResourcePaths.h"
 #include "Version.h"
 #include "globalStrings.h"
 #include "utilityQt.h"
@@ -22,8 +21,8 @@
 namespace {
 
 QIcon getProjectIcon(LanguageType lang) {
-  static const auto CppIcon     = QIcon("://icon/cpp_icon.png");
-  static const auto CIcon       = QIcon("://icon/c_icon.png");
+  static const auto CppIcon = QIcon("://icon/cpp_icon.png");
+  static const auto CIcon = QIcon("://icon/c_icon.png");
   static const auto ProjectIcon = QIcon("://icon/empty_icon.png");
 
   switch(lang) {
@@ -42,9 +41,9 @@ QIcon getProjectIcon(LanguageType lang) {
 QtRecentProjectButton* createRecentProjectButton(QWidget* pParent) {
   constexpr auto IconSize = QSize(30, 30);
 
-  auto* pButton = new QtRecentProjectButton(pParent); // NOLINT(cppcoreguidelines-owning-memory)
-  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect); // fixes layouting on Mac
-  pButton->setIcon(utility::toIcon(L"icon/empty_icon.png"));
+  auto* pButton = new QtRecentProjectButton(pParent);    // NOLINT(cppcoreguidelines-owning-memory)
+  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
+  pButton->setIcon(getProjectIcon(LANGUAGE_CUSTOM));
   pButton->setIconSize(IconSize);
   pButton->setMinimumSize(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45, 40);
   pButton->setObjectName(QStringLiteral("recentButtonMissing"));
@@ -55,10 +54,9 @@ QtRecentProjectButton* createRecentProjectButton(QWidget* pParent) {
 
 }    // namespace
 
-QtStartScreen::QtStartScreen(QWidget* pParent) : QtWindow(true, pParent) {
-  // TODO(Hussein): Moved to general location
-  Q_INIT_RESOURCE(resources);
-}
+namespace qt::window {
+
+QtStartScreen::QtStartScreen(QWidget* pParent) : QtWindow(true, pParent) {}
 
 QSize QtStartScreen::sizeHint() const {
   constexpr auto Size = QSize(600, 650);
@@ -80,10 +78,7 @@ void QtStartScreen::updateButtons() {
       pButton->setFixedWidth(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45);
       // NOTE: Can not be moved to QtRecentProjectButton coz every updateButtons will remove the
       // connect again.
-      connect(pButton,
-              &QtRecentProjectButton::clicked,
-              pButton,
-              &QtRecentProjectButton::handleButtonClick);
+      connect(pButton, &QtRecentProjectButton::clicked, pButton, &QtRecentProjectButton::handleButtonClick);
       if(pButton->projectExists()) {
         pButton->setObjectName(QStringLiteral("recentButton"));
         connect(pButton, &QtRecentProjectButton::clicked, [this]() { emit finished(); });
@@ -96,30 +91,23 @@ void QtStartScreen::updateButtons() {
     }
     index++;
   }
-  setStyleSheet(utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(
-                                           L"startscreen/startscreen.css"))
-                    .c_str());
 }
 
 void QtStartScreen::setupStartScreen() {
-  setStyleSheet(utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(
-                                           L"startscreen/startscreen.css"))
-                    .c_str());
   addLogo();
 
   // Create the main layout
-  auto *pLayout = new QHBoxLayout; // NOLINT(cppcoreguidelines-owning-memory)
+  auto* pLayout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   pLayout->setContentsMargins(15, 170, 15, 0);
   pLayout->setSpacing(1);
   m_content->setLayout(pLayout);
 
   {
-    auto* pVBoxLayout = new QVBoxLayout; // NOLINT(cppcoreguidelines-owning-memory)
+    auto* pVBoxLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
     pLayout->addLayout(pVBoxLayout, 3);
 
     // Create a Version label
-    auto* pVersionLabel = new QLabel(
-        fmt::format("Version {}", Version::getApplicationVersion().toDisplayString()).c_str(), this);
+    auto* pVersionLabel = new QLabel(std::format("Version {}", Version::getApplicationVersion().toDisplayString()).c_str(), this);
     pVersionLabel->setObjectName(QStringLiteral("boldLabel"));
     pVBoxLayout->addWidget(pVersionLabel);
 
@@ -131,9 +119,7 @@ void QtStartScreen::setupStartScreen() {
     pGithubButton->setObjectName(QStringLiteral("infoButton"));
     pGithubButton->setIcon(utility::toIcon(L"startscreen/github_icon.png"));
     pGithubButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(pGithubButton, &QPushButton::clicked, []() {
-      QDesktopServices::openUrl(QUrl("github"_g, QUrl::TolerantMode));
-    });
+    connect(pGithubButton, &QPushButton::clicked, this, []() { QDesktopServices::openUrl(QUrl("github"_g, QUrl::TolerantMode)); });
     pVBoxLayout->addWidget(pGithubButton);
 
     pVBoxLayout->addSpacing(35);
@@ -160,8 +146,8 @@ void QtStartScreen::setupStartScreen() {
 
   pLayout->addSpacing(50);
 
-  {    // Create Recent Projects
-    auto* pVBoxLayout = new QVBoxLayout; // NOLINT(cppcoreguidelines-owning-memory)
+  {                                         // Create Recent Projects
+    auto* pVBoxLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
     pLayout->addLayout(pVBoxLayout, 1);
 
     auto* pRecentProjectsLabel = new QLabel(QStringLiteral("Recent Projects: "), this);
@@ -170,9 +156,8 @@ void QtStartScreen::setupStartScreen() {
 
     pVBoxLayout->addSpacing(20);
 
-    for(size_t index = 0; index < ApplicationSettings::getInstance()->getMaxRecentProjectsCount();
-        ++index) {
-      auto *pButton = createRecentProjectButton(this);
+    for(size_t index = 0; index < ApplicationSettings::getInstance()->getMaxRecentProjectsCount(); ++index) {
+      auto* pButton = createRecentProjectButton(this);
       m_recentProjectsButtons.push_back(pButton);
       pVBoxLayout->addWidget(pButton);
     }
@@ -186,6 +171,9 @@ void QtStartScreen::setupStartScreen() {
 
   // Move the window to center of the parent window.
   const QSize size = sizeHint();
-  move(parentWidget()->width() / 2 - size.width() / 2,
-       parentWidget()->height() / 2 - size.height() / 2);
+  move(parentWidget()->width() / 2 - size.width() / 2, parentWidget()->height() / 2 - size.height() / 2);
+
+  setStyleSheet(utility::getStyleSheet("://startscreen/startscreen.css"));
 }
+
+}    // namespace qt::window

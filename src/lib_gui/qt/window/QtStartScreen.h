@@ -4,6 +4,7 @@
 
 class QtRecentProjectButton;
 
+namespace qt::window {
 /**
  * @brief Welcome screen
  *
@@ -25,7 +26,7 @@ class QtRecentProjectButton;
  *│ └───────┘                   │
  *└─────────────────────────────┘
  */
-class QtStartScreen : public QtWindow {
+class QtStartScreen final : public QtWindow {
   Q_OBJECT
 
 public:
@@ -34,14 +35,14 @@ public:
    *
    * @param pParent parent object parent.
    */
-  QtStartScreen(QWidget* pParent = nullptr);
+  explicit QtStartScreen(QWidget* pParent = nullptr);
 
   /**
    * @brief Recommended window size.
    *
    * @return Recommended window size.
    */
-  QSize sizeHint() const override;
+  [[nodiscard]] QSize sizeHint() const override;
 
   /**
    * @brief Initialize the startup window elements.
@@ -67,6 +68,8 @@ private slots:
    */
   void updateButtons();
 
-private:
+private:                                                          // NOLINT(readability-redundant-access-specifiers)
   std::vector<QtRecentProjectButton*> m_recentProjectsButtons;    ///< A list of buttons for recent projects
 };
+
+}    // namespace qt::window

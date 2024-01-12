@@ -175,6 +175,123 @@ std::string getStyleSheet(const FilePath& path) {
   return css;
 }
 
+QString getStyleSheet(const QString& resource) {
+  QFile file(resource);
+  if(!file.open(QIODevice::ReadOnly)) {
+    LOG_WARNING("");
+    return {};
+  }
+  std::string css = file.readAll().toStdString();
+
+  size_t pos = 0;
+
+  while(pos != std::string::npos) {
+    size_t posA = css.find('<', pos);
+    size_t posB = css.find('>', pos);
+
+    if(posA == std::string::npos || posB == std::string::npos) {
+      break;
+    }
+
+    std::deque<std::string> seq = utility::split(css.substr(posA + 1, posB - posA - 1), ':');
+    if(seq.size() != 2) {
+      LOG_ERROR(L"Syntax error in resource: " + resource.toStdWString());
+      return "";
+    }
+
+    const std::string key = seq.front();
+    std::string val = seq.back();
+
+    if(key == "setting") {
+      if(val.find("font_size") != std::string::npos) {
+        // check for modifier
+        if(val.find('+') != std::string::npos) {
+          const size_t findPos = val.find('+');
+          std::string sub = val.substr(findPos + 1);
+
+          int mod = std::stoi(sub);
+
+          val = std::to_string(ApplicationSettings::getInstance()->getFontSize() + mod);
+        } else if(val.find('-') != std::string::npos) {
+          const size_t findPos = val.find('-');
+          std::string sub = val.substr(findPos + 1);
+
+          int mod = std::stoi(sub);
+
+          val = std::to_string(ApplicationSettings::getInstance()->getFontSize() - mod);
+        } else if(val.find('*') != std::string::npos) {
+          const size_t findPos = val.find('*');
+          std::string sub = val.substr(findPos + 1);
+
+          int mod = std::stoi(sub);
+
+          val = std::to_string(ApplicationSettings::getInstance()->getFontSize() * mod);
+        } else if(val.find('/') != std::string::npos) {
+          const size_t findPos = val.find('/');
+          std::string sub = val.substr(findPos + 1);
+
+          int mod = std::stoi(sub);
+
+          val = std::to_string(ApplicationSettings::getInstance()->getFontSize() / mod);
+        } else {
+          val = std::to_string(ApplicationSettings::getInstance()->getFontSize());
+        }
+      } else if(val == "font_name") {
+        val = ApplicationSettings::getInstance()->getFontName();
+      } else if(val == "gui_path") {
+        val = ResourcePaths::getGuiDirectoryPath().str();
+
+        size_t index = 0;
+        while(true) {
+          index = val.find('\\', index);
+          if(index == std::string::npos) {
+            break;
+          }
+          val.replace(index, 1, "/");
+          index += 3;
+        }
+      } else {
+        LOG_ERROR(L"Syntax error in resource: " + resource.toStdWString());
+        return "";
+      }
+    } else if(key == "color") {
+      if(!ColorScheme::getInstance()->hasColor(val)) {
+        LOG_WARNING("Color scheme does not provide value for key \"" + val +
+                    "\" requested by style \"" + resource.toStdString() + "\".");
+      }
+      val = ColorScheme::getInstance()->getColor(val);
+    } else if(key == "platform_wml") {
+      std::vector<std::string> values = utility::splitToVector(val, '|');
+      if(values.size() != 3) {
+        LOG_ERROR(L"Syntax error in resource: " + resource.toStdWString());
+        return "";
+      }
+
+      switch(utility::getOsType()) {
+      case OS_WINDOWS:
+        val = values[0];
+        break;
+      case OS_MAC:
+        val = values[1];
+        break;
+      case OS_LINUX:
+        val = values[2];
+        break;
+      default:
+        break;
+      }
+    } else {
+      LOG_ERROR(L"Syntax error in resource: " + resource.toStdWString());
+      return "";
+    }
+
+    css.replace(posA, posB - posA + 1, val);
+    pos = posA + val.size();
+  }
+
+  return QString::fromStdString(css);
+}
+
 QPixmap colorizePixmap(const QPixmap& pixmap, QColor color) {
   QImage image = pixmap.toImage();
   QImage colorImage(image.size(), image.format());

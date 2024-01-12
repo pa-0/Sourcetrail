@@ -486,15 +486,15 @@ void QtMainWindow::previousTab() {
 }
 
 void QtMainWindow::showStartScreen() {
-  if(dynamic_cast<QtStartScreen*>(m_windowStack.getTopWindow()) != nullptr) {
+  if(dynamic_cast<qt::window::QtStartScreen*>(m_windowStack.getTopWindow()) != nullptr) {
     return;
   }
 
-  auto* pStartScreen = createWindow<QtStartScreen>();
+  auto* pStartScreen = createWindow<qt::window::QtStartScreen>();
   pStartScreen->setupStartScreen();
 
-  connect(pStartScreen, &QtStartScreen::openOpenProjectDialog, this, &QtMainWindow::openProject);
-  connect(pStartScreen, &QtStartScreen::openNewProjectDialog, this, &QtMainWindow::newProject);
+  connect(pStartScreen, &qt::window::QtStartScreen::openOpenProjectDialog, this, &QtMainWindow::openProject);
+  connect(pStartScreen, &qt::window::QtStartScreen::openNewProjectDialog, this, &QtMainWindow::newProject);
 }
 
 void QtMainWindow::hideStartScreen() {

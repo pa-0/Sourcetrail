@@ -12,6 +12,7 @@ QtApplication::QtApplication(int& argc, char** argv) : QApplication(argc, argv) 
   connect(this, &QGuiApplication::applicationStateChanged, [](auto state) {
     MessageWindowFocus(state == Qt::ApplicationActive).dispatch();
   });
+  Q_INIT_RESOURCE(resources);
 }
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)

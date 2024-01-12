@@ -23,6 +23,8 @@ void loadFontsFromDirectory(const FilePath& path, const std::wstring& extension 
 
 std::string getStyleSheet(const FilePath& path);
 
+QString getStyleSheet(const QString& resource);
+
 QPixmap colorizePixmap(const QPixmap& pixmap, QColor color);
 
 QIcon createButtonIcon(const FilePath& iconPath, const std::string& colorId);
