@@ -142,7 +142,7 @@ void FileLogger::updateLogFileName() {
 void FileLogger::logMessage(const std::string& type, const LogMessage& message) {
   std::ofstream fileStream;
   fileStream.open(m_currentLogFilePath.str(), std::ios::app);
-  fileStream << message.getTimeString("%H:%M:%S") << " | ";
+  fileStream << message.getTimeString() << " | ";
   fileStream << message.threadId << " | ";
 
   if(message.filePath.size()) {

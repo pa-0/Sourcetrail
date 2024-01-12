@@ -28,7 +28,7 @@ void ConsoleLogger::logError(const LogMessage& message) {
 }
 
 void ConsoleLogger::logMessage(const std::string& type, const LogMessage& message) {
-  fmt::print("{} | ", message.getTimeString("{:%H:%M:%S}"));
+  fmt::print("{} | ", message.getTimeString());
 
   if(!message.filePath.empty()) {
 		fmt::print("{}:{} {}() | ", message.getFileName(), message.line, message.functionName);

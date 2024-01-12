@@ -4,7 +4,7 @@ add_library(CppSQLite::CppSQLite3 ALIAS CppSQLite3)
 target_link_libraries(
   CppSQLite3
   PUBLIC
-    SQLite::SQLite)
+    SQLite::SQLite3)
 target_include_directories(
   CppSQLite3
   SYSTEM PUBLIC

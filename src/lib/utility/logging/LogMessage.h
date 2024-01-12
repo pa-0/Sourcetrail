@@ -5,14 +5,14 @@
 #include <thread>
 
 struct LogMessage final {
-  LogMessage(const std::wstring& message,
-             const std::string& filePath,
-             const std::string& functionName,
+  LogMessage(std::wstring message,
+             std::string filePath,
+             std::string functionName,
              const uint32_t line,
              const std::time_t& time,
              const std::thread::id& threadId);
 
-	[[nodiscard]] std::string getTimeString(const std::string& format) const;
+	[[nodiscard]] std::string getTimeString() const;
 
   [[nodiscard]] std::string getFileName() const;
 

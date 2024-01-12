@@ -35,7 +35,8 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "USE_ALTERNATE_LINKER": "mold",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF"
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/clang/release/conan_toolchain.cmake"
             }
         },
         {
