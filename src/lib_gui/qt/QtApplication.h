@@ -31,11 +31,4 @@ public:
    */
   bool event(QEvent* pEvent) override;
 
-  /**
-   * @brief Enters the main event loop and waits until exit() is called
-   *
-   * @return 0 if exit() is called via quit()
-   */
-  int exec();
-
 };

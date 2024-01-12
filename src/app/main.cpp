@@ -128,7 +128,7 @@ int runConsole(int argc, char** argv, const Version& version, commandline::Comma
         .dispatch();
   }
 
-  return qtApp.exec();
+  return QCoreApplication::exec();
 }
 
 int runGui(int argc, char** argv, const Version& version, commandline::CommandLineParser& commandLineParser) {
@@ -171,7 +171,7 @@ int runGui(int argc, char** argv, const Version& version, commandline::CommandLi
     MessageLoadProject(commandLineParser.getProjectFilePath(), false, REFRESH_NONE).dispatch();
   }
 
-  return qtApp.exec();
+  return QApplication::exec();
 }
 
 int main(int argc, char* argv[]) {
