@@ -7,6 +7,22 @@
     },
     "configurePresets": [
         {
+            "name": "gnu_release",
+            "displayName": "GNU Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/../build/Release/GNU",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_BUILD_TYPE": "Release",
+                "USE_ALTERNATE_LINKER": "mold",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/release/conan_toolchain.cmake",
+                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
+            }
+        },
+        {
             "name": "coverage",
             "displayName": "Coverage",
             "generator": "Ninja",
@@ -21,7 +37,9 @@
                 "ENABLE_UNIT_TEST": "ON",
                 "ENABLE_INTEGRATION_TEST": "ON",
                 "ENABLE_E2E_TEST": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "ON"
+                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/debug/conan_toolchain.cmake",
+                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
             }
         },
         {
@@ -35,22 +53,9 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "USE_ALTERNATE_LINKER": "mold",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/clang/release/conan_toolchain.cmake"
-            }
-        },
-        {
-            "name": "gnu_release",
-            "displayName": "GNU Release",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/../build/Release/GNU",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_BUILD_TYPE": "Release",
-                "USE_ALTERNATE_LINKER": "mold",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF"
+                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/clang/release/conan_toolchain.cmake",
+                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
             }
         },
         {
