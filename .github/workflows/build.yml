@@ -36,7 +36,10 @@ jobs:
       run: sudo apt install -y clang libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev python3-pip
 
     - name: Install conan
-      run: sudo pip install conan==1.59.0
+      run: sudo pip install conan
+
+    - name: Install conan dependencies
+      run: conan install . --output-folder=.conan/gcc/release --build=missing --profile=.conan/gcc/release/profile --profile:build=.conan/gcc/release/profile
 
     - name: Configure CMake
       run: cmake -G Ninja -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_BUILD_TYPE=Release -B ${{github.workspace}}/build
