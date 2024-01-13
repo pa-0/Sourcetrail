@@ -17,9 +17,8 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "USE_ALTERNATE_LINKER": "mold",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/release/conan_toolchain.cmake",
-                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/release/conan_toolchain.cmake"
             }
         },
         {
@@ -53,9 +52,8 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "USE_ALTERNATE_LINKER": "mold",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/clang/release/conan_toolchain.cmake",
-                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/clang/release/conan_toolchain.cmake"
             }
         },
         {
