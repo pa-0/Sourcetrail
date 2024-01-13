@@ -1,4 +1,4 @@
-# ${}/src/external/CMakeLists.txt
+# ${CMAKE_SOURCE_DIR}/src/external/CMakeLists.txt
 add_library(CppSQLite3 sqlite/CppSQLite3.cpp)
 add_library(CppSQLite::CppSQLite3 ALIAS CppSQLite3)
 target_link_libraries(
