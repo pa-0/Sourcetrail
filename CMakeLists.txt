@@ -312,8 +312,6 @@ configure_file("${PROJECT_SOURCE_DIR}/src/lib_gui/platform_includes/includes.h.i
                "${PROJECT_BINARY_DIR}/src/lib_gui/includes.h")
 
 #configure the versioning file
-configure_file(${CMAKE_SOURCE_DIR}/cmake/version.txt.in ${CMAKE_BINARY_DIR}/version.txt)
-
 configure_file(${CMAKE_SOURCE_DIR}/cmake/productVersion.h.in ${CMAKE_BINARY_DIR}/src/lib_gui/productVersion.h)
 
 set_target_properties(

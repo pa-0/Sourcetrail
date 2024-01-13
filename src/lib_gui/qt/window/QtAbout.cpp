@@ -46,7 +46,7 @@ void QtAbout::setupAbout()
 
 	{
 		QLabel* versionLabel = new QLabel(
-			("Version " + Version::getApplicationVersion().toDisplayString() + " - " +
+			("Version " + Version::getApplicationVersion().toString() + " - " +
 			 std::string(
 				 utility::getApplicationArchitectureType() == APPLICATION_ARCHITECTURE_X86_32
 					 ? "32"

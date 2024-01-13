@@ -108,7 +108,7 @@ int runConsole(int argc, char** argv, const Version& version, commandline::Comma
   addLanguagePackages();
 
   // TODO(Hussein): Replace with Boost or Qt
-  std::signal(SIGINT,  signalHandler);
+  std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
   std::signal(SIGABRT, signalHandler);
 
@@ -183,20 +183,19 @@ int main(int argc, char* argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
 #endif
 
-  const Version version(VERSION_YEAR, VERSION_MINOR, VERSION_COMMIT, GIT_COMMIT_HASH);
-  QApplication::setApplicationVersion(version.toDisplayString().c_str());
+  const Version version(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+  QApplication::setApplicationVersion(version.toString().c_str());
 
-  const auto message = fmt::format(
-      "Starting Sourcetrail {}bit, version {}", utility::getAppArchTypeString(), version.toDisplayString());
+  const auto message = fmt::format("Starting Sourcetrail {}bit, version {}", utility::getAppArchTypeString(), version.toString());
   MessageStatus(utility::decodeFromUtf8(message)).dispatch();
 
-  commandline::CommandLineParser commandLineParser(version.toDisplayString());
+  commandline::CommandLineParser commandLineParser(version.toString());
   std::vector<std::string> args;
   if(argc > 1) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-    args = std::vector<std::string>(static_cast<size_t>(argc-1), argv[1]);
+    args = std::vector<std::string>(static_cast<size_t>(argc - 1), argv[1]);
   }
- 
+
   commandLineParser.preparse(std::move(args));
   if(commandLineParser.exitApplication()) {
     return EXIT_SUCCESS;

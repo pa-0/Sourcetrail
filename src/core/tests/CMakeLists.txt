@@ -7,7 +7,8 @@ set(gtest_lib_names
     FilePathTestSuite
     FileSystemTestSuite
     LoggerTestSuite
-    TextAccessTestSuite)
+    TextAccessTestSuite
+    VersionTestSuite)
 
 foreach(test_name IN LISTS gtest_lib_names)
   add_executable(${test_name} ${test_name}.cpp)

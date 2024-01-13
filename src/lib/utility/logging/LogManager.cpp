@@ -30,7 +30,7 @@ void LogManager::setLoggingEnabled(bool enabled) {
                //(utility::getApplicationArchitectureType() == APPLICATION_ARCHITECTURE_X86_32 ?
                //     "32" :
                //     "64") +
-               " bit, " + "version " + Version::getApplicationVersion().toDisplayString());
+               " bit, " + "version " + Version::getApplicationVersion().toString());
       // MessageStatus(L"Enabled console and file logging.").dispatch();
     } else {
       LOG_INFO("Disabled logging");

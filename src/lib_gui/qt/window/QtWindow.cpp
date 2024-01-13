@@ -9,15 +9,7 @@
 #include "utilityQt.h"
 
 QtWindow::QtWindow(bool isSubWindow, QWidget* parent)
-    : QtWindowBase(isSubWindow, parent)
-    , m_title(nullptr)
-    , m_subTitle(nullptr)
-    , m_nextButton(nullptr)
-    , m_previousButton(nullptr)
-    , m_closeButton(nullptr)
-    , m_cancelAble(true)
-    , m_scrollAble(false)
-    , m_hasLogo(false) {}
+    : QtWindowBase(isSubWindow, parent) {}
 
 void QtWindow::setup() {
   setStyleSheet(
@@ -284,6 +276,7 @@ void QtWindow::setupDone() {
   moveToCenter();
 }
 
+// NOTE: Need to benchmark
 void QtWindow::addLogo() {
   constexpr auto ScaleToWidth = 240;
   QtDeviceScaledPixmap sourcetrailLogo("://window/logo.png");
@@ -306,8 +299,8 @@ QHBoxLayout* QtWindow::createButtons() {
   m_nextButton->setObjectName(QStringLiteral("windowButton"));
   connect(m_nextButton, &QPushButton::clicked, this, &QtWindow::handleNextPress);
 
-  m_previousButton = new QPushButton(
-      QStringLiteral("Previous"));    // NOLINT(cppcoreguidelines-owning-memory)
+  // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+  m_previousButton = new QPushButton(QStringLiteral("Previous"));    
   m_previousButton->setObjectName(QStringLiteral("windowButton"));
   connect(m_previousButton, &QPushButton::clicked, this, &QtWindow::handlePreviousPress);
 

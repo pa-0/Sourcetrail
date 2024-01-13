@@ -1,6 +1,7 @@
 #include "QtStartScreen.h"
 
 #include <format>
+#include <ranges>
 
 #include <QDesktopServices>
 #include <QHBoxLayout>
@@ -107,7 +108,7 @@ void QtStartScreen::setupStartScreen() {
     pLayout->addLayout(pVBoxLayout, 3);
 
     // Create a Version label
-    auto* pVersionLabel = new QLabel(std::format("Version {}", Version::getApplicationVersion().toDisplayString()).c_str(), this);
+    auto* pVersionLabel = new QLabel(std::format("Version {}", Version::getApplicationVersion().toString()).c_str(), this);
     pVersionLabel->setObjectName(QStringLiteral("boldLabel"));
     pVBoxLayout->addWidget(pVersionLabel);
 

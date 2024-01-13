@@ -1,5 +1,5 @@
 #pragma once
-// STL
+#include <cstdint>
 #include <string>
 
 class Version final {
@@ -9,29 +9,22 @@ public:
   static void setApplicationVersion(const Version& version);
   static const Version& getApplicationVersion();
 
-  Version(int year = 0, int minor = 0, int commit = 0, const std::string& hash = "");
+  explicit Version(uint32_t major = 0, uint32_t minor = 0, uint32_t patch = 0) noexcept;
 
-  bool isEmpty() const;
-  bool isValid() const;
+  [[nodiscard]] bool isEmpty() const;
+  [[nodiscard]] bool isValid() const;
 
-  Version toShortVersion() const;
-
-  std::string toString() const;
-  std::string toShortString() const;
-  std::string toDisplayString() const;
-  std::wstring toDisplayWString() const;
+  [[nodiscard]] std::string toString() const;
+  [[nodiscard]] std::wstring toWString() const;
 
   bool operator<(const Version& other) const;
   bool operator>(const Version& other) const;
   bool operator==(const Version& other) const;
-  Version& operator+=(const int& number);
 
 private:
-  static Version s_version;
+  static Version sVersion;
 
-  int m_year;
-  int m_minorNumber;
-  int m_commitNumber;
-
-  std::string m_commitHash;
+  uint32_t mMajor;
+  uint32_t mMinor;
+  uint32_t mPatch;
 };

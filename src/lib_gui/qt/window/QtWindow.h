@@ -68,12 +68,12 @@ protected:
   void addLogo();
   QHBoxLayout* createButtons();
 
-  QLabel* m_title;
-  QLabel* m_subTitle;
+  QLabel* m_title = nullptr;
+  QLabel* m_subTitle = nullptr;
 
-  QPushButton* m_nextButton;
-  QPushButton* m_previousButton;
-  QPushButton* m_closeButton;
+  QPushButton* m_nextButton = nullptr;
+  QPushButton* m_previousButton = nullptr;
+  QPushButton* m_closeButton = nullptr;
 
 public slots:
   /**
@@ -94,7 +94,7 @@ public slots:
   void handleClosePress();
 
 private:
-  bool m_cancelAble;
-  bool m_scrollAble;
-  bool m_hasLogo;
+  bool m_cancelAble = true;
+  bool m_scrollAble = false;
+  bool m_hasLogo = false;
 };
