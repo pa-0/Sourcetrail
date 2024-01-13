@@ -93,7 +93,7 @@
             }
         },
         {
-            "name": "ci_clang_release",
+            "name": "ci_gnu_release",
             "displayName": "CI GNU Release",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
@@ -106,7 +106,7 @@
             }
         },
         {
-            "name": "ci_gnu_release",
+            "name": "ci_clang_release",
             "displayName": "CI Clang Release",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",

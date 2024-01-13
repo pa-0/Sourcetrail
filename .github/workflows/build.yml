@@ -12,11 +12,13 @@ jobs:
         config:
           - {
             name: "Ubuntu Latest GCC",
+            tag: gnu,
             cc: "gcc",
             cxx: "g++"
           }
           - {
             name: "Ubuntu Latest CLang",
+            tag: "clang",
             cc: "clang",
             cxx: "clang++"
           }
@@ -39,10 +41,10 @@ jobs:
       run: sudo pip install conan
 
     - name: Install conan dependencies
-      run: conan install . --output-folder=.conan/gcc/release --build=missing --profile=.conan/gcc/release/profile --profile:build=.conan/gcc/release/profile
+      run: conan install . --output-folder=.conan/${{ matrix.config.cc }}/release --build=missing --profile=.conan/${{ matrix.config.cc }}/release/profile --profile:build=.conan/${{ matrix.config.cc }}/release/profile
 
     - name: Configure CMake
-      run: cmake -G Ninja -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_BUILD_TYPE=Release -B ${{github.workspace}}/build
+      run: cmake --preset="ci_${{ matrix.config.tag }}_release"
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build
