@@ -276,11 +276,8 @@ void QtWindow::setupDone() {
   moveToCenter();
 }
 
-// NOTE: Need to benchmark
 void QtWindow::addLogo() {
-  constexpr auto ScaleToWidth = 240;
-  QtDeviceScaledPixmap sourcetrailLogo("://window/logo.png");
-  sourcetrailLogo.scaleToWidth(ScaleToWidth);
+  QtDeviceScaledPixmap sourcetrailLogo("://window/logo_240.png");
 
   const QPoint LogoLabelPosition(m_isSubWindow ? 40 : 23, 25);
   auto* pSourcetrailLogoLabel = new QLabel(this);    // NOLINT(cppcoreguidelines-owning-memory)

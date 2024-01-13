@@ -118,7 +118,7 @@ void QtStartScreen::setupStartScreen() {
     auto* pGithubButton = new QPushButton(QStringLiteral("View on GitHub"), this);
     pGithubButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
     pGithubButton->setObjectName(QStringLiteral("infoButton"));
-    pGithubButton->setIcon(utility::toIcon(L"startscreen/github_icon.png"));
+    pGithubButton->setIcon(QIcon("://startscreen/github_icon.png"));
     pGithubButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(pGithubButton, &QPushButton::clicked, this, []() { QDesktopServices::openUrl(QUrl("github"_g, QUrl::TolerantMode)); });
     pVBoxLayout->addWidget(pGithubButton);
