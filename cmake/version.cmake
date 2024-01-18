@@ -12,20 +12,16 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
 
     # Check if the Git command was successful
     if(NOT GIT_RESULT EQUAL 0)
-        message(FATAL_ERROR "Failed to run 'git describe' command. Git might not be installed or the repository is not initialized.")
+        message(WARNING "Failed to run 'git describe' command. Git might not be installed or the repository is not initialized.")
+        set(VERSION_MAJOR "1")
+        set(VERSION_MINOR "0")
+        set(VERSION_PATCH "0")
+        set(VERSION_STRING "1.0.0")
+    else()
+        string(REGEX REPLACE "^([0-9]+)\\..*"            "\\1" VERSION_MAJOR "${VERSION_STRING}")
+        string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*"      "\\1" VERSION_MINOR "${VERSION_STRING}")
+        string(REGEX REPLACE "^[0-9]+\\.[0-9]+.([0-9]+)" "\\1" VERSION_PATCH "${VERSION_STRING}")
     endif()
-
-    string(REGEX REPLACE "^([0-9]+)\\..*"            "\\1" VERSION_MAJOR "${VERSION_STRING}")
-    string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*"      "\\1" VERSION_MINOR "${VERSION_STRING}")
-    string(REGEX REPLACE "^[0-9]+\\.[0-9]+.([0-9]+)" "\\1" VERSION_PATCH "${VERSION_STRING}")
-endif()
-
-if("${VERSION_STRING}" STREQUAL "..")
-    # NOTE(Hussein): For testing
-    set(VERSION_MAJOR "1")
-    set(VERSION_MINOR "0")
-    set(VERSION_PATCH "0")
-    set(VERSION_STRING "1.0.0")
 endif()
 
 if(SOURCETRAIL_CMAKE_VERBOSE)
