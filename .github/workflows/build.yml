@@ -41,7 +41,7 @@ jobs:
       run: sudo pip install conan
 
     - name: Install conan dependencies
-      run: conan install . --output-folder=.conan/${{ matrix.config.cc }}/release --build=missing --profile=.conan/${{ matrix.config.cc }}/release/profile --profile:build=.conan/${{ matrix.config.cc }}/release/profile
+      run: conan install . -s build_type=Release -of .conan/${{ matrix.config.cc }} --build=missing -pr:a .conan/${{ matrix.config.cc }}/profile
 
     - name: Configure CMake
       run: cmake --preset="ci_${{ matrix.config.tag }}_release"
