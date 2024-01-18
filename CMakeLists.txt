@@ -61,7 +61,7 @@ set(SOURCETRAIL_USE_LIBCPP
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 
 include(cmake/add_files.cmake)
@@ -146,6 +146,7 @@ endif()
 # Settings ---------------------------------------------------------------------
 find_package(fmt CONFIG REQUIRED)
 find_package(SQLite3 CONFIG REQUIRED)
+find_package(range-v3 CONFIG REQUIRED)
 find_package(tinyxml CONFIG REQUIRED)
 # Boost ------------------------------------------------------------------------
 set(Boost_USE_MULTITHREAD ON)
@@ -253,7 +254,6 @@ target_link_libraries(
           Boost::locale
           SQLite::SQLite3
           tinyxml::tinyxml
-          fmt::fmt
           $<$<PLATFORM_ID:Windows>:bcrypt>)
 #configure language package defines
 configure_file("${CMAKE_SOURCE_DIR}/cmake/language_packages.h.in" "${CMAKE_BINARY_DIR}/src/lib/language_packages.h")

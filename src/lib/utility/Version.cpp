@@ -1,27 +1,29 @@
 #include "Version.h"
 
 #include <cstdint>
-#include <format>
-#include <ranges>
 #include <utility>
 #include <vector>
-#include <iostream>
+
+#include <fmt/format.h>
+
+#include <range/v3/view/split.hpp>
+#include <range/v3/view/transform.hpp>
 
 #include "logging.h"
+#include "utilityString.h"
 
 Version Version::sVersion;
 
 Version Version::fromString(const std::string& versionString) {
-  auto partView = versionString | std::views::split('.') |
-      std::views::transform([](auto&& value) { return static_cast<uint32_t>(std::stoi(&*value.begin())); });
+  auto partView = versionString | ranges::views::split('.') |
+      ranges::views::transform([](auto&& value) { return static_cast<uint32_t>(std::stoi(&*value.begin())); });
   std::vector<uint32_t> parts(partView.begin(), partView.end());
   if(parts.empty() || parts.size() != 3) {
-    LOG_WARNING(std::format("Version string is invalid: {}", versionString));
-    std::cout << std::format("Version string is invalid: {}", versionString);
+    LOG_WARNING(fmt::format("Version string is invalid: {}", versionString));
     return Version {};
   }
 
-  return Version{parts[0], parts[1], parts[2]};
+  return Version {parts[0], parts[1], parts[2]};
 }
 
 void Version::setApplicationVersion(const Version& version) {
@@ -43,11 +45,11 @@ bool Version::isValid() const {
 }
 
 std::string Version::toString() const {
-  return std::format("{}.{}.{}", mMajor, mMinor, mPatch);
+  return fmt::format("{}.{}.{}", mMajor, mMinor, mPatch);
 }
 
 std::wstring Version::toWString() const {
-  return std::format(L"{}.{}.{}", mMajor, mMinor, mPatch);
+  return utility::decodeFromUtf8(fmt::format("{}.{}.{}", mMajor, mMinor, mPatch));
 }
 
 bool Version::operator<(const Version& other) const {
