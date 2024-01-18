@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "extend_ci" ]
 
 jobs:
   build:
@@ -48,3 +48,6 @@ jobs:
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build
+
+    - name: Test
+      run: ctest --test-dir ${{github.workspace}}/build
