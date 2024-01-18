@@ -149,9 +149,18 @@ find_package(SQLite3 CONFIG REQUIRED)
 find_package(tinyxml CONFIG REQUIRED)
 # Boost ------------------------------------------------------------------------
 set(Boost_USE_MULTITHREAD ON)
-set(Boost_USE_STATIC_LIBS ON CACHE BOOL "Set to ON to force the use of the static libraries.")
+set(Boost_USE_STATIC_LIBS
+    ON
+    CACHE BOOL "Set to ON to force the use of the static libraries.")
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.67 COMPONENTS system program_options filesystem locale REQUIRED)
+find_package(
+  Boost 1.67
+  COMPONENTS date_time
+             filesystem
+             locale
+             program_options
+             system
+  REQUIRED)
 # Qt ---------------------------------------------------------------------------
 set(QT_MIN_VERSION "5.15.0")
 set(QT_MIN_VERSION_HEX 0x051500)
