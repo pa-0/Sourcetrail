@@ -1,10 +1,11 @@
 [requires]
-boost/1.83.0
 gtest/1.13.0
-spdlog/1.10.0 # It will replace the current implementation
 sqlite3/3.36.0
 tinyxml/2.6.2 # It should be removed
 
 [generators]
 CMakeDeps
 CMakeToolchain
+
+[layout]
+cmake_layout

@@ -54,6 +54,9 @@ set(SOURCETRAIL_CMAKE_VERBOSE
 set(SOURCETRAIL_WARNING_AS_ERROR
     OFF
     CACHE BOOL "")
+set(SOURCETRAIL_USE_LIBCPP
+    OFF
+    CACHE BOOL "")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -67,8 +70,11 @@ include(cmake/licenses.cmake)
 include(cmake/create_symlink.cmake)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-  add_compile_options(-fcolor-diagnostics -stdlib=libc++)
-  add_link_options(-stdlib=libc++)
+  add_compile_options(-fcolor-diagnostics)
+  if(SOURCETRAIL_USE_LIBCPP)
+    add_compile_options(-stdlib=libc++)
+    add_link_options(-stdlib=libc++)
+  endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   add_compile_options(-fdiagnostics-color=always)
 endif()
@@ -138,17 +144,14 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # Settings ---------------------------------------------------------------------
-find_package(
-  Boost
-  COMPONENTS system
-             program_options
-             filesystem
-             locale
-             CONFIG
-  REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(SQLite3 CONFIG REQUIRED)
 find_package(tinyxml CONFIG REQUIRED)
+# Boost ------------------------------------------------------------------------
+set(Boost_USE_MULTITHREAD ON)
+set(Boost_USE_STATIC_LIBS ON CACHE BOOL "Set to ON to force the use of the static libraries.")
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(Boost 1.67 COMPONENTS system program_options filesystem locale REQUIRED)
 # Qt ---------------------------------------------------------------------------
 set(QT_MIN_VERSION "5.15.0")
 set(QT_MIN_VERSION_HEX 0x051500)
