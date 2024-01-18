@@ -37,6 +37,7 @@ foreach(test_name IN LISTS test_lib_gui_names)
 
   gtest_discover_tests(
     ${test_name}
+    EXTRA_ARGS "-platform offscreen"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/test/"
     TEST_PREFIX "unittests.")
 endforeach()
