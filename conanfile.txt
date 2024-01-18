@@ -1,4 +1,5 @@
 [requires]
+fmt/10.2.1
 gtest/1.13.0
 sqlite3/3.36.0
 tinyxml/2.6.2 # It should be removed
