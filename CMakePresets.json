@@ -35,11 +35,11 @@
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "ENABLE_COVERAGE": "ON",
                 "ENABLE_UNIT_TEST": "ON",
+                "ENABLE_GUI_TEST": "ON",
                 "ENABLE_INTEGRATION_TEST": "ON",
                 "ENABLE_E2E_TEST": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Debug/generators/conan_toolchain.cmake",
-                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Debug/generators/conan_toolchain.cmake"
             }
         },
         {
@@ -102,6 +102,11 @@
                 "CMAKE_CXX_COMPILER": "g++",
                 "CMAKE_BUILD_TYPE": "Release",
                 "USE_ALTERNATE_LINKER": "mold",
+                "ENABLE_COVERAGE": "ON",
+                "ENABLE_UNIT_TEST": "ON",
+                "ENABLE_GUI_TEST": "ON",
+                "ENABLE_INTEGRATION_TEST": "ON",
+                "ENABLE_E2E_TEST": "ON",
                 "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Release/generators/conan_toolchain.cmake"
             }
         },

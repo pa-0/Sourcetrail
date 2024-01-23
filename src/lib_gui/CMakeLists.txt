@@ -21,8 +21,9 @@ add_files(
   qt/element/button/QtIconStateButton.h
   qt/element/button/QtSelfRefreshIconButton.cpp
   qt/element/button/QtSelfRefreshIconButton.h
-  qt/element/button/QtRecentProjectButton.cpp
-  qt/element/button/QtRecentProjectButton.h
+
+  qt/element/model/RecentItemModel.hpp
+  qt/element/model/RecentItemModel.cpp
 
   qt/element/code/CodeFocusHandler.cpp
   qt/element/code/CodeFocusHandler.h
@@ -281,7 +282,7 @@ add_files(
   qt/window/QtSelectPathsDialog.cpp
   qt/window/QtSelectPathsDialog.h
   qt/window/QtStartScreen.cpp
-  qt/window/QtStartScreen.h
+        qt/window/QtStartScreen.hpp
   qt/window/QtTextEditDialog.cpp
   qt/window/QtTextEditDialog.h
   qt/window/QtUnknownProgressDialog.cpp

@@ -15,7 +15,7 @@ Task::TaskState TaskGroupSelector::doUpdate(std::shared_ptr<Blackboard> blackboa
     return STATE_FAILURE;
   }
 
-  TaskState state = m_taskRunners[m_taskIndex]->update(blackboard);
+  TaskState state = m_taskRunners[static_cast<size_t>(m_taskIndex)]->update(blackboard);
 
   if(state == STATE_FAILURE) {
     m_taskIndex++;

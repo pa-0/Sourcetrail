@@ -1,5 +1,5 @@
 #${CMAKE_SOURCE_DIR}/CMakeLists.txt
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.23)
 include(cmake/version.cmake)
 
 project(
@@ -18,6 +18,9 @@ set(BUILD_DOC
 set(ENABLE_UNIT_TEST
     OFF
     CACHE BOOL "Build unit-tests.")
+  set(ENABLE_GUI_TEST
+    OFF
+    CACHE BOOL "Build gui-tests.")
 set(ENABLE_INTEGRATION_TEST
     OFF
     CACHE BOOL "Build integration-tests.")
@@ -121,19 +124,24 @@ if(BUILD_DOC)
 endif()
 
 if(ENABLE_COVERAGE)
-  set(ENABLE_COVERAGE "ENABLE_COVERAGE")
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/coverage.sh.in" "${CMAKE_BINARY_DIR}/coverage.sh")
-  file(
-    CHMOD
-    "${CMAKE_BINARY_DIR}/coverage.sh"
-    FILE_PERMISSIONS
-    OWNER_EXECUTE
-    OWNER_WRITE
-    OWNER_READ)
-  add_custom_target(
-    Coverage
-    COMMAND ${CMAKE_BINARY_DIR}/coverage.sh
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    configure_file("${CMAKE_SOURCE_DIR}/cmake/coverage.sh.in" "${CMAKE_BINARY_DIR}/coverage.sh")
+    file(
+      CHMOD
+      "${CMAKE_BINARY_DIR}/coverage.sh"
+      FILE_PERMISSIONS
+      OWNER_EXECUTE
+      OWNER_WRITE
+      OWNER_READ)
+    add_custom_target(
+      Coverage
+      COMMAND ${CMAKE_BINARY_DIR}/coverage.sh
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    add_compile_options(--coverage)
+    add_link_options(--coverage)
+  else()
+    message("Compiler is not supported")
+  endif()
 endif()
 
 #RPATH
@@ -339,6 +347,7 @@ add_subdirectory(src/indexer)
 add_subdirectory(src/app)
 # Tests ------------------------------------------------------------------------
 if(ENABLE_UNIT_TEST
+   OR ENABLE_GUI_TEST
    OR ENABLE_INTEGRATION_TEST
    OR ENABLE_E2E_TEST)
   if(WIN32)

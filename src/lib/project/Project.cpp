@@ -603,14 +603,14 @@ void Project::buildIndex(RefreshInfo info, std::shared_ptr<DialogView> dialogVie
 
   taskSequential->addTask(std::make_shared<TaskGroupSelector>()->addChildTasks(
       std::make_shared<TaskGroupSequence>()->addChildTasks(
-          std::make_shared<TaskFindKeyOnBlackboard>("refresh_database"), std::make_shared<TaskLambda>([dialogView, this]() {
-            Task::dispatch(TabId::app(), std::make_shared<TaskLambda>([dialogView, this]() {
+          std::make_shared<TaskFindKeyOnBlackboard>("refresh_database"), std::make_shared<TaskLambda>([dialogView]() {
+            Task::dispatch(TabId::app(), std::make_shared<TaskLambda>([dialogView]() {
                              MessageIndexingShowDialog().dispatch();
                              MessageRefresh().refreshAll().dispatch();
                            }));
           })),
       std::make_shared<TaskGroupSequence>()->addChildTasks(
-          std::make_shared<TaskLambda>([this]() { Task::dispatch(TabId::app(), std::make_shared<TaskLambda>([this]() {})); }))));
+          std::make_shared<TaskLambda>([]() { Task::dispatch(TabId::app(), std::make_shared<TaskLambda>([]() {})); }))));
 
   taskSequential->setIsBackgroundTask(true);
   Task::dispatch(TabId::app(), taskSequential);

@@ -23,7 +23,7 @@ void ScreenSearchController::foundMatches(ScreenSearchResponder* responder, size
       i++;
     }
 
-    m_matches.insert(m_matches.begin() + i, newMatches.begin(), newMatches.end());
+    m_matches.insert(m_matches.begin() + static_cast<long>(i), newMatches.begin(), newMatches.end());
     m_matchIndex = m_matches.size();
   }
 

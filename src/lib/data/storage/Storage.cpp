@@ -62,7 +62,7 @@ void Storage::inject(Storage* injected) {
         symbols[i].id = it->second;
       } else {
         LOG_WARNING("New symbol id could not be found.");
-        symbols.erase(symbols.begin() + i);
+        symbols.erase(symbols.begin() + static_cast<long>(i));
         i--;
       }
     }
@@ -92,7 +92,7 @@ void Storage::inject(Storage* injected) {
 
       if(updateCount != 2) {
         LOG_WARNING("New edge source or target id could not be found.");
-        edges.erase(edges.begin() + i);
+        edges.erase(edges.begin() + static_cast<long>(i));
         i--;
       }
     }

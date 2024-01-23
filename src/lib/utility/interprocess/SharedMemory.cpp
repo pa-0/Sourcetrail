@@ -91,7 +91,7 @@ std::string SharedMemory::ScopedAccess::logString() const
 	log += " free: " + std::to_string(getFreeMemorySize());
 	log += " used: " + std::to_string(getUsedMemorySize());
 	log += " used pct: " +
-		std::to_string(100 - int(float(getFreeMemorySize()) / getMemorySize() * 100));
+		std::to_string(static_cast<int>(100.0F - float(getFreeMemorySize()) / float(getMemorySize()) * 100.0F));
 	return log;
 }
 

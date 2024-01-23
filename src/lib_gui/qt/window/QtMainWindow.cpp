@@ -46,7 +46,7 @@
 #include "QtLicenseWindow.h"
 #include "QtPreferencesWindow.h"
 #include "QtProjectWizard.h"
-#include "QtStartScreen.h"
+#include "QtStartScreen.hpp"
 #include "QtViewWidgetWrapper.h"
 #include "ResourcePaths.h"
 #include "TabbedView.h"
@@ -245,7 +245,7 @@ void QtMainWindow::hideView(View* view) {
 
 View* QtMainWindow::findFloatingView(const std::string& name) const {
   for(size_t i = 0; i < m_dockWidgets.size(); i++) {
-    if(std::string(m_dockWidgets[i].view->getName()) == name && m_dockWidgets[i].widget->isFloating()) {
+    if(m_dockWidgets[i].view->getName() == name && m_dockWidgets[i].widget->isFloating()) {
       return m_dockWidgets[i].view;
     }
   }

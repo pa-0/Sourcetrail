@@ -1,5 +1,7 @@
 #include "TaskFinishParsing.h"
 
+#include <utility>
+
 #include "Blackboard.h"
 #include "DialogView.h"
 #include "MessageIndexingFinished.h"
@@ -11,7 +13,7 @@
 
 TaskFinishParsing::TaskFinishParsing(
 	std::shared_ptr<PersistentStorage> storage, std::shared_ptr<DialogView> dialogView)
-	: m_storage(storage), m_dialogView(dialogView)
+	: m_storage(std::move(storage)), m_dialogView(std::move(dialogView))
 {
 }
 
@@ -23,7 +25,7 @@ void TaskFinishParsing::terminate()
 	MessageIndexingFinished().dispatch();
 }
 
-void TaskFinishParsing::doEnter(std::shared_ptr<Blackboard> blackboard)
+void TaskFinishParsing::doEnter(std::shared_ptr<Blackboard> /*blackboard*/)
 {
 	m_storage->setMode(SqliteIndexStorage::STORAGE_MODE_READ);
 }
@@ -42,14 +44,14 @@ Task::TaskState TaskFinishParsing::doUpdate(std::shared_ptr<Blackboard> blackboa
 	{
 		float clearTime = 0;
 		blackboard->get("clear_time", clearTime);
-		time += clearTime;
+		time += static_cast<double>(clearTime);
 	}
 
 	if (blackboard->exists("index_time"))
 	{
 		float indexTime = 0;
 		blackboard->get("index_time", indexTime);
-		time += indexTime;
+		time += static_cast<double>(indexTime);
 	}
 
 	int indexedSourceFileCount = 0;
@@ -81,8 +83,8 @@ Task::TaskState TaskFinishParsing::doUpdate(std::shared_ptr<Blackboard> blackboa
 
 	StorageStats stats = m_storage->getStorageStats();
 	DatabasePolicy policy = m_dialogView->finishedIndexingDialog(
-		indexedSourceFileCount,
-		sourceFileCount,
+		static_cast<size_t>(indexedSourceFileCount),
+		static_cast<size_t>(sourceFileCount),
 		stats.completedFileCount,
 		stats.fileCount,
 		static_cast<float>(time),
@@ -109,9 +111,9 @@ Task::TaskState TaskFinishParsing::doUpdate(std::shared_ptr<Blackboard> blackboa
 	return STATE_SUCCESS;
 }
 
-void TaskFinishParsing::doExit(std::shared_ptr<Blackboard> blackboard)
+void TaskFinishParsing::doExit(std::shared_ptr<Blackboard> /*blackboard*/)
 {
 	m_storage.reset();
 }
 
-void TaskFinishParsing::doReset(std::shared_ptr<Blackboard> blackboard) {}
+void TaskFinishParsing::doReset(std::shared_ptr<Blackboard> /*blackboard*/) {}

@@ -217,15 +217,15 @@ void SharedIntermediateStorage::setStorageErrors(const std::vector<StorageError>
 {
 	m_storageErrors.clear();
 
-	for (unsigned int i = 0; i < errors.size(); i++)
+	for (const auto & error : errors)
 	{
-		m_storageErrors.push_back(toShared(errors[i], m_allocator));
+		m_storageErrors.push_back(toShared(error, m_allocator));
 	}
 }
 
 Id SharedIntermediateStorage::getNextId() const
 {
-	return m_nextId;
+	return static_cast<int>(m_nextId);
 }
 
 void SharedIntermediateStorage::setNextId(const Id nextId)

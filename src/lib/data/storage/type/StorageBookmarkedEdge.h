@@ -37,12 +37,12 @@ struct StorageBookmarkedEdge final : public StorageBookmarkedEdgeData {
       : StorageBookmarkedEdgeData(data), id(id_) {}
 
   StorageBookmarkedEdge(Id id_,
-                        Id bookmarkId,
+                        Id bookmarkId_,
                         const std::wstring& serializedSourceNodeName_,
                         const std::wstring& serializedTargetNodeName_,
                         int edgeType_,
                         bool sourceNodeActive_)
-      : StorageBookmarkedEdgeData(bookmarkId,
+      : StorageBookmarkedEdgeData(bookmarkId_,
                                   serializedSourceNodeName_,
                                   serializedTargetNodeName_,
                                   edgeType_,

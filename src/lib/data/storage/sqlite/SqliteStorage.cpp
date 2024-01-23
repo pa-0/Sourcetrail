@@ -71,7 +71,7 @@ size_t SqliteStorage::getVersion() const
 
 	if (!storageVersionStr.empty())
 	{
-		return std::stoi(storageVersionStr);
+		return static_cast<size_t>(std::stoi(storageVersionStr));
 	}
 
 	return 0;

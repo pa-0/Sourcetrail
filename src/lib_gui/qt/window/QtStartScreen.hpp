@@ -1,10 +1,13 @@
 #pragma once
-// Internal
 #include "QtWindow.h"
 
-class QtRecentProjectButton;
+namespace qt {
 
-namespace qt::window {
+namespace element::model {
+struct RecentItemModel;
+}
+
+namespace window {
 /**
  * @brief Welcome screen
  *
@@ -21,9 +24,9 @@ namespace qt::window {
  *│  └────────┘      │        │ │
  *│                  │        │ │
  *│ ┌───────┐        │        │ │
- *│  New Pro         └────────┘ │
- *│  Open Pro                   │
- *│ └───────┘                   │
+ *│  New Pro         │        │ │
+ *│  Open Pro        │        │ │
+ *│ └───────┘        └────────┘ │
  *└─────────────────────────────┘
  */
 class QtStartScreen final : public QtWindow {
@@ -60,16 +63,13 @@ signals:
    */
   void openNewProjectDialog();
 
-private slots:
-  /**
-   * @brief Fill/Refresh the recent projects layout.
-   *
-   * @note it's called when a new project added or when a project deleted.
-   */
-  void updateButtons();
+private:    // NOLINT(readability-redundant-access-specifiers)
+  element::model::RecentItemModel* mRecentModel = nullptr;
 
-private:                                                          // NOLINT(readability-redundant-access-specifiers)
-  std::vector<QtRecentProjectButton*> m_recentProjectsButtons;    ///< A list of buttons for recent projects
+  void createVersionAndGithub(QHBoxLayout* layout);
+
+  void createRecentProjects(QHBoxLayout* layout);
 };
 
-}    // namespace qt::window
+}    // namespace window
+}    // namespace qt

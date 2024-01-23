@@ -112,7 +112,7 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForUpdatedFiles(
   RefreshInfo info;
   info.mode = REFRESH_UPDATED_FILES;
   info.filesToIndex = filesToIndex;
-  for(const FilePath fileToClear : filesToClear) {
+  for(const FilePath& fileToClear : filesToClear) {
     if(storage->getFilePathIndexed(fileToClear)) {
       info.filesToClear.insert(fileToClear);
     } else {
@@ -154,7 +154,7 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForIncompleteFiles(
       }
     }
 
-    for(const std::shared_ptr<const SourceGroup>& sourceGroup : sourceGroups) {
+    for(const auto& sourceGroup : sourceGroups) {
       if(sourceGroup->getStatus() == SOURCE_GROUP_STATUS_ENABLED) {
         utility::append(
             info.filesToIndex, sourceGroup->filterToContainedSourceFilePath(staticSourceFilePaths));
@@ -177,7 +177,7 @@ std::set<FilePath> RefreshInfoGenerator::getAllSourceFilePaths(
     const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups) {
   std::set<FilePath> allSourceFilePaths;
 
-  for(const std::shared_ptr<const SourceGroup>& sourceGroup : sourceGroups) {
+  for(const auto& sourceGroup : sourceGroups) {
     if(sourceGroup->getStatus() == SOURCE_GROUP_STATUS_ENABLED) {
       for(const FilePath& sourceFilePath : sourceGroup->getAllSourceFilePaths()) {
         if(sourceFilePath.exists()) {

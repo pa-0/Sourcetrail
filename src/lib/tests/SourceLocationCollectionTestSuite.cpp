@@ -184,9 +184,9 @@ TEST_F(CreatingPlainCopyOfAllLocationsInLineRange, goodCase) {
   ASSERT_NE(pLocation, nullptr);
 
   pLocation->getSourceLocationFile()->forEachSourceLocation(
-      [&copy, fromLine, toLine](SourceLocation* pLocation) {
-        if(pLocation->getLineNumber() >= fromLine && pLocation->getLineNumber() <= toLine) {
-          copy.addSourceLocationCopy(pLocation);
+      [&copy, fromLine, toLine](SourceLocation* location) {
+        if(location->getLineNumber() >= fromLine && location->getLineNumber() <= toLine) {
+          copy.addSourceLocationCopy(location);
         }
       });
 

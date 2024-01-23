@@ -1,55 +1,37 @@
-#include "QtStartScreen.h"
+#include "QtStartScreen.hpp"
+
+#include <utility>
+
+#include <fmt/format.h>
 
 #include <QDesktopServices>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QLabel>
+#include <QListView>
+#include <QMenu>
 #include <QPushButton>
-#include <QString>
-#include <QVBoxLayout>
-
-#include <fmt/format.h>
 
 #include "ApplicationSettings.h"
-#include "LanguageType.h"
-#include "ProjectSettings.h"
-#include "QtRecentProjectButton.h"
+#include "RecentItemModel.hpp"
 #include "Version.h"
 #include "globalStrings.h"
 #include "utilityQt.h"
 
 namespace {
 
-QIcon getProjectIcon(LanguageType lang) {
-  static const auto CppIcon = QIcon("://icon/cpp_icon.png");
-  static const auto CIcon = QIcon("://icon/c_icon.png");
-  static const auto ProjectIcon = QIcon("://icon/empty_icon.png");
-
-  switch(lang) {
-#if BUILD_CXX_LANGUAGE_PACKAGE
-  case LanguageType::LANGUAGE_C:
-    return CIcon;
-  case LANGUAGE_CPP:
-    return CppIcon;
+QPushButton* createButton(qt::window::QtStartScreen* that,
+                          const QString& buttonName,
+                          const QString& objectName,
+                          std::function<void()> onClickEvent) {
+  auto* newProjectButton = new QPushButton(buttonName, that);    // NOLINT(cppcoreguidelines-owning-memory)
+#if Q_OS_MAC
+  newProjectButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
 #endif
-  case LANGUAGE_CUSTOM:
-  default:
-    return ProjectIcon;
-  }
-}
-
-QtRecentProjectButton* createRecentProjectButton(QWidget* pParent) {
-  constexpr auto IconSize = QSize(30, 30);
-
-  auto* pButton = new QtRecentProjectButton(pParent);    // NOLINT(cppcoreguidelines-owning-memory)
-  pButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-  pButton->setIcon(getProjectIcon(LANGUAGE_CUSTOM));
-  pButton->setIconSize(IconSize);
-  pButton->setMinimumSize(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45, 40);
-  pButton->setObjectName(QStringLiteral("recentButtonMissing"));
-  pButton->minimumSizeHint();    // force font loading
-
-  return pButton;
+  newProjectButton->setObjectName(objectName);
+  newProjectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  QObject::connect(newProjectButton, &QPushButton::clicked, that, std::move(onClickEvent));
+  return newProjectButton;
 }
 
 }    // namespace
@@ -63,117 +45,98 @@ QSize QtStartScreen::sizeHint() const {
   return Size;
 }
 
-void QtStartScreen::updateButtons() {
-  auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
-  size_t index = 0;
-  for(auto* pButton : m_recentProjectsButtons) {
-    // make sure that this button is used safely
-    pButton->disconnect();
-
-    if(index < recentProjects.size()) {
-      const auto recentProject = recentProjects[index];
-      pButton->setProjectPath(recentProject);
-      const auto lang = ProjectSettings::getLanguageOfProject(recentProject);
-      pButton->setIcon(getProjectIcon(lang));
-      pButton->setFixedWidth(pButton->fontMetrics().boundingRect(pButton->text()).width() + 45);
-      // NOTE: Can not be moved to QtRecentProjectButton coz every updateButtons will remove the
-      // connect again.
-      connect(pButton, &QtRecentProjectButton::clicked, pButton, &QtRecentProjectButton::handleButtonClick);
-      if(pButton->projectExists()) {
-        pButton->setObjectName(QStringLiteral("recentButton"));
-        connect(pButton, &QtRecentProjectButton::clicked, [this]() { emit finished(); });
-      } else {
-        connect(pButton, &QtRecentProjectButton::updateButtons, this, &QtStartScreen::updateButtons);
-        pButton->setObjectName(QStringLiteral("recentButtonMissing"));
-      }
-    } else {
-      pButton->hide();
-    }
-    index++;
-  }
-}
-
 void QtStartScreen::setupStartScreen() {
   addLogo();
 
   // Create the main layout
-  auto* pLayout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
-  pLayout->setContentsMargins(15, 170, 15, 0);
-  pLayout->setSpacing(1);
-  m_content->setLayout(pLayout);
+  auto* layout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
+  layout->setContentsMargins(15, 170, 15, 0);
+  m_content->setLayout(layout);
 
-  {
-    auto* pVBoxLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
-    pLayout->addLayout(pVBoxLayout, 3);
+  createVersionAndGithub(layout);
 
-    // Create a Version label
-    auto* pVersionLabel = new QLabel(fmt::format("Version {}", Version::getApplicationVersion().toString()).c_str(), this);
-    pVersionLabel->setObjectName(QStringLiteral("boldLabel"));
-    pVBoxLayout->addWidget(pVersionLabel);
+  layout->addSpacing(50);
 
-    pVBoxLayout->addSpacing(20);
-
-    // Create a github button
-    auto* pGithubButton = new QPushButton(QStringLiteral("View on GitHub"), this);
-    pGithubButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-    pGithubButton->setObjectName(QStringLiteral("infoButton"));
-    pGithubButton->setIcon(QIcon("://startscreen/github_icon.png"));
-    pGithubButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(pGithubButton, &QPushButton::clicked, this, []() { QDesktopServices::openUrl(QUrl("github"_g, QUrl::TolerantMode)); });
-    pVBoxLayout->addWidget(pGithubButton);
-
-    pVBoxLayout->addSpacing(35);
-    pVBoxLayout->addStretch();
-
-    // Create a new project button
-    auto* pNewProjectButton = new QPushButton(QStringLiteral("New Project"), this);
-    pNewProjectButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-    pNewProjectButton->setObjectName(QStringLiteral("projectButton"));
-    pNewProjectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(pNewProjectButton, &QPushButton::clicked, [this]() { emit openNewProjectDialog(); });
-    pVBoxLayout->addWidget(pNewProjectButton);
-
-    pVBoxLayout->addSpacing(8);
-
-    // Create a open project button
-    auto* pOpenProjectButton = new QPushButton(QStringLiteral("Open Project"), this);
-    pOpenProjectButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
-    pOpenProjectButton->setObjectName(QStringLiteral("projectButton"));
-    pOpenProjectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(pOpenProjectButton, &QPushButton::clicked, [this]() { emit openOpenProjectDialog(); });
-    pVBoxLayout->addWidget(pOpenProjectButton);
-  }
-
-  pLayout->addSpacing(50);
-
-  {                                         // Create Recent Projects
-    auto* pVBoxLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
-    pLayout->addLayout(pVBoxLayout, 1);
-
-    auto* pRecentProjectsLabel = new QLabel(QStringLiteral("Recent Projects: "), this);
-    pRecentProjectsLabel->setObjectName(QStringLiteral("titleLabel"));
-    pVBoxLayout->addWidget(pRecentProjectsLabel);
-
-    pVBoxLayout->addSpacing(20);
-
-    for(size_t index = 0; index < ApplicationSettings::getInstance()->getMaxRecentProjectsCount(); ++index) {
-      auto* pButton = createRecentProjectButton(this);
-      m_recentProjectsButtons.push_back(pButton);
-      pVBoxLayout->addWidget(pButton);
-    }
-
-    pVBoxLayout->addStretch();
-  }
-
-  pLayout->addStretch(1);
-
-  updateButtons();
+  createRecentProjects(layout);
 
   // Move the window to center of the parent window.
   const QSize size = sizeHint();
   move(parentWidget()->width() / 2 - size.width() / 2, parentWidget()->height() / 2 - size.height() / 2);
 
   setStyleSheet(utility::getStyleSheet("://startscreen/startscreen.css"));
+}
+
+void QtStartScreen::createRecentProjects(QHBoxLayout* layout) {
+  auto* vBoxLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
+  layout->addLayout(vBoxLayout, 1);
+
+  auto* recentProjectsLabel = new QLabel(QStringLiteral("Recent Projects: "), this);
+  recentProjectsLabel->setObjectName(QStringLiteral("titleLabel"));
+  vBoxLayout->addWidget(recentProjectsLabel);
+
+  vBoxLayout->addSpacing(20);
+
+  auto maxRecentProjectsCount = ApplicationSettings::getInstance()->getMaxRecentProjectsCount();
+  auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
+
+  auto* viewList = new QListView;    // NOLINT(cppcoreguidelines-owning-memory)
+  mRecentModel = new element::model::RecentItemModel(
+      recentProjects, maxRecentProjectsCount);    // NOLINT(cppcoreguidelines-owning-memory)
+  connect(viewList, &QListView::clicked, mRecentModel, &element::model::RecentItemModel::clicked);
+  connect(viewList, &QListView::customContextMenuRequested, this, [viewList, this](const QPoint& point) {
+    QMenu contextMenu(tr("Context menu"), viewList);
+
+    QAction action1(tr("Delete"), viewList);
+    QObject::connect(&action1, &QAction::triggered, viewList, [viewList, point, this](auto) {
+      const auto index = viewList->indexAt(point);
+      if(index.isValid()) {
+        mRecentModel->removeItem(index.row());
+      }
+    });
+    contextMenu.addAction(&action1);
+
+    contextMenu.exec(viewList->mapToGlobal(point));
+  });
+  viewList->setIconSize(QSize(30, 30));
+  viewList->setModel(mRecentModel);
+  viewList->setDragDropMode(QAbstractItemView::InternalMove);
+  viewList->setMovement(QListView::Snap);
+  viewList->setDefaultDropAction(Qt::MoveAction);
+  viewList->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContentsOnFirstShow);
+  viewList->setUniformItemSizes(true);
+  viewList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  viewList->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+  vBoxLayout->addWidget(viewList, 1);
+
+  vBoxLayout->addStretch();
+}
+
+void QtStartScreen::createVersionAndGithub(QHBoxLayout* layout) {
+  auto* vBoxLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
+  layout->addLayout(vBoxLayout, 3);
+
+  // Create a Version label
+  auto* pVersionLabel = new QLabel(fmt::format("Version {}", Version::getApplicationVersion().toString()).c_str(), this);
+  pVersionLabel->setObjectName(QStringLiteral("boldLabel"));
+  vBoxLayout->addWidget(pVersionLabel);
+
+  vBoxLayout->addSpacing(20);
+
+  // Create a GitHub button
+  auto* githubButton = createButton(this, QStringLiteral("View on GitHub"), QStringLiteral("infoButton"), []() {
+    QDesktopServices::openUrl(QUrl("github"_g, QUrl::TolerantMode));
+  });
+  githubButton->setIcon(QIcon("://startscreen/github_icon.png"));
+  vBoxLayout->addWidget(githubButton);
+
+  vBoxLayout->addSpacing(35);
+  vBoxLayout->addStretch();
+
+  vBoxLayout->addWidget(createButton(
+      this, QStringLiteral("New Project"), QStringLiteral("projectButton"), [this]() { emit openNewProjectDialog(); }));
+  vBoxLayout->addSpacing(8);
+  vBoxLayout->addWidget(createButton(
+      this, QStringLiteral("Open Project"), QStringLiteral("projectButton"), [this]() { emit openOpenProjectDialog(); }));
 }
 
 }    // namespace qt::window

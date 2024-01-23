@@ -122,7 +122,7 @@ void TaskScheduler::processTasks() {
 
       while(true) {
         {
-          std::lock_guard<std::mutex> lock(m_loopMutex);
+          std::lock_guard<std::mutex> innerLock(m_loopMutex);
 
           if(!m_loopIsRunning || m_terminateRunningTasks) {
             runner->terminate();

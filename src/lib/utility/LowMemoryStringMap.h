@@ -344,7 +344,7 @@ private:
       std::unique_ptr<Node> child = std::move(it->second);
       StringT childStr = child->getString();
 
-      auto p = std::mismatch(childStr.begin(), childStr.end(), str.begin() + idx, str.end());
+      auto p = std::mismatch(childStr.begin(), childStr.end(), str.begin() + static_cast<long>(idx), str.end());
 
       if(p.first == childStr.end() && p.second == str.end()) {
         // adding same string, abort
@@ -352,7 +352,7 @@ private:
         return;
       }
 
-      size_t length = std::distance(childStr.begin(), p.first);
+      auto length = static_cast<size_t>(std::distance(childStr.begin(), p.first));
 
       std::unique_ptr<Branch> newBranch;
       if(!dynamic_cast<Branch*>(child.get()) || p.first != childStr.end()) {

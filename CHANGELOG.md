@@ -1,16 +1,18 @@
 ### Changelog
 
-#### WIP
+#### 1.0.0
+released 2024-01-11
 
 * Build: Upload docs to github page.
 * Build: Upload coverage to github page.
 * Docs: Add doxygen support and awesome-doxygen-css.
-* C/C++: Migrate clang to v15.
+* C/C++: Migrate clang to `v15.0.7`.
 * Code: Port test suite from Catch to gtest.
 * Build: Add Github action.
-* Build: Update cmake to 3.20.
-* Build: Update Qt to 15.5.
-
+* Build: Update cmake to `v3.23`.
+* Build: Update Qt to `v5.15`.
+* Build: Depend on conan-v2.
+* Build: Add CMakePresets.
 
 #### 2021.4.19
 released 2021-11-30
