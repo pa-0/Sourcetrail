@@ -475,7 +475,7 @@ void CodeController::handleMessage(MessageToNextCodeReference* message) {
   size_t currentLineNumber = message->lineNumber;
   size_t currentColumnNumber = message->columnNumber;
   bool next = message->next;
-  [[mybe_unused]] bool inListMode = getView()->isInListMode();
+  [[maybe_unused]] bool inListMode = getView()->isInListMode();
 
   if(currentFilePath.empty()) {
     return;
@@ -942,7 +942,7 @@ void CodeController::iterateReference(bool next) {
   if(next) {
     m_referenceIndex++;
 
-    if(m_referenceIndex == m_references.size()) {
+    if(m_referenceIndex == static_cast<int>(m_references.size())) {
       m_referenceIndex = 0;
     }
   } else {
@@ -1186,11 +1186,11 @@ bool CodeController::addAllSourceLocations() {
           snippet.locationFile->copySourceLocations(file.locationFile);
         }
       } else {
-        std::shared_ptr<SourceLocationFile> file = m_storageAccess->getSourceLocationsForLinesInFile(
+        [[maybe_unused]] std::shared_ptr<SourceLocationFile> sourceLocationFile = m_storageAccess->getSourceLocationsForLinesInFile(
             snippet.locationFile->getFilePath(), snippet.startLineNumber, snippet.endLineNumber);
-        if(file) {
-          file->copySourceLocations(snippet.locationFile);
-          snippet.locationFile = file;
+        if(sourceLocationFile) {
+          sourceLocationFile->copySourceLocations(snippet.locationFile);
+          snippet.locationFile = sourceLocationFile;
         }
       }
 

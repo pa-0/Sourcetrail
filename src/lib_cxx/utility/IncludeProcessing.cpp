@@ -39,7 +39,7 @@ std::vector<IncludeDirective> IncludeProcessing::getUnresolvedIncludeDirectives(
 
 	for (size_t i = 0; i < parts.size(); i++)
 	{
-		progress(float(i) / parts.size());
+		progress(float(i) / static_cast<float>(parts.size()));
 
 		const std::vector<IncludeDirective> directives = doGetUnresolvedIncludeDirectives(
 			utility::toSet(parts[i]), processedFilePaths, indexedPaths, headerSearchDirectories);
@@ -83,7 +83,7 @@ std::set<FilePath> IncludeProcessing::getHeaderSearchDirectories(
 
 	for (size_t i = 0; i < parts.size(); i++)
 	{
-		progress(float(i) / parts.size());
+		progress(float(i) / static_cast<float>(parts.size()));
 
 		std::set<FilePath> unprocessedFilePaths(parts[i].begin(), parts[i].end());
 

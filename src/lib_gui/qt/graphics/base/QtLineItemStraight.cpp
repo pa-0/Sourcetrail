@@ -17,7 +17,7 @@ void QtLineItemStraight::updateLine(
 
 	setLine(origin.x(), origin.y(), target.x(), target.y());
 
-	setPen(QPen(QBrush(style.color.c_str()), style.width, Qt::SolidLine));
+	setPen(QPen(QBrush(style.color.c_str()), static_cast<double>(style.width), Qt::SolidLine));
 }
 
 QPainterPath QtLineItemStraight::shape() const

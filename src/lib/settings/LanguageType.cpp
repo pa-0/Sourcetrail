@@ -16,7 +16,7 @@ std::string languageTypeToString(LanguageType type) {
   return "unknown";
 }
 
-LanguageType stringToLanguageType(std::string typeString) {
+LanguageType stringToLanguageType(const std::string& typeString) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
   if(typeString == languageTypeToString(LANGUAGE_C)) {
     return LANGUAGE_C;

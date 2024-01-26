@@ -22,12 +22,12 @@
 
 void QtGraphNode::blendIn()
 {
-	setOpacity(1.0f);
+	setOpacity(1.0);
 }
 
 void QtGraphNode::blendOut()
 {
-	setOpacity(0.0f);
+	setOpacity(0.0);
 }
 
 void QtGraphNode::showNode()
@@ -434,10 +434,10 @@ void QtGraphNode::addSubNode(QtGraphNode* node)
 		QtGraphNode* parent = this;
 		while (parent && !parent->isGroupNode())
 		{
-			parent->setZValue(-10.0f);
-			parent->m_text->setZValue(-9.0f);
-			parent->m_rect->setZValue(-10.0f);
-			parent->m_undefinedRect->setZValue(-10.0f);
+			parent->setZValue(-10.0);
+			parent->m_text->setZValue(-9.0);
+			parent->m_rect->setZValue(-10.0);
+			parent->m_undefinedRect->setZValue(-10.0);
 
 			parent = parent->getParent();
 		}

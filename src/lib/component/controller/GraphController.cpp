@@ -1326,12 +1326,12 @@ void GraphController::groupNodesByParents(GroupType groupType) {
   }
 
   std::set<Id> groupedNodeIds;
-  for(const std::pair<std::wstring, std::vector<std::shared_ptr<DummyNode>>>& p : nodesToGroup) {
+  for(const auto& node : nodesToGroup) {
     std::shared_ptr<DummyNode> groupNode;
 
-    std::wstring name = p.first;
+    std::wstring name = node.first;
     if(groupType == GroupType::FILE_TYPE) {
-      name = FilePath(p.first).fileName();
+      name = FilePath(node.first).fileName();
     }
 
     auto it = groupNodes.find(name);
@@ -1344,15 +1344,15 @@ void GraphController::groupNodesByParents(GroupType groupType) {
       groupNode->groupLayout = GroupLayout::BUCKET;
       groupNode->name = name;
 
-      auto it = nodeIdtoParentMap.find(p.second[0]->tokenId);
-      if(it != nodeIdtoParentMap.end()) {
-        groupNode->tokenId = it->second.first;
+      auto found = nodeIdtoParentMap.find(node.second[0]->tokenId);
+      if(found != nodeIdtoParentMap.end()) {
+        groupNode->tokenId = found->second.first;
       }
       m_topLevelAncestorIds[groupNode->tokenId] = groupNode->tokenId;
       m_dummyNodes.push_back(groupNode);
     }
 
-    for(std::shared_ptr<DummyNode> dummyNode : p.second) {
+    for(std::shared_ptr<DummyNode> dummyNode : node.second) {
       if(dummyNode->hasActiveSubNode()) {
         groupNode->bundleInfo = dummyNode->bundleInfo;
         groupNode->bundleId = dummyNode->bundleId;
@@ -1473,18 +1473,18 @@ void GraphController::groupTrailNodes(GroupType groupType) {
 
     std::vector<Id> hiddenEdgeIds;
 
-    for(TrailNode& node : group) {
-      std::shared_ptr<DummyNode> dummyNode = getDummyGraphNodeById(node.nodeId);
+    for(TrailNode& tailNode : group) {
+      std::shared_ptr<DummyNode> dummyNode = getDummyGraphNodeById(tailNode.nodeId);
       if(!dummyNode) {
         continue;
       }
 
-      groupedNodeIds.insert(node.nodeId);
+      groupedNodeIds.insert(tailNode.nodeId);
       groupNode->subNodes.push_back(dummyNode);
 
-      m_topLevelAncestorIds[node.nodeId] = groupNode->tokenId;
+      m_topLevelAncestorIds[tailNode.nodeId] = groupNode->tokenId;
 
-      for(DummyEdge* edge : node.targetEdges) {
+      for(DummyEdge* edge : tailNode.targetEdges) {
         if(!targetEdge->visible) {
           targetEdge->visible = true;
           targetEdge->targetId = edge->targetId;
@@ -1499,7 +1499,7 @@ void GraphController::groupTrailNodes(GroupType groupType) {
         }
       }
 
-      for(DummyEdge* edge : node.originEdges) {
+      for(DummyEdge* edge : tailNode.originEdges) {
         if(!originEdge->visible) {
           originEdge->visible = true;
           originEdge->ownerId = edge->ownerId;
@@ -2165,7 +2165,7 @@ void GraphController::createLegendGraph() {
       Edge* edge = addEdge(Edge::EDGE_BUNDLED_EDGES, typeA, typeB);
       std::shared_ptr<TokenComponentBundledEdges> bundledEdgesComp =
           std::make_shared<TokenComponentBundledEdges>();
-      for(size_t i = 0; i < 10; i++) {
+      for(size_t idx = 0; idx < 10; idx++) {
         bundledEdgesComp->addBundledEdgesId(++id, true);
       }
       edge->addComponent(bundledEdgesComp);

@@ -17,5 +17,5 @@ private:
   void doTerminate() override;
 
   std::vector<std::shared_ptr<TaskRunner>> m_taskRunners;
-  int m_taskIndex;
+  int m_taskIndex = -1;
 };

@@ -233,10 +233,10 @@ std::vector<Id> SqliteIndexStorage::addLocalSymbols(const std::set<StorageLocalS
     const StorageLocalSymbol& data = *it;
     std::pair<std::wstring, std::wstring> name = splitLocalSymbolName(data.name);
     if(name.second.size()) {
-      auto it = m_tempLocalSymbolIndex.find(name.first);
-      if(it != m_tempLocalSymbolIndex.end()) {
-        auto it2 = it->second.find(name.second);
-        if(it2 != it->second.end()) {
+      auto found = m_tempLocalSymbolIndex.find(name.first);
+      if(found != m_tempLocalSymbolIndex.end()) {
+        auto it2 = found->second.find(name.second);
+        if(it2 != found->second.end()) {
           symbolIds[i] = it2->second;
         }
       }
@@ -276,7 +276,7 @@ std::vector<Id> SqliteIndexStorage::addSourceLocations(const std::vector<Storage
                                        static_cast<uint16_t>(loc.endLine - loc.startLine),
                                        static_cast<uint16_t>(loc.startCol),
                                        static_cast<uint16_t>(loc.endCol),
-                                       loc.type),
+                                       static_cast<uint8_t>(loc.type)),
                     static_cast<uint32_t>(loc.id));
     });
   }
@@ -291,7 +291,7 @@ std::vector<Id> SqliteIndexStorage::addSourceLocations(const std::vector<Storage
                                      static_cast<uint16_t>(data.endLine - data.startLine),
                                      static_cast<uint16_t>(data.startCol),
                                      static_cast<uint16_t>(data.endCol),
-                                     data.type);
+                                     static_cast<uint8_t>(data.type));
 
     std::map<TempSourceLocation, uint32_t>& index = m_tempSourceLocationIndices[static_cast<uint32_t>(data.fileNodeId)];
     std::map<TempSourceLocation, uint32_t>::const_iterator it = index.find(tempLoc);

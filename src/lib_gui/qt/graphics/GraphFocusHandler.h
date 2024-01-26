@@ -13,6 +13,8 @@ class QPointF;
 class GraphFocusClient
 {
 public:
+  virtual ~GraphFocusClient() = default;
+
 	virtual void focusView(bool focusIn) = 0;
 
 	virtual const std::list<QtGraphNode*>& getGraphNodes() const = 0;

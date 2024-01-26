@@ -1,5 +1,7 @@
 #include "TaskGroupSequence.h"
 
+#include <range/v3/algorithm/for_each.hpp>
+
 TaskGroupSequence::TaskGroupSequence() = default;
 
 void TaskGroupSequence::addTask(std::shared_ptr<Task> task) {
@@ -33,13 +35,13 @@ Task::TaskState TaskGroupSequence::doUpdate(std::shared_ptr<Blackboard> blackboa
 void TaskGroupSequence::doExit(std::shared_ptr<Blackboard> /*blackboard*/) {}
 
 void TaskGroupSequence::doReset(std::shared_ptr<Blackboard> /*blackboard*/) {
-  for(size_t i = 0; i < m_taskRunners.size(); i++) {
-    m_taskRunners[i]->reset();
-  }
+  ranges::for_each(m_taskRunners, [](auto& taskRunner) {
+    taskRunner->reset();
+  });
 }
 
 void TaskGroupSequence::doTerminate() {
-  for(size_t i = 0; i < m_taskRunners.size(); i++) {
-    m_taskRunners[i]->terminate();
-  }
+  ranges::for_each(m_taskRunners, [](auto& taskRunner) {
+    taskRunner->terminate();
+  });
 }

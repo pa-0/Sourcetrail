@@ -150,7 +150,7 @@ void QtTable::resizeEvent(QResizeEvent* event)
 		}
 	}
 
-	m_rowsToFill += (float)tableHeight / this->rowHeight(this->model()->rowCount() - 1);
+	m_rowsToFill += static_cast<float>(tableHeight) / static_cast<float>(this->rowHeight(this->model()->rowCount() - 1));
 
 	updateRows();
 }

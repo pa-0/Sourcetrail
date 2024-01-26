@@ -2,8 +2,8 @@
 
 
 SqliteStorageMigrationLambda::SqliteStorageMigrationLambda(
-	std::function<void(const SqliteStorageMigration*, SqliteStorage*)> m_lambda)
-	: m_lambda(m_lambda)
+	std::function<void(const SqliteStorageMigration*, SqliteStorage*)> lambda)
+	: m_lambda(std::move(lambda))
 {
 }
 

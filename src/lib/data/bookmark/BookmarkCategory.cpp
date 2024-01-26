@@ -1,6 +1,6 @@
 #include "BookmarkCategory.h"
 
-BookmarkCategory::BookmarkCategory(): m_id(-1), m_name(L"") {}
+BookmarkCategory::BookmarkCategory(): m_id(static_cast<Id>(-1)), m_name(L"") {}
 
 BookmarkCategory::BookmarkCategory(const Id id, const std::wstring& name): m_id(id), m_name(name) {}
 

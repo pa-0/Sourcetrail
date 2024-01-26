@@ -22,9 +22,9 @@ void SearchController::handleActivation(const MessageActivateBase* message)
 			updateMatches(message, !m->keepContent());
 		}
 	}
-	else if (const MessageActivateTrail* m = dynamic_cast<const MessageActivateTrail*>(message))
+	else if (const MessageActivateTrail* messageActivateTrail = dynamic_cast<const MessageActivateTrail*>(message))
 	{
-		if (m->custom)
+		if (messageActivateTrail->custom)
 		{
 			updateMatches(message);
 		}

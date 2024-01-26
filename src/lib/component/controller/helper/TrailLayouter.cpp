@@ -315,7 +315,7 @@ void TrailLayouter::buildColumns()
 			m_nodesPerCol.push_back(std::vector<TrailNode*>());
 		}
 
-		m_nodesPerCol[level].push_back(node.get());
+		m_nodesPerCol[static_cast<size_t>(level)].push_back(node.get());
 	}
 }
 
@@ -368,7 +368,7 @@ void TrailLayouter::reduceEdgeCrossings()
 			float value = float(j);
 			if (count)
 			{
-				value = float(sum) / count;
+				value = float(sum) / static_cast<float>(count);
 			}
 			newOrder.emplace(value, node);
 		}
@@ -504,9 +504,9 @@ void TrailLayouter::moveNodesToAveragePosition(std::vector<TrailNode*> nodes, bo
 	}
 
 	int averagePosition = 0;
-	for (const std::pair<int, std::vector<TrailNode*>>& p: averagePositions)
+	for (const auto& item : averagePositions)
 	{
-		averagePosition += p.first;
+		averagePosition += item.first;
 	}
 	averagePosition /= static_cast<int>(averagePositions.size());
 

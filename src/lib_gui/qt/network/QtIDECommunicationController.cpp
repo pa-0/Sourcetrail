@@ -17,8 +17,8 @@ void QtIDECommunicationController::startListening()
 {
 	m_onQtThread([=]() {
 		ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
-		m_tcpWrapper.setServerPort(appSettings->getSourcetrailPort());
-		m_tcpWrapper.setClientPort(appSettings->getPluginPort());
+		m_tcpWrapper.setServerPort(static_cast<uint16_t>(appSettings->getSourcetrailPort()));
+		m_tcpWrapper.setClientPort(static_cast<uint16_t>(appSettings->getPluginPort()));
 		m_tcpWrapper.startListening();
 
 		sendUpdatePing();

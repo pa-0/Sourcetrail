@@ -184,6 +184,7 @@ void QtStatusBar::resizeEvent(QResizeEvent* /*event*/)
 
 void QtStatusBar::showStatus()
 {
+  qDebug() << __FUNCTION__;
 	MessageShowStatus().dispatch();
 }
 

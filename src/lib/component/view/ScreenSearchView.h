@@ -8,7 +8,7 @@ public:
   ~ScreenSearchView() override;
 
   // View implementation
-  [[nodiscard]] virtual std::string getName() const;
+  [[nodiscard]] std::string getName() const override;
 
   virtual void setMatchCount(size_t matchCount) = 0;
   virtual void setMatchIndex(size_t matchIndex) = 0;

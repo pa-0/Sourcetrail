@@ -44,7 +44,7 @@ void QtLineItemBase::updateLine(
 	m_showArrow = showArrow;
 
 	this->setPen(QPen(
-		QBrush(style.color.c_str()), style.width + int(log10(weight)), Qt::SolidLine, Qt::RoundCap));
+		QBrush(style.color.c_str()), static_cast<double>(style.width) + log10(static_cast<double>(weight)), Qt::SolidLine, Qt::RoundCap));
 }
 
 void QtLineItemBase::setRoute(Route route)

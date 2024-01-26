@@ -212,9 +212,9 @@ std::unique_ptr<CxxDeclName> CxxDeclNameResolver::getDeclName(const clang::Named
 				functionName = L"lambda at " + std::to_wstring(presumedBegin.getLine()) + L":" +
 					std::to_wstring(presumedBegin.getColumn());
 			}
-			else if (clang::FunctionTemplateDecl* templateFunctionDeclaration = functionDecl->getDescribedFunctionTemplate())
+			else if (clang::FunctionTemplateDecl* templateFunctionDecl = functionDecl->getDescribedFunctionTemplate())
 			{
-				templateArguments = getTemplateParameterStrings(templateFunctionDeclaration);
+				templateArguments = getTemplateParameterStrings(templateFunctionDecl);
 			}
 			else if (functionDecl->isFunctionTemplateSpecialization())
 			{
@@ -225,10 +225,10 @@ std::unique_ptr<CxxDeclName> CxxDeclNameResolver::getDeclName(const clang::Named
 					const clang::TemplateArgument& templateArgument = templateArgumentList->get(i);
 					if (templateArgument.isDependent())
 					{
-						if (clang::FunctionTemplateDecl* templateFunctionDeclaration =
+						if (clang::FunctionTemplateDecl* tempFunctionDeclaration =
 								functionDecl->getPrimaryTemplate())
 						{
-							return getDeclName(templateFunctionDeclaration);
+							return getDeclName(tempFunctionDeclaration);
 						}
 					}
 					templateArguments.push_back(getTemplateArgumentName(templateArgument));

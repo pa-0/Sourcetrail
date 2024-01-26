@@ -311,7 +311,8 @@ SettingsMigrator ProjectSettings::getMigrations() const {
       languageName = "cpp";
       break;
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
-    case SOURCE_GROUP_CUSTOM_COMMAND:
+    case LANGUAGE_CUSTOM:
+    [[fallthrough]];
     default:
       continue;
     }

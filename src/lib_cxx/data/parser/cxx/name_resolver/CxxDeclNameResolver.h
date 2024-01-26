@@ -71,9 +71,8 @@ std::vector<std::wstring> CxxDeclNameResolver::getTemplateParameterStringsOfPart
 				}
 				else
 				{
-					templateParameterNames.push_back(std::move(
-						CxxTypeName::makeUnsolvedIfNull(CxxTypeNameResolver(this).getName(argumentType))
-							->toString()));
+					templateParameterNames.push_back(CxxTypeName::makeUnsolvedIfNull(CxxTypeNameResolver(this).getName(argumentType))
+							->toString());
 				}
 			}
 			else if (

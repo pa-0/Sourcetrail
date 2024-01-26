@@ -36,7 +36,7 @@ QtGraphNodeGroup::QtGraphNodeGroup(
 	setName(name);
 
 	m_background = new QGraphicsPolygonItem(this);
-	m_background->setZValue(-3.f);
+	m_background->setZValue(-3.0);
 
 	GraphViewStyle::NodeStyle style = GraphViewStyle::getStyleOfGroupNode(type, false);
 	GraphViewStyle::NodeMargins margins = GraphViewStyle::getMarginsOfGroupNode(type, true);

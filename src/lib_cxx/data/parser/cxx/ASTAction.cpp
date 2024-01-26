@@ -14,7 +14,7 @@ ASTAction::ASTAction(std::shared_ptr<ParserClient> client,
     , m_commentHandler(client, canonicalFilePathCache) {}
 
 std::unique_ptr<clang::ASTConsumer> ASTAction::CreateASTConsumer(clang::CompilerInstance& compiler,
-                                                                 llvm::StringRef inFile) {
+                                                                 llvm::StringRef /*inFile*/) {
   return std::unique_ptr<clang::ASTConsumer>(new ASTConsumer(&compiler.getASTContext(),
                                                              &compiler.getPreprocessor(),
                                                              m_client,

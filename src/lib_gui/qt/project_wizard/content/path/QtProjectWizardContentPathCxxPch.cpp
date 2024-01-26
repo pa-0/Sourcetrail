@@ -75,7 +75,7 @@ bool QtProjectWizardContentPathCxxPch::check()
 					"Precompiled Header File.");
 				QPushButton* cancelButton = msgBox.addButton(
 					QStringLiteral("Cancel"), QMessageBox::ButtonRole::RejectRole);
-				QPushButton* continueButton = msgBox.addButton(
+        [[maybe_unused]] QPushButton* continueButton = msgBox.addButton(
 					QStringLiteral("Continue"), QMessageBox::ButtonRole::AcceptRole);
 				msgBox.exec();
 				if (msgBox.clickedButton() == cancelButton)
@@ -96,7 +96,7 @@ bool QtProjectWizardContentPathCxxPch::check()
 					"Precompiled Header File will not be used.");
 				QPushButton* cancelButton = msgBox.addButton(
 					QStringLiteral("Cancel"), QMessageBox::ButtonRole::RejectRole);
-				QPushButton* continueButton = msgBox.addButton(
+				[[maybe_unused]] QPushButton* continueButton = msgBox.addButton(
 					QStringLiteral("Continue"), QMessageBox::ButtonRole::AcceptRole);
 				msgBox.exec();
 				if (msgBox.clickedButton() == cancelButton)

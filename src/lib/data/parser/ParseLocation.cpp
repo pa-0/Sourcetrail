@@ -5,26 +5,26 @@ ParseLocation::ParseLocation()
 {
 }
 
-ParseLocation::ParseLocation(Id fileId, size_t lineNumber, size_t columnNumber)
-	: fileId(fileId)
-	, startLineNumber(lineNumber)
-	, startColumnNumber(columnNumber)
-	, endLineNumber(lineNumber)
-	, endColumnNumber(columnNumber)
+ParseLocation::ParseLocation(Id fileId_, size_t lineNumber_, size_t columnNumber_)
+	: fileId(fileId_)
+	, startLineNumber(lineNumber_)
+	, startColumnNumber(columnNumber_)
+	, endLineNumber(lineNumber_)
+	, endColumnNumber(columnNumber_)
 {
 }
 
 ParseLocation::ParseLocation(
-	Id fileId,
-	size_t startLineNumber,
-	size_t startColumnNumber,
-	size_t endLineNumber,
-	size_t endColumnNumber)
-	: fileId(fileId)
-	, startLineNumber(startLineNumber)
-	, startColumnNumber(startColumnNumber)
-	, endLineNumber(endLineNumber)
-	, endColumnNumber(endColumnNumber)
+	Id fileId_,
+	size_t startLineNumber_,
+	size_t startColumnNumber_,
+	size_t endLineNumber_,
+	size_t endColumnNumber_)
+	: fileId(fileId_)
+	, startLineNumber(startLineNumber_)
+	, startColumnNumber(startColumnNumber_)
+	, endLineNumber(endLineNumber_)
+	, endColumnNumber(endColumnNumber_)
 {
 }
 

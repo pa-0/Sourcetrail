@@ -414,9 +414,9 @@ bool QtCodeNavigator::hasErrors() const
 size_t QtCodeNavigator::getFatalErrorCountForFile(const FilePath& filePath) const
 {
 	size_t fatalErrorCount = 0;
-	for (const std::pair<Id, ErrorInfo>& p: m_errorInfos)
+	for (const auto& errorInfo : m_errorInfos)
 	{
-		const ErrorInfo& error = p.second;
+		const ErrorInfo& error = errorInfo.second;
 		if (error.filePath == filePath.wstr() && error.fatal)
 		{
 			fatalErrorCount++;
@@ -493,10 +493,10 @@ void QtCodeNavigator::focusInitialLocation(Id locationId)
 	}
 	else
 	{
-		const Id locationId = m_single->getLocationIdOfFirstActiveLocationOfTokenId(0);
-		if (locationId)
+		const Id firstLocationId = m_single->getLocationIdOfFirstActiveLocationOfTokenId(0);
+		if (firstLocationId)
 		{
-			m_single->setFocus(locationId);
+			m_single->setFocus(firstLocationId);
 			return;
 		}
 	}
@@ -788,33 +788,42 @@ void QtCodeNavigator::keyPressEvent(QKeyEvent* event)
 	{
 	case Qt::Key_Up:
 		moveView(CodeFocusHandler::Direction::UP);
+    [[fallthrough]];
 	case Qt::Key_K:
+  [[fallthrough]];
 	case Qt::Key_W:
 		moveFocus(CodeFocusHandler::Direction::UP);
 		break;
 
 	case Qt::Key_Down:
 		moveView(CodeFocusHandler::Direction::DOWN);
+    [[fallthrough]];
 	case Qt::Key_J:
+    [[fallthrough]];
 	case Qt::Key_S:
 		moveFocus(CodeFocusHandler::Direction::DOWN);
 		break;
 
 	case Qt::Key_Left:
 		moveView(CodeFocusHandler::Direction::LEFT);
+    [[fallthrough]];
 	case Qt::Key_H:
+  [[fallthrough]];
 	case Qt::Key_A:
 		moveFocus(CodeFocusHandler::Direction::LEFT);
 		break;
 
 	case Qt::Key_Right:
 		moveView(CodeFocusHandler::Direction::RIGHT);
+    [[fallthrough]];
 	case Qt::Key_L:
+    [[fallthrough]];
 	case Qt::Key_D:
 		moveFocus(CodeFocusHandler::Direction::RIGHT);
 		break;
 
 	case Qt::Key_E:
+    [[fallthrough]];
 	case Qt::Key_Return:
 		if (currentFocus.area && currentFocus.locationId)
 		{
@@ -838,6 +847,7 @@ void QtCodeNavigator::keyPressEvent(QKeyEvent* event)
 		break;
 
 	case Qt::Key_Y:
+    [[fallthrough]];
 	case Qt::Key_Z:
 		if (!alt && !ctrl)
 		{

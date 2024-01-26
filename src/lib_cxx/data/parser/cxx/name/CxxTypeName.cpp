@@ -17,7 +17,7 @@ std::unique_ptr<CxxTypeName> CxxTypeName::makeUnsolvedIfNull(std::unique_ptr<Cxx
 	return getUnsolved();
 }
 
-CxxTypeName::Modifier::Modifier(std::wstring symbol): symbol(std::move(symbol)) {}
+CxxTypeName::Modifier::Modifier(std::wstring symbol_): symbol(std::move(symbol_)) {}
 
 CxxTypeName::CxxTypeName(std::wstring name): m_name(std::move(name)) {}
 

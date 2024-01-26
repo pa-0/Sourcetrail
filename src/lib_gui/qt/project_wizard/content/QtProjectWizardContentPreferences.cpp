@@ -87,7 +87,7 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
         QString::fromStdWString(m_colorSchemePaths[i].withoutExtension().fileName()));
   }
   connect(m_colorSchemes,
-          static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+          &QComboBox::activated,
           this,
           &QtProjectWizardContentPreferences::colorSchemeChanged);
 
@@ -151,7 +151,7 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
     m_screenAutoScaling->addItem(QStringLiteral("off"), 0);
     m_screenAutoScaling->addItem(QStringLiteral("on"), 1);
     connect(m_screenAutoScaling,
-            static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            &QComboBox::activated,
             this,
             &QtProjectWizardContentPreferences::uiAutoScalingChanges);
 
@@ -184,7 +184,7 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
     m_screenScaleFactor->addItem(QStringLiteral("300%"), 3.0);
     m_screenScaleFactor->addItem(QStringLiteral("400%"), 4.0);
     connect(m_screenScaleFactor,
-            static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            &QComboBox::activated,
             this,
             &QtProjectWizardContentPreferences::uiScaleFactorChanges);
 
@@ -289,7 +289,7 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
                                      row);
   m_threads->setItemText(0, QStringLiteral("default"));
   connect(m_threads,
-          static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+          &QComboBox::activated,
           this,
           &QtProjectWizardContentPreferences::indexerThreadsChanges);
 
@@ -348,7 +348,7 @@ void QtProjectWizardContentPreferences::load() {
     uiScaleFactorChanges(m_screenScaleFactor->currentIndex());
   }
 
-  m_scrollSpeed->setText(QString::number(appSettings->getScrollSpeed(), 'f', 1));
+  m_scrollSpeed->setText(QString::number(static_cast<double>(appSettings->getScrollSpeed()), 'f', 1));
   m_graphZooming->setChecked(appSettings->getControlsGraphZoomOnMouseWheel());
 
   m_loggingEnabled->setChecked(appSettings->getLoggingEnabled());

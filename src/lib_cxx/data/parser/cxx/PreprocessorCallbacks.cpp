@@ -23,9 +23,9 @@ PreprocessorCallbacks::PreprocessorCallbacks(
 
 void PreprocessorCallbacks::FileChanged(
 	clang::SourceLocation location,
-	FileChangeReason reason,
+	FileChangeReason /*reason*/,
 	clang::SrcMgr::CharacteristicKind,
-	clang::FileID prevID)
+	clang::FileID /*prevID*/)
 {
 	const clang::FileID fileId = m_sourceManager.getFileID(location);
 	const FilePath currentPath = m_canonicalFilePathCache->getCanonicalFilePath(
@@ -53,16 +53,16 @@ void PreprocessorCallbacks::FileChanged(
 }
 
 void PreprocessorCallbacks::InclusionDirective(
-	clang::SourceLocation hashLocation,
-	const clang::Token& includeToken,
-	llvm::StringRef fileName,
-	bool isAngled,
+	clang::SourceLocation  /*hashLocation*/,
+	const clang::Token&  /*includeToken*/,
+	llvm::StringRef  /*fileName*/,
+	bool  /*isAngled*/,
 	clang::CharSourceRange fileNameRange,
 	const clang::Optional<clang::FileEntryRef> fileEntry,
-	llvm::StringRef searchPath,
-	llvm::StringRef relativePath,
-	const clang::Module* imported,
-	clang::SrcMgr::CharacteristicKind fileType)
+	llvm::StringRef  /*searchPath*/,
+	llvm::StringRef  /*relativePath*/,
+	const clang::Module*  /*imported*/,
+	clang::SrcMgr::CharacteristicKind  /*fileType*/)
 {
 	if (m_currentFileSymbolId && fileEntry)
 	{
@@ -107,40 +107,40 @@ void PreprocessorCallbacks::MacroDefined(
 
 void PreprocessorCallbacks::MacroUndefined(
 	const clang::Token& macroNameToken,
-	const clang::MacroDefinition& macroDefinition,
-	const clang::MacroDirective* macroUndefinition)
+	const clang::MacroDefinition&  /*macroDefinition*/,
+	const clang::MacroDirective*  /*macroUndefinition*/)
 {
 	onMacroUsage(macroNameToken);
 }
 
 void PreprocessorCallbacks::Defined(
 	const clang::Token& macroNameToken,
-	const clang::MacroDefinition& macroDefinition,
-	clang::SourceRange range)
+	const clang::MacroDefinition&  /*macroDefinition*/,
+	clang::SourceRange  /*range*/)
 {
 	onMacroUsage(macroNameToken);
 }
 
 void PreprocessorCallbacks::Ifdef(
-	clang::SourceLocation location,
+	clang::SourceLocation  /*location*/,
 	const clang::Token& macroNameToken,
-	const clang::MacroDefinition& macroDefinition)
+	const clang::MacroDefinition&  /*macroDefinition*/)
 {
 	onMacroUsage(macroNameToken);
 }
 void PreprocessorCallbacks::Ifndef(
-	clang::SourceLocation location,
+	clang::SourceLocation  /*location*/,
 	const clang::Token& macroNameToken,
-	const clang::MacroDefinition& macroDefinition)
+	const clang::MacroDefinition&  /*macroDefinition*/)
 {
 	onMacroUsage(macroNameToken);
 }
 
 void PreprocessorCallbacks::MacroExpands(
 	const clang::Token& macroNameToken,
-	const clang::MacroDefinition& macroDirective,
-	clang::SourceRange range,
-	const clang::MacroArgs* args)
+	const clang::MacroDefinition&  /*macroDirective*/,
+	clang::SourceRange  /*range*/,
+	const clang::MacroArgs*  /*args*/)
 {
 	onMacroUsage(macroNameToken);
 }

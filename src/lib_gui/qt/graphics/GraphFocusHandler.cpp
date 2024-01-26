@@ -320,8 +320,9 @@ QtGraphNode* GraphFocusHandler::findNextNode(QtGraphNode* node, Direction direct
 			}
 		}
 	}
-
+  [[fallthrough]];
 	case Direction::LEFT:
+  [[fallthrough]];
 	case Direction::RIGHT:
 	{
 		QtGraphNode* nextNode = findSibling(node, direction);

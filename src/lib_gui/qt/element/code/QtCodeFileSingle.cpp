@@ -210,7 +210,7 @@ void QtCodeFileSingle::scrollTo(
 	}
 
 	double percentA = double(lineNumber - 1) / m_area->getEndLineNumber();
-	double percentB = endLineNumber ? double(endLineNumber - 1) / m_area->getEndLineNumber() : 0.0f;
+	double percentB = endLineNumber ? double(endLineNumber - 1) / m_area->getEndLineNumber() : 0.0;
 	ensurePercentVisibleAnimated(percentA, percentB, animated, target);
 
 	m_area->ensureLocationIdVisible(targetLocationId, width(), animated);

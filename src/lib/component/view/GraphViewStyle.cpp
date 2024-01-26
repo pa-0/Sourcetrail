@@ -121,34 +121,34 @@ size_t GraphViewStyle::getFontSizeForStyleType(NodeType::StyleType type) {
   switch(type) {
   case NodeType::STYLE_PACKAGE:
   case NodeType::STYLE_SMALL_NODE:
-    return s_fontSize - 3;
+    return static_cast<size_t>(s_fontSize - 3);
 
   case NodeType::STYLE_GROUP:
-    return s_fontSize - 2;
+    return static_cast<size_t>(s_fontSize - 2);
 
   default:
-    return s_fontSize;
+    return static_cast<size_t>(s_fontSize);
   }
 }
 
 size_t GraphViewStyle::getFontSizeOfAccessNode() {
-  return s_fontSize - 2;
+  return static_cast<size_t>(s_fontSize - 2);
 }
 
 size_t GraphViewStyle::getFontSizeOfExpandToggleNode() {
-  return s_fontSize - 3;
+  return static_cast<size_t>(s_fontSize - 3);
 }
 
 size_t GraphViewStyle::getFontSizeOfCountCircle() {
-  return s_fontSize - 3;
+  return static_cast<size_t>(s_fontSize - 3);
 }
 
 size_t GraphViewStyle::getFontSizeOfQualifier() {
-  return s_fontSize - 3;
+  return static_cast<size_t>(s_fontSize - 3);
 }
 
 size_t GraphViewStyle::getFontSizeOfTextNode(int fontSizeDiff) {
-  return s_fontSize + fontSizeDiff;
+  return static_cast<size_t>(s_fontSize + fontSizeDiff);
 }
 
 size_t GraphViewStyle::getFontSizeOfGroupNode() {
@@ -376,11 +376,11 @@ GraphViewStyle::NodeStyle GraphViewStyle::getStyleForNodeType(NodeType::StyleTyp
   if(!iconPath.empty()) {
     style.iconPath = iconPath;
     if(type == NodeType::STYLE_PACKAGE) {
-      style.iconSize = s_fontSize - 4;
+      style.iconSize = static_cast<size_t>(s_fontSize - 4);
       style.iconOffset.x = -1;
       style.iconOffset.y = 5;
     } else {
-      style.iconSize = s_fontSize + 2;
+      style.iconSize = static_cast<size_t>(s_fontSize + 2);
 
       if(hasChildren) {
         style.iconOffset.x = 11;
@@ -610,9 +610,11 @@ GraphViewStyle::EdgeStyle GraphViewStyle::getStyleForEdgeType(
 
   case Edge::EDGE_INCLUDE:
     style.zValue = active ? 2 : -3;
+    [[fallthrough]];
   case Edge::EDGE_MACRO_USAGE:
     style.originOffset.y = 0;
     style.targetOffset.y = 0;
+    [[fallthrough]];
   default:
     break;
   }

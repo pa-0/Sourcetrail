@@ -197,8 +197,8 @@ void QtHighlighter::highlightRange(int startLine, int endLine) {
   QTextBlock start = doc->findBlockByLineNumber(startLine);
   QTextBlock end = doc->findBlockByLineNumber(endLine + 1);
 
-  const HighlightingRule* singleLineCommentRule = nullptr;
-  const HighlightingRule* quotationRule = nullptr;
+  [[maybe_unused]] const HighlightingRule* singleLineCommentRule = nullptr;
+  [[maybe_unused]] const HighlightingRule* quotationRule = nullptr;
 
   for(const HighlightingRule& rule : m_highlightingRules) {
     if(rule.type == HighlightType::COMMENT && !rule.multiLine) {
@@ -362,11 +362,11 @@ std::vector<std::tuple<QtHighlighter::HighlightType, int, int>> QtHighlighter::c
 
 QtHighlighter::HighlightingRule::HighlightingRule() {}
 
-QtHighlighter::HighlightingRule::HighlightingRule(HighlightType type,
+QtHighlighter::HighlightingRule::HighlightingRule(HighlightType type_,
                                                   const QRegExp& regExp,
-                                                  bool priority,
-                                                  bool multiLine)
-    : type(type), pattern(regExp), priority(priority), multiLine(multiLine) {}
+                                                  bool priority_,
+                                                  bool multiLine_)
+    : type(type_), pattern(regExp), priority(priority_), multiLine(multiLine_) {}
 
 bool QtHighlighter::isInRange(int pos,
                               const std::vector<std::tuple<HighlightType, int, int>>& ranges) const {

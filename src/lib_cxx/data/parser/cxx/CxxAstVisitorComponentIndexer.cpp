@@ -786,7 +786,7 @@ std::wstring CxxAstVisitorComponentIndexer::getLocalSymbolName(const clang::Sour
 }
 
 ReferenceKind CxxAstVisitorComponentIndexer::consumeDeclRefContextKind() {
-  ReferenceKind refKind = REFERENCE_UNDEFINED;
+  [[maybe_unused]] ReferenceKind refKind = REFERENCE_UNDEFINED; // TODO(Hussein): Check why?!
 
   CxxAstVisitorComponentTypeRefKind* typeRefKindComponent =
       getAstVisitor()->getComponent<CxxAstVisitorComponentTypeRefKind>();

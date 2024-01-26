@@ -27,22 +27,22 @@ std::shared_ptr<SourceGroup> SourceGroupFactoryModuleCxx::createSourceGroup(
 	std::shared_ptr<SourceGroupSettings> settings) const
 {
 	std::shared_ptr<SourceGroup> sourceGroup;
-	if (std::shared_ptr<SourceGroupSettingsCxxCdb> cxxSettings =
+	if (std::shared_ptr<SourceGroupSettingsCxxCdb> cxxCdbSettings =
 			std::dynamic_pointer_cast<SourceGroupSettingsCxxCdb>(settings))
 	{
-		sourceGroup = std::shared_ptr<SourceGroup>(new SourceGroupCxxCdb(cxxSettings));
+		sourceGroup = std::shared_ptr<SourceGroup>(new SourceGroupCxxCdb(cxxCdbSettings));
 	}
 	else if (
-		std::shared_ptr<SourceGroupSettingsCxxCodeblocks> cxxSettings =
+		std::shared_ptr<SourceGroupSettingsCxxCodeblocks> codeblocksSettings =
 			std::dynamic_pointer_cast<SourceGroupSettingsCxxCodeblocks>(settings))
 	{
-		sourceGroup = std::shared_ptr<SourceGroup>(new SourceGroupCxxCodeblocks(cxxSettings));
+		sourceGroup = std::shared_ptr<SourceGroup>(new SourceGroupCxxCodeblocks(codeblocksSettings));
 	}
 	else if (
-		std::shared_ptr<SourceGroupSettingsCEmpty> cxxSettings =
+		std::shared_ptr<SourceGroupSettingsCEmpty> cSettings =
 			std::dynamic_pointer_cast<SourceGroupSettingsCEmpty>(settings))
 	{
-		sourceGroup = std::shared_ptr<SourceGroup>(new SourceGroupCxxEmpty(cxxSettings));
+		sourceGroup = std::shared_ptr<SourceGroup>(new SourceGroupCxxEmpty(cSettings));
 	}
 	else if (
 		std::shared_ptr<SourceGroupSettingsCppEmpty> cxxSettings =

@@ -46,7 +46,7 @@ QtIndexingReportDialog::QtIndexingReportDialog(
 
 	m_layout->addSpacing(12);
 	QtIndexingDialog::createMessageLabel(m_layout)->setText(
-		QStringLiteral("Time:   ") + QString::fromStdString(TimeStamp::secondsToString(time)));
+		QStringLiteral("Time:   ") + QString::fromStdString(TimeStamp::secondsToString(static_cast<double>(time))));
 
 	m_layout->addSpacing(12);
 	m_errorWidget = QtIndexingDialog::createErrorWidget(m_layout);
@@ -126,9 +126,9 @@ void QtIndexingReportDialog::updateErrorCount(size_t errorCount, size_t fatalCou
 			str += QStringLiteral(" (") + QString::number(fatalCount) + QStringLiteral(" Fatal)");
 		}
 
-		QPushButton* errorCount = m_errorWidget->findChild<QPushButton*>(
+		QPushButton* errorCountButton = m_errorWidget->findChild<QPushButton*>(
 			QStringLiteral("errorCount"));
-		errorCount->setText(str);
+    errorCountButton->setText(str);
 
 		m_errorWidget->show();
 	}

@@ -86,9 +86,9 @@ void QtIndexingProgressDialog::updateErrorCount(size_t errorCount, size_t fatalC
 			str += " (" + QString::number(fatalCount) + " Fatal)";
 		}
 
-		QPushButton* errorCount = m_errorWidget->findChild<QPushButton*>(
+		QPushButton* errorCountButton = m_errorWidget->findChild<QPushButton*>(
 			QStringLiteral("errorCount"));
-		errorCount->setText(str);
+    errorCountButton->setText(str);
 
 		m_errorWidget->show();
 	}

@@ -157,7 +157,7 @@ void TaskBuildIndex::doExit(std::shared_ptr<Blackboard> blackboard)
 	blackboard->set<bool>("indexer_threads_stopped", true);
 }
 
-void TaskBuildIndex::doReset(std::shared_ptr<Blackboard> blackboard) {}
+void TaskBuildIndex::doReset(std::shared_ptr<Blackboard> /*blackboard*/) {}
 
 void TaskBuildIndex::terminate()
 {

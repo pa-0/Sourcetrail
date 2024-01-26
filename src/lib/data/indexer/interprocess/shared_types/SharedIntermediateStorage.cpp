@@ -225,7 +225,7 @@ void SharedIntermediateStorage::setStorageErrors(const std::vector<StorageError>
 
 Id SharedIntermediateStorage::getNextId() const
 {
-	return static_cast<int>(m_nextId);
+	return static_cast<size_t>(m_nextId);
 }
 
 void SharedIntermediateStorage::setNextId(const Id nextId)

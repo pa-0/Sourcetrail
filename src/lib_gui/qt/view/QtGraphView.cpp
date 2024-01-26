@@ -204,14 +204,14 @@ QtGraphView::QtGraphView(ViewLayout* viewLayout)
     m_groupWidget = new QWidget(widget);
     m_groupWidget->setGeometry(38, 8, 54, 26);
 
-    QHBoxLayout* layout = new QHBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(2);
+    auto* boxLayout = new QHBoxLayout;
+    boxLayout->setContentsMargins(0, 0, 0, 0);
+    boxLayout->setSpacing(2);
 
-    layout->addWidget(m_groupNamespaceButton);
-    layout->addWidget(m_groupFileButton);
+    boxLayout->addWidget(m_groupNamespaceButton);
+    boxLayout->addWidget(m_groupFileButton);
 
-    m_groupWidget->setLayout(layout);
+    m_groupWidget->setLayout(boxLayout);
   }
 }
 
@@ -611,7 +611,7 @@ void QtGraphView::finishedTransition() {
   }
 
   for(QtGraphEdge* edge : m_edges) {
-    edge->setOpacity(1.0f);
+    edge->setOpacity(1.0);
   }
 
   switchToNewGraphData();
@@ -1229,7 +1229,7 @@ void QtGraphView::createTransition() {
 
       appear->addAnimation(anim);
 
-      edge->setOpacity(0.0f);
+      edge->setOpacity(0.0);
     }
 
     m_transition->addAnimation(appear);

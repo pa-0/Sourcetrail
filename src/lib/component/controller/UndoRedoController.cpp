@@ -576,8 +576,10 @@ void UndoRedoController::dump() const {
     switch(it->order) {
     case Command::ORDER_VIEW:
       std::cout << "\t";
+      [[fallthrough]];
     case Command::ORDER_ADAPT:
       std::cout << "\t";
+      [[fallthrough]];
     case Command::ORDER_ACTIVATE:
       break;
     }

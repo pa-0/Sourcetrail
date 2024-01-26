@@ -18,7 +18,7 @@ void Graph::clear()
 
 void Graph::forEachNode(std::function<void(Node*)> func) const
 {
-	for (const std::pair<Id, std::shared_ptr<Node>>& node: m_nodes)
+	for (const auto& node: m_nodes)
 	{
 		func(node.second.get());
 	}
@@ -26,7 +26,7 @@ void Graph::forEachNode(std::function<void(Node*)> func) const
 
 void Graph::forEachEdge(std::function<void(Edge*)> func) const
 {
-	for (const std::pair<Id, std::shared_ptr<Edge>>& edge: m_edges)
+	for (const auto& edge: m_edges)
 	{
 		func(edge.second.get());
 	}

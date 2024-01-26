@@ -672,9 +672,9 @@ void QtProjectWizard::newSourceGroup() {
     return;
   }
 
-  QtProjectWizardWindow* window = createWindowWithContent([](QtProjectWizardWindow* window) {
-    window->setPreferredSize(QSize(560, 520));
-    return new QtProjectWizardContentSelect(window);
+  QtProjectWizardWindow* window = createWindowWithContent([](QtProjectWizardWindow* window_) {
+    window_->setPreferredSize(QSize(560, 520));
+    return new QtProjectWizardContentSelect(window_);
   });
   window->resize(QSize(560, 520));
 
@@ -691,9 +691,9 @@ void QtProjectWizard::newSourceGroup() {
 
 void QtProjectWizard::newSourceGroupFromVS() {
 #if BUILD_CXX_LANGUAGE_PACKAGE
-  QtProjectWizardWindow* window = createWindowWithContent([](QtProjectWizardWindow* window) {
-    window->setPreferredSize(QSize(560, 320));
-    return new QtProjectWizardContentVS(window);
+  QtProjectWizardWindow* window = createWindowWithContent([](QtProjectWizardWindow* window_) {
+    window_->setPreferredSize(QSize(560, 320));
+    return new QtProjectWizardContentVS(window_);
   });
   window->resize(QSize(560, 320));
 

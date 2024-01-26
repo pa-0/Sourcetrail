@@ -12,14 +12,14 @@ ReferenceKind CxxAstVisitorComponentDeclRefKind::getReferenceKind() const
 	return m_thisRefKind;
 }
 
-void CxxAstVisitorComponentDeclRefKind::beginTraverseDecl(clang::Decl* d)
+void CxxAstVisitorComponentDeclRefKind::beginTraverseDecl(clang::Decl* /*d*/)
 {
 	saveAll();
 	m_thisRefKind = REFERENCE_USAGE;
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::endTraverseDecl(clang::Decl* d)
+void CxxAstVisitorComponentDeclRefKind::endTraverseDecl(clang::Decl* /*d*/)
 {
 	restoreAll();
 }
@@ -41,31 +41,31 @@ void CxxAstVisitorComponentDeclRefKind::beginTraverseStmt(clang::Stmt* s)
 	m_childRefKind = m_thisRefKind;
 }
 
-void CxxAstVisitorComponentDeclRefKind::endTraverseStmt(clang::Stmt* s)
+void CxxAstVisitorComponentDeclRefKind::endTraverseStmt(clang::Stmt* /*s*/)
 {
 	restoreAll();
 }
 
-void CxxAstVisitorComponentDeclRefKind::beginTraverseType(const clang::QualType& t)
+void CxxAstVisitorComponentDeclRefKind::beginTraverseType(const clang::QualType& /*t*/)
 {
 	saveAll();
 	m_thisRefKind = REFERENCE_USAGE;
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::endTraverseType(const clang::QualType& t)
+void CxxAstVisitorComponentDeclRefKind::endTraverseType(const clang::QualType& /*t*/)
 {
 	restoreAll();
 }
 
-void CxxAstVisitorComponentDeclRefKind::beginTraverseTypeLoc(const clang::TypeLoc& tl)
+void CxxAstVisitorComponentDeclRefKind::beginTraverseTypeLoc(const clang::TypeLoc& /*tl*/)
 {
 	saveAll();
 	m_thisRefKind = REFERENCE_USAGE;
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::endTraverseTypeLoc(const clang::TypeLoc& tl)
+void CxxAstVisitorComponentDeclRefKind::endTraverseTypeLoc(const clang::TypeLoc& /*tl*/)
 {
 	restoreAll();
 }
@@ -101,24 +101,24 @@ void CxxAstVisitorComponentDeclRefKind::beginTraverseAssignCommonRhs()
 }
 
 void CxxAstVisitorComponentDeclRefKind::beginTraverseConstructorInitializer(
-	clang::CXXCtorInitializer* init)
+	clang::CXXCtorInitializer* /*init*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
 void CxxAstVisitorComponentDeclRefKind::beginTraverseCXXTemporaryObjectExpr(
-	clang::CXXTemporaryObjectExpr* s)
+	clang::CXXTemporaryObjectExpr* /*s*/)
 {
 	m_thisRefKind = REFERENCE_CALL;
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::beginTraverseUnresolvedMemberExpr(clang::UnresolvedMemberExpr* s)
+void CxxAstVisitorComponentDeclRefKind::beginTraverseUnresolvedMemberExpr(clang::UnresolvedMemberExpr* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::visitVarDecl(clang::VarDecl* d)
+void CxxAstVisitorComponentDeclRefKind::visitVarDecl(clang::VarDecl* /*d*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
@@ -131,43 +131,44 @@ void CxxAstVisitorComponentDeclRefKind::visitCastExpr(clang::CastExpr* s)
 	case clang::CK_ToVoid:
 	case clang::CK_LValueToRValue:
 		m_childRefKind = REFERENCE_USAGE;
+    [[fallthrough]];
 	default:
 		break;
 	}
 }
 
-void CxxAstVisitorComponentDeclRefKind::visitUnaryAddrOf(clang::UnaryOperator* s)
+void CxxAstVisitorComponentDeclRefKind::visitUnaryAddrOf(clang::UnaryOperator* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::visitUnaryDeref(clang::UnaryOperator* s)
+void CxxAstVisitorComponentDeclRefKind::visitUnaryDeref(clang::UnaryOperator* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::visitDeclStmt(clang::DeclStmt* s)
+void CxxAstVisitorComponentDeclRefKind::visitDeclStmt(clang::DeclStmt* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::visitReturnStmt(clang::ReturnStmt* s)
+void CxxAstVisitorComponentDeclRefKind::visitReturnStmt(clang::ReturnStmt* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::visitInitListExpr(clang::InitListExpr* s)
+void CxxAstVisitorComponentDeclRefKind::visitInitListExpr(clang::InitListExpr* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
-void CxxAstVisitorComponentDeclRefKind::visitMemberExpr(clang::MemberExpr* s)
+void CxxAstVisitorComponentDeclRefKind::visitMemberExpr(clang::MemberExpr* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }
 
 void CxxAstVisitorComponentDeclRefKind::visitCXXDependentScopeMemberExpr(
-	clang::CXXDependentScopeMemberExpr* s)
+	clang::CXXDependentScopeMemberExpr* /*s*/)
 {
 	m_childRefKind = REFERENCE_USAGE;
 }

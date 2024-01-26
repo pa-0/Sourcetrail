@@ -10,8 +10,8 @@ struct LicenseInfo {
 
   LicenseInfo() = default;
 
-  LicenseInfo(const char* name, const char* version, const char* url, const char* license)
-      : name(name), version(version), url(url), license(license) {}
+  LicenseInfo(const char* name_, const char* version_, const char* url_, const char* license_)
+      : name(name_), version(version_), url(url_), license(license_) {}
 
   [[nodiscard]] bool isEmpty() const {
     return (name == nullptr && version == nullptr && url == nullptr && license == nullptr);

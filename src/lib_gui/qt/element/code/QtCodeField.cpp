@@ -729,10 +729,10 @@ int QtCodeField::getColumnCorrectedForMultibyteCharacters(int line, int column) 
 
   const size_t relativeLineNumber = line - m_startLineNumber;
   if(relativeLineNumber < m_multibyteCharacterLocations.size()) {
-    for(const std::pair<int, int> m_multibyteCharacterLocation :
+    for(const auto& multibyteCharacterLocation :
         m_multibyteCharacterLocations[relativeLineNumber]) {
-      if(column > m_multibyteCharacterLocation.first) {
-        column -= m_multibyteCharacterLocation.second - 1;
+      if(column > multibyteCharacterLocation.first) {
+        column -= multibyteCharacterLocation.second - 1;
       }
     }
   }

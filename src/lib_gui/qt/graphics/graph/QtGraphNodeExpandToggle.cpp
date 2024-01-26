@@ -71,16 +71,16 @@ void QtGraphNodeExpandToggle::updateStyle()
 	float textX = static_cast<float>(
 		(m_rect->rect().width() / 2) - (QFontMetrics(m_text->font()).boundingRect(m_text->text()).width() / 2));
 	const float textY = static_cast<float>(
-		m_rect->rect().height() / 2 - QFontMetrics(m_text->font()).height() / 1.8f);
+		m_rect->rect().height() / 2.0 - static_cast<double>(QFontMetrics(m_text->font()).height()) / 1.8);
 
 	// move the text to the nearest integer x pos, instead of the next lower int pos
 	// improves results on windows systems
-	if (textX - (float)((int)textX) >= 0.5f)
+	if (textX - static_cast<float>(static_cast<int>(textX)) >= 0.5F)
 	{
 		textX += 0.5f;
 	}
 
-	m_text->setPos(textX, textY);
+	m_text->setPos(static_cast<qreal>(textX), static_cast<qreal>(textY));
 
 	m_icon->setPos(
 		(m_rect->rect().width() - m_icon->pixmap().width() / QtDeviceScaledPixmap::devicePixelRatio()) /

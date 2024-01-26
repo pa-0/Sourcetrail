@@ -31,11 +31,11 @@ std::set<FilePath> SourceGroupCxxEmpty::filterToContainedFilePaths(const std::se
 		excludeFilters = settings->getExcludeFiltersExpandedAndAbsolute();
 	}
 	else if (
-		std::shared_ptr<SourceGroupSettingsCppEmpty> settings =
+		std::shared_ptr<SourceGroupSettingsCppEmpty> settingsCppEmpty =
 			std::dynamic_pointer_cast<SourceGroupSettingsCppEmpty>(m_settings))
 	{
-		indexedPaths = settings->getSourcePathsExpandedAndAbsolute();
-		excludeFilters = settings->getExcludeFiltersExpandedAndAbsolute();
+		indexedPaths = settingsCppEmpty->getSourcePathsExpandedAndAbsolute();
+		excludeFilters = settingsCppEmpty->getExcludeFiltersExpandedAndAbsolute();
 	}
 
 	return SourceGroup::filterToContainedFilePaths(
@@ -54,13 +54,12 @@ std::set<FilePath> SourceGroupCxxEmpty::getAllSourceFilePaths() const
 			settings->getSourceExtensions());
 	}
 	else if (
-		std::shared_ptr<SourceGroupSettingsCppEmpty> settings =
+		std::shared_ptr<SourceGroupSettingsCppEmpty> settingsCppEmpty =
 			std::dynamic_pointer_cast<SourceGroupSettingsCppEmpty>(m_settings))
 	{
-		fileManager.update(
-			settings->getSourcePathsExpandedAndAbsolute(),
-			settings->getExcludeFiltersExpandedAndAbsolute(),
-			settings->getSourceExtensions());
+		fileManager.update(settingsCppEmpty->getSourcePathsExpandedAndAbsolute(),
+                       settingsCppEmpty->getExcludeFiltersExpandedAndAbsolute(),
+                       settingsCppEmpty->getSourceExtensions());
 	}
 
 	return fileManager.getAllSourceFilePaths();
@@ -78,11 +77,11 @@ std::shared_ptr<IndexerCommandProvider> SourceGroupCxxEmpty::getIndexerCommandPr
 		excludeFilters = utility::toSet(settings->getExcludeFiltersExpandedAndAbsolute());
 	}
 	else if (
-		std::shared_ptr<SourceGroupSettingsCppEmpty> settings =
+		std::shared_ptr<SourceGroupSettingsCppEmpty> settingsCppEmpty =
 			std::dynamic_pointer_cast<SourceGroupSettingsCppEmpty>(m_settings))
 	{
-		indexedPaths = utility::toSet(settings->getSourcePathsExpandedAndAbsolute());
-		excludeFilters = utility::toSet(settings->getExcludeFiltersExpandedAndAbsolute());
+		indexedPaths = utility::toSet(settingsCppEmpty->getSourcePathsExpandedAndAbsolute());
+		excludeFilters = utility::toSet(settingsCppEmpty->getExcludeFiltersExpandedAndAbsolute());
 	}
 
 	std::vector<std::wstring> compilerFlags = getBaseCompilerFlags();
@@ -132,10 +131,10 @@ std::shared_ptr<Task> SourceGroupCxxEmpty::getPreIndexTask(
 
 	std::vector<std::wstring> compilerFlags = getBaseCompilerFlags();
 
-	if (std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> pchSettings =
+	if (std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> cxxPchOptions =
 			std::dynamic_pointer_cast<SourceGroupSettingsWithCxxPchOptions>(m_settings))
 	{
-		if (pchSettings->getUseCompilerFlags())
+		if (cxxPchOptions->getUseCompilerFlags())
 		{
 			utility::append(
 				compilerFlags,
@@ -143,7 +142,7 @@ std::shared_ptr<Task> SourceGroupCxxEmpty::getPreIndexTask(
 					->getCompilerFlags());
 		}
 
-		utility::append(compilerFlags, pchSettings->getPchFlags());
+		utility::append(compilerFlags, cxxPchOptions->getPchFlags());
 	}
 
 	return utility::createBuildPchTask(
@@ -180,12 +179,12 @@ std::vector<std::wstring> SourceGroupCxxEmpty::getBaseCompilerFlags() const
 		languageStandard = settings->getCStandard();
 	}
 	else if (
-		std::shared_ptr<SourceGroupSettingsCppEmpty> settings =
+		std::shared_ptr<SourceGroupSettingsCppEmpty> settingsCppEmpty =
 			std::dynamic_pointer_cast<SourceGroupSettingsCppEmpty>(m_settings))
 	{
-		indexedPaths = utility::toSet(settings->getSourcePathsExpandedAndAbsolute());
-		targetFlag = settings->getTargetFlag();
-		languageStandard = settings->getCppStandard();
+		indexedPaths = utility::toSet(settingsCppEmpty->getSourcePathsExpandedAndAbsolute());
+		targetFlag = settingsCppEmpty->getTargetFlag();
+		languageStandard = settingsCppEmpty->getCppStandard();
 	}
 	else
 	{
@@ -203,13 +202,13 @@ std::vector<std::wstring> SourceGroupCxxEmpty::getBaseCompilerFlags() const
 
 	if (std::dynamic_pointer_cast<SourceGroupSettingsCEmpty>(m_settings))
 	{
-		compilerFlags.push_back(L"-x");
-		compilerFlags.push_back(L"c");
+		compilerFlags.emplace_back(L"-x");
+		compilerFlags.emplace_back(L"c");
 	}
 	else if (std::dynamic_pointer_cast<SourceGroupSettingsCppEmpty>(m_settings))
 	{
-		compilerFlags.push_back(L"-x");
-		compilerFlags.push_back(L"c++");
+		compilerFlags.emplace_back(L"-x");
+		compilerFlags.emplace_back(L"c++");
 	}
 
 	const SourceGroupSettingsWithCxxPathsAndFlags* settingsCxx =

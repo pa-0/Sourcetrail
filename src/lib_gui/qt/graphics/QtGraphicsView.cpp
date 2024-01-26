@@ -252,7 +252,7 @@ void QtGraphicsView::updateZoom(float delta) {
     factor = 0.000001f;
   }
 
-  double newZoom = m_zoomFactor * factor;
+  double newZoom = static_cast<double>(m_zoomFactor * factor);
   setZoomFactor(static_cast<float>(qBound(0.1, newZoom, 100.0)));
 }
 
@@ -410,7 +410,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_up = true;
       break;
     }
+  [[fallthrough]];
   case Qt::Key_K:
+  [[fallthrough]];
   case Qt::Key_W:
     if(!ctrl && !alt) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::UP, shift);
@@ -422,7 +424,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_down = true;
       break;
     }
+  [[fallthrough]];
   case Qt::Key_J:
+  [[fallthrough]];
   case Qt::Key_S:
     if(!alt && !ctrl) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::DOWN, shift);
@@ -434,7 +438,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_left = true;
       break;
     }
+  [[fallthrough]];
   case Qt::Key_H:
+  [[fallthrough]];
   case Qt::Key_A:
     if(!alt && !ctrl) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::LEFT, shift);
@@ -446,7 +452,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_right = true;
       break;
     }
+  [[fallthrough]];
   case Qt::Key_L:
+  [[fallthrough]];
   case Qt::Key_D:
     if(!alt && !ctrl) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::RIGHT, shift);
@@ -736,7 +744,7 @@ void QtGraphicsView::setZoomFactor(float zoomFactor) {
 
 void QtGraphicsView::updateTransform() {
   float zoomFactor = m_appZoomFactor * m_zoomFactor;
-  setTransform(QTransform(zoomFactor, 0, 0, zoomFactor, 0, 0));
+  setTransform(QTransform(static_cast<qreal>(zoomFactor), 0, 0, static_cast<qreal>(zoomFactor), 0, 0));
 }
 
 void QtGraphicsView::handleMessage(MessageSaveAsImage* pMessage) {

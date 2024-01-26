@@ -15,6 +15,6 @@ enum LanguageType {
 
 std::string languageTypeToString(LanguageType type);
 
-LanguageType stringToLanguageType(std::string typeString);
+LanguageType stringToLanguageType(const std::string& typeString);
 
 LanguageType getLanguageTypeForSourceGroupType(SourceGroupType type);

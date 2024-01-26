@@ -16,8 +16,8 @@
 #include "ColorScheme.h"
 #include "GraphViewStyle.h"
 
-QtHistoryItem::QtHistoryItem(const SearchMatch& match, size_t index, bool isCurrent)
-	: index(index), m_match(match)
+QtHistoryItem::QtHistoryItem(const SearchMatch& match, size_t index_, bool isCurrent)
+	: index(index_), m_match(match)
 {
 	QBoxLayout* layout = new QHBoxLayout();
 	layout->setSpacing(0);

@@ -228,8 +228,8 @@ void QtAutocompletionDelegate::paint(
 	{
 		// draw arrow icon
 		painter->drawPixmap(
-			static_cast<int>(option.rect.left() + m_charWidth2 * 2),
-			static_cast<int>(option.rect.top() + top2 + 1 + (m_charHeight2 - m_arrow.height()) / 2),
+			static_cast<int>(static_cast<float>(option.rect.left()) + m_charWidth2 * 2.0F),
+			static_cast<int>(option.rect.top() + top2 + 1 + static_cast<int>((m_charHeight2 - static_cast<float>(m_arrow.height())) / 2.0F)),
 			m_arrow.pixmap());
 
 		painter->setFont(m_font2);
@@ -269,9 +269,9 @@ void QtAutocompletionDelegate::paint(
 
 		// draw subtext highlighted
 		painter->save();
-		QPen highlightPen = painter->pen();
-		highlightPen.setColor(textColor);
-		painter->setPen(highlightPen);
+		QPen textPen = painter->pen();
+    textPen.setColor(textColor);
+		painter->setPen(textPen);
 		painter->drawText(
 			option.rect.adjusted(static_cast<int>((3 * m_charWidth2) + 2), top2, 0, 0),
 			Qt::AlignLeft,

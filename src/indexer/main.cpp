@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
   suppressCrashMessage();
 
   ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
-  appSettings->load(FilePath(UserPaths::getAppSettingsFilePath()));
+  appSettings->load(UserPaths::getAppSettingsFilePath());
   LogManager::getInstance()->setLoggingEnabled(appSettings->getLoggingEnabled());
 
   LOG_INFO(L"sharedDataPath: " + AppPath::getSharedDataDirectoryPath().wstr());
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
   LanguagePackageManager::getInstance()->addPackage(std::make_shared<LanguagePackageCxx>());
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
-  InterprocessIndexer indexer(instanceUuid, processId);
+  InterprocessIndexer indexer(instanceUuid, Id(processId));
   indexer.work();
 
   return 0;
