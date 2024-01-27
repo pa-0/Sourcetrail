@@ -35,7 +35,7 @@ jobs:
       run: git fetch --tags origin
     
     - name: Install dependencies
-      run: sudo apt install -y clang libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev python3-pip
+      run: sudo apt install -y clang libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev python3-pip grep
 
     - name: Install conan
       run: sudo pip install conan
@@ -47,7 +47,10 @@ jobs:
       run: cmake --preset="ci_${{ matrix.config.tag }}_release"
 
     - name: Build
-      run: cmake --build ${{github.workspace}}/build
+      run: cmake --build ${{github.workspace}}/build | tee ${{github.workspace}}/build/build.log
+
+    - name: Count warnings
+      run: grep -c "warning:" ${{github.workspace}}/build/build.log
 
     - name: Test
       run: ctest --test-dir ${{github.workspace}}/build
