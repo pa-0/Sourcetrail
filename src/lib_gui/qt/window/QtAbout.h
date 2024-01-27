@@ -3,15 +3,14 @@
 
 #include "QtWindow.h"
 
-class QtAbout: public QtWindow
-{
-	Q_OBJECT
+class QtAbout : public QtWindow {
+  Q_OBJECT
 
 public:
-	QtAbout(QWidget* parent = 0);
-	QSize sizeHint() const override;
+  QtAbout(QWidget* parent = 0);
+  QSize sizeHint() const override;
 
-	void setupAbout();
+  void setupAbout();
 };
 
-#endif	  // QT_ABOUT_H
+#endif    // QT_ABOUT_H

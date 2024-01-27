@@ -3,34 +3,31 @@
 
 #include <clang/AST/Decl.h>
 
-class CxxContext
-{
+class CxxContext {
 public:
-	virtual ~CxxContext() = default;
-	virtual const clang::NamedDecl* getDecl() const;
-	virtual const clang::Type* getType() const;
+  virtual ~CxxContext() = default;
+  virtual const clang::NamedDecl* getDecl() const;
+  virtual const clang::Type* getType() const;
 };
 
 
-class CxxContextDecl: public CxxContext
-{
+class CxxContextDecl : public CxxContext {
 public:
-	CxxContextDecl(const clang::NamedDecl* decl);
-	const clang::NamedDecl* getDecl() const override;
+  CxxContextDecl(const clang::NamedDecl* decl);
+  const clang::NamedDecl* getDecl() const override;
 
 private:
-	const clang::NamedDecl* m_decl;
+  const clang::NamedDecl* m_decl;
 };
 
 
-class CxxContextType: public CxxContext
-{
+class CxxContextType : public CxxContext {
 public:
-	CxxContextType(const clang::Type* type);
-	const clang::Type* getType() const override;
+  CxxContextType(const clang::Type* type);
+  const clang::Type* getType() const override;
 
 private:
-	const clang::Type* m_type;
+  const clang::Type* m_type;
 };
 
-#endif	  // CXX_CONTEXT_H
+#endif    // CXX_CONTEXT_H

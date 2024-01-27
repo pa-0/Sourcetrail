@@ -30,5 +30,4 @@ public:
    * @return true if the event is handled
    */
   bool event(QEvent* pEvent) override;
-
 };

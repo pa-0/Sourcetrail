@@ -108,8 +108,7 @@ TEST_F(SourceLocationsGetUniqueIdButBothEndsHaveTheSame, goodCase) {
 class SourceLocationsHaveRightFilePathLineColumnAndTokenId : public testing::Test {
 public:
   void SetUp() override {
-    m_pLocation = collection.addSourceLocation(
-        LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
+    m_pLocation = collection.addSourceLocation(LOCATION_TOKEN, 1, {1}, FilePath(L"file.c"), 2, 3, 4, 5);
     ASSERT_NE(nullptr, m_pLocation);
   }
 
@@ -183,12 +182,11 @@ TEST_F(CreatingPlainCopyOfAllLocationsInLineRange, goodCase) {
   auto* pLocation = collection.getSourceLocationById(ida);
   ASSERT_NE(pLocation, nullptr);
 
-  pLocation->getSourceLocationFile()->forEachSourceLocation(
-      [&copy, fromLine, toLine](SourceLocation* location) {
-        if(location->getLineNumber() >= fromLine && location->getLineNumber() <= toLine) {
-          copy.addSourceLocationCopy(location);
-        }
-      });
+  pLocation->getSourceLocationFile()->forEachSourceLocation([&copy, fromLine, toLine](SourceLocation* location) {
+    if(location->getLineNumber() >= fromLine && location->getLineNumber() <= toLine) {
+      copy.addSourceLocationCopy(location);
+    }
+  });
 
   EXPECT_EQ(1, copy.getSourceLocationFileCount());
   EXPECT_EQ(3, copy.getSourceLocationCount());
@@ -241,9 +239,8 @@ public:
 // NOLINTNEXTLINE
 TEST_F(GetSourceLocationsFilteredByLines, goodCase) {
   SourceLocationCollection copy;
-  copy.addSourceLocationFile(collection.getSourceLocationById(m_pLocation0->getLocationId())
-                                 ->getSourceLocationFile()
-                                 ->getFilteredByLines(2, 4));
+  copy.addSourceLocationFile(
+      collection.getSourceLocationById(m_pLocation0->getLocationId())->getSourceLocationFile()->getFilteredByLines(2, 4));
 
   EXPECT_EQ(1, copy.getSourceLocationFileCount());
   EXPECT_EQ(4, copy.getSourceLocationCount());

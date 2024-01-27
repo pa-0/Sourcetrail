@@ -2,6 +2,7 @@
 // internal
 #include "ApplicationSettings.h"
 #include "ColorScheme.h"
+#include "CppSQLite3.h"
 #include "DialogView.h"
 #include "FileLogger.h"
 #include "GraphViewStyle.h"
@@ -29,14 +30,10 @@
 #include "utilityString.h"
 #include "utilityUuid.h"
 
-#include "CppSQLite3.h"
-
 std::shared_ptr<Application> Application::s_instance;
 std::string Application::s_uuid;
 
-void Application::createInstance(const Version& version,
-                                 ViewFactory* viewFactory,
-                                 NetworkFactory* networkFactory) {
+void Application::createInstance(const Version& version, ViewFactory* viewFactory, NetworkFactory* networkFactory) {
   bool hasGui = (viewFactory != nullptr);
 
   Version::setApplicationVersion(version);
@@ -66,8 +63,7 @@ void Application::createInstance(const Version& version,
   }
 
   if(networkFactory != nullptr) {
-    s_instance->m_ideCommunicationController = networkFactory->createIDECommunicationController(
-        s_instance->m_storageCache.get());
+    s_instance->m_ideCommunicationController = networkFactory->createIDECommunicationController(s_instance->m_storageCache.get());
     s_instance->m_ideCommunicationController->startListening();
   }
 
@@ -238,13 +234,10 @@ void Application::handleMessage(MessageLoadProject* pMessage) {
 
       m_storageCache->clear();
       // TODO: check if this is really required.
-      m_storageCache->setSubject(std::weak_ptr<StorageAccess>());    
+      m_storageCache->setSubject(std::weak_ptr<StorageAccess>());
 
       m_pProject = std::make_shared<Project>(
-          std::make_shared<ProjectSettings>(projectSettingsFilePath),
-          m_storageCache.get(),
-          getUUID(),
-          hasGUI());
+          std::make_shared<ProjectSettings>(projectSettingsFilePath), m_storageCache.get(), getUUID(), hasGUI());
 
       if(m_pProject) {
         m_pProject->load(getDialogView(DialogView::UseCase::GENERAL));
@@ -255,8 +248,8 @@ void Application::handleMessage(MessageLoadProject* pMessage) {
 
       updateTitle();
     } catch(std::exception& e) {
-      const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() +
-          L"\" with exception: " + utility::decodeFromUtf8(e.what());
+      const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() + L"\" with exception: " +
+          utility::decodeFromUtf8(e.what());
       LOG_ERROR(message);
       MessageStatus(message, true).dispatch();
     } catch(CppSQLite3Exception& e) {
@@ -265,8 +258,8 @@ void Application::handleMessage(MessageLoadProject* pMessage) {
       LOG_ERROR(message);
       MessageStatus(message, true).dispatch();
     } catch(...) {
-      const std::wstring message = L"Failed to load project at \"" +
-          projectSettingsFilePath.wstr() + L"\" with unknown exception.";
+      const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() +
+          L"\" with unknown exception.";
       LOG_ERROR(message);
       MessageStatus(message, true).dispatch();
     }
@@ -338,8 +331,7 @@ void Application::loadWindow(bool showStartWindow) {
 
 void Application::refreshProject(RefreshMode refreshMode, bool shallowIndexingRequested) {
   if(m_pProject && checkSharedMemory()) {
-    m_pProject->refresh(
-        getDialogView(DialogView::UseCase::INDEXING), refreshMode, shallowIndexingRequested);
+    m_pProject->refresh(getDialogView(DialogView::UseCase::INDEXING), refreshMode, shallowIndexingRequested);
 
     if(!m_hasGUI && !m_pProject->isIndexing()) {
       MessageQuitApplication().dispatch();
@@ -352,8 +344,7 @@ void Application::updateRecentProjects(const FilePath& projectSettingsFilePath) 
     ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
     std::vector<FilePath> recentProjects = appSettings->getRecentProjects();
     if(recentProjects.size()) {
-      std::vector<FilePath>::iterator it = std::find(
-          recentProjects.begin(), recentProjects.end(), projectSettingsFilePath);
+      std::vector<FilePath>::iterator it = std::find(recentProjects.begin(), recentProjects.end(), projectSettingsFilePath);
       if(it != recentProjects.end()) {
         recentProjects.erase(it);
       }

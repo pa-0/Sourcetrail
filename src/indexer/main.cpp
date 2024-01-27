@@ -1,9 +1,5 @@
 #include <type_traits>
 
-#include "includes.h"
-
-#include "language_packages.h"
-
 #include "AppPath.h"
 #include "ApplicationSettings.h"
 #include "ConsoleLogger.h"
@@ -11,6 +7,8 @@
 #include "InterprocessIndexer.h"
 #include "LanguagePackageManager.h"
 #include "LogManager.h"
+#include "includes.h"
+#include "language_packages.h"
 #include "logging.h"
 
 #if BUILD_CXX_LANGUAGE_PACKAGE

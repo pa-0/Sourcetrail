@@ -51,37 +51,18 @@ private slots:
 private:
   void addTitle(const QString& title, QGridLayout* layout, int& row);
   void addLabel(const QString& label, QGridLayout* layout, int row);
-  void addWidget(QWidget* widget,
-                 QGridLayout* layout,
-                 int row,
-                 Qt::Alignment widgetAlignment = Qt::Alignment());
-  void addLabelAndWidget(const QString& label,
-                         QWidget* widget,
-                         QGridLayout* layout,
-                         int row,
-                         Qt::Alignment widgetAlignment = Qt::Alignment());
+  void addWidget(QWidget* widget, QGridLayout* layout, int row, Qt::Alignment widgetAlignment = Qt::Alignment());
+  void addLabelAndWidget(
+      const QString& label, QWidget* widget, QGridLayout* layout, int row, Qt::Alignment widgetAlignment = Qt::Alignment());
   void addGap(QGridLayout* layout, int& row);
 
-  QCheckBox* addCheckBox(const QString& label,
-                         const QString& text,
-                         const QString& helpText,
-                         QGridLayout* layout,
-                         int& row);
+  QCheckBox* addCheckBox(const QString& label, const QString& text, const QString& helpText, QGridLayout* layout, int& row);
   QComboBox* addComboBox(const QString& label, const QString& helpText, QGridLayout* layout, int& row);
-  QComboBox* addComboBoxWithWidgets(const QString& label,
-                                    const QString& helpText,
-                                    std::vector<QWidget*> widgets,
-                                    QGridLayout* layout,
-                                    int& row);
-  QComboBox* addComboBox(
-      const QString& label, int min, int max, const QString& helpText, QGridLayout* layout, int& row);
-  QComboBox* addComboBoxWithWidgets(const QString& label,
-                                    int min,
-                                    int max,
-                                    const QString& helpText,
-                                    std::vector<QWidget*> widgets,
-                                    QGridLayout* layout,
-                                    int& row);
+  QComboBox* addComboBoxWithWidgets(
+      const QString& label, const QString& helpText, std::vector<QWidget*> widgets, QGridLayout* layout, int& row);
+  QComboBox* addComboBox(const QString& label, int min, int max, const QString& helpText, QGridLayout* layout, int& row);
+  QComboBox* addComboBoxWithWidgets(
+      const QString& label, int min, int max, const QString& helpText, std::vector<QWidget*> widgets, QGridLayout* layout, int& row);
   QLineEdit* addLineEdit(const QString& label, const QString& helpText, QGridLayout* layout, int& row);
 
   QFontComboBox* m_fontFace;

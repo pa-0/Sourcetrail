@@ -56,9 +56,8 @@ std::vector<char> FileHandler::generateRandomBuffer(size_t bufferSize) {
   std::uniform_int_distribution<short> distribution(std::numeric_limits<char>::min(), std::numeric_limits<char>::max());
 
   std::vector<char> buffer(bufferSize);
-  std::for_each(std::begin(buffer), std::end(buffer), [&distribution, &gen](auto& value) {
-      value = static_cast<char>(distribution(gen));
-  });
+  std::for_each(
+      std::begin(buffer), std::end(buffer), [&distribution, &gen](auto& value) { value = static_cast<char>(distribution(gen)); });
   return buffer;
 }
 

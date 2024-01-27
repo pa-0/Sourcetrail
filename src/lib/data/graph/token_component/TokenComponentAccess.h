@@ -6,21 +6,20 @@
 #include "AccessKind.h"
 #include "TokenComponent.h"
 
-class TokenComponentAccess: public TokenComponent
-{
+class TokenComponentAccess : public TokenComponent {
 public:
-	static std::wstring getAccessString(AccessKind access);
+  static std::wstring getAccessString(AccessKind access);
 
-	TokenComponentAccess(AccessKind access);
-	virtual ~TokenComponentAccess();
+  TokenComponentAccess(AccessKind access);
+  virtual ~TokenComponentAccess();
 
-	virtual std::shared_ptr<TokenComponent> copy() const;
+  virtual std::shared_ptr<TokenComponent> copy() const;
 
-	AccessKind getAccess() const;
-	std::wstring getAccessString() const;
+  AccessKind getAccess() const;
+  std::wstring getAccessString() const;
 
 private:
-	const AccessKind m_access;
+  const AccessKind m_access;
 };
 
-#endif	  // TOKEN_COMPONENT_ACCESS_H
+#endif    // TOKEN_COMPONENT_ACCESS_H

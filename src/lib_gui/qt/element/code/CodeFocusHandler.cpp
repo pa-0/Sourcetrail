@@ -80,9 +80,7 @@ void CodeFocusHandler::setFocusedLocationId(QtCodeArea* area,
   setCurrentFocus(focus, fromMouse);
 }
 
-void CodeFocusHandler::setFocusedScopeLine(QtCodeArea* area,
-                                           QPushButton* scopeLine,
-                                           size_t lineNumber) {
+void CodeFocusHandler::setFocusedScopeLine(QtCodeArea* area, QPushButton* scopeLine, size_t lineNumber) {
   const Focus focus {nullptr, area, scopeLine, lineNumber, 0, 0, {}};
   setCurrentFocus(focus, false);
 }

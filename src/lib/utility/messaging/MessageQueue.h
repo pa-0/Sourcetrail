@@ -45,7 +45,7 @@ public:
   void setSendMessagesAsTasks(bool sendMessagesAsTasks);
 
 private:
-  static Ptr s_instance; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+  static Ptr s_instance;    // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
   MessageQueue();
 

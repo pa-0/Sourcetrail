@@ -1,5 +1,6 @@
 #pragma once
 #include <gmock/gmock.h>
+
 #include "UndoRedoView.h"
 
 struct MockedUndoRedoView final : UndoRedoView {

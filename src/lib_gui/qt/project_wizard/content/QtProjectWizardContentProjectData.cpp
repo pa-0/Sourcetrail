@@ -10,10 +10,9 @@
 #include "FileSystem.h"
 #include "ProjectSettings.h"
 
-QtProjectWizardContentProjectData::QtProjectWizardContentProjectData(
-    std::shared_ptr<ProjectSettings> projectSettings,
-    QtProjectWizardWindow* window,
-    bool disableNameEditing)
+QtProjectWizardContentProjectData::QtProjectWizardContentProjectData(std::shared_ptr<ProjectSettings> projectSettings,
+                                                                     QtProjectWizardWindow* window,
+                                                                     bool disableNameEditing)
     : QtProjectWizardContent(window)
     , m_projectSettings(projectSettings)
     , m_disableNameEditing(disableNameEditing)
@@ -28,10 +27,7 @@ void QtProjectWizardContentProjectData::populate(QGridLayout* layout, int& row) 
   m_projectName->setObjectName(QStringLiteral("name"));
   m_projectName->setAttribute(Qt::WA_MacShowFocusRect, 0);
   m_projectName->setEnabled(!m_disableNameEditing);
-  connect(m_projectName,
-          &QLineEdit::textEdited,
-          this,
-          &QtProjectWizardContentProjectData::onProjectNameEdited);
+  connect(m_projectName, &QLineEdit::textEdited, this, &QtProjectWizardContentProjectData::onProjectNameEdited);
 
   layout->addWidget(nameLabel, row, QtProjectWizardWindow::FRONT_COL, Qt::AlignRight);
   layout->addWidget(m_projectName, row, QtProjectWizardWindow::BACK_COL);
@@ -45,24 +41,22 @@ void QtProjectWizardContentProjectData::populate(QGridLayout* layout, int& row) 
 
   layout->addWidget(locationLabel, row, QtProjectWizardWindow::FRONT_COL, Qt::AlignRight);
   layout->addWidget(m_projectFileLocation, row, QtProjectWizardWindow::BACK_COL, Qt::AlignTop);
-  addHelpButton(
-      QStringLiteral("Sourcetrail Project Location"),
-      QStringLiteral("The directory the Sourcetrail project file (.srctrlprj) will be saved to."),
-      layout,
-      row);
+  addHelpButton(QStringLiteral("Sourcetrail Project Location"),
+                QStringLiteral("The directory the Sourcetrail project file (.srctrlprj) will be saved to."),
+                layout,
+                row);
   layout->setRowMinimumHeight(row, 30);
   row++;
 }
 
 void QtProjectWizardContentProjectData::load() {
   m_projectName->setText(QString::fromStdWString(m_projectSettings->getProjectName()));
-  m_projectFileLocation->setText(
-      QString::fromStdWString(m_projectSettings->getProjectDirectoryPath().wstr()));
+  m_projectFileLocation->setText(QString::fromStdWString(m_projectSettings->getProjectDirectoryPath().wstr()));
 }
 
 void QtProjectWizardContentProjectData::save() {
-  m_projectSettings->setProjectFilePath(m_projectName->text().toStdWString(),
-                                        FilePath(m_projectFileLocation->getText().toStdWString()));
+  m_projectSettings->setProjectFilePath(
+      m_projectName->text().toStdWString(), FilePath(m_projectFileLocation->getText().toStdWString()));
 }
 
 bool QtProjectWizardContentProjectData::check() {
@@ -89,8 +83,7 @@ bool QtProjectWizardContentProjectData::check() {
     return false;
   }
 
-  std::vector<FilePath> paths =
-      FilePath(m_projectFileLocation->getText().toStdWString()).expandEnvironmentVariables();
+  std::vector<FilePath> paths = FilePath(m_projectFileLocation->getText().toStdWString()).expandEnvironmentVariables();
   if(paths.size() != 1) {
     QMessageBox msgBox(m_window);
     msgBox.setText(
@@ -114,11 +107,9 @@ bool QtProjectWizardContentProjectData::check() {
     return false;
   } else if(!paths[0].exists()) {
     QMessageBox msgBox(m_window);
-    msgBox.setText(QStringLiteral(
-        "The specified location does not exist. Do you want to create the directory?"));
+    msgBox.setText(QStringLiteral("The specified location does not exist. Do you want to create the directory?"));
     msgBox.addButton(QStringLiteral("Abort"), QMessageBox::ButtonRole::NoRole);
-    QPushButton* createButton = msgBox.addButton(
-        QStringLiteral("Create"), QMessageBox::ButtonRole::YesRole);
+    QPushButton* createButton = msgBox.addButton(QStringLiteral("Create"), QMessageBox::ButtonRole::YesRole);
     msgBox.setDefaultButton(createButton);
     msgBox.setIcon(QMessageBox::Icon::Question);
     int ret = msgBox.exec();

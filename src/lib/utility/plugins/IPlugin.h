@@ -14,4 +14,4 @@ struct IPlugin {
   virtual Version version() const = 0;
 };
 
-} // namespace plugin
+}    // namespace plugin

@@ -1,6 +1,7 @@
 #pragma once
 // STL
 #include <string>
+
 #include <unordered_map>
 // Boost
 #include <boost/smart_ptr/shared_ptr.hpp>

@@ -35,12 +35,11 @@ struct MockedCodeView final : CodeView {
 
   MOCK_METHOD(bool, isVisible, (), (const, override));
 
-  MOCK_METHOD(void, findMatches, (ScreenSearchSender*,const std::wstring&), (override));
+  MOCK_METHOD(void, findMatches, (ScreenSearchSender*, const std::wstring&), (override));
 
   MOCK_METHOD(void, activateMatch, (size_t), (override));
 
   MOCK_METHOD(void, deactivateMatch, (size_t), (override));
 
   MOCK_METHOD(void, clearMatches, (), (override));
-
 };

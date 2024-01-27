@@ -3,13 +3,11 @@
 
 #include "TokenComponent.h"
 
-class TokenComponentIsAmbiguous: public TokenComponent
-{
+class TokenComponentIsAmbiguous : public TokenComponent {
 public:
-	inline virtual std::shared_ptr<TokenComponent> copy() const
-	{
-		return std::make_shared<TokenComponentIsAmbiguous>(*this);
-	}
+  inline virtual std::shared_ptr<TokenComponent> copy() const {
+    return std::make_shared<TokenComponentIsAmbiguous>(*this);
+  }
 };
 
-#endif	  // TOKEN_COMPONENT_IS_AMBIGUOUS_H
+#endif    // TOKEN_COMPONENT_IS_AMBIGUOUS_H

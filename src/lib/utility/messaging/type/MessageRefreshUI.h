@@ -3,38 +3,32 @@
 
 #include "Message.h"
 
-class MessageRefreshUI: public Message<MessageRefreshUI>
-{
+class MessageRefreshUI : public Message<MessageRefreshUI> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageRefreshUI";
-	}
+  static const std::string getStaticType() {
+    return "MessageRefreshUI";
+  }
 
-	MessageRefreshUI(): loadStyle(true), isAfterIndexing(false) {}
+  MessageRefreshUI() : loadStyle(true), isAfterIndexing(false) {}
 
-	MessageRefreshUI& noStyleReload()
-	{
-		loadStyle = false;
-		return *this;
-	}
+  MessageRefreshUI& noStyleReload() {
+    loadStyle = false;
+    return *this;
+  }
 
-	MessageRefreshUI& afterIndexing()
-	{
-		isAfterIndexing = true;
-		return *this;
-	}
+  MessageRefreshUI& afterIndexing() {
+    isAfterIndexing = true;
+    return *this;
+  }
 
-	void print(std::wostream& os) const override
-	{
-		if (loadStyle)
-		{
-			os << "reload style";
-		}
-	}
+  void print(std::wostream& os) const override {
+    if(loadStyle) {
+      os << "reload style";
+    }
+  }
 
-	bool loadStyle;
-	bool isAfterIndexing;
+  bool loadStyle;
+  bool isAfterIndexing;
 };
 
-#endif	  // MESSAGE_REFRESH_UI_H
+#endif    // MESSAGE_REFRESH_UI_H

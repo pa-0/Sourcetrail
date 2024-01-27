@@ -8,21 +8,20 @@
 
 #include "PathDetector.h"
 
-class CombinedPathDetector: public PathDetector
-{
+class CombinedPathDetector : public PathDetector {
 public:
-	CombinedPathDetector();
+  CombinedPathDetector();
 
-	void addDetector(std::shared_ptr<PathDetector> detector);
+  void addDetector(std::shared_ptr<PathDetector> detector);
 
-	std::vector<std::string> getWorkingDetectorNames();
+  std::vector<std::string> getWorkingDetectorNames();
 
-	std::vector<FilePath> getPathsForDetector(const std::string& detectorName) const;
+  std::vector<FilePath> getPathsForDetector(const std::string& detectorName) const;
 
 private:
-	std::vector<FilePath> doGetPaths() const override;
+  std::vector<FilePath> doGetPaths() const override;
 
-	std::vector<std::shared_ptr<PathDetector>> m_detectors;
+  std::vector<std::shared_ptr<PathDetector>> m_detectors;
 };
 
-#endif	  // COMBINED_PATH_DETECTOR_H
+#endif    // COMBINED_PATH_DETECTOR_H

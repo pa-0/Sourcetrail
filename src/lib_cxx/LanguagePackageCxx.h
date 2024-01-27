@@ -3,10 +3,9 @@
 
 #include "LanguagePackage.h"
 
-class LanguagePackageCxx: public LanguagePackage
-{
+class LanguagePackageCxx : public LanguagePackage {
 public:
-	virtual std::vector<std::shared_ptr<IndexerBase>> instantiateSupportedIndexers() const;
+  virtual std::vector<std::shared_ptr<IndexerBase>> instantiateSupportedIndexers() const;
 };
 
-#endif	  // LANGUAGE_PACKAGE_CXX_H
+#endif    // LANGUAGE_PACKAGE_CXX_H

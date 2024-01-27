@@ -31,7 +31,7 @@
 #define REQUIRE_MESSAGE(msg, cond)                                                                                               \
   do {                                                                                                                           \
     INFO(msg);                                                                                                                   \
-    EXPECT_TRUE(cond);                                                                                                               \
+    EXPECT_TRUE(cond);                                                                                                           \
   } while((void)0, 0)
 
 namespace {
@@ -132,8 +132,9 @@ void generateAndCompareExpectedOutput(std::wstring projectName, std::shared_ptr<
     expectedOutputFile.close();
   } else {
     const std::shared_ptr<const TextAccess> expectedOutput = TextAccess::createFromFile(expectedOutputFilePath);
-    EXPECT_TRUE(expectedOutput->getLineCount() == output->getLineCount()) << "Output does not match the expected line count for project \"" + utility::encodeToUtf8(projectName) +
-                     "\". Output was: " + output->getText();
+    EXPECT_TRUE(expectedOutput->getLineCount() == output->getLineCount())
+        << "Output does not match the expected line count for project \"" + utility::encodeToUtf8(projectName) +
+            "\". Output was: " + output->getText();
     if(expectedOutput->getLineCount() == output->getLineCount()) {
       for(unsigned int i = 1; i <= expectedOutput->getLineCount(); i++) {
         EXPECT_TRUE(expectedOutput->getLine(i) == output->getLine(i));

@@ -10,8 +10,7 @@ bool xmlElementHasAttribute(const TiXmlElement* element, const std::string& attr
   return (element->Attribute(attributeName.c_str()) != nullptr);
 }
 
-std::vector<const TiXmlElement*> getXmlChildElementsWithName(const TiXmlElement* parentElement,
-                                                             const std::string& elementName) {
+std::vector<const TiXmlElement*> getXmlChildElementsWithName(const TiXmlElement* parentElement, const std::string& elementName) {
   std::vector<const TiXmlElement*> elements;
 
   for(const TiXmlElement* child = parentElement->FirstChildElement(elementName.c_str()); child;
@@ -27,8 +26,7 @@ std::vector<const TiXmlElement*> getXmlChildElementsWithAttribute(const TiXmlEle
                                                                   const std::string& attributeValue) {
   std::vector<const TiXmlElement*> elements;
 
-  for(const TiXmlElement* child = parentElement->FirstChildElement(); child;
-      child = child->NextSiblingElement()) {
+  for(const TiXmlElement* child = parentElement->FirstChildElement(); child; child = child->NextSiblingElement()) {
     const char* value = child->Attribute(attributeName.c_str());
     if(value != nullptr && value == attributeValue) {
       elements.push_back(child);
@@ -65,8 +63,7 @@ std::vector<std::string> getValuesOfAllXmlElementsOnPath(std::shared_ptr<TextAcc
             nextElement = nextElement->NextSiblingElement();
           }
         } else {
-          if(currentElement->FirstChild() &&
-             currentElement->FirstChild() == currentElement->LastChild() &&
+          if(currentElement->FirstChild() && currentElement->FirstChild() == currentElement->LastChild() &&
              currentElement->FirstChild()->ToText()) {
             values.push_back(currentElement->FirstChild()->ToText()->Value());
           }
@@ -75,9 +72,8 @@ std::vector<std::string> getValuesOfAllXmlElementsOnPath(std::shared_ptr<TextAcc
     }
   } else {
     if(doc.Error()) {
-      LOG_ERROR(std::string("Error while parsing XML: ") + doc.ErrorDesc() + " (in line " +
-                std::to_string(doc.ErrorRow()) + ": \"" + textAccess->getLine(doc.ErrorRow()) +
-                "\")");
+      LOG_ERROR(std::string("Error while parsing XML: ") + doc.ErrorDesc() + " (in line " + std::to_string(doc.ErrorRow()) +
+                ": \"" + textAccess->getLine(doc.ErrorRow()) + "\")");
     } else {
       LOG_ERROR("Unable to load file.");
     }
@@ -85,8 +81,7 @@ std::vector<std::string> getValuesOfAllXmlElementsOnPath(std::shared_ptr<TextAcc
   return values;
 }
 
-std::vector<std::string> getValuesOfAllXmlTagsByName(std::shared_ptr<TextAccess> textAccess,
-                                                     const std::string& tag) {
+std::vector<std::string> getValuesOfAllXmlTagsByName(std::shared_ptr<TextAccess> textAccess, const std::string& tag) {
   std::vector<std::string> values;
 
   std::string text = textAccess->getText();
@@ -98,8 +93,7 @@ std::vector<std::string> getValuesOfAllXmlTagsByName(std::shared_ptr<TextAccess>
     TiXmlElement* rootElement = docHandle.ToNode()->FirstChildElement();
     if(rootElement != nullptr) {
       for(TiXmlElement* element : getAllXmlTagsByName(rootElement, tag)) {
-        if(element->FirstChild() && element->FirstChild() == element->LastChild() &&
-           element->FirstChild()->ToText()) {
+        if(element->FirstChild() && element->FirstChild() == element->LastChild() && element->FirstChild()->ToText()) {
           values.push_back(element->FirstChild()->ToText()->Value());
         }
       }
@@ -132,8 +126,7 @@ std::vector<TiXmlElement*> getAllXmlTagsByName(TiXmlElement* root, const std::st
       if(element == nullptr) {
       }
 
-      while(element->Parent()->ToElement() != nullptr &&
-            element->Parent()->NextSiblingElement() == nullptr) {
+      while(element->Parent()->ToElement() != nullptr && element->Parent()->NextSiblingElement() == nullptr) {
         TiXmlElement* newElement = element->Parent()->ToElement();
 
         if(newElement == nullptr) {

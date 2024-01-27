@@ -3,15 +3,13 @@
 
 #include "Message.h"
 
-class MessageActivateWindow: public Message<MessageActivateWindow>
-{
+class MessageActivateWindow : public Message<MessageActivateWindow> {
 public:
-	MessageActivateWindow() {}
+  MessageActivateWindow() {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageActivateWindow";
-	}
+  static const std::string getStaticType() {
+    return "MessageActivateWindow";
+  }
 };
 
-#endif	  // MESSAGE_ACTIVATE_WINDOW_H
+#endif    // MESSAGE_ACTIVATE_WINDOW_H

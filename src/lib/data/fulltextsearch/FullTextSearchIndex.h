@@ -1,8 +1,9 @@
 #pragma once
 // STL
 #include <mutex>
-#include <unordered_map>
 #include <vector>
+
+#include <unordered_map>
 // internal
 #include "SuffixArray.h"
 #include "types.h"

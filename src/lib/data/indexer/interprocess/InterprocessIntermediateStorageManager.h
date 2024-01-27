@@ -5,22 +5,21 @@
 
 class IntermediateStorage;
 
-class InterprocessIntermediateStorageManager: public BaseInterprocessDataManager
-{
+class InterprocessIntermediateStorageManager : public BaseInterprocessDataManager {
 public:
-	InterprocessIntermediateStorageManager(const std::string& instanceUuid, Id processId, bool isOwner);
-	virtual ~InterprocessIntermediateStorageManager() = default;
+  InterprocessIntermediateStorageManager(const std::string& instanceUuid, Id processId, bool isOwner);
+  virtual ~InterprocessIntermediateStorageManager() = default;
 
-	void pushIntermediateStorage(const std::shared_ptr<IntermediateStorage>& intermediateStorage);
-	std::shared_ptr<IntermediateStorage> popIntermediateStorage();
+  void pushIntermediateStorage(const std::shared_ptr<IntermediateStorage>& intermediateStorage);
+  std::shared_ptr<IntermediateStorage> popIntermediateStorage();
 
-	size_t getIntermediateStorageCount();
+  size_t getIntermediateStorageCount();
 
 private:
-	static const char* s_sharedMemoryNamePrefix;
-	static const char* s_intermediateStoragesKeyName;
+  static const char* s_sharedMemoryNamePrefix;
+  static const char* s_intermediateStoragesKeyName;
 
-	size_t m_insertsWithoutGrowth;
+  size_t m_insertsWithoutGrowth;
 };
 
-#endif	  // INTERPROCESS_INTERMEDIATE_STORAGE_MANAGER_H
+#endif    // INTERPROCESS_INTERMEDIATE_STORAGE_MANAGER_H

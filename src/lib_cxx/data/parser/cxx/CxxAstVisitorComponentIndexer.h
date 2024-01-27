@@ -15,9 +15,7 @@ class NameHierarchy;
 // visited AST.
 class CxxAstVisitorComponentIndexer : public CxxAstVisitorComponent {
 public:
-  CxxAstVisitorComponentIndexer(CxxAstVisitor* astVisitor,
-                                clang::ASTContext* astContext,
-                                std::shared_ptr<ParserClient> client);
+  CxxAstVisitorComponentIndexer(CxxAstVisitor* astVisitor, clang::ASTContext* astContext, std::shared_ptr<ParserClient> client);
 
   void beginTraverseNestedNameSpecifierLoc(const clang::NestedNameSpecifierLoc& loc);
   void beginTraverseTemplateArgumentLoc(const clang::TemplateArgumentLoc& loc);

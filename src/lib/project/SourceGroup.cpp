@@ -9,8 +9,7 @@
 
 SourceGroup::~SourceGroup() = default;
 
-std::shared_ptr<IndexerCommandProvider> SourceGroup::getIndexerCommandProvider(
-    const RefreshInfo& info) const {
+std::shared_ptr<IndexerCommandProvider> SourceGroup::getIndexerCommandProvider(const RefreshInfo& info) const {
   return std::make_shared<MemoryIndexerCommandProvider>(getIndexerCommands(info));
 }
 
@@ -43,8 +42,7 @@ bool SourceGroup::allowsShallowIndexing() const {
   return false;
 }
 
-std::set<FilePath> SourceGroup::filterToContainedSourceFilePath(
-    const std::set<FilePath>& sourceFilePaths) const {
+std::set<FilePath> SourceGroup::filterToContainedSourceFilePath(const std::set<FilePath>& sourceFilePaths) const {
   std::set<FilePath> filteredSourceFilePaths;
   for(const FilePath& sourceFilePath : getAllSourceFilePaths()) {
     if(sourceFilePaths.find(sourceFilePath) == sourceFilePaths.end()) {
@@ -58,11 +56,10 @@ bool SourceGroup::containsSourceFilePath(const FilePath& sourceFilePath) const {
   return !filterToContainedSourceFilePath({sourceFilePath}).empty();
 }
 
-std::set<FilePath> SourceGroup::filterToContainedFilePaths(
-    const std::set<FilePath>& filePaths,
-    const std::set<FilePath>& indexedFilePaths,
-    const std::set<FilePath>& indexedFileOrDirectoryPaths,
-    const std::vector<FilePathFilter>& excludeFilters) const {
+std::set<FilePath> SourceGroup::filterToContainedFilePaths(const std::set<FilePath>& filePaths,
+                                                           const std::set<FilePath>& indexedFilePaths,
+                                                           const std::set<FilePath>& indexedFileOrDirectoryPaths,
+                                                           const std::vector<FilePathFilter>& excludeFilters) const {
   std::set<FilePath> containedFilePaths;
 
   for(const FilePath& filePath : filePaths) {

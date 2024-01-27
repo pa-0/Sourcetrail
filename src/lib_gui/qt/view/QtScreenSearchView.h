@@ -10,35 +10,34 @@ class QtScreenSearchBox;
 class QToolBar;
 
 class QtScreenSearchView
-	: public QObject
-	, public ScreenSearchView
-{
-	Q_OBJECT
+    : public QObject
+    , public ScreenSearchView {
+  Q_OBJECT
 
 public:
-	QtScreenSearchView(ViewLayout* viewLayout);
-	~QtScreenSearchView() = default;
+  QtScreenSearchView(ViewLayout* viewLayout);
+  ~QtScreenSearchView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	// ScreenSearchView implementation
-	void setMatchCount(size_t matchCount) override;
-	void setMatchIndex(size_t matchIndex) override;
+  // ScreenSearchView implementation
+  void setMatchCount(size_t matchCount) override;
+  void setMatchIndex(size_t matchIndex) override;
 
-	void addResponder(const std::string& name) override;
+  void addResponder(const std::string& name) override;
 
 public slots:
-	void show();
-	void hide();
+  void show();
+  void hide();
 
 private:
-	ControllerProxy<ScreenSearchController> m_controllerProxy;
-	QtThreadedLambdaFunctor m_onQtThread;
+  ControllerProxy<ScreenSearchController> m_controllerProxy;
+  QtThreadedLambdaFunctor m_onQtThread;
 
-	QtScreenSearchBox* m_widget;
-	QToolBar* m_bar;
+  QtScreenSearchBox* m_widget;
+  QToolBar* m_bar;
 };
 
-#endif	  // QT_SCREEN_SEARCH_VIEW_H
+#endif    // QT_SCREEN_SEARCH_VIEW_H

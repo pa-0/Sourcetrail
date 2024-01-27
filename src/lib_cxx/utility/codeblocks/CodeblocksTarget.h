@@ -9,27 +9,25 @@
 
 class TiXmlElement;
 
-namespace Codeblocks
-{
+namespace Codeblocks {
 class Compiler;
 
-class Target
-{
+class Target {
 public:
-	static std::string getXmlElementName();
-	static std::shared_ptr<Target> create(const TiXmlElement* element);
+  static std::string getXmlElementName();
+  static std::shared_ptr<Target> create(const TiXmlElement* element);
 
-	std::wstring getTitle() const;
-	std::shared_ptr<const Compiler> getCompiler() const;
+  std::wstring getTitle() const;
+  std::shared_ptr<const Compiler> getCompiler() const;
 
 private:
-	Target();
+  Target();
 
-	std::wstring m_title;
-	TargetRelationType m_projectCompilerOptionsRelation;
-	TargetRelationType m_projectIncludeDirsRelation;
-	std::shared_ptr<Compiler> m_compiler;
+  std::wstring m_title;
+  TargetRelationType m_projectCompilerOptionsRelation;
+  TargetRelationType m_projectIncludeDirsRelation;
+  std::shared_ptr<Compiler> m_compiler;
 };
-}	 // namespace Codeblocks
+}    // namespace Codeblocks
 
-#endif	  // CODEBLOCKS_TARGET_H
+#endif    // CODEBLOCKS_TARGET_H

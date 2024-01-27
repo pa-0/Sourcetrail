@@ -96,7 +96,7 @@ TEST_F(ProjectFix, DISABLED_loadFailed) {
   EXPECT_CALL(*mSettings, load(_, _)).WillOnce(Return(true));
   EXPECT_CALL(*mStorageCache, setUseErrorCache(_)).WillOnce(Return());
 
-  //mProject->m_refreshStage = Project::RefreshStageType::NONE;
+  // mProject->m_refreshStage = Project::RefreshStageType::NONE;
   mProject->load(mDialogView);
 
   EXPECT_TRUE(mProject->isLoaded());

@@ -4,21 +4,20 @@
 #include "QtHelpButtonInfo.h"
 #include "QtIconButton.h"
 
-class QtHelpButton: public QtIconButton
-{
-	Q_OBJECT
+class QtHelpButton : public QtIconButton {
+  Q_OBJECT
 
 public:
-	QtHelpButton(const QtHelpButtonInfo& info, QWidget* parent = nullptr);
+  QtHelpButton(const QtHelpButtonInfo& info, QWidget* parent = nullptr);
 
-	void setMessageBoxParent(QWidget* messageBoxParent);
+  void setMessageBoxParent(QWidget* messageBoxParent);
 
 private slots:
-	void handleHelpPress();
+  void handleHelpPress();
 
 private:
-	QtHelpButtonInfo m_info;
-	QWidget* m_messageBoxParent = nullptr;
+  QtHelpButtonInfo m_info;
+  QWidget* m_messageBoxParent = nullptr;
 };
 
-#endif	  // QT_HELP_BUTTON_H
+#endif    // QT_HELP_BUTTON_H

@@ -1,8 +1,8 @@
 #pragma once
 // internal
 #include "Edge.h"
-#include "NameHierarchy.h"
 #include "Message.h"
+#include "NameHierarchy.h"
 #include "TabId.h"
 #include "types.h"
 
@@ -12,10 +12,7 @@ public:
                            Edge::EdgeType type_,
                            const NameHierarchy& sourceNameHierarchy_,
                            const NameHierarchy& targetNameHierarchy_)
-      : edgeIds(edgeIds_)
-      , type(type_)
-      , sourceNameHierarchy(sourceNameHierarchy_)
-      , targetNameHierarchy(targetNameHierarchy_) {
+      : edgeIds(edgeIds_), type(type_), sourceNameHierarchy(sourceNameHierarchy_), targetNameHierarchy(targetNameHierarchy_) {
     setSchedulerId(TabId::currentTab());
   }
 

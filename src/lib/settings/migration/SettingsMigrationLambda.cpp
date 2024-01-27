@@ -1,7 +1,6 @@
 #include "SettingsMigrationLambda.h"
 
-SettingsMigrationLambda::SettingsMigrationLambda(
-    std::function<void(const SettingsMigration*, Settings*)> lambda)
+SettingsMigrationLambda::SettingsMigrationLambda(std::function<void(const SettingsMigration*, Settings*)> lambda)
     : m_lambda(lambda) {}
 
 SettingsMigrationLambda::~SettingsMigrationLambda() = default;

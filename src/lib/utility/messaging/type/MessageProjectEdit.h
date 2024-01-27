@@ -3,15 +3,13 @@
 
 #include "Message.h"
 
-class MessageProjectEdit: public Message<MessageProjectEdit>
-{
+class MessageProjectEdit : public Message<MessageProjectEdit> {
 public:
-	MessageProjectEdit() {}
+  MessageProjectEdit() {}
 
-	static const std::string getStaticType()
-	{
-		return "MessageProjectEdit";
-	}
+  static const std::string getStaticType() {
+    return "MessageProjectEdit";
+  }
 };
 
-#endif	  // MESSAGE_PROJECT_EDIT_H
+#endif    // MESSAGE_PROJECT_EDIT_H

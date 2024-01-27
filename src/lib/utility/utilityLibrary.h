@@ -7,6 +7,7 @@
 // Qt5
 #ifdef _WIN32
 #  include <QDir>
+
 #  include <windows.h>
 #else
 #  include <dlfcn.h>
@@ -30,34 +31,30 @@ std::function<Ret(Args...)> loadFunctionFromLibrary(const FilePath& libraryPath,
     std::string errorReasonString;
 
     LPSTR messageBuffer = nullptr;
-    const size_t size = FormatMessageA(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr,
-        errorCode,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPSTR)&messageBuffer,
-        0,
-        nullptr);
+    const size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                       nullptr,
+                                       errorCode,
+                                       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                                       (LPSTR)&messageBuffer,
+                                       0,
+                                       nullptr);
     if(size > 0) {
       std::string message(messageBuffer, size);
-      errorReasonString = "error \"" + utility::trim(message) + "\" (code " +
-          std::to_string(errorCode) + ").";
+      errorReasonString = "error \"" + utility::trim(message) + "\" (code " + std::to_string(errorCode) + ").";
     } else {
       errorReasonString = "error code " + std::to_string(errorCode) + ".";
     }
 
     LocalFree(messageBuffer);
 
-    errorString = "Could not load library \"" + libraryPathString.toStdString() + "\" because of " +
-        errorReasonString;
+    errorString = "Could not load library \"" + libraryPathString.toStdString() + "\" because of " + errorReasonString;
     return std::function<Ret(Args...)>();
   }
 
   FARPROC functionId = GetProcAddress(handle, functionName.c_str());
 
   if(!functionId) {
-    errorString = "Could not locate the function \"" + functionName + "\" in library\"" +
-        libraryPathString.toStdString() + "\"";
+    errorString = "Could not locate the function \"" + functionName + "\" in library\"" + libraryPathString.toStdString() + "\"";
     return std::function<Ret(Args...)>();
   }
 #else
@@ -72,8 +69,7 @@ std::function<Ret(Args...)> loadFunctionFromLibrary(const FilePath& libraryPath,
   const char* dlsym_error = dlerror();
   if(dlsym_error || !functionId) {
     std::stringstream ss;
-    ss << "Cannot load symbol '" << functionName << "' from library '" << libraryPath.str()
-       << "': " << dlsym_error;
+    ss << "Cannot load symbol '" << functionName << "' from library '" << libraryPath.str() << "': " << dlsym_error;
     errorString = ss.str();
     dlclose(handle);
     return std::function<Ret(Args...)>();

@@ -2,23 +2,18 @@
 #define TOKEN_COMPONENT_INHERITANCE_CHAIN_H
 #include <vector>
 
-#include "types.h"
 #include "TokenComponent.h"
+#include "types.h"
 
-class TokenComponentInheritanceChain: public TokenComponent
-{
+class TokenComponentInheritanceChain : public TokenComponent {
 public:
-	TokenComponentInheritanceChain(const std::vector<Id>& inheritanceEdgeIds_)
-		: inheritanceEdgeIds(inheritanceEdgeIds)
-	{
-	}
+  TokenComponentInheritanceChain(const std::vector<Id>& inheritanceEdgeIds_) : inheritanceEdgeIds(inheritanceEdgeIds) {}
 
-	virtual std::shared_ptr<TokenComponent> copy() const
-	{
-		return std::make_shared<TokenComponentInheritanceChain>(*this);
-	}
+  virtual std::shared_ptr<TokenComponent> copy() const {
+    return std::make_shared<TokenComponentInheritanceChain>(*this);
+  }
 
-	const std::vector<Id> inheritanceEdgeIds;
+  const std::vector<Id> inheritanceEdgeIds;
 };
 
-#endif	  // TOKEN_COMPONENT_INHERITANCE_CHAIN_H
+#endif    // TOKEN_COMPONENT_INHERITANCE_CHAIN_H

@@ -30,8 +30,7 @@ void ListLayouter::layoutMultiColumn(Vec2i viewSize, std::vector<std::shared_ptr
   for(size_t cols = 1; cols <= 10; cols++) {
     std::vector<int> maxWidths = std::vector<int>(cols, 0);
     size_t nodesPerCol = (cols == 1 ? visibleNodes.size() :
-                                      static_cast<size_t>(std::ceil(
-                                          double(visibleNodes.size() + cols - 1) / double(cols))));
+                                      static_cast<size_t>(std::ceil(double(visibleNodes.size() + cols - 1) / double(cols))));
 
     int maxHeight = 0;
     int height = -gapY;
@@ -74,8 +73,7 @@ void ListLayouter::layoutMultiColumn(Vec2i viewSize, std::vector<std::shared_ptr
 
   size_t nodesPerCol = (colsFinal == 1 ?
                             visibleNodes.size() :
-                            static_cast<size_t>(std::ceil(double(visibleNodes.size() + colsFinal - 1) /
-                                                          double(colsFinal))));
+                            static_cast<size_t>(std::ceil(double(visibleNodes.size() + colsFinal - 1) / double(colsFinal))));
   std::shared_ptr<DummyNode> lastTextNode;
 
   for(size_t i = 0; i < visibleNodes.size(); i++) {
@@ -180,10 +178,7 @@ bool ListLayouter::layoutSquareInternal(std::vector<std::shared_ptr<DummyNode>>&
   return true;
 }
 
-void ListLayouter::layoutSkewed(std::vector<std::shared_ptr<DummyNode>>* nodes,
-                                int gapX,
-                                int gapY,
-                                int maxWidth) {
+void ListLayouter::layoutSkewed(std::vector<std::shared_ptr<DummyNode>>* nodes, int gapX, int gapY, int maxWidth) {
   std::vector<std::shared_ptr<DummyNode>> visibleNodes;
   std::multiset<int> nodeWidths;
   for(auto node : *nodes) {
@@ -276,10 +271,7 @@ Vec2i ListLayouter::offsetNodes(std::vector<std::shared_ptr<DummyNode>> nodes, i
   return Vec2i(rect.z() - rect.x(), rect.w() - rect.y());
 }
 
-void ListLayouter::layoutSimple(std::vector<std::shared_ptr<DummyNode>>* nodes,
-                                int gapX,
-                                int gapY,
-                                bool horizontal) {
+void ListLayouter::layoutSimple(std::vector<std::shared_ptr<DummyNode>>* nodes, int gapX, int gapY, bool horizontal) {
   int y = 0;
   int x = 0;
 

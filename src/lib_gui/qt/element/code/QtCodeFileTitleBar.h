@@ -9,51 +9,50 @@ class QtCodeFileTitleButton;
 class QtIconStateButton;
 class QtSelfRefreshIconButton;
 
-class QtCodeFileTitleBar: public QtHoverButton
-{
-	Q_OBJECT
+class QtCodeFileTitleBar : public QtHoverButton {
+  Q_OBJECT
 
 signals:
-	void minimize();
-	void snippet();
-	void maximize();
+  void minimize();
+  void snippet();
+  void maximize();
 
 public:
-	QtCodeFileTitleBar(QWidget* parent = nullptr, bool isHovering = false, bool isSingle = false);
+  QtCodeFileTitleBar(QWidget* parent = nullptr, bool isHovering = false, bool isSingle = false);
 
-	QtCodeFileTitleButton* getTitleButton() const;
+  QtCodeFileTitleButton* getTitleButton() const;
 
-	void setIsComplete(bool isComplete);
-	void setIsIndexed(bool isIndexed);
-	void updateRefCount(int refCount, bool hasErrors, size_t fatalErrorCount);
+  void setIsComplete(bool isComplete);
+  void setIsIndexed(bool isIndexed);
+  void updateRefCount(int refCount, bool hasErrors, size_t fatalErrorCount);
 
-	bool isCollapsed() const;
+  bool isCollapsed() const;
 
-	void setIsFocused(bool focused);
+  void setIsFocused(bool focused);
 
-	void setMinimized();
-	void setSnippets();
-	void setMaximized();
+  void setMinimized();
+  void setSnippets();
+  void setMaximized();
 
-	void updateFromOther(const QtCodeFileTitleBar* other);
+  void updateFromOther(const QtCodeFileTitleBar* other);
 
 private slots:
-	void clickedTitleBar();
-	void clickedExpandButton();
-	void clickedCollapseButton();
-	void clickedSnippetButton();
-	void clickedMaximizeButton();
+  void clickedTitleBar();
+  void clickedExpandButton();
+  void clickedCollapseButton();
+  void clickedSnippetButton();
+  void clickedMaximizeButton();
 
 private:
-	QtCodeFileTitleButton* m_titleButton;
-	QPushButton* m_showErrorsButton;
-	QLabel* m_referenceCount;
+  QtCodeFileTitleButton* m_titleButton;
+  QPushButton* m_showErrorsButton;
+  QLabel* m_referenceCount;
 
-	QtSelfRefreshIconButton* m_expandButton;
-	QtSelfRefreshIconButton* m_collapseButton;
+  QtSelfRefreshIconButton* m_expandButton;
+  QtSelfRefreshIconButton* m_collapseButton;
 
-	QtIconStateButton* m_snippetButton;
-	QtIconStateButton* m_maximizeButton;
+  QtIconStateButton* m_snippetButton;
+  QtIconStateButton* m_maximizeButton;
 };
 
-#endif	  // QT_CODE_FILE_TITLE_BAR_H
+#endif    // QT_CODE_FILE_TITLE_BAR_H

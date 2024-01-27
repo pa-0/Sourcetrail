@@ -8,44 +8,38 @@
 #include "QtStringListBox.h"
 #include "SourceGroupSettingsWithCxxPchOptions.h"
 
-QtProjectWizardContentCxxPchFlags::QtProjectWizardContentCxxPchFlags(
-    std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> settings,
-    QtProjectWizardWindow* window,
-    bool isCDB)
+QtProjectWizardContentCxxPchFlags::QtProjectWizardContentCxxPchFlags(std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> settings,
+                                                                     QtProjectWizardWindow* window,
+                                                                     bool isCDB)
     : QtProjectWizardContent(window), m_settings(settings), m_isCDB(isCDB) {}
 
 void QtProjectWizardContentCxxPchFlags::populate(QGridLayout* layout, int& row) {
   const QString labelText(QStringLiteral("Precompiled Header Flags"));
-  layout->addWidget(
-      createFormLabel(labelText), row, QtProjectWizardWindow::FRONT_COL, 2, 1, Qt::AlignTop);
+  layout->addWidget(createFormLabel(labelText), row, QtProjectWizardWindow::FRONT_COL, 2, 1, Qt::AlignTop);
 
-  const QString optionText(
-      m_isCDB ? QStringLiteral("Use flags of first indexed file and 'Additional Compiler Flags'") :
-                QStringLiteral("Use 'Compiler Flags'"));
+  const QString optionText(m_isCDB ? QStringLiteral("Use flags of first indexed file and 'Additional Compiler Flags'") :
+                                     QStringLiteral("Use 'Compiler Flags'"));
 
-  const QString optionHelp(
-      m_isCDB ? QStringLiteral("Check <b>") + optionText +
-              QStringLiteral("</b> to use the flags specified "
-                             "in the first compile command of the Compilation Database and all "
-                             "flags specified "
-                             "at 'Additional Compiler Flags'.") :
-                QStringLiteral("Check <b>") + optionText +
-              QStringLiteral("</b> to reuse the flags specified at 'Compiler Flags'."));
+  const QString optionHelp(m_isCDB ? QStringLiteral("Check <b>") + optionText +
+                                   QStringLiteral("</b> to use the flags specified "
+                                                  "in the first compile command of the Compilation Database and all "
+                                                  "flags specified "
+                                                  "at 'Additional Compiler Flags'.") :
+                                     QStringLiteral("Check <b>") + optionText +
+                                   QStringLiteral("</b> to reuse the flags specified at 'Compiler Flags'."));
 
-  addHelpButton(
-      QStringLiteral("Precompiled Header Flags"),
-      QStringLiteral("<p>Define compiler flags used during precompiled header file generation.</p>"
-                     "<p>") +
-          optionHelp +
-          QStringLiteral(
-              "</p>"
-              "<p>Additionally add compiler flags to the list for precompiled header generation "
-              "only. Some examples:</p>"
-              "<p>* use \"-DRELEASE\" to add a preprocessor #define for \"RELEASE\"</p>"
-              "<p>* use \"-U__clang__\" to remove the preprocessor #define for "
-              "\"__clang__\"</p>"),
-      layout,
-      row);
+  addHelpButton(QStringLiteral("Precompiled Header Flags"),
+                QStringLiteral("<p>Define compiler flags used during precompiled header file generation.</p>"
+                               "<p>") +
+                    optionHelp +
+                    QStringLiteral("</p>"
+                                   "<p>Additionally add compiler flags to the list for precompiled header generation "
+                                   "only. Some examples:</p>"
+                                   "<p>* use \"-DRELEASE\" to add a preprocessor #define for \"RELEASE\"</p>"
+                                   "<p>* use \"-U__clang__\" to remove the preprocessor #define for "
+                                   "\"__clang__\"</p>"),
+                layout,
+                row);
 
   m_useCompilerFlags = new QCheckBox(optionText);
   layout->addWidget(m_useCompilerFlags, row, QtProjectWizardWindow::BACK_COL);
@@ -70,10 +64,8 @@ bool QtProjectWizardContentCxxPchFlags::check() {
   std::wstring error;
 
   for(const std::wstring& flag : m_list->getStrings()) {
-    if(utility::isPrefix<std::wstring>(L"-include ", flag) ||
-       utility::isPrefix<std::wstring>(L"--include ", flag)) {
-      error = L"The entered flag \"" + flag +
-          L"\" contains an error. Please remove the intermediate space character.\n";
+    if(utility::isPrefix<std::wstring>(L"-include ", flag) || utility::isPrefix<std::wstring>(L"--include ", flag)) {
+      error = L"The entered flag \"" + flag + L"\" contains an error. Please remove the intermediate space character.\n";
     }
   }
 

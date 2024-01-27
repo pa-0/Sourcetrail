@@ -2,20 +2,14 @@
 // internal
 #include "utilityString.h"
 
-MessageStatus::MessageStatus(const std::wstring& status_,
-                             bool isError_,
-                             bool showLoader_,
-                             bool showInStatusBar_)
+MessageStatus::MessageStatus(const std::wstring& status_, bool isError_, bool showLoader_, bool showInStatusBar_)
     : isError(isError_), showLoader(showLoader_), showInStatusBar(showInStatusBar_) {
   m_stati.push_back(utility::replace(status_, L"\n", L" "));
 
   setSendAsTask(false);
 }
 
-MessageStatus::MessageStatus(const std::vector<std::wstring>& stati_,
-                             bool isError_,
-                             bool showLoader_,
-                             bool showInStatusBar_)
+MessageStatus::MessageStatus(const std::vector<std::wstring>& stati_, bool isError_, bool showLoader_, bool showInStatusBar_)
     : isError(isError_), showLoader(showLoader_), showInStatusBar(showInStatusBar_), m_stati(stati_) {
   setSendAsTask(false);
 }

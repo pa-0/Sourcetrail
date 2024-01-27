@@ -7,9 +7,8 @@
 #include <QFrame>
 
 #include "FilePath.h"
-#include "TimeStamp.h"
-
 #include "QtCodeNavigable.h"
+#include "TimeStamp.h"
 
 class QLabel;
 class QPushButton;
@@ -18,83 +17,79 @@ class QtCodeFileTitleBar;
 class QtCodeNavigator;
 
 class QtCodeFileSingle
-	: public QFrame
-	, public QtCodeNavigable
-{
-	Q_OBJECT
+    : public QFrame
+    , public QtCodeNavigable {
+  Q_OBJECT
 
 public:
-	QtCodeFileSingle(QtCodeNavigator* navigator, QWidget* parent = nullptr);
-	virtual ~QtCodeFileSingle() = default;
+  QtCodeFileSingle(QtCodeNavigator* navigator, QWidget* parent = nullptr);
+  virtual ~QtCodeFileSingle() = default;
 
-	void clearFile();
-	void clearCache();
+  void clearFile();
+  void clearCache();
 
-	bool addFile(const CodeFileParams& params, bool useSingleFileCache);
+  bool addFile(const CodeFileParams& params, bool useSingleFileCache);
 
-	// QtCodeNavigable implementation
-	QAbstractScrollArea* getScrollArea() override;
+  // QtCodeNavigable implementation
+  QAbstractScrollArea* getScrollArea() override;
 
-	void updateSourceLocations(const CodeSnippetParams& params) override;
-	void updateFiles() override;
+  void updateSourceLocations(const CodeSnippetParams& params) override;
+  void updateFiles() override;
 
-	void scrollTo(
-		const FilePath& filePath,
-		size_t lineNumber,
-		Id locationId,
-		Id scopeLocationId,
-		bool animated,
-		CodeScrollParams::Target target,
-		bool focusTarget) override;
+  void scrollTo(const FilePath& filePath,
+                size_t lineNumber,
+                Id locationId,
+                Id scopeLocationId,
+                bool animated,
+                CodeScrollParams::Target target,
+                bool focusTarget) override;
 
-	void onWindowFocus() override;
+  void onWindowFocus() override;
 
-	void findScreenMatches(
-		const std::wstring& query, std::vector<std::pair<QtCodeArea*, Id>>* screenMatches) override;
+  void findScreenMatches(const std::wstring& query, std::vector<std::pair<QtCodeArea*, Id>>* screenMatches) override;
 
-	void setFocus(Id locationId) override;
-	void setFocusOnTop() override;
-	void moveFocus(const CodeFocusHandler::Focus& focus, CodeFocusHandler::Direction direction) override;
+  void setFocus(Id locationId) override;
+  void setFocusOnTop() override;
+  void moveFocus(const CodeFocusHandler::Focus& focus, CodeFocusHandler::Direction direction) override;
 
-	void copySelection() override;
+  void copySelection() override;
 
-	const FilePath& getCurrentFilePath() const;
-	bool hasFileCached(const FilePath& filePath) const;
+  const FilePath& getCurrentFilePath() const;
+  bool hasFileCached(const FilePath& filePath) const;
 
-	Id getLocationIdOfFirstActiveLocationOfTokenId(Id tokenId) const;
+  Id getLocationIdOfFirstActiveLocationOfTokenId(Id tokenId) const;
 
 public slots:
-	void clickedSnippetButton();
+  void clickedSnippetButton();
 
 private:
-	struct FileData
-	{
-		FilePath filePath;
-		TimeStamp modificationTime;
-		bool isComplete = false;
-		bool isIndexed = false;
-		std::wstring title;
+  struct FileData {
+    FilePath filePath;
+    TimeStamp modificationTime;
+    bool isComplete = false;
+    bool isIndexed = false;
+    std::wstring title;
 
-		QtCodeArea* area = nullptr;
-	};
+    QtCodeArea* area = nullptr;
+  };
 
-	FileData getFileData(const FilePath& filePath) const;
-	void setFileData(const FileData& file);
+  FileData getFileData(const FilePath& filePath) const;
+  void setFileData(const FileData& file);
 
-	void updateRefCount(int refCount);
+  void updateRefCount(int refCount);
 
-	QtCodeNavigator* m_navigator;
+  QtCodeNavigator* m_navigator;
 
-	QWidget* m_areaWrapper;
-	FilePath m_currentFilePath;
+  QWidget* m_areaWrapper;
+  FilePath m_currentFilePath;
 
-	QtCodeFileTitleBar* m_titleBar;
+  QtCodeFileTitleBar* m_titleBar;
 
-	QtCodeArea* m_area;
-	std::map<FilePath, FileData> m_fileDatas;
-	std::deque<FilePath> m_filePaths;
+  QtCodeArea* m_area;
+  std::map<FilePath, FileData> m_fileDatas;
+  std::deque<FilePath> m_filePaths;
 
-	std::shared_ptr<SourceLocationFile> m_lastLocationFile;
+  std::shared_ptr<SourceLocationFile> m_lastLocationFile;
 };
 
-#endif	  // QT_CODE_FILE_SINGLE_H
+#endif    // QT_CODE_FILE_SINGLE_H

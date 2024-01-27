@@ -22,8 +22,7 @@ public:
     std::vector<Id> tokenIds;
 
     bool isEmpty() const {
-      return file == nullptr && area == nullptr && scopeLine == nullptr && lineNumber == 0 &&
-          locationId == 0 && !tokenIds.size();
+      return file == nullptr && area == nullptr && scopeLine == nullptr && lineNumber == 0 && locationId == 0 && !tokenIds.size();
     }
   };
 

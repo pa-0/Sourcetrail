@@ -7,8 +7,7 @@ class MessageCodeReference final : public Message<MessageCodeReference> {
 public:
   enum ReferenceType { REFERENCE_PREVIOUS, REFERENCE_NEXT };
 
-  MessageCodeReference(ReferenceType type_, bool localReference_)
-      : type(type_), localReference(localReference_) {
+  MessageCodeReference(ReferenceType type_, bool localReference_) : type(type_), localReference(localReference_) {
     setSchedulerId(TabId::currentTab());
   }
 

@@ -3,20 +3,19 @@
 
 #include <QTextBrowser>
 
-class QtTextEdit: public QTextBrowser
-{
-	Q_OBJECT
+class QtTextEdit : public QTextBrowser {
+  Q_OBJECT
 
 public:
-	QtTextEdit(QWidget* parent = nullptr);
+  QtTextEdit(QWidget* parent = nullptr);
 
-	void setViewportMargins(int left, int top, int right, int bottom);
+  void setViewportMargins(int left, int top, int right, int bottom);
 
 signals:
-	void focus();
+  void focus();
 
 protected:
-	void focusInEvent(QFocusEvent* event);
+  void focusInEvent(QFocusEvent* event);
 };
 
-#endif	  // QT_TEXT_EDIT_H
+#endif    // QT_TEXT_EDIT_H

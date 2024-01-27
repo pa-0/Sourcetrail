@@ -27,8 +27,7 @@ public:
   void SetUp() override {
     const auto* const language = L"cpp";
     const auto filePath = FilePath {"main.cpp"};
-    m_pSourceLocationFile = std::make_unique<SourceLocationFile>(
-        filePath, language, true, true, true);
+    m_pSourceLocationFile = std::make_unique<SourceLocationFile>(filePath, language, true, true, true);
   }
 
   std::unique_ptr<SourceLocationFile> m_pSourceLocationFile;
@@ -55,8 +54,7 @@ TEST_F(SourceLocationFileFix, SourceLocationWithZeroLocationId) {
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,cert-err58-cpp,cppcoreguidelines-owning-memory)
 TEST_F(SourceLocationFileFix, SourceLocationCopy) {
   // NOTE: Passing nullptr or m_pSourceLocationFile.get() make no difference
-  const SourceLocation sourceLocation {
-      nullptr, LocationType::LOCATION_FULLTEXT_SEARCH, Id {2}, std::vector<Id> {}, 1, 1, true};
+  const SourceLocation sourceLocation {nullptr, LocationType::LOCATION_FULLTEXT_SEARCH, Id {2}, std::vector<Id> {}, 1, 1, true};
 
   const auto* const pSourceLocation = m_pSourceLocationFile->addSourceLocationCopy(&sourceLocation);
   EXPECT_NE(pSourceLocation, nullptr);

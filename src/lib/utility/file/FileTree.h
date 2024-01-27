@@ -2,6 +2,7 @@
 // STL
 #include <set>
 #include <string>
+
 #include <unordered_map>
 // internal
 #include "FilePath.h"
@@ -14,8 +15,7 @@ public:
   std::vector<FilePath> getAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath);
 
 private:
-  std::vector<FilePath> doGetAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath,
-                                                                  bool allowMultipleResults);
+  std::vector<FilePath> doGetAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath, bool allowMultipleResults);
 
   FilePath m_rootPath;
   std::unordered_map<std::wstring, std::set<FilePath>> m_files;

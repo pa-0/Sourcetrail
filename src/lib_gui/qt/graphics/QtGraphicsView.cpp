@@ -40,8 +40,7 @@ QtGraphicsView::QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent)
     , m_appZoomFactor(1.0f)
     , m_zoomInButtonSpeed(20.0f)
     , m_zoomOutButtonSpeed(-20.0f) {
-  QString modifierName = utility::getOsType() == OS_MAC ? QStringLiteral("Cmd") :
-                                                          QStringLiteral("Ctrl");
+  QString modifierName = utility::getOsType() == OS_MAC ? QStringLiteral("Cmd") : QStringLiteral("Ctrl");
 
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
@@ -55,8 +54,7 @@ QtGraphicsView::QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent)
   m_zoomLabelTimer = std::make_shared<QTimer>(this);
   connect(m_zoomLabelTimer.get(), &QTimer::timeout, this, &QtGraphicsView::hideZoomLabel);
 
-  m_openInTabAction = new QAction(
-      QStringLiteral("Open in New Tab (Ctrl + Shift + Left Click)"), this);
+  m_openInTabAction = new QAction(QStringLiteral("Open in New Tab (Ctrl + Shift + Left Click)"), this);
 #if defined(Q_OS_MAC)
   m_openInTabAction->setText(QStringLiteral("Open in New Tab (Cmd + Shift + Left Click)"));
 #endif
@@ -65,8 +63,7 @@ QtGraphicsView::QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent)
   connect(m_openInTabAction, &QAction::triggered, this, &QtGraphicsView::openInTab);
 
   m_copyNodeNameAction = new QAction(QStringLiteral("Copy Name"), this);
-  m_copyNodeNameAction->setStatusTip(
-      QStringLiteral("Copies the name of this node to the clipboard"));
+  m_copyNodeNameAction->setStatusTip(QStringLiteral("Copies the name of this node to the clipboard"));
   m_copyNodeNameAction->setToolTip(QStringLiteral("Copies the name of this node to the clipboard"));
   connect(m_copyNodeNameAction, &QAction::triggered, this, &QtGraphicsView::copyNodeName);
 
@@ -84,19 +81,15 @@ QtGraphicsView::QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent)
 #if defined(Q_OS_MAC)
   m_showInIDEAction->setText("Show Definition in IDE (Cmd + Left Click)");
 #endif
-  m_showInIDEAction->setStatusTip(
-      QStringLiteral("Show definition of this symbol in the IDE (via plug-in)"));
-  m_showInIDEAction->setToolTip(
-      QStringLiteral("Show definition of this symbol in the IDE (via plug-in)"));
+  m_showInIDEAction->setStatusTip(QStringLiteral("Show definition of this symbol in the IDE (via plug-in)"));
+  m_showInIDEAction->setToolTip(QStringLiteral("Show definition of this symbol in the IDE (via plug-in)"));
   connect(m_showInIDEAction, &QAction::triggered, this, &QtGraphicsView::showInIDE);
 
-  m_showDefinitionAction = new QAction(
-      QStringLiteral("Show Definition (Ctrl + Alt + Left Click)"), this);
+  m_showDefinitionAction = new QAction(QStringLiteral("Show Definition (Ctrl + Alt + Left Click)"), this);
 #if defined(Q_OS_MAC)
   m_showDefinitionAction->setText("Show Definition (Cmd + Alt + Left Click)");
 #endif
-  m_showDefinitionAction->setStatusTip(
-      QStringLiteral("Show definition of this symbol in the code"));
+  m_showDefinitionAction->setStatusTip(QStringLiteral("Show definition of this symbol in the code"));
   m_showDefinitionAction->setToolTip(QStringLiteral("Show definition of this symbol in the code"));
   connect(m_showDefinitionAction, &QAction::triggered, this, &QtGraphicsView::showDefinition);
 
@@ -134,20 +127,14 @@ QtGraphicsView::QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent)
   m_zoomState->hide();
 
   m_zoomInButton = new QtSelfRefreshIconButton(
-      QLatin1String(""),
-      ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/zoom_in.png"),
-      "search/button",
-      this);
+      QLatin1String(""), ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/zoom_in.png"), "search/button", this);
   m_zoomInButton->setObjectName(QStringLiteral("zoom_in_button"));
   m_zoomInButton->setAutoRepeat(true);
   m_zoomInButton->setToolTip("zoom in (" + modifierName + " + Mousewheel forward)");
   connect(m_zoomInButton, &QPushButton::pressed, this, &QtGraphicsView::zoomInPressed);
 
   m_zoomOutButton = new QtSelfRefreshIconButton(
-      QLatin1String(""),
-      ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/zoom_out.png"),
-      "search/button",
-      this);
+      QLatin1String(""), ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/zoom_out.png"), "search/button", this);
   m_zoomOutButton->setObjectName(QStringLiteral("zoom_out_button"));
   m_zoomOutButton->setAutoRepeat(true);
   m_zoomOutButton->setToolTip("zoom out (" + modifierName + " + Mousewheel back)");
@@ -155,10 +142,7 @@ QtGraphicsView::QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent)
 
   // Create legend button
   m_pLegendButton = new QtSelfRefreshIconButton(
-      QLatin1String(""),
-      ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/legend.png"),
-      "search/button",
-      this);
+      QLatin1String(""), ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/legend.png"), "search/button", this);
   m_pLegendButton->setObjectName(QStringLiteral("legend_button"));
   m_pLegendButton->setToolTip(QStringLiteral("show legend"));
   connect(m_pLegendButton, &QPushButton::clicked, this, &QtGraphicsView::legendClicked);
@@ -410,9 +394,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_up = true;
       break;
     }
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_K:
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_W:
     if(!ctrl && !alt) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::UP, shift);
@@ -424,9 +408,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_down = true;
       break;
     }
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_J:
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_S:
     if(!alt && !ctrl) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::DOWN, shift);
@@ -438,9 +422,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_left = true;
       break;
     }
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_H:
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_A:
     if(!alt && !ctrl) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::LEFT, shift);
@@ -452,9 +436,9 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
       m_right = true;
       break;
     }
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_L:
-  [[fallthrough]];
+    [[fallthrough]];
   case Qt::Key_D:
     if(!alt && !ctrl) {
       m_focusHandler->focusNext(GraphFocusHandler::Direction::RIGHT, shift);
@@ -610,11 +594,10 @@ QImage QtGraphicsView::toQImage() {
   }
   {
     QRect boundingRect;
-    painter.drawText(
-        QRect(margin, margin, image.size().width() - 2 * margin, image.size().height() - 2 * margin),
-        Qt::AlignBottom | Qt::AlignHCenter,
-        exportNotice,
-        &boundingRect);
+    painter.drawText(QRect(margin, margin, image.size().width() - 2 * margin, image.size().height() - 2 * margin),
+                     Qt::AlignBottom | Qt::AlignHCenter,
+                     exportNotice,
+                     &boundingRect);
 
     {
       QFont font = painter.font();
@@ -622,9 +605,8 @@ QImage QtGraphicsView::toQImage() {
       painter.setFont(font);
     }
 
-    painter.drawText(boundingRect.right() + boundingRect.height() / 5,
-                     boundingRect.top() + boundingRect.height() / 2,
-                     QChar(0x00AE));
+    painter.drawText(
+        boundingRect.right() + boundingRect.height() / 5, boundingRect.top() + boundingRect.height() / 2, QChar(0x00AE));
   }
 
   return image;
@@ -634,13 +616,11 @@ void QtGraphicsView::exportGraph() {
   const QString exportNotice = QStringLiteral("Exported from Sourcetrail");
   const int margin = 10;
 
-  FilePath filePath(
-      QtFileDialog::showSaveFileDialog(
-          nullptr,
-          QStringLiteral("Save image"),
-          FilePath(),
-          QStringLiteral("PNG (*.png);;JPEG (*.JPEG);;BMP Files (*.bmp);;SVG (*.svg)"))
-          .toStdWString());
+  FilePath filePath(QtFileDialog::showSaveFileDialog(nullptr,
+                                                     QStringLiteral("Save image"),
+                                                     FilePath(),
+                                                     QStringLiteral("PNG (*.png);;JPEG (*.JPEG);;BMP Files (*.bmp);;SVG (*.svg)"))
+                        .toStdWString());
 
   if(filePath.extension() == L".svg") {
     QSvgGenerator svgGen;
@@ -660,11 +640,10 @@ void QtGraphicsView::exportGraph() {
     }
     {
       QRect boundingRect;
-      painter.drawText(
-          QRect(margin, margin, svgGen.size().width() - 2 * margin, svgGen.size().height() - 2 * margin),
-          Qt::AlignBottom | Qt::AlignHCenter,
-          exportNotice + ' ' + QChar(0x00AE),
-          &boundingRect);
+      painter.drawText(QRect(margin, margin, svgGen.size().width() - 2 * margin, svgGen.size().height() - 2 * margin),
+                       Qt::AlignBottom | Qt::AlignHCenter,
+                       exportNotice + ' ' + QChar(0x00AE),
+                       &boundingRect);
     }
   } else if(!filePath.empty()) {
     toQImage().save(QString::fromStdWString(filePath.wstr()));

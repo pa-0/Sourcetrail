@@ -9,6 +9,8 @@
 #include <QPainter>
 #include <QWidget>
 // Internal
+#include "ApplicationSettings.h"
+#include "ColorScheme.h"
 #include "FilePath.h"
 #include "FileSystem.h"
 #include "QtMainView.h"
@@ -17,8 +19,6 @@
 #include "logging.h"
 #include "utilityApp.h"
 #include "utilityString.h"
-#include "ApplicationSettings.h"
-#include "ColorScheme.h"
 
 namespace utility {
 
@@ -139,8 +139,7 @@ std::string getStyleSheet(const FilePath& path) {
       }
     } else if(key == "color") {
       if(!ColorScheme::getInstance()->hasColor(val)) {
-        LOG_WARNING("Color scheme does not provide value for key \"" + val +
-                    "\" requested by style \"" + path.str() + "\".");
+        LOG_WARNING("Color scheme does not provide value for key \"" + val + "\" requested by style \"" + path.str() + "\".");
       }
       val = ColorScheme::getInstance()->getColor(val);
     } else if(key == "platform_wml") {
@@ -256,8 +255,8 @@ QString getStyleSheet(const QString& resource) {
       }
     } else if(key == "color") {
       if(!ColorScheme::getInstance()->hasColor(val)) {
-        LOG_WARNING("Color scheme does not provide value for key \"" + val +
-                    "\" requested by style \"" + resource.toStdString() + "\".");
+        LOG_WARNING("Color scheme does not provide value for key \"" + val + "\" requested by style \"" + resource.toStdString() +
+                    "\".");
       }
       val = ColorScheme::getInstance()->getColor(val);
     } else if(key == "platform_wml") {
@@ -311,9 +310,7 @@ QIcon createButtonIcon(const FilePath& iconPath, const std::string& colorId) {
   QIcon icon(utility::colorizePixmap(pixmap, scheme->getColor(colorId + "/icon").c_str()));
 
   if(scheme->hasColor(colorId + "/icon_disabled")) {
-    icon.addPixmap(
-        utility::colorizePixmap(pixmap, scheme->getColor(colorId + "/icon_disabled").c_str()),
-        QIcon::Disabled);
+    icon.addPixmap(utility::colorizePixmap(pixmap, scheme->getColor(colorId + "/icon_disabled").c_str()), QIcon::Disabled);
   }
 
   return icon;

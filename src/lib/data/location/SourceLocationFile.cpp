@@ -1,7 +1,8 @@
 #include "SourceLocationFile.h"
-#include "utilityString.h"
 
 #include <utility>
+
+#include "utilityString.h"
 
 SourceLocationFile::SourceLocationFile(FilePath filePath, std::wstring language, bool isWhole, bool isComplete, bool isIndexed)
     : m_filePath(std::move(filePath))

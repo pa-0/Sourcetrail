@@ -4,9 +4,9 @@
 #include "ComponentFactory.h"
 #include "StatusController.h"
 #include "StatusView.h"
+#include "mocks/MockedStatusView.hpp"
 #include "mocks/MockedViewFactory.hpp"
 #include "mocks/MockedViewLayout.hpp"
-#include "mocks/MockedStatusView.hpp"
 
 using namespace testing;
 
@@ -29,7 +29,7 @@ struct StatusControllerFix : Test {
     MessageQueue::getInstance()->stopMessageLoop();
   }
 
-  StatusController *controller = nullptr;
+  StatusController* controller = nullptr;
   MockedViewLayout viewLayout;
   std::shared_ptr<MockedStatusView> statusView;
   std::shared_ptr<Component> component;
@@ -37,26 +37,26 @@ struct StatusControllerFix : Test {
 
 TEST_F(StatusControllerFix, MessageClearStatusView) {
   EXPECT_CALL(*statusView, clear).WillOnce(Return());
-  MessageClearStatusView{}.dispatchImmediately();
+  MessageClearStatusView {}.dispatchImmediately();
 }
 
 TEST_F(StatusControllerFix, MessageShowStatus) {
   EXPECT_CALL(viewLayout, showView(_)).WillOnce(Return());
-  MessageShowStatus{}.dispatchImmediately();
+  MessageShowStatus {}.dispatchImmediately();
 }
 
 TEST_F(StatusControllerFix, EmptyMessageStatus) {
   EXPECT_CALL(*statusView, addStatus(_)).Times(0);
-  MessageStatus{L""}.dispatchImmediately();
+  MessageStatus {L""}.dispatchImmediately();
 }
 
 TEST_F(StatusControllerFix, MessageStatus) {
   EXPECT_CALL(*statusView, addStatus(_)).WillOnce(Return());
-  MessageStatus{L"Message"}.dispatchImmediately();
+  MessageStatus {L"Message"}.dispatchImmediately();
 }
 
 TEST_F(StatusControllerFix, MessageStatusFilterChanged) {
   EXPECT_CALL(*statusView, clear).WillOnce(Return());
   EXPECT_CALL(*statusView, addStatus(_)).WillOnce(Return());
-  MessageStatusFilterChanged{STATUS_INFO}.dispatch();
+  MessageStatusFilterChanged {STATUS_INFO}.dispatch();
 }

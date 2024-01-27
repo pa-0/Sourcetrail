@@ -31,8 +31,8 @@ void ConsoleLogger::logMessage(const std::string& type, const LogMessage& messag
   fmt::print("{} | ", message.getTimeString());
 
   if(!message.filePath.empty()) {
-		fmt::print("{}:{} {}() | ", message.getFileName(), message.line, message.functionName);
+    fmt::print("{}:{} {}() | ", message.getFileName(), message.line, message.functionName);
   }
 
-	fmt::print("{}: {}\n", type, utility::encodeToUtf8(message.message));
+  fmt::print("{}: {}\n", type, utility::encodeToUtf8(message.message));
 }

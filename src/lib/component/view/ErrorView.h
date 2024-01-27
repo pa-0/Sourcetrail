@@ -1,7 +1,7 @@
 #pragma once
 // STL
-#include <vector>
 #include <string>
+#include <vector>
 // internal
 #include "ErrorCountInfo.h"
 #include "ErrorFilter.h"
@@ -18,9 +18,7 @@ public:
 
   virtual void clear() = 0;
 
-  virtual void addErrors(const std::vector<ErrorInfo>& errors,
-                         const ErrorCountInfo& errorCount,
-                         bool scrollTo) = 0;
+  virtual void addErrors(const std::vector<ErrorInfo>& errors, const ErrorCountInfo& errorCount, bool scrollTo) = 0;
 
   virtual void setErrorId(Id errorId) = 0;
 

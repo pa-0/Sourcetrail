@@ -13,8 +13,7 @@ public:
                                                      CompositeView::CompositeDirection direction,
                                                      const std::string& name,
                                                      const Id tabId) const override;
-  std::shared_ptr<TabbedView> createTabbedView(ViewLayout* viewLayout,
-                                               const std::string& name) const override;
+  std::shared_ptr<TabbedView> createTabbedView(ViewLayout* viewLayout, const std::string& name) const override;
 
   std::shared_ptr<BookmarkButtonsView> createBookmarkButtonsView(ViewLayout* viewLayout) const override;
   std::shared_ptr<BookmarkView> createBookmarkView(ViewLayout* viewLayout) const override;

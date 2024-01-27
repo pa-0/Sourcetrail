@@ -25,9 +25,7 @@ public:
   T getValueFromSettings(Settings* settings, const std::string& key, T defaultValue) const;
 
   template <typename T>
-  std::vector<T> getValuesFromSettings(Settings* settings,
-                                       const std::string& key,
-                                       std::vector<T> defaultValues) const;
+  std::vector<T> getValuesFromSettings(Settings* settings, const std::string& key, std::vector<T> defaultValues) const;
 
   template <typename T>
   bool setValueInSettings(Settings* settings, const std::string& key, T value) const;
@@ -39,9 +37,7 @@ public:
 };
 
 template <typename T>
-T SettingsMigration::getValueFromSettings(Settings* settings,
-                                          const std::string& key,
-                                          T defaultValue) const {
+T SettingsMigration::getValueFromSettings(Settings* settings, const std::string& key, T defaultValue) const {
   return settings->getValue(key, defaultValue);
 }
 
@@ -58,8 +54,6 @@ bool SettingsMigration::setValueInSettings(Settings* settings, const std::string
 }
 
 template <typename T>
-bool SettingsMigration::setValuesInSettings(Settings* settings,
-                                            const std::string& key,
-                                            std::vector<T> values) const {
+bool SettingsMigration::setValuesInSettings(Settings* settings, const std::string& key, std::vector<T> values) const {
   return settings->setValues(key, values);
 }

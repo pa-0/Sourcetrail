@@ -1,8 +1,8 @@
 #include "QtScreenSearchBox.h"
 
-#include <QDebug>
 #include <QApplication>
 #include <QCheckBox>
+#include <QDebug>
 #include <QFocusEvent>
 #include <QHBoxLayout>
 #include <QLineEdit>
@@ -135,10 +135,9 @@ void QtScreenSearchBox::updateMatchLabel() {
 }
 
 void QtScreenSearchBox::createSearchField(QHBoxLayout* layout) {
-  m_searchButton = new QtSelfRefreshIconButton(
-      QLatin1String(""),
-      ResourcePaths::getGuiDirectoryPath().concatenate(L"search_view/images/search.png"),
-      "screen_search/button");
+  m_searchButton = new QtSelfRefreshIconButton(QLatin1String(""),
+                                               ResourcePaths::getGuiDirectoryPath().concatenate(L"search_view/images/search.png"),
+                                               "screen_search/button");
   m_searchButton->setObjectName(QStringLiteral("search_button"));
   m_searchButton->setIconSize(QSize(12, 12));
   layout->addWidget(m_searchButton);
@@ -204,10 +203,7 @@ void QtScreenSearchBox::createCloseButton(QHBoxLayout* layout) {
   m_closeButton->setIconSize(QSize(15, 15));
   layout->addWidget(m_closeButton);
 
-  connect(m_closeButton, &QPushButton::clicked,
-  this, [this]() {
-    emit closePressed();
-  });
+  connect(m_closeButton, &QPushButton::clicked, this, [this]() { emit closePressed(); });
 }
 
 void QtScreenSearchBox::createTimer() {

@@ -139,10 +139,7 @@ private:
   std::shared_ptr<DummyNode> getDummyGraphNodeById(Id tokenId) const;
   DummyEdge* getDummyGraphEdgeById(Id tokenId) const;
 
-  void relayoutGraph(MessageBase* message,
-                     GraphView::GraphParams params,
-                     bool withCharacterIndex,
-                     const std::wstring& groupName);
+  void relayoutGraph(MessageBase* message, GraphView::GraphParams params, bool withCharacterIndex, const std::wstring& groupName);
   void buildGraph(MessageBase* pMessage, GraphView::GraphParams params);
 
   void forEachDummyNodeRecursive(std::function<void(DummyNode*)> func);

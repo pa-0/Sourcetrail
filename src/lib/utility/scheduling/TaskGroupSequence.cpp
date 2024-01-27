@@ -35,13 +35,9 @@ Task::TaskState TaskGroupSequence::doUpdate(std::shared_ptr<Blackboard> blackboa
 void TaskGroupSequence::doExit(std::shared_ptr<Blackboard> /*blackboard*/) {}
 
 void TaskGroupSequence::doReset(std::shared_ptr<Blackboard> /*blackboard*/) {
-  ranges::for_each(m_taskRunners, [](auto& taskRunner) {
-    taskRunner->reset();
-  });
+  ranges::for_each(m_taskRunners, [](auto& taskRunner) { taskRunner->reset(); });
 }
 
 void TaskGroupSequence::doTerminate() {
-  ranges::for_each(m_taskRunners, [](auto& taskRunner) {
-    taskRunner->terminate();
-  });
+  ranges::for_each(m_taskRunners, [](auto& taskRunner) { taskRunner->terminate(); });
 }

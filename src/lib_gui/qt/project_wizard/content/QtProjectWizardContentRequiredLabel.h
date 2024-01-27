@@ -7,8 +7,7 @@
 
 class QtProjectWizardContentRequiredLabel : public QtProjectWizardContent {
 public:
-  QtProjectWizardContentRequiredLabel(QtProjectWizardWindow* window)
-      : QtProjectWizardContent(window) {}
+  QtProjectWizardContentRequiredLabel(QtProjectWizardWindow* window) : QtProjectWizardContent(window) {}
 
   // QtProjectWizardContent implementation
   void populate(QGridLayout* layout, int& row) override {

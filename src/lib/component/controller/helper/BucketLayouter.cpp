@@ -56,8 +56,7 @@ void Bucket::preLayout(Vec2i viewSize, bool addVerticalSplit, bool forceVertical
     if(y > height + heightDiff) {
       // keep adding to the same columns if it only contains 1 element, which will end up
       // above the middle split
-      if(nodesInCol.back().size() == 1 && m_nodes.size() > 1 &&
-         addVerticalSplit | forceVerticalSplit) {
+      if(nodesInCol.back().size() == 1 && m_nodes.size() > 1 && addVerticalSplit | forceVerticalSplit) {
         heightDiff = y;
       } else {
         colHeights.push_back(y - GraphViewStyle::s_gridCellPadding);
@@ -135,8 +134,7 @@ void Bucket::preLayout(Vec2i viewSize, bool addVerticalSplit, bool forceVertical
           offset = mid - (node->position.y + node->size.y) - GraphViewStyle::s_gridCellPadding / 2;
         }
         hasOffset = true;
-      } else if(node->position.y + node->size.y < mid &&
-                mid < node->position.y + node->size.y + GraphViewStyle::s_gridCellPadding) {
+      } else if(node->position.y + node->size.y < mid && mid < node->position.y + node->size.y + GraphViewStyle::s_gridCellPadding) {
         offset = mid - (node->position.y + node->size.y + GraphViewStyle::s_gridCellPadding / 2);
         hasOffset = true;
       }
@@ -168,8 +166,7 @@ void Bucket::layout(int x, int y, int width, int height) {
   }
 
   Vec2i offset = Vec2i(x + (width - m_width) / 2, y + (height - m_height) / 2);
-  offset = GraphViewStyle::alignOnRaster((*m_nodes.begin())->position + offset) -
-      (*m_nodes.begin())->position;
+  offset = GraphViewStyle::alignOnRaster((*m_nodes.begin())->position + offset) - (*m_nodes.begin())->position;
 
   for(const std::shared_ptr<DummyNode>& node : m_nodes) {
     node->position += offset;
@@ -197,8 +194,7 @@ int Bucket::getMiddleGapX() const {
 }
 
 
-BucketLayouter::BucketLayouter(Vec2i viewSize)
-    : m_viewSize(viewSize), m_i1(0), m_j1(0), m_i2(0), m_j2(0) {
+BucketLayouter::BucketLayouter(Vec2i viewSize) : m_viewSize(viewSize), m_i1(0), m_j1(0), m_i2(0), m_j2(0) {
   m_buckets[0][0] = Bucket(0, 0);
 }
 
@@ -254,8 +250,8 @@ void BucketLayouter::createBuckets(std::vector<std::shared_ptr<DummyNode>>& node
         }
       } else if(edge->getDirection() == TokenComponentBundledEdges::DIRECTION_BACKWARD ||
                 // put nodes with bidirectional edges on the left
-                (edge->getDirection() == TokenComponentBundledEdges::DIRECTION_NONE &&
-                 !target->bundleInfo.isReferencing && !target->bundleInfo.isReferenced)) {
+                (edge->getDirection() == TokenComponentBundledEdges::DIRECTION_NONE && !target->bundleInfo.isReferencing &&
+                 !target->bundleInfo.isReferenced)) {
         std::swap(owner, target);
       }
 
@@ -407,8 +403,9 @@ std::vector<std::shared_ptr<DummyNode>> BucketLayouter::getSortedNodes() {
   return sortedNodes;
 }
 
-std::shared_ptr<DummyNode> BucketLayouter::findTopMostDummyNodeRecursive(
-    std::vector<std::shared_ptr<DummyNode>>& nodes, Id tokenId, std::shared_ptr<DummyNode> top) {
+std::shared_ptr<DummyNode> BucketLayouter::findTopMostDummyNodeRecursive(std::vector<std::shared_ptr<DummyNode>>& nodes,
+                                                                         Id tokenId,
+                                                                         std::shared_ptr<DummyNode> top) {
   for(const std::shared_ptr<DummyNode>& node : nodes) {
     std::shared_ptr<DummyNode> t = (top ? top : node);
 

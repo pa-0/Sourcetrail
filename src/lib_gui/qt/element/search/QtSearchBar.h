@@ -11,41 +11,40 @@
 class QtSearchBarButton;
 class QtSmartSearchBox;
 
-class QtSearchBar: public QFrame
-{
-	Q_OBJECT
+class QtSearchBar : public QFrame {
+  Q_OBJECT
 
 public:
-	QtSearchBar();
-	virtual ~QtSearchBar();
+  QtSearchBar();
+  virtual ~QtSearchBar();
 
-	virtual QSize sizeHint() const;
+  virtual QSize sizeHint() const;
 
-	QString query() const;
+  QString query() const;
 
-	void setMatches(const std::vector<SearchMatch>& matches);
-	void setFocus();
-	void findFulltext();
-	void setAutocompletionList(const std::vector<SearchMatch>& autocompletionList);
+  void setMatches(const std::vector<SearchMatch>& matches);
+  void setFocus();
+  void findFulltext();
+  void setAutocompletionList(const std::vector<SearchMatch>& autocompletionList);
 
-	QAbstractItemView* getCompleterPopup();
+  QAbstractItemView* getCompleterPopup();
 
-	void refreshStyle();
+  void refreshStyle();
 
 private slots:
-	void homeButtonClicked();
+  void homeButtonClicked();
 
-	void requestAutocomplete(const std::wstring& query, NodeTypeSet acceptedNodeTypes);
-	void requestSearch(const std::vector<SearchMatch>& matches, NodeTypeSet acceptedNodeTypes);
-	void requestFullTextSearch(const std::wstring& query, bool caseSensitive);
+  void requestAutocomplete(const std::wstring& query, NodeTypeSet acceptedNodeTypes);
+  void requestSearch(const std::vector<SearchMatch>& matches, NodeTypeSet acceptedNodeTypes);
+  void requestFullTextSearch(const std::wstring& query, bool caseSensitive);
 
 private:
-	QWidget* m_searchBoxContainer;	  // used for correct clipping inside the search box
+  QWidget* m_searchBoxContainer;    // used for correct clipping inside the search box
 
-	QtSmartSearchBox* m_searchBox;
+  QtSmartSearchBox* m_searchBox;
 
-	QtSearchBarButton* m_searchButton;
-	QtSearchBarButton* m_homeButton;
+  QtSearchBarButton* m_searchButton;
+  QtSearchBarButton* m_homeButton;
 };
 
-#endif	  // QT_SEARCH_BAR_H
+#endif    // QT_SEARCH_BAR_H

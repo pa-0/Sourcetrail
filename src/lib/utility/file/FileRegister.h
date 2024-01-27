@@ -9,9 +9,7 @@ class FilePathFilter;
 
 class FileRegister {
 public:
-  FileRegister(const FilePath& currentPath,
-               const std::set<FilePath>& indexedPaths,
-               const std::set<FilePathFilter>& excludeFilters);
+  FileRegister(const FilePath& currentPath, const std::set<FilePath>& indexedPaths, const std::set<FilePathFilter>& excludeFilters);
 
   virtual ~FileRegister();
 

@@ -28,9 +28,7 @@ public:
   void executeAsTaskWithArgs(FuncType callback, const Args... args) {
     ControllerType* pController = m_pView->getController<ControllerType>();
     if(pController != nullptr) {
-      Task::dispatch(m_schedulerId,
-                     std::make_shared<TaskLambda>(
-                         [func = std::bind(callback, pController, args...)]() { func(); }));
+      Task::dispatch(m_schedulerId, std::make_shared<TaskLambda>([func = std::bind(callback, pController, args...)]() { func(); }));
     }
   }
 

@@ -5,38 +5,37 @@
 
 struct TooltipInfo;
 
-class QtTooltip: public QFrame
-{
-	Q_OBJECT
+class QtTooltip : public QFrame {
+  Q_OBJECT
 
 public:
-	QtTooltip(QWidget* parent = nullptr);
-	virtual ~QtTooltip();
+  QtTooltip(QWidget* parent = nullptr);
+  virtual ~QtTooltip();
 
-	void setTooltipInfo(const TooltipInfo& info);
+  void setTooltipInfo(const TooltipInfo& info);
 
-	void setParentView(QWidget* parentView);
+  void setParentView(QWidget* parentView);
 
-	bool isHovered() const;
+  bool isHovered() const;
 
 public slots:
-	virtual void show();
-	virtual void hide(bool force = false);
+  virtual void show();
+  virtual void hide(bool force = false);
 
 protected:
-	virtual void leaveEvent(QEvent* event);
-	virtual void enterEvent(QEvent* event);
+  virtual void leaveEvent(QEvent* event);
+  virtual void enterEvent(QEvent* event);
 
 private:
-	void addTitle(const QString& title, int count, const QString& countText);
-	void addWidget(QWidget* widget);
+  void addTitle(const QString& title, int count, const QString& countText);
+  void addWidget(QWidget* widget);
 
-	void clearLayout(QLayout* layout);
+  void clearLayout(QLayout* layout);
 
-	QWidget* m_parentView;
-	QPoint m_offset;
+  QWidget* m_parentView;
+  QPoint m_offset;
 
-	bool m_isHovered;
+  bool m_isHovered;
 };
 
-#endif	  // QT_TOOLTIP_H
+#endif    // QT_TOOLTIP_H

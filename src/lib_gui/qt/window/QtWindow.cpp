@@ -8,13 +8,10 @@
 #include "ResourcePaths.h"
 #include "utilityQt.h"
 
-QtWindow::QtWindow(bool isSubWindow, QWidget* parent)
-    : QtWindowBase(isSubWindow, parent) {}
+QtWindow::QtWindow(bool isSubWindow, QWidget* parent) : QtWindowBase(isSubWindow, parent) {}
 
 void QtWindow::setup() {
-  setStyleSheet(
-      utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/window.css"))
-          .c_str());
+  setStyleSheet(utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/window.css")).c_str());
 
   auto* layout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setContentsMargins(10, 10, 10, 10);
@@ -269,8 +266,7 @@ void QtWindow::setupDone() {
   QSize actualSize = m_window->sizeHint() + QSize(50, 50);
   QSize preferredSize = sizeHint();
 
-  QSize size(qMax(actualSize.width(), preferredSize.width()),
-             qMax(actualSize.height(), preferredSize.height()));
+  QSize size(qMax(actualSize.width(), preferredSize.width()), qMax(actualSize.height(), preferredSize.height()));
   resize(size);
 
   moveToCenter();
@@ -282,8 +278,7 @@ void QtWindow::addLogo() {
   const QPoint LogoLabelPosition(m_isSubWindow ? 40 : 23, 25);
   auto* pSourcetrailLogoLabel = new QLabel(this);    // NOLINT(cppcoreguidelines-owning-memory)
   pSourcetrailLogoLabel->setPixmap(sourcetrailLogo.pixmap());
-  pSourcetrailLogoLabel->resize(
-      static_cast<int>(sourcetrailLogo.width()), static_cast<int>(sourcetrailLogo.height()));
+  pSourcetrailLogoLabel->resize(static_cast<int>(sourcetrailLogo.width()), static_cast<int>(sourcetrailLogo.height()));
   pSourcetrailLogoLabel->move(LogoLabelPosition);
   pSourcetrailLogoLabel->show();
 
@@ -297,7 +292,7 @@ QHBoxLayout* QtWindow::createButtons() {
   connect(m_nextButton, &QPushButton::clicked, this, &QtWindow::handleNextPress);
 
   // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
-  m_previousButton = new QPushButton(QStringLiteral("Previous"));    
+  m_previousButton = new QPushButton(QStringLiteral("Previous"));
   m_previousButton->setObjectName(QStringLiteral("windowButton"));
   connect(m_previousButton, &QPushButton::clicked, this, &QtWindow::handlePreviousPress);
 

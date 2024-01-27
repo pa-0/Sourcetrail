@@ -17,8 +17,7 @@ public:
                      std::shared_ptr<IndexerStateInfo> indexerStateInfo);
 
 protected:
-  std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance& compiler,
-                                                        llvm::StringRef inFile) override;
+  std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance& compiler, llvm::StringRef inFile) override;
 
   bool BeginSourceFileAction(clang::CompilerInstance& compiler) override;
 

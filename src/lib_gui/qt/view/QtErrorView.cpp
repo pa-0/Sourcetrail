@@ -25,12 +25,11 @@
 
 QIcon QtErrorView::s_errorIcon;
 
-QtErrorView::QtErrorView(ViewLayout* pViewLayout)
-    : ErrorView(pViewLayout), m_controllerProxy(this, TabId::app()) {
+QtErrorView::QtErrorView(ViewLayout* pViewLayout) : ErrorView(pViewLayout), m_controllerProxy(this, TabId::app()) {
   setWidgetWrapper(std::make_shared<QtViewWidgetWrapper>(new QFrame));
   if(s_errorIcon.isNull()) {
-    s_errorIcon = QIcon(QString::fromStdWString(
-    ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/error.png").wstr()));
+    s_errorIcon = QIcon(
+        QString::fromStdWString(ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/error.png").wstr()));
   }
 
   QWidget* widget = QtViewWidgetWrapper::getWidgetOfView(this);
@@ -57,9 +56,8 @@ QtErrorView::QtErrorView(ViewLayout* pViewLayout)
   m_table->setColumnHidden(static_cast<int>(Column::ID), true);
 
   QStringList headers;
-  headers << QStringLiteral("ID") << QStringLiteral("Type") << QStringLiteral("Message")
-          << QStringLiteral("File") << QStringLiteral("Line") << QStringLiteral("Indexed")
-          << QStringLiteral("Translation Unit");
+  headers << QStringLiteral("ID") << QStringLiteral("Type") << QStringLiteral("Message") << QStringLiteral("File")
+          << QStringLiteral("Line") << QStringLiteral("Indexed") << QStringLiteral("Translation Unit");
   m_model->setHorizontalHeaderLabels(headers);
 
   connect(m_table, &QTableView::clicked, [=](const QModelIndex& index) {
@@ -68,8 +66,7 @@ QtErrorView::QtErrorView(ViewLayout* pViewLayout)
         return;
       }
 
-      const Id errorId = static_cast<Id>(
-          m_model->item(index.row(), static_cast<int>(Column::ID))->text().toLongLong());
+      const Id errorId = static_cast<Id>(m_model->item(index.row(), static_cast<int>(Column::ID))->text().toLongLong());
 
       m_controllerProxy.executeAsTaskWithArgs(&ErrorController::showError, errorId);
     }
@@ -120,10 +117,9 @@ QtErrorView::QtErrorView(ViewLayout* pViewLayout)
   checkboxes->addSpacing(10);
 
   {
-    m_editButton = new QtSelfRefreshIconButton(
-        QStringLiteral("Edit Project"),
-        ResourcePaths::getGuiDirectoryPath().concatenate(L"code_view/images/edit.png"),
-        "window/button");
+    m_editButton = new QtSelfRefreshIconButton(QStringLiteral("Edit Project"),
+                                               ResourcePaths::getGuiDirectoryPath().concatenate(L"code_view/images/edit.png"),
+                                               "window/button");
     m_editButton->setObjectName(QStringLiteral("screen_button"));
     m_editButton->setToolTip(QStringLiteral("edit project"));
     connect(m_editButton, &QPushButton::clicked, []() { MessageProjectEdit().dispatch(); });
@@ -158,9 +154,7 @@ void QtErrorView::clear() {
   });
 }
 
-void QtErrorView::addErrors(const std::vector<ErrorInfo>& errors,
-                            const ErrorCountInfo& errorCount,
-                            bool scrollTo) {
+void QtErrorView::addErrors(const std::vector<ErrorInfo>& errors, const ErrorCountInfo& errorCount, bool scrollTo) {
   m_onQtThread([=]() {
     for(const ErrorInfo& error : errors) {
       addErrorToTable(error);
@@ -176,25 +170,21 @@ void QtErrorView::addErrors(const std::vector<ErrorInfo>& errors,
     bool limited = m_errorFilter.limit > 0 && errorCount.total > m_errorFilter.limit;
 
     m_allLabel->setVisible(limited);
-    m_allLabel->setText("<b>Only displaying first " + QString::number(m_errorFilter.limit) +
-                        " errors</b>");
+    m_allLabel->setText("<b>Only displaying first " + QString::number(m_errorFilter.limit) + " errors</b>");
 
     m_allButton->setVisible(limited);
     m_allButton->setText("Show all " + QString::number(errorCount.total));
 
     m_errorLabel->setVisible(!limited);
-    m_errorLabel->setText("<b>displaying " + QString::number(errorCount.total) + " error" +
-                          (errorCount.total != 1 ? "s" : "") +
-                          (errorCount.fatal > 0 ? " (" + QString::number(errorCount.fatal) + " fatal)" :
-                                                  QLatin1String("")) +
+    m_errorLabel->setText("<b>displaying " + QString::number(errorCount.total) + " error" + (errorCount.total != 1 ? "s" : "") +
+                          (errorCount.fatal > 0 ? " (" + QString::number(errorCount.fatal) + " fatal)" : QLatin1String("")) +
                           "</b>");
   });
 }
 
 void QtErrorView::setErrorId(Id errorId) {
   m_onQtThread([=]() {
-    QList<QStandardItem*> items = m_model->findItems(
-        QString::number(errorId), Qt::MatchExactly, static_cast<int>(Column::ID));
+    QList<QStandardItem*> items = m_model->findItems(QString::number(errorId), Qt::MatchExactly, static_cast<int>(Column::ID));
 
     if(items.size() == 1) {
       m_table->selectRow(items.at(0)->row());
@@ -245,12 +235,10 @@ void QtErrorView::errorFilterChanged(int i) {
 
 void QtErrorView::setStyleSheet() const {
   QWidget* widget = QtViewWidgetWrapper::getWidgetOfView(this);
-  utility::setWidgetBackgroundColor(
-      widget, ColorScheme::getInstance()->getColor("window/background"));
+  utility::setWidgetBackgroundColor(widget, ColorScheme::getInstance()->getColor("window/background"));
 
   QPalette palette(m_showErrors->palette());
-  palette.setColor(QPalette::WindowText,
-                   QColor(ColorScheme::getInstance()->getColor("table/text/normal").c_str()));
+  palette.setColor(QPalette::WindowText, QColor(ColorScheme::getInstance()->getColor("table/text/normal").c_str()));
 
   m_showErrors->setPalette(palette);
   m_showFatals->setPalette(palette);
@@ -276,24 +264,18 @@ void QtErrorView::addErrorToTable(const ErrorInfo& error) {
   item->setData(QVariant(qlonglong(error.id)), Qt::DisplayRole);
   m_model->setItem(rowNumber, static_cast<int>(Column::ID), item);
 
-  m_model->setItem(
-      rowNumber,
-      static_cast<int>(Column::TYPE),
-      new QStandardItem(error.fatal ? QStringLiteral("FATAL") : QStringLiteral("ERROR")));
+  m_model->setItem(rowNumber,
+                   static_cast<int>(Column::TYPE),
+                   new QStandardItem(error.fatal ? QStringLiteral("FATAL") : QStringLiteral("ERROR")));
   if(error.fatal) {
     m_model->item(rowNumber, static_cast<int>(Column::TYPE))->setForeground(QBrush(Qt::red));
   }
   m_model->item(rowNumber, static_cast<int>(Column::TYPE))->setIcon(s_errorIcon);
 
-  m_model->setItem(rowNumber,
-                   static_cast<int>(Column::MESSAGE),
-                   new QStandardItem(QString::fromStdWString(error.message)));
+  m_model->setItem(rowNumber, static_cast<int>(Column::MESSAGE), new QStandardItem(QString::fromStdWString(error.message)));
 
-  m_model->setItem(rowNumber,
-                   static_cast<int>(Column::FILE),
-                   new QStandardItem(QString::fromStdWString(error.filePath)));
-  m_model->item(rowNumber, static_cast<int>(Column::FILE))
-      ->setToolTip(QString::fromStdWString(error.filePath));
+  m_model->setItem(rowNumber, static_cast<int>(Column::FILE), new QStandardItem(QString::fromStdWString(error.filePath)));
+  m_model->item(rowNumber, static_cast<int>(Column::FILE))->setToolTip(QString::fromStdWString(error.filePath));
 
   item = new QStandardItem();
   item->setData(QVariant(qlonglong(error.lineNumber)), Qt::DisplayRole);
@@ -303,21 +285,16 @@ void QtErrorView::addErrorToTable(const ErrorInfo& error) {
                    static_cast<int>(Column::INDEXED),
                    new QStandardItem(error.indexed ? QStringLiteral("yes") : QStringLiteral("no")));
 
-  m_model->setItem(rowNumber,
-                   static_cast<int>(Column::TRANSLATION_UNIT),
-                   new QStandardItem(QString::fromStdWString(error.translationUnit)));
-  m_model->item(rowNumber, static_cast<int>(Column::TRANSLATION_UNIT))
-      ->setToolTip(QString::fromStdWString(error.translationUnit));
+  m_model->setItem(
+      rowNumber, static_cast<int>(Column::TRANSLATION_UNIT), new QStandardItem(QString::fromStdWString(error.translationUnit)));
+  m_model->item(rowNumber, static_cast<int>(Column::TRANSLATION_UNIT))->setToolTip(QString::fromStdWString(error.translationUnit));
 }
 
 QCheckBox* QtErrorView::createFilterCheckbox(const QString& name, bool checked, QBoxLayout* layout) {
   QCheckBox* checkbox = new QCheckBox(name);
   checkbox->setChecked(checked);
 
-  connect(checkbox,
-          &QCheckBox::stateChanged,
-          this,
-          static_cast<void (QtErrorView::*)(int)>(&QtErrorView::errorFilterChanged));
+  connect(checkbox, &QCheckBox::stateChanged, this, static_cast<void (QtErrorView::*)(int)>(&QtErrorView::errorFilterChanged));
 
   layout->addWidget(checkbox);
   layout->addSpacing(25);

@@ -22,9 +22,7 @@ private:
 };
 
 template <typename T>
-TaskReturnSuccessIf<T>::TaskReturnSuccessIf(const std::string& lhsValueName,
-                                            ConditionType condition,
-                                            T rhsValue)
+TaskReturnSuccessIf<T>::TaskReturnSuccessIf(const std::string& lhsValueName, ConditionType condition, T rhsValue)
     : m_lhsValueName(lhsValueName), m_condition(condition), m_rhsValue(rhsValue) {}
 
 template <typename T>

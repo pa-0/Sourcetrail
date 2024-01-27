@@ -1,5 +1,6 @@
 #pragma once
 #include <gmock/gmock.h>
+
 #include "SearchView.h"
 
 struct MockedSearchView final : SearchView {

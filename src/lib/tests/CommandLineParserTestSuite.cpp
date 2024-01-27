@@ -10,8 +10,8 @@
 #include <gtest/gtest.h>
 
 #include "CommandLineParser.h"
-#include "utilities/FileHandler.hpp"
 #include "utilities/CollectOutStream.hpp"
+#include "utilities/FileHandler.hpp"
 #include "utilityString.h"
 
 using namespace ::testing;
@@ -191,7 +191,7 @@ TEST(CommandLineParserConfig, loadTutorialProject) {
 
 // NOLINTNEXTLINE
 TEST(CommandLineParserConfig, initStateNoRegisitedCommands) {
-  std::vector<std::string> args{"somthing"};
+  std::vector<std::string> args {"somthing"};
   commandline::CommandLineParser parser({});
   parser.preparse(args);
   EXPECT_FALSE(parser.runWithoutGUI());

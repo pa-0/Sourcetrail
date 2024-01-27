@@ -5,8 +5,7 @@
 
 #include "ScopedFunctor.h"
 
-TaskGroupParallel::TaskGroupParallel()
-    : m_needsToStartThreads(true), m_activeTaskCountMutex(std::make_shared<std::mutex>()) {}
+TaskGroupParallel::TaskGroupParallel() : m_needsToStartThreads(true), m_activeTaskCountMutex(std::make_shared<std::mutex>()) {}
 
 void TaskGroupParallel::addTask(std::shared_ptr<Task> task) {
   m_tasks.push_back(std::make_shared<TaskInfo>(std::make_shared<TaskRunner>(task)));

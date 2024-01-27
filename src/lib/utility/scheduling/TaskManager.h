@@ -9,17 +9,16 @@
 
 class TaskScheduler;
 
-class TaskManager
-{
+class TaskManager {
 public:
-	static std::shared_ptr<TaskScheduler> createScheduler(Id schedulerId);
-	static void destroyScheduler(Id schedulerId);
+  static std::shared_ptr<TaskScheduler> createScheduler(Id schedulerId);
+  static void destroyScheduler(Id schedulerId);
 
-	static std::shared_ptr<TaskScheduler> getScheduler(Id schedulerId);
+  static std::shared_ptr<TaskScheduler> getScheduler(Id schedulerId);
 
 private:
-	static std::map<Id, std::shared_ptr<TaskScheduler>> s_schedulers;
-	static std::mutex s_schedulersMutex;
+  static std::map<Id, std::shared_ptr<TaskScheduler>> s_schedulers;
+  static std::mutex s_schedulersMutex;
 };
 
-#endif	  // TASK_MANAGER_H
+#endif    // TASK_MANAGER_H

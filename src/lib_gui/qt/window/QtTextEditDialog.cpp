@@ -4,64 +4,53 @@
 #include <QPlainTextEdit>
 
 QtTextEditDialog::QtTextEditDialog(const QString& title, const QString& description, QWidget* parent)
-	: QtWindow(false, parent), m_title(title), m_description(description)
-{
+    : QtWindow(false, parent), m_title(title), m_description(description) {}
+
+QSize QtTextEditDialog::sizeHint() const {
+  return QSize(550, 550);
 }
 
-QSize QtTextEditDialog::sizeHint() const
-{
-	return QSize(550, 550);
+void QtTextEditDialog::setText(const std::wstring& text) {
+  m_text->setPlainText(QString::fromStdWString(text));
 }
 
-void QtTextEditDialog::setText(const std::wstring& text)
-{
-	m_text->setPlainText(QString::fromStdWString(text));
+std::wstring QtTextEditDialog::getText() {
+  return m_text->toPlainText().toStdWString();
 }
 
-std::wstring QtTextEditDialog::getText()
-{
-	return m_text->toPlainText().toStdWString();
+void QtTextEditDialog::setReadOnly(bool readOnly) {
+  m_text->setReadOnly(readOnly);
+
+  if(readOnly) {
+    updateNextButton(QStringLiteral("OK"));
+  } else {
+    updateNextButton(QStringLiteral("Save"));
+  }
 }
 
-void QtTextEditDialog::setReadOnly(bool readOnly)
-{
-	m_text->setReadOnly(readOnly);
+void QtTextEditDialog::populateWindow(QWidget* widget) {
+  QVBoxLayout* layout = new QVBoxLayout();
+  layout->setContentsMargins(0, 0, 0, 0);
 
-	if (readOnly)
-	{
-		updateNextButton(QStringLiteral("OK"));
-	}
-	else
-	{
-		updateNextButton(QStringLiteral("Save"));
-	}
+  QLabel* description = new QLabel(m_description);
+  description->setObjectName(QStringLiteral("description"));
+  description->setWordWrap(true);
+  layout->addWidget(description);
+
+  m_text = new QPlainTextEdit();
+  m_text->setObjectName(QStringLiteral("textField"));
+  m_text->setLineWrapMode(QPlainTextEdit::NoWrap);
+  m_text->setTabStopDistance(8 * m_text->fontMetrics().boundingRect('9').width());
+  layout->addWidget(m_text);
+
+  widget->setLayout(layout);
 }
 
-void QtTextEditDialog::populateWindow(QWidget* widget)
-{
-	QVBoxLayout* layout = new QVBoxLayout();
-	layout->setContentsMargins(0, 0, 0, 0);
+void QtTextEditDialog::windowReady() {
+  updateNextButton(QStringLiteral("Save"));
+  updateCloseButton(QStringLiteral("Cancel"));
 
-	QLabel* description = new QLabel(m_description);
-	description->setObjectName(QStringLiteral("description"));
-	description->setWordWrap(true);
-	layout->addWidget(description);
+  setPreviousVisible(false);
 
-	m_text = new QPlainTextEdit();
-	m_text->setObjectName(QStringLiteral("textField"));
-	m_text->setLineWrapMode(QPlainTextEdit::NoWrap);
-	m_text->setTabStopDistance(8 * m_text->fontMetrics().boundingRect('9').width());
-	layout->addWidget(m_text);
-
-	widget->setLayout(layout);
-}
-
-void QtTextEditDialog::windowReady()
-{
-	updateNextButton(QStringLiteral("Save"));
-	updateCloseButton(QStringLiteral("Cancel"));
-
-	setPreviousVisible(false);
-
-	updateTitle(m_title);
+  updateTitle(m_title);
 }

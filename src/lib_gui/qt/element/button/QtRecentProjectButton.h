@@ -5,7 +5,7 @@
 
 /**
  * @brief A Button to open recent projects.
- * 
+ *
  * @see QtStartScreen.
  *
  * @code {.cpp}

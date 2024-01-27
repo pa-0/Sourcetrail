@@ -8,10 +8,7 @@ struct StorageErrorData {
   StorageErrorData() = default;
 
   StorageErrorData(std::wstring message_, std::wstring translationUnit_, bool fatal_, bool indexed_)
-      : message(std::move(message_))
-      , translationUnit(std::move(translationUnit_))
-      , fatal(fatal_)
-      , indexed(indexed_) {}
+      : message(std::move(message_)), translationUnit(std::move(translationUnit_)), fatal(fatal_), indexed(indexed_) {}
 
   bool operator<(const StorageErrorData& other) const {
     if(message != other.message) {

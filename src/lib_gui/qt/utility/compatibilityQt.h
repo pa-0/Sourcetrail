@@ -3,15 +3,11 @@
 
 #include <QWheelEvent>
 
-namespace utility
-{
-namespace compatibility
-{
+namespace utility { namespace compatibility {
 // Extracts the global position from a QWheelEvent.
 // This compatibility wrapper bridges Qt 5.12 and Qt 5.14
 QPoint QWheelEvent_globalPos(const QWheelEvent& event);
 
-}	 // namespace compatibility
-}	 // namespace utility
+}}    // namespace utility::compatibility
 
-#endif	  // COMPATIBILITY_QT_H
+#endif    // COMPATIBILITY_QT_H

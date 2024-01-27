@@ -10,26 +10,24 @@
 
 class QJsonObject;
 
-class IndexerCommand
-{
+class IndexerCommand {
 public:
-	static std::wstring serialize(
-		std::shared_ptr<const IndexerCommand> indexerCommand, bool compact = true);
+  static std::wstring serialize(std::shared_ptr<const IndexerCommand> indexerCommand, bool compact = true);
 
-	IndexerCommand(const FilePath& sourceFilePath);
-	virtual ~IndexerCommand() = default;
+  IndexerCommand(const FilePath& sourceFilePath);
+  virtual ~IndexerCommand() = default;
 
-	virtual IndexerCommandType getIndexerCommandType() const = 0;
+  virtual IndexerCommandType getIndexerCommandType() const = 0;
 
-	virtual size_t getByteSize(size_t stringSize) const;
+  virtual size_t getByteSize(size_t stringSize) const;
 
-	const FilePath& getSourceFilePath() const;
+  const FilePath& getSourceFilePath() const;
 
 protected:
-	virtual QJsonObject doSerialize() const;
+  virtual QJsonObject doSerialize() const;
 
 private:
-	FilePath m_sourceFilePath;
+  FilePath m_sourceFilePath;
 };
 
-#endif	  // INDEXER_COMMAND_H
+#endif    // INDEXER_COMMAND_H

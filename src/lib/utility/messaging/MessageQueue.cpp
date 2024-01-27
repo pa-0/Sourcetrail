@@ -166,7 +166,7 @@ void MessageQueue::setSendMessagesAsTasks(bool sendMessagesAsTasks) {
   m_sendMessagesAsTasks = sendMessagesAsTasks;
 }
 
-MessageQueue::Ptr MessageQueue::s_instance; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+MessageQueue::Ptr MessageQueue::s_instance;    // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MessageQueue::MessageQueue()
     : m_currentListenerIndex(0)
@@ -210,8 +210,7 @@ void MessageQueue::sendMessage(const std::shared_ptr<MessageBase>& pMessage) {
 
   // The currentListenerIndex holds the index of the current listener being handled, so it can be
   // changed when a listener gets removed while message handling.
-  for(m_currentListenerIndex = 0; m_currentListenerIndex < m_listenersLength;
-      m_currentListenerIndex++) {
+  for(m_currentListenerIndex = 0; m_currentListenerIndex < m_listenersLength; m_currentListenerIndex++) {
     MessageListenerBase* listener = m_listeners[m_currentListenerIndex];
 
     if(listener->getType() == pMessage->getType() &&

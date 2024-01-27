@@ -84,8 +84,7 @@ T ConfigManager::getValueOrDefault(const std::string& key, T defaultValue) const
 }
 
 template <typename T>
-std::vector<T> ConfigManager::getValuesOrDefaults(const std::string& key,
-                                                  std::vector<T> defaultValues) const {
+std::vector<T> ConfigManager::getValuesOrDefaults(const std::string& key, std::vector<T> defaultValues) const {
   std::vector<T> values;
   if(getValues(key, values)) {
     return values;

@@ -27,8 +27,7 @@ void QtRecentProjectButton::setProjectPath(const FilePath& projectFilePath) {
   if(m_projectExists) {
     this->setToolTip(QString::fromStdWString(m_projectFilePath.wstr()));
   } else {
-    const std::wstring missingFileText = L"Couldn't find " + m_projectFilePath.wstr() +
-        L" in your filesystem";
+    const std::wstring missingFileText = L"Couldn't find " + m_projectFilePath.wstr() + L" in your filesystem";
     this->setToolTip(QString::fromStdWString(missingFileText));
   }
 }
@@ -39,10 +38,10 @@ void QtRecentProjectButton::handleButtonClick() {
   } else {
     QMessageBox msgBox;
     msgBox.setText(QStringLiteral("Missing Project File"));
-    msgBox.setInformativeText(QString::fromStdWString(
-        L"<p>Couldn't find \"" + m_projectFilePath.wstr() +
-        L"\" on your filesystem.</p><p>Do you want to remove it from recent project "
-        L"list?</p>"));
+    msgBox.setInformativeText(
+        QString::fromStdWString(L"<p>Couldn't find \"" + m_projectFilePath.wstr() +
+                                L"\" on your filesystem.</p><p>Do you want to remove it from recent project "
+                                L"list?</p>"));
     msgBox.addButton(QStringLiteral("Remove"), QMessageBox::ButtonRole::YesRole);
     msgBox.addButton(QStringLiteral("Keep"), QMessageBox::ButtonRole::NoRole);
     msgBox.setIcon(QMessageBox::Icon::Question);
@@ -71,20 +70,18 @@ void QtRecentProjectButton::contextMenuEvent(QContextMenuEvent* pEvent) {
   connect(&deleteAction, &QAction::triggered, [this]() {
     auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
     // Remove the current project from RecentProjects
-    recentProjects.erase(
-        std::remove_if(std::begin(recentProjects),
-                       std::end(recentProjects),
-                       [projectExists = m_projectFilePath](const auto& currentProject) {
-                         return projectExists.getPath() == currentProject.getPath();
-                       }),
-        std::end(recentProjects));
-    recentProjects.erase(
-        std::remove_if(std::begin(recentProjects),
-                       std::end(recentProjects),
-                       [projectExists = m_projectFilePath](const auto& currentProject) {
-                         return projectExists.getPath() == currentProject.getPath();
-                       }),
-        std::end(recentProjects));
+    recentProjects.erase(std::remove_if(std::begin(recentProjects),
+                                        std::end(recentProjects),
+                                        [projectExists = m_projectFilePath](const auto& currentProject) {
+                                          return projectExists.getPath() == currentProject.getPath();
+                                        }),
+                         std::end(recentProjects));
+    recentProjects.erase(std::remove_if(std::begin(recentProjects),
+                                        std::end(recentProjects),
+                                        [projectExists = m_projectFilePath](const auto& currentProject) {
+                                          return projectExists.getPath() == currentProject.getPath();
+                                        }),
+                         std::end(recentProjects));
     // Update RecentProjects
     auto pApplicationSettings = ApplicationSettings::getInstance();
     pApplicationSettings->setRecentProjects(recentProjects);

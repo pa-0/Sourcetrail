@@ -10,45 +10,44 @@
 class QtTabBar;
 
 class QtTabsView
-	: public QObject
-	, public TabsView
-{
-	Q_OBJECT
+    : public QObject
+    , public TabsView {
+  Q_OBJECT
 
 public:
-	QtTabsView(ViewLayout* viewLayout);
-	virtual ~QtTabsView() = default;
+  QtTabsView(ViewLayout* viewLayout);
+  virtual ~QtTabsView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	// TabsView implementation
-	void clear() override;
-	void openTab(bool showTab, const SearchMatch& match) override;
-	void closeTab() override;
-	void destroyTab(Id tabId) override;
-	void selectTab(bool next) override;
-	void updateTab(Id tabId, const std::vector<SearchMatch>& matches) override;
+  // TabsView implementation
+  void clear() override;
+  void openTab(bool showTab, const SearchMatch& match) override;
+  void closeTab() override;
+  void destroyTab(Id tabId) override;
+  void selectTab(bool next) override;
+  void updateTab(Id tabId, const std::vector<SearchMatch>& matches) override;
 
 private slots:
-	void addTab();
-	void insertTab(bool showTab, const SearchMatch& match);
-	void changedTab(int index);
-	void removeTab(int index);
-	void closeTabsToRight(int index);
+  void addTab();
+  void insertTab(bool showTab, const SearchMatch& match);
+  void changedTab(int index);
+  void removeTab(int index);
+  void closeTabsToRight(int index);
 
 private:
-	void setTabState(int idx, const std::vector<SearchMatch>& matches);
+  void setTabState(int idx, const std::vector<SearchMatch>& matches);
 
-	void setStyleSheet();
+  void setStyleSheet();
 
-	QtThreadedLambdaFunctor m_onQtThread;
+  QtThreadedLambdaFunctor m_onQtThread;
 
-	QWidget* m_widget;
-	QtTabBar* m_tabBar;
+  QWidget* m_widget;
+  QtTabBar* m_tabBar;
 
-	size_t m_insertedTabCount;
+  size_t m_insertedTabCount;
 };
 
-#endif	  // QT_TABS_VIEW_H
+#endif    // QT_TABS_VIEW_H

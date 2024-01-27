@@ -16,14 +16,12 @@ public:
   }
 
   void dispatch() override {
-    std::shared_ptr<MessageBase> message = std::make_shared<MessageType>(
-        *dynamic_cast<MessageType*>(this));
+    std::shared_ptr<MessageBase> message = std::make_shared<MessageType>(*dynamic_cast<MessageType*>(this));
     MessageQueue::getInstance()->pushMessage(message);
   }
 
   virtual void dispatchImmediately() {
-    std::shared_ptr<MessageBase> message = std::make_shared<MessageType>(
-        *dynamic_cast<MessageType*>(this));
+    std::shared_ptr<MessageBase> message = std::make_shared<MessageType>(*dynamic_cast<MessageType*>(this));
     MessageQueue::getInstance()->processMessage(message, true);
   }
 

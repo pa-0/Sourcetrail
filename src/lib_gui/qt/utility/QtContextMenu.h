@@ -14,9 +14,9 @@ class QtContextMenu final : public QObject {
 public:
   QtContextMenu(const QContextMenuEvent* event, QWidget* origin);
 
-	Q_DISABLE_COPY_MOVE(QtContextMenu)
+  Q_DISABLE_COPY_MOVE(QtContextMenu)
 
-	~QtContextMenu() override;
+  ~QtContextMenu() override;
 
   void addAction(QAction* action);
 
@@ -35,7 +35,7 @@ public:
   void enableRedo(bool enabled);
 
 private:
-	QtContextMenu();
+  QtContextMenu();
 
   // slots:
   void undoActionTriggered();

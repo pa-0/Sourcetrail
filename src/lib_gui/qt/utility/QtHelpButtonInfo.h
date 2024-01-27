@@ -5,18 +5,17 @@
 
 class QWidget;
 
-class QtHelpButtonInfo
-{
+class QtHelpButtonInfo {
 public:
-	QtHelpButtonInfo(const QString& helpTitle, const QString& helpText);
+  QtHelpButtonInfo(const QString& helpTitle, const QString& helpText);
 
-	void displayMessage(QWidget* messageBoxParent);
+  void displayMessage(QWidget* messageBoxParent);
 
 private:
-	QString m_title;
-	QString m_text;
+  QString m_title;
+  QString m_text;
 };
 
 QtHelpButtonInfo createErrorHelpButtonInfo();
 
-#endif	  // QT_HELP_BUTTON_INFO_H
+#endif    // QT_HELP_BUTTON_INFO_H

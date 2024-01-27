@@ -30,22 +30,18 @@ std::string ColorScheme::getNodeTypeColor(NodeType type, const std::string& key,
   return getNodeTypeColor(type.getUnderscoredTypeString(), key, highlight);
 }
 
-std::string ColorScheme::getNodeTypeColor(const std::string& typeStr,
-                                          const std::string& key,
-                                          bool highlight) const {
+std::string ColorScheme::getNodeTypeColor(const std::string& typeStr, const std::string& key, bool highlight) const {
   disableWarnings();
 
   const auto type = getValue<std::string>("graph/node/" + typeStr + "/like", typeStr);
-  auto color = getValue<std::string>(
-      "graph/node/" + type + "/" + key + "/" + (highlight ? "highlight" : "normal"), "");
+  auto color = getValue<std::string>("graph/node/" + type + "/" + key + "/" + (highlight ? "highlight" : "normal"), "");
 
   if((color.empty()) && highlight) {
     color = getValue<std::string>("graph/node/" + type + "/" + key + "/normal", "");
   }
 
   if(color.empty()) {
-    color = getValue<std::string>(
-        "graph/node/default/" + key + "/" + (highlight ? "highlight" : "normal"), "");
+    color = getValue<std::string>("graph/node/default/" + key + "/" + (highlight ? "highlight" : "normal"), "");
   }
 
   enableWarnings();
@@ -86,21 +82,16 @@ std::string ColorScheme::getSyntaxColor(const std::string& key) const {
   return getValue<std::string>("code/snippet/syntax/" + key, "#FF1493");
 }
 
-std::string ColorScheme::getCodeAnnotationTypeColor(const std::string& typeStr,
-                                                    const std::string& key,
-                                                    ColorState state) const {
+std::string ColorScheme::getCodeAnnotationTypeColor(const std::string& typeStr, const std::string& key, ColorState state) const {
   disableWarnings();
-  auto color = getValue<std::string>(
-      "code/snippet/annotation/" + typeStr + "/" + stateToString(state) + "/" + key, "");
+  auto color = getValue<std::string>("code/snippet/annotation/" + typeStr + "/" + stateToString(state) + "/" + key, "");
 
   if(color.empty() && state == ACTIVE) {
-    color = getValue<std::string>(
-        "code/snippet/annotation/" + typeStr + "/" + stateToString(FOCUS) + "/" + key, "");
+    color = getValue<std::string>("code/snippet/annotation/" + typeStr + "/" + stateToString(FOCUS) + "/" + key, "");
   }
 
   if(color.empty() && state != NORMAL) {
-    color = getValue<std::string>(
-        "code/snippet/annotation/" + typeStr + "/" + stateToString(NORMAL) + "/" + key, "");
+    color = getValue<std::string>("code/snippet/annotation/" + typeStr + "/" + stateToString(NORMAL) + "/" + key, "");
   }
 
   if(color.empty()) {

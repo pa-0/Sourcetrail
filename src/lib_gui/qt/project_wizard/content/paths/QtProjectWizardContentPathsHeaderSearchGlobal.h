@@ -3,23 +3,22 @@
 
 #include "QtProjectWizardContentPaths.h"
 
-class QtProjectWizardContentPathsHeaderSearchGlobal: public QtProjectWizardContentPaths
-{
-	Q_OBJECT
+class QtProjectWizardContentPathsHeaderSearchGlobal : public QtProjectWizardContentPaths {
+  Q_OBJECT
 public:
-	QtProjectWizardContentPathsHeaderSearchGlobal(QtProjectWizardWindow* window);
+  QtProjectWizardContentPathsHeaderSearchGlobal(QtProjectWizardWindow* window);
 
-	// QtProjectWizardContent implementation
-	virtual void load() override;
-	virtual void save() override;
+  // QtProjectWizardContent implementation
+  virtual void load() override;
+  virtual void save() override;
 
-	virtual bool check() override;
+  virtual bool check() override;
 
 protected:
-	virtual void detectedPaths(const std::vector<FilePath>& paths) override;
+  virtual void detectedPaths(const std::vector<FilePath>& paths) override;
 
 private:
-	void setPaths(const std::vector<FilePath>& paths);
+  void setPaths(const std::vector<FilePath>& paths);
 };
 
-#endif	  // QT_PROJECT_WIZARD_CONTENT_PATHS_HEADER_SEARCH_GLOBAL_H
+#endif    // QT_PROJECT_WIZARD_CONTENT_PATHS_HEADER_SEARCH_GLOBAL_H

@@ -5,15 +5,14 @@
 
 #include "GraphViewStyle.h"
 
-class QtLineItemStraight: public QGraphicsLineItem
-{
+class QtLineItemStraight : public QGraphicsLineItem {
 public:
-	QtLineItemStraight(QGraphicsItem* parent);
-	virtual ~QtLineItemStraight();
+  QtLineItemStraight(QGraphicsItem* parent);
+  virtual ~QtLineItemStraight();
 
-	void updateLine(const Vec2i& origin, const Vec2i& target, const GraphViewStyle::EdgeStyle& style);
+  void updateLine(const Vec2i& origin, const Vec2i& target, const GraphViewStyle::EdgeStyle& style);
 
-	virtual QPainterPath shape() const;
+  virtual QPainterPath shape() const;
 };
 
-#endif	  // QT_LINE_ITEM_STRAIGHT_H
+#endif    // QT_LINE_ITEM_STRAIGHT_H

@@ -1,21 +1,17 @@
 #include "ElementComponentKind.h"
 
-int elementComponentKindToInt(ElementComponentKind kind)
-{
-	return static_cast<int>(kind);
+int elementComponentKindToInt(ElementComponentKind kind) {
+  return static_cast<int>(kind);
 }
 
-ElementComponentKind intToElementComponentKind(int value)
-{
-	const ElementComponentKind kinds[] = {ElementComponentKind::IS_AMBIGUOUS};
+ElementComponentKind intToElementComponentKind(int value) {
+  const ElementComponentKind kinds[] = {ElementComponentKind::IS_AMBIGUOUS};
 
-	for (ElementComponentKind kind: kinds)
-	{
-		if (value == elementComponentKindToInt(kind))
-		{
-			return kind;
-		}
-	}
+  for(ElementComponentKind kind : kinds) {
+    if(value == elementComponentKindToInt(kind)) {
+      return kind;
+    }
+  }
 
-	return ElementComponentKind::NONE;
+  return ElementComponentKind::NONE;
 }

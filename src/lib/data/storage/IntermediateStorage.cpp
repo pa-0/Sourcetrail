@@ -222,8 +222,7 @@ Id IntermediateStorage::addSourceLocation(const StorageSourceLocationData& sourc
   return sourceLocationId;
 }
 
-std::vector<Id> IntermediateStorage::addSourceLocations(
-    const std::vector<StorageSourceLocation>& locations) {
+std::vector<Id> IntermediateStorage::addSourceLocations(const std::vector<StorageSourceLocation>& locations) {
   std::vector<Id> locationIds;
   locationIds.reserve(locations.size());
   for(const StorageSourceLocation& location : locations) {
@@ -244,8 +243,7 @@ void IntermediateStorage::addComponentAccess(const StorageComponentAccess& compo
   m_componentAccesses.emplace(componentAccess);
 }
 
-void IntermediateStorage::addComponentAccesses(
-    const std::vector<StorageComponentAccess>& componentAccesses) {
+void IntermediateStorage::addComponentAccesses(const std::vector<StorageComponentAccess>& componentAccesses) {
   m_componentAccesses.insert(componentAccesses.begin(), componentAccesses.end());
 }
 
@@ -348,8 +346,7 @@ void IntermediateStorage::setStorageLocalSymbols(std::set<StorageLocalSymbol> st
   m_localSymbols = std::move(storageLocalSymbols);
 }
 
-void IntermediateStorage::setStorageSourceLocations(
-    std::set<StorageSourceLocation> storageSourceLocations) {
+void IntermediateStorage::setStorageSourceLocations(std::set<StorageSourceLocation> storageSourceLocations) {
   m_sourceLocations = std::move(storageSourceLocations);
 }
 

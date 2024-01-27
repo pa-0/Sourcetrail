@@ -5,10 +5,7 @@
 #include "utilityQt.h"
 
 QtIconButton::QtIconButton(const FilePath& iconPath, const FilePath& hoveredIconPath, QWidget* parent)
-    : QPushButton(QLatin1String(""), parent)
-    , m_iconPath(iconPath)
-    , m_hoveredIconPath(hoveredIconPath)
-    , m_color(Qt::transparent) {
+    : QPushButton(QLatin1String(""), parent), m_iconPath(iconPath), m_hoveredIconPath(hoveredIconPath), m_color(Qt::transparent) {
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
 

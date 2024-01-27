@@ -1,9 +1,9 @@
 #include "LogMessage.h"
 
-#include <fmt/format.h>
-#include <fmt/chrono.h>
-
 #include <utility>
+
+#include <fmt/chrono.h>
+#include <fmt/format.h>
 
 LogMessage::LogMessage(std::wstring message,
                        std::string filePath,

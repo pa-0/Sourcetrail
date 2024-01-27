@@ -9,24 +9,23 @@ class QListWidgetItem;
 class FilePath;
 class QtPathListBox;
 
-class QtPathListBoxItem: public QtListBoxItem
-{
-	Q_OBJECT
+class QtPathListBoxItem : public QtListBoxItem {
+  Q_OBJECT
 
 public:
-	QtPathListBoxItem(QtPathListBox* listBox, QListWidgetItem* item, QWidget* parent = nullptr);
+  QtPathListBoxItem(QtPathListBox* listBox, QListWidgetItem* item, QWidget* parent = nullptr);
 
 protected:
-	virtual QtListBox* getListBox() override;
+  virtual QtListBox* getListBox() override;
 
 private slots:
-	void handleButtonPress();
+  void handleButtonPress();
 
 private:
-	virtual void onReadOnlyChanged() override;
+  virtual void onReadOnlyChanged() override;
 
-	QtPathListBox* m_listBox;
-	QPushButton* m_button;
+  QtPathListBox* m_listBox;
+  QPushButton* m_button;
 };
 
-#endif	  // QT_PATH_LIST_BOX_ITEM_H
+#endif    // QT_PATH_LIST_BOX_ITEM_H

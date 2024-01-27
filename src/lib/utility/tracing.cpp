@@ -18,8 +18,7 @@ std::shared_ptr<TraceEvent> Tracer::startEvent(const std::string& eventName) {
 
   const std::thread::id id = std::this_thread::get_id();
 
-  std::shared_ptr<TraceEvent> event = std::make_shared<TraceEvent>(
-      eventName, s_nextTraceId++, m_startedEvents[id].size());
+  std::shared_ptr<TraceEvent> event = std::make_shared<TraceEvent>(eventName, s_nextTraceId++, m_startedEvents[id].size());
 
   m_events[id].push_back(event);
   m_startedEvents[id].push(event.get());
@@ -112,11 +111,8 @@ void Tracer::printTraces() {
     }
   }
 
-  std::multiset<AccumulatedTraceEvent,
-                std::function<bool(const AccumulatedTraceEvent&, const AccumulatedTraceEvent&)>>
-      sortedEvents([](const AccumulatedTraceEvent& a, const AccumulatedTraceEvent& b) {
-        return a.time > b.time;
-      });
+  std::multiset<AccumulatedTraceEvent, std::function<bool(const AccumulatedTraceEvent&, const AccumulatedTraceEvent&)>> sortedEvents(
+      [](const AccumulatedTraceEvent& a, const AccumulatedTraceEvent& b) { return a.time > b.time; });
 
   for(const auto& [text, event] : accumulatedEvents) {
     sortedEvents.insert(event);
@@ -160,8 +156,7 @@ std::shared_ptr<TraceEvent> AccumulatingTracer::startEvent(const std::string& ev
 
   const std::thread::id id = std::this_thread::get_id();
 
-  std::shared_ptr<TraceEvent> event = std::make_shared<TraceEvent>(
-      eventName, s_nextTraceId++, m_startedEvents[id].size());
+  std::shared_ptr<TraceEvent> event = std::make_shared<TraceEvent>(eventName, s_nextTraceId++, m_startedEvents[id].size());
 
   m_startedEvents[id].push(event.get());
 
@@ -177,8 +172,8 @@ void AccumulatingTracer::finishEvent(std::shared_ptr<TraceEvent> event) {
 
   const std::string name = event->eventName + event->functionName + event->locationName;
 
-  std::pair<std::map<std::string, AccumulatedTraceEvent>::iterator, bool> p =
-      m_accumulatedEvents.emplace(name, AccumulatedTraceEvent());
+  std::pair<std::map<std::string, AccumulatedTraceEvent>::iterator, bool> p = m_accumulatedEvents.emplace(
+      name, AccumulatedTraceEvent());
 
   AccumulatedTraceEvent* acc = &p.first->second;
   if(p.second) {
@@ -207,10 +202,8 @@ void AccumulatingTracer::printTraces() {
   std::cout << "------------------------------------------------------------\n";
 
   using func = std::function<bool(const AccumulatedTraceEvent&, const AccumulatedTraceEvent&)>;
-  std::multiset<AccumulatedTraceEvent, func>
-      sortedEvents([](const AccumulatedTraceEvent& a, const AccumulatedTraceEvent& b) {
-        return a.time > b.time;
-      });
+  std::multiset<AccumulatedTraceEvent, func> sortedEvents(
+      [](const AccumulatedTraceEvent& a, const AccumulatedTraceEvent& b) { return a.time > b.time; });
 
   for(const auto& [text, event] : m_accumulatedEvents) {
     sortedEvents.insert(event);

@@ -6,28 +6,26 @@
 
 class SourceGroupSettingsWithCxxPchOptions;
 
-class QtProjectWizardContentPathCxxPch: public QtProjectWizardContentPath
-{
-	Q_OBJECT
+class QtProjectWizardContentPathCxxPch : public QtProjectWizardContentPath {
+  Q_OBJECT
 
 public:
-	QtProjectWizardContentPathCxxPch(
-		std::shared_ptr<SourceGroupSettings> settings,
-		std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> settingsCxxPch,
-		QtProjectWizardWindow* window);
+  QtProjectWizardContentPathCxxPch(std::shared_ptr<SourceGroupSettings> settings,
+                                   std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> settingsCxxPch,
+                                   QtProjectWizardWindow* window);
 
-	// QtProjectWizardContent implementation
-	void populate(QGridLayout* layout, int& row) override;
+  // QtProjectWizardContent implementation
+  void populate(QGridLayout* layout, int& row) override;
 
-	void load() override;
-	void save() override;
-	bool check() override;
+  void load() override;
+  void save() override;
+  bool check() override;
 
 private:
-	std::shared_ptr<SourceGroupSettings> getSourceGroupSettings() override;
+  std::shared_ptr<SourceGroupSettings> getSourceGroupSettings() override;
 
-	std::shared_ptr<SourceGroupSettings> m_settings;
-	std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> m_settingsCxxPch;
+  std::shared_ptr<SourceGroupSettings> m_settings;
+  std::shared_ptr<SourceGroupSettingsWithCxxPchOptions> m_settingsCxxPch;
 };
 
-#endif	  // QT_PROJECT_WIZARD_CONTENT_PATH_CXX_PCH_H
+#endif    // QT_PROJECT_WIZARD_CONTENT_PATH_CXX_PCH_H

@@ -27,8 +27,7 @@ public:
   std::shared_ptr<Component> createSearchComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createStatusBarComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createStatusComponent(ViewLayout* viewLayout);
-  std::shared_ptr<Component> createTabsComponent(ViewLayout* viewLayout,
-                                                 ScreenSearchSender* screenSearchSender);
+  std::shared_ptr<Component> createTabsComponent(ViewLayout* viewLayout, ScreenSearchSender* screenSearchSender);
   std::shared_ptr<Component> createTooltipComponent(ViewLayout* viewLayout);
   std::shared_ptr<Component> createUndoRedoComponent(ViewLayout* viewLayout);
 

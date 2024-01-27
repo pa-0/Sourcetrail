@@ -14,8 +14,7 @@ std::shared_ptr<ConfigManager> ConfigManager::createEmpty() {
   return std::shared_ptr<ConfigManager>(new ConfigManager());
 }
 
-std::shared_ptr<ConfigManager> ConfigManager::createAndLoad(
-    const std::shared_ptr<TextAccess> textAccess) {
+std::shared_ptr<ConfigManager> ConfigManager::createAndLoad(const std::shared_ptr<TextAccess> textAccess) {
   std::shared_ptr<ConfigManager> configManager = std::shared_ptr<ConfigManager>(new ConfigManager());
   configManager->load(textAccess);
   return configManager;
@@ -91,14 +90,11 @@ bool ConfigManager::getValue(const std::string& key, FilePath& value) const {
 }
 
 bool ConfigManager::getValues(const std::string& key, std::vector<std::string>& values) const {
-  std::pair<std::multimap<std::string, std::string>::const_iterator,
-            std::multimap<std::string, std::string>::const_iterator>
-      ret;
+  std::pair<std::multimap<std::string, std::string>::const_iterator, std::multimap<std::string, std::string>::const_iterator> ret;
   ret = m_values.equal_range(key);
 
   if(ret.first != ret.second) {
-    for(std::multimap<std::string, std::string>::const_iterator cit = ret.first; cit != ret.second;
-        ++cit) {
+    for(std::multimap<std::string, std::string>::const_iterator cit = ret.first; cit != ret.second; ++cit) {
       values.push_back(cit->second);
     }
     return true;
@@ -264,9 +260,7 @@ bool ConfigManager::isValueDefined(const std::string& key) const {
 
 std::vector<std::string> ConfigManager::getSublevelKeys(const std::string& key) const {
   std::set<std::string> keys;
-  for(std::multimap<std::string, std::string>::const_iterator it = m_values.begin();
-      it != m_values.end();
-      it++) {
+  for(std::multimap<std::string, std::string>::const_iterator it = m_values.begin(); it != m_values.end(); it++) {
     if(utility::isPrefix(key, it->first)) {
       size_t startPos = it->first.find("/", key.size());
       if(startPos == key.size()) {
@@ -288,8 +282,7 @@ bool ConfigManager::load(const std::shared_ptr<TextAccess> textAccess) {
       LOG_ERROR("No rootelement 'config' in the configfile");
       return false;
     }
-    for(TiXmlNode* childNode = rootNode->FirstChild(); childNode;
-        childNode = childNode->NextSibling()) {
+    for(TiXmlNode* childNode = rootNode->FirstChild(); childNode; childNode = childNode->NextSibling()) {
       parseSubtree(childNode, "");
     }
   } else {
@@ -310,12 +303,9 @@ void ConfigManager::setWarnOnEmptyKey(bool warnOnEmptyKey) const {
 
 ConfigManager::ConfigManager() : m_warnOnEmptyKey(true) {}
 
-ConfigManager::ConfigManager(const ConfigManager& other)
-    : m_values(other.m_values), m_warnOnEmptyKey(other.m_warnOnEmptyKey) {}
+ConfigManager::ConfigManager(const ConfigManager& other) : m_values(other.m_values), m_warnOnEmptyKey(other.m_warnOnEmptyKey) {}
 
-bool ConfigManager::createXmlDocument(bool saveAsFile,
-                                      const std::string filepath,
-                                      std::string& output) {
+bool ConfigManager::createXmlDocument(bool saveAsFile, const std::string filepath, std::string& output) {
   bool success = true;
   TiXmlDocument doc;
   TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "utf-8", "");
@@ -323,8 +313,7 @@ bool ConfigManager::createXmlDocument(bool saveAsFile,
   TiXmlElement* root = new TiXmlElement("config");
   doc.LinkEndChild(root);
 
-  for(std::multimap<std::string, std::string>::iterator it = m_values.begin(); it != m_values.end();
-      ++it) {
+  for(std::multimap<std::string, std::string>::iterator it = m_values.begin(); it != m_values.end(); ++it) {
     if(!it->first.size() || !it->second.size()) {
       continue;
     }
@@ -366,8 +355,7 @@ void ConfigManager::parseSubtree(TiXmlNode* currentNode, const std::string& curr
     std::string key = currentPath.substr(0, currentPath.size() - 1);
     m_values.insert(std::pair<std::string, std::string>(key, currentNode->ToText()->Value()));
   } else {
-    for(TiXmlNode* childNode = currentNode->FirstChild(); childNode;
-        childNode = childNode->NextSibling()) {
+    for(TiXmlNode* childNode = currentNode->FirstChild(); childNode; childNode = childNode->NextSibling()) {
       parseSubtree(childNode, currentPath + std::string(currentNode->Value()) + "/");
     }
   }

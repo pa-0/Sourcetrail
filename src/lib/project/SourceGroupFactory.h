@@ -8,22 +8,21 @@ class SourceGroup;
 class SourceGroupSettings;
 class SourceGroupFactoryModule;
 
-class SourceGroupFactory
-{
+class SourceGroupFactory {
 public:
-	static std::shared_ptr<SourceGroupFactory> getInstance();
+  static std::shared_ptr<SourceGroupFactory> getInstance();
 
-	void addModule(std::shared_ptr<SourceGroupFactoryModule> module);
+  void addModule(std::shared_ptr<SourceGroupFactoryModule> module);
 
-	std::vector<std::shared_ptr<SourceGroup>> createSourceGroups(
-		std::vector<std::shared_ptr<SourceGroupSettings>> allSourceGroupSettings);
-	std::shared_ptr<SourceGroup> createSourceGroup(std::shared_ptr<SourceGroupSettings> settings);
+  std::vector<std::shared_ptr<SourceGroup>> createSourceGroups(
+      std::vector<std::shared_ptr<SourceGroupSettings>> allSourceGroupSettings);
+  std::shared_ptr<SourceGroup> createSourceGroup(std::shared_ptr<SourceGroupSettings> settings);
 
 private:
-	static std::shared_ptr<SourceGroupFactory> s_instance;
-	SourceGroupFactory();
+  static std::shared_ptr<SourceGroupFactory> s_instance;
+  SourceGroupFactory();
 
-	std::vector<std::shared_ptr<SourceGroupFactoryModule>> m_modules;
+  std::vector<std::shared_ptr<SourceGroupFactoryModule>> m_modules;
 };
 
-#endif	  // SOURCE_GROUP_FACTORY_H
+#endif    // SOURCE_GROUP_FACTORY_H

@@ -740,8 +740,7 @@ void QtMainWindow::setupEditMenu() {
   menu->addSeparator();
 
   menu->addAction(tr("Next Reference"), this, &QtMainWindow::codeReferenceNext, QKeySequence("Ctrl+G"));
-  menu->addAction(
-      tr("Previous Reference"), this, &QtMainWindow::codeReferencePrevious, QKeySequence("Shift+Ctrl+G"));
+  menu->addAction(tr("Previous Reference"), this, &QtMainWindow::codeReferencePrevious, QKeySequence("Shift+Ctrl+G"));
 
   menu->addAction(tr("Next Local Reference"), this, &QtMainWindow::codeLocalReferenceNext, QKeySequence("Ctrl+L"));
   menu->addAction(tr("Previous Local Reference"),

@@ -32,9 +32,7 @@ class Application
     , public MessageListener<MessageRefreshUI>
     , public MessageListener<MessageSwitchColorScheme> {
 public:
-  static void createInstance(const Version& version,
-                             ViewFactory* viewFactory,
-                             NetworkFactory* networkFactory);
+  static void createInstance(const Version& version, ViewFactory* viewFactory, NetworkFactory* networkFactory);
   static std::shared_ptr<Application> getInstance();
   static void destroyInstance();
 
@@ -69,7 +67,7 @@ public:
 
 private:
   static std::shared_ptr<Application> s_instance;    // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-  static std::string s_uuid;    // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+  static std::string s_uuid;                         // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
   explicit Application(bool withGUI = true);
 

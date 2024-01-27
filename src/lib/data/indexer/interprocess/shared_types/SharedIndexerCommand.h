@@ -2,11 +2,10 @@
 
 #include <set>
 
-#include "language_packages.h"
-
 #include "FilePath.h"
 #include "FilePathFilter.h"
 #include "SharedMemory.h"
+#include "language_packages.h"
 
 class IndexerCommand;
 
@@ -55,7 +54,7 @@ private:
   };
 
   Type getType() const;
-	
+
   void setType(const Type type);
 
   Type m_type;

@@ -4,13 +4,11 @@
 #include "NodeTypeSet.h"
 #include "StorageAccess.h"
 
-CustomTrailController::CustomTrailController(StorageAccess* storageAccess)
-    : m_storageAccess(storageAccess) {}
+CustomTrailController::CustomTrailController(StorageAccess* storageAccess) : m_storageAccess(storageAccess) {}
 
 void CustomTrailController::clear() {
   getView()->clearView();
-  getView()->setAvailableNodeAndEdgeTypes(
-      m_storageAccess->getAvailableNodeTypes(), m_storageAccess->getAvailableEdgeTypes());
+  getView()->setAvailableNodeAndEdgeTypes(m_storageAccess->getAvailableNodeTypes(), m_storageAccess->getAvailableEdgeTypes());
 }
 
 void CustomTrailController::autocomplete(const std::wstring query, bool from) {
@@ -19,8 +17,7 @@ void CustomTrailController::autocomplete(const std::wstring query, bool from) {
   nodeTypes.remove(NodeType(NODE_NAMESPACE));
   nodeTypes.remove(NodeType(NODE_PACKAGE));
 
-  getView()->showAutocompletions(
-      m_storageAccess->getAutocompletionMatches(query, nodeTypes, false), from);
+  getView()->showAutocompletions(m_storageAccess->getAutocompletionMatches(query, nodeTypes, false), from);
 }
 
 void CustomTrailController::activateTrail(MessageActivateTrail message) {

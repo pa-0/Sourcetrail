@@ -3,26 +3,21 @@
 
 #include <string>
 
-class CxxQualifierFlags
-{
+class CxxQualifierFlags {
 public:
-	enum QualifierType
-	{
-		QUALIFIER_NONE = 0,
-		QUALIFIER_CONST = 1
-	};
+  enum QualifierType { QUALIFIER_NONE = 0, QUALIFIER_CONST = 1 };
 
-	CxxQualifierFlags();
-	CxxQualifierFlags(const char flags);
+  CxxQualifierFlags();
+  CxxQualifierFlags(const char flags);
 
-	void addQualifier(QualifierType qualifier);
-	void removeQualifier(QualifierType qualifier);
+  void addQualifier(QualifierType qualifier);
+  void removeQualifier(QualifierType qualifier);
 
-	bool empty() const;
-	std::wstring toString() const;
+  bool empty() const;
+  std::wstring toString() const;
 
 private:
-	char m_flags;
+  char m_flags;
 };
 
-#endif	  // CXX_QUALIFIER_FLAGS_H
+#endif    // CXX_QUALIFIER_FLAGS_H

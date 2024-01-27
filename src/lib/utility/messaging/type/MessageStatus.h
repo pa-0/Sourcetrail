@@ -7,10 +7,7 @@
 
 class MessageStatus final : public Message<MessageStatus> {
 public:
-  MessageStatus(const std::wstring& status_,
-                bool isError_ = false,
-                bool showLoader_ = false,
-                bool showInStatusBar_ = true);
+  MessageStatus(const std::wstring& status_, bool isError_ = false, bool showLoader_ = false, bool showInStatusBar_ = true);
 
   MessageStatus(const std::vector<std::wstring>& stati_,
                 bool isError_ = false,

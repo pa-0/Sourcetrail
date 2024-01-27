@@ -6,25 +6,23 @@
 class QComboBox;
 class SourceGroupSettingsWithCStandard;
 
-class QtProjectWizardContentCStandard: public QtProjectWizardContent
-{
-	Q_OBJECT
+class QtProjectWizardContentCStandard : public QtProjectWizardContent {
+  Q_OBJECT
 
 public:
-	QtProjectWizardContentCStandard(
-		std::shared_ptr<SourceGroupSettingsWithCStandard> sourceGroupSettings,
-		QtProjectWizardWindow* window);
+  QtProjectWizardContentCStandard(std::shared_ptr<SourceGroupSettingsWithCStandard> sourceGroupSettings,
+                                  QtProjectWizardWindow* window);
 
-	// QtProjectWizardContent implementation
-	virtual void populate(QGridLayout* layout, int& row) override;
+  // QtProjectWizardContent implementation
+  virtual void populate(QGridLayout* layout, int& row) override;
 
-	virtual void load() override;
-	virtual void save() override;
+  virtual void load() override;
+  virtual void save() override;
 
 private:
-	std::shared_ptr<SourceGroupSettingsWithCStandard> m_sourceGroupSettings;
+  std::shared_ptr<SourceGroupSettingsWithCStandard> m_sourceGroupSettings;
 
-	QComboBox* m_standard;
+  QComboBox* m_standard;
 };
 
-#endif	  // QT_PROJECT_WIZARD_CONTENT_C_STANDARD
+#endif    // QT_PROJECT_WIZARD_CONTENT_C_STANDARD

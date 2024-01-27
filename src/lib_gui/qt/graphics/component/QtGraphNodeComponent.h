@@ -7,18 +7,17 @@
 
 class QtGraphNode;
 
-class QtGraphNodeComponent
-{
+class QtGraphNodeComponent {
 public:
-	QtGraphNodeComponent(QtGraphNode* graphNode);
-	virtual ~QtGraphNodeComponent();
+  QtGraphNodeComponent(QtGraphNode* graphNode);
+  virtual ~QtGraphNodeComponent();
 
-	virtual void nodeMousePressEvent(QGraphicsSceneMouseEvent* event);
-	virtual void nodeMouseMoveEvent(QGraphicsSceneMouseEvent* event);
-	virtual void nodeMouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+  virtual void nodeMousePressEvent(QGraphicsSceneMouseEvent* event);
+  virtual void nodeMouseMoveEvent(QGraphicsSceneMouseEvent* event);
+  virtual void nodeMouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
 protected:
-	QtGraphNode* m_graphNode;
+  QtGraphNode* m_graphNode;
 };
 
-#endif	  // QT_GRAPH_NODE_COMPONENT_H
+#endif    // QT_GRAPH_NODE_COMPONENT_H

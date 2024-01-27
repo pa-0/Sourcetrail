@@ -34,11 +34,9 @@ public:
                                                              CompositeView::CompositeDirection direction,
                                                              const std::string& name,
                                                              const Id tabId) const = 0;
-  virtual std::shared_ptr<TabbedView> createTabbedView(ViewLayout* viewLayout,
-                                                       const std::string& name) const = 0;
+  virtual std::shared_ptr<TabbedView> createTabbedView(ViewLayout* viewLayout, const std::string& name) const = 0;
 
-  virtual std::shared_ptr<BookmarkButtonsView> createBookmarkButtonsView(
-      ViewLayout* viewLayout) const = 0;
+  virtual std::shared_ptr<BookmarkButtonsView> createBookmarkButtonsView(ViewLayout* viewLayout) const = 0;
   virtual std::shared_ptr<BookmarkView> createBookmarkView(ViewLayout* viewLayout) const = 0;
   virtual std::shared_ptr<CodeView> createCodeView(ViewLayout* viewLayout) const = 0;
   virtual std::shared_ptr<CustomTrailView> createCustomTrailView(ViewLayout* viewLayout) const = 0;

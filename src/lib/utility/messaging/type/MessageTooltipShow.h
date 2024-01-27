@@ -7,15 +7,12 @@
 
 class MessageTooltipShow final : public Message<MessageTooltipShow> {
 public:
-  MessageTooltipShow(TooltipInfo info_, TooltipOrigin origin_)
-      : tooltipInfo(info_), origin(origin_) {
+  MessageTooltipShow(TooltipInfo info_, TooltipOrigin origin_) : tooltipInfo(info_), origin(origin_) {
     setSendAsTask(false);
     setIsLogged(false);
   }
 
-  MessageTooltipShow(const std::vector<Id>& sourceLocationIds_,
-                     const std::vector<Id>& localSymbolIds_,
-                     TooltipOrigin origin_)
+  MessageTooltipShow(const std::vector<Id>& sourceLocationIds_, const std::vector<Id>& localSymbolIds_, TooltipOrigin origin_)
       : sourceLocationIds(sourceLocationIds_), localSymbolIds(localSymbolIds_), origin(origin_) {
     setSendAsTask(false);
     setIsLogged(false);

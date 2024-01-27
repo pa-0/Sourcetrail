@@ -13,58 +13,56 @@ class QPushButton;
 class QtTextEditDialog;
 class QtListBoxItem;
 
-class QtListWidget: public QListWidget
-{
-	Q_OBJECT
+class QtListWidget : public QListWidget {
+  Q_OBJECT
 
 public:
-	QtListWidget(QWidget* parent = nullptr): QListWidget(parent) {}
+  QtListWidget(QWidget* parent = nullptr) : QListWidget(parent) {}
 
 protected:
-	void mouseDoubleClickEvent(QMouseEvent* event) override;
-	void wheelEvent(QWheelEvent* event) override;
+  void mouseDoubleClickEvent(QMouseEvent* event) override;
+  void wheelEvent(QWheelEvent* event) override;
 };
 
-class QtListBox: public QFrame
-{
-	Q_OBJECT
+class QtListBox : public QFrame {
+  Q_OBJECT
 
 public:
-	QtListBox(QWidget* parent, const QString& listName);
-	virtual ~QtListBox() = default;
+  QtListBox(QWidget* parent, const QString& listName);
+  virtual ~QtListBox() = default;
 
-	void clear();
+  void clear();
 
-	QtListBoxItem* addListBoxItemWithText(const QString& text);
+  QtListBoxItem* addListBoxItemWithText(const QString& text);
 
-	void selectItem(QListWidgetItem* item);
+  void selectItem(QListWidgetItem* item);
 
 protected:
-	void addWidgetToBar(QWidget* widget);
+  void addWidgetToBar(QWidget* widget);
 
-	QtListWidget* m_list;
+  QtListWidget* m_list;
 
 protected slots:
-	QtListBoxItem* addListBoxItem();
-	void removeListBoxItem();
+  QtListBoxItem* addListBoxItem();
+  void removeListBoxItem();
 
-	void showEditDialog();
-	void canceledEditDialog();
-	void savedEditDialog();
+  void showEditDialog();
+  void canceledEditDialog();
+  void savedEditDialog();
 
 private slots:
-	void doubleClicked(const QModelIndex& index);
+  void doubleClicked(const QModelIndex& index);
 
 private:
-	virtual QtListBoxItem* createListBoxItem(QListWidgetItem* item) = 0;
+  virtual QtListBoxItem* createListBoxItem(QListWidgetItem* item) = 0;
 
-	QHBoxLayout* m_innerBarLayout;
-	QPushButton* m_addButton;
-	QPushButton* m_removeButton;
+  QHBoxLayout* m_innerBarLayout;
+  QPushButton* m_addButton;
+  QPushButton* m_removeButton;
 
-	QString m_listName;
+  QString m_listName;
 
-	std::shared_ptr<QtTextEditDialog> m_editDialog;
+  std::shared_ptr<QtTextEditDialog> m_editDialog;
 };
 
-#endif	  // QT_LIST_BOX_H
+#endif    // QT_LIST_BOX_H

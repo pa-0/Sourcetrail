@@ -1,11 +1,11 @@
 #include "TabId.h"
 
-constexpr Id AppId         = 1;
-constexpr Id BackgroundId  = 2;
-constexpr Id IgnoreId      = 3;
+constexpr Id AppId = 1;
+constexpr Id BackgroundId = 2;
+constexpr Id IgnoreId = 3;
 constexpr Id StartingTabId = 10;
 
-Id TabId::s_nextTabId    = StartingTabId;
+Id TabId::s_nextTabId = StartingTabId;
 Id TabId::s_currentTabId = 0;
 
 Id TabId::app() {

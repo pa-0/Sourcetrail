@@ -133,5 +133,5 @@ TEST_F(CommandlineCommandConfigFix, setNumberOfThreads) {
 
   ASSERT_EQ(CommandlineCommand::ReturnStatus::CMD_QUIT, ret);
   EXPECT_EQ(1, ApplicationSettings::getInstance()->getIndexerThreadCount());
-  EXPECT_EQ(std::vector<FilePath>{FilePath{"/usr/include/"}}, ApplicationSettings::getInstance()->getHeaderSearchPaths());
+  EXPECT_EQ(std::vector<FilePath> {FilePath {"/usr/include/"}}, ApplicationSettings::getInstance()->getHeaderSearchPaths());
 }

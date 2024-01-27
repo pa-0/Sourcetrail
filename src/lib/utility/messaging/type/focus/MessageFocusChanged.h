@@ -7,8 +7,7 @@ class MessageFocusChanged final : public Message<MessageFocusChanged> {
 public:
   enum class ViewType { GRAPH, CODE };
 
-  MessageFocusChanged(ViewType type_, Id tokenOrLocationId_)
-      : type(type_), tokenOrLocationId(tokenOrLocationId_) {
+  MessageFocusChanged(ViewType type_, Id tokenOrLocationId_) : type(type_), tokenOrLocationId(tokenOrLocationId_) {
     setIsLogged(false);
     setSchedulerId(TabId::currentTab());
   }

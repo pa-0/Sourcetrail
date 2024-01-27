@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include "GraphViewStyle.h"
 #include "GraphViewStyleImpl.h"
@@ -74,12 +74,9 @@ static NodeMargins getMarginsOfBundleNode();
 static NodeMargins getMarginsOfTextNode(int fontSizeDiff);
 static NodeMargins getMarginsOfGroupNode(GroupType type, bool hasName);
 
-static NodeStyle getStyleForNodeType(NodeType type, bool defined, bool isActive, bool isFocused, bool isCoFocused, bool hasChildren, bool hasQualifier);
-static NodeStyle getStyleOfAccessNode();
-static NodeStyle getStyleOfExpandToggleNode();
-static NodeStyle getStyleOfCountCircle();
-static NodeStyle getStyleOfBundleNode(bool isFocused);
-static NodeStyle getStyleOfQualifier();
+static NodeStyle getStyleForNodeType(NodeType type, bool defined, bool isActive, bool isFocused, bool isCoFocused, bool
+hasChildren, bool hasQualifier); static NodeStyle getStyleOfAccessNode(); static NodeStyle getStyleOfExpandToggleNode(); static
+NodeStyle getStyleOfCountCircle(); static NodeStyle getStyleOfBundleNode(bool isFocused); static NodeStyle getStyleOfQualifier();
 static NodeStyle getStyleOfTextNode(int fontSizeDiff);
 static NodeStyle getStyleOfGroupNode(GroupType type, bool isCoFocused);
 
@@ -94,13 +91,13 @@ static int toGridGap(int x);
   EXPECT_EQ("#FF1493", GraphViewStyle::getFocusColor());
 
   // fill: #FF1493, text: #FF1493, border: #FF1493, hatching: #FF1493, icon: #FF1493
-  EXPECT_EQ(GraphViewStyle::NodeColor{}, GraphViewStyle::getNodeColor("", true));
+  EXPECT_EQ(GraphViewStyle::NodeColor {}, GraphViewStyle::getNodeColor("", true));
 
-/*
-static const NodeColor& getNodeColor(const std::string& typeStr, bool highlight);
-static const std::string& getEdgeColor(const std::string& type);
-static const NodeColor& getScreenMatchColor(bool focus);
-   */
+  /*
+  static const NodeColor& getNodeColor(const std::string& typeStr, bool highlight);
+  static const std::string& getEdgeColor(const std::string& type);
+  static const NodeColor& getScreenMatchColor(bool focus);
+     */
 }
 
 TEST(GraphViewStyle, loadStyleSettingsMissingImpl) {

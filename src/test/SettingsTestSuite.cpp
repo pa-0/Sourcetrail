@@ -72,10 +72,10 @@ TEST(Settings, settingsGetLoadedValue) {
   TestSettings settings;
   EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
 
-  EXPECT_TRUE(settings.getBool()    == true);
-  EXPECT_TRUE(settings.getInt()     == 42);
-  EXPECT_TRUE(settings.getFloat()   == FloatValue);
-  EXPECT_TRUE(settings.getString()  == "Hello World!");
+  EXPECT_TRUE(settings.getBool() == true);
+  EXPECT_TRUE(settings.getInt() == 42);
+  EXPECT_TRUE(settings.getFloat() == FloatValue);
+  EXPECT_TRUE(settings.getString() == "Hello World!");
   EXPECT_TRUE(settings.getWString() == L"Hello World!");
 }
 
@@ -83,10 +83,10 @@ TEST(Settings, settingsGetDefaultValueWhenNotLoaded) {
   constexpr auto FloatValue = 0.01F;
 
   const TestSettings settings;
-  EXPECT_TRUE(settings.getBool()    == false);
-  EXPECT_TRUE(settings.getInt()     == -1);
-  EXPECT_TRUE(settings.getFloat()   == FloatValue);
-  EXPECT_TRUE(settings.getString()  == "<empty>");
+  EXPECT_TRUE(settings.getBool() == false);
+  EXPECT_TRUE(settings.getInt() == -1);
+  EXPECT_TRUE(settings.getFloat() == FloatValue);
+  EXPECT_TRUE(settings.getString() == "<empty>");
   EXPECT_TRUE(settings.getWString() == L"<empty>");
 }
 
@@ -96,10 +96,10 @@ TEST(Settings, settingsGetDefaultValueWhenWronglyLoaded) {
   TestSettings settings;
   EXPECT_TRUE(!settings.load(FilePath(L"data/SettingsTestSuite/wrong_settings.xml")));
 
-  EXPECT_TRUE(settings.getBool()    == false);
-  EXPECT_TRUE(settings.getInt()     == -1);
-  EXPECT_TRUE(settings.getFloat()   == FloatValue);
-  EXPECT_TRUE(settings.getString()  == "<empty>");
+  EXPECT_TRUE(settings.getBool() == false);
+  EXPECT_TRUE(settings.getInt() == -1);
+  EXPECT_TRUE(settings.getFloat() == FloatValue);
+  EXPECT_TRUE(settings.getString() == "<empty>");
   EXPECT_TRUE(settings.getWString() == L"<empty>");
 }
 
@@ -110,10 +110,10 @@ TEST(Settings, settingsGetDefaultValueAfterClearing) {
   EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
 
   settings.clear();
-  EXPECT_TRUE(settings.getBool()    == false);
-  EXPECT_TRUE(settings.getInt()     == -1);
-  EXPECT_TRUE(settings.getFloat()   == FloatValue);
-  EXPECT_TRUE(settings.getString()  == "<empty>");
+  EXPECT_TRUE(settings.getBool() == false);
+  EXPECT_TRUE(settings.getInt() == -1);
+  EXPECT_TRUE(settings.getFloat() == FloatValue);
+  EXPECT_TRUE(settings.getString() == "<empty>");
   EXPECT_TRUE(settings.getWString() == L"<empty>");
 }
 

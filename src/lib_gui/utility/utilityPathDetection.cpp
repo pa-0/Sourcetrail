@@ -1,7 +1,6 @@
 #include "utilityPathDetection.h"
 
 #include "language_packages.h"
-
 #include "logging.h"
 #include "utilityApp.h"
 

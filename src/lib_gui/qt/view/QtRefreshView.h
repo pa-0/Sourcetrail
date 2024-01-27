@@ -6,20 +6,19 @@
 
 class QFrame;
 
-class QtRefreshView: public RefreshView
-{
+class QtRefreshView : public RefreshView {
 public:
-	QtRefreshView(ViewLayout* viewLayout);
-	~QtRefreshView() = default;
+  QtRefreshView(ViewLayout* viewLayout);
+  ~QtRefreshView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
 private:
-	QtThreadedLambdaFunctor m_onQtThread;
+  QtThreadedLambdaFunctor m_onQtThread;
 
-	QFrame* m_widget;
+  QFrame* m_widget;
 };
 
-#endif	  // QT_REFRESH_VIEW_H
+#endif    // QT_REFRESH_VIEW_H

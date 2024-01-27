@@ -33,34 +33,25 @@ protected:
 };
 
 template <class T>
-Vector2<T>::Vector2()
-    : VectorBase<T, 2>()
-    , x(&VectorBase<T, 2>::m_values[m_xIndex])
-    , y(&VectorBase<T, 2>::m_values[m_yIndex]) {
+Vector2<T>::Vector2() : VectorBase<T, 2>(), x(&VectorBase<T, 2>::m_values[m_xIndex]), y(&VectorBase<T, 2>::m_values[m_yIndex]) {
   setValue(m_xIndex, 0);
   setValue(m_yIndex, 0);
 }
 
 template <class T>
 Vector2<T>::Vector2(const T& x_, const T& y_)
-    : VectorBase<T, 2>()
-    , x(&VectorBase<T, 2>::m_values[m_xIndex])
-    , y(&VectorBase<T, 2>::m_values[m_yIndex]) {
+    : VectorBase<T, 2>(), x(&VectorBase<T, 2>::m_values[m_xIndex]), y(&VectorBase<T, 2>::m_values[m_yIndex]) {
   setValue(m_xIndex, x_);
   setValue(m_yIndex, y_);
 }
 
 template <class T>
 Vector2<T>::Vector2(const VectorBase<T, 2>& vector)
-    : VectorBase<T, 2>(vector)
-    , x(&VectorBase<T, 2>::m_values[m_xIndex])
-    , y(&VectorBase<T, 2>::m_values[m_yIndex]) {}
+    : VectorBase<T, 2>(vector), x(&VectorBase<T, 2>::m_values[m_xIndex]), y(&VectorBase<T, 2>::m_values[m_yIndex]) {}
 
 template <class T>
 Vector2<T>::Vector2(const Vector2<T>& vector)
-    : VectorBase<T, 2>(vector)
-    , x(&VectorBase<T, 2>::m_values[m_xIndex])
-    , y(&VectorBase<T, 2>::m_values[m_yIndex]) {}
+    : VectorBase<T, 2>(vector), x(&VectorBase<T, 2>::m_values[m_xIndex]), y(&VectorBase<T, 2>::m_values[m_yIndex]) {}
 
 template <class T>
 Vector2<T>::~Vector2() = default;

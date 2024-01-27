@@ -7,8 +7,7 @@
 #include "SourceGroupSettings.h"
 #include "utilityFile.h"
 
-QtProjectWizardContentPath::QtProjectWizardContentPath(QtProjectWizardWindow* window)
-    : QtProjectWizardContent(window) {}
+QtProjectWizardContentPath::QtProjectWizardContentPath(QtProjectWizardWindow* window) : QtProjectWizardContent(window) {}
 
 void QtProjectWizardContentPath::populate(QGridLayout* layout, int& row) {
   QLabel* label = createFormLabel(m_titleString);
@@ -42,8 +41,7 @@ bool QtProjectWizardContentPath::check() {
     }
 
     FilePath path = utility::getExpandedAndAbsolutePath(
-        FilePath(m_picker->getText().toStdWString()),
-        getSourceGroupSettings()->getProjectDirectoryPath());
+        FilePath(m_picker->getText().toStdWString()), getSourceGroupSettings()->getProjectDirectoryPath());
 
     if(m_picker->pickDirectory()) {
       break;

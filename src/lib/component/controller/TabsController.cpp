@@ -43,8 +43,7 @@ void TabsController::addTab(Id tabId, SearchMatch match) {
 
   TaskManager::createScheduler(tabId)->startSchedulerLoopThreaded();
 
-  m_tabs.emplace(
-      tabId, std::make_shared<Tab>(tabId, m_viewFactory, m_storageAccess, m_screenSearchSender));
+  m_tabs.emplace(tabId, std::make_shared<Tab>(tabId, m_viewFactory, m_storageAccess, m_screenSearchSender));
 
   MessageWindowChanged().dispatch();
 
@@ -80,8 +79,7 @@ void TabsController::showTab(Id tabId) {
     m_mainLayout->showOriginalViews();
   }
 
-  Task::dispatch(TabId::app(),
-                 std::make_shared<TaskLambda>([this]() { m_screenSearchSender->clearMatches(); }));
+  Task::dispatch(TabId::app(), std::make_shared<TaskLambda>([this]() { m_screenSearchSender->clearMatches(); }));
 }
 
 void TabsController::removeTab(Id tabId) {

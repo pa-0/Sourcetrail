@@ -31,11 +31,8 @@ public:
   virtual void recordLocation(Id elementId, const ParseLocation& location, ParseLocationType type) = 0;
   virtual void recordComment(const ParseLocation& location) = 0;
 
-  virtual void recordError(const std::wstring& message,
-                           bool fatal,
-                           bool indexed,
-                           const FilePath& translationUnit,
-                           const ParseLocation& location) = 0;
+  virtual void recordError(
+      const std::wstring& message, bool fatal, bool indexed, const FilePath& translationUnit, const ParseLocation& location) = 0;
 
   virtual bool hasContent() const = 0;
 };

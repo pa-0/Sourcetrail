@@ -1,28 +1,19 @@
 #pragma once
 
+#include "AccessKind.h"
+#include "GroupType.h"
+#include "NameHierarchy.h"
+#include "Node.h"
 #include "Vector2.h"
 #include "Vector4.h"
 #include "types.h"
 #include "utility.h"
 #include "utilityString.h"
 
-#include "AccessKind.h"
-#include "GroupType.h"
-#include "NameHierarchy.h"
-#include "Node.h"
-
 // temporary data structure for (visual) graph creation process
 struct DummyNode {
 public:
-  enum Type {
-    DUMMY_DATA,
-    DUMMY_ACCESS,
-    DUMMY_EXPAND_TOGGLE,
-    DUMMY_BUNDLE,
-    DUMMY_QUALIFIER,
-    DUMMY_TEXT,
-    DUMMY_GROUP
-  };
+  enum Type { DUMMY_DATA, DUMMY_ACCESS, DUMMY_EXPAND_TOGGLE, DUMMY_BUNDLE, DUMMY_QUALIFIER, DUMMY_TEXT, DUMMY_GROUP };
 
   struct DummyNodeComp {
     bool operator()(const std::shared_ptr<DummyNode> a, const std::shared_ptr<DummyNode> b) const {
@@ -39,12 +30,7 @@ public:
   typedef std::multiset<std::shared_ptr<DummyNode>, DummyNodeComp> BundledNodesSet;
 
   struct BundleInfo {
-    BundleInfo()
-        : isActive(false)
-        , isDefined(false)
-        , layoutVertical(false)
-        , isReferenced(false)
-        , isReferencing(false) {}
+    BundleInfo() : isActive(false), isDefined(false), layoutVertical(false), isReferenced(false), isReferencing(false) {}
 
     static BundleInfo averageBundleInfo(const std::vector<DummyNode::BundleInfo>& bundleInfos) {
       size_t activeCount = 0;
@@ -343,9 +329,7 @@ public:
   void sortSubNodesByName() {
     std::sort(subNodes.begin(),
               subNodes.end(),
-              [](const std::shared_ptr<DummyNode>& a, const std::shared_ptr<DummyNode>& b) -> bool {
-                return a->name < b->name;
-              });
+              [](const std::shared_ptr<DummyNode>& a, const std::shared_ptr<DummyNode>& b) -> bool { return a->name < b->name; });
   }
 
   bool getsLayouted() const {

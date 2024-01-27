@@ -3,8 +3,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-QtProjectWizardContentSourceGroupInfoText::QtProjectWizardContentSourceGroupInfoText(
-    QtProjectWizardWindow* window)
+QtProjectWizardContentSourceGroupInfoText::QtProjectWizardContentSourceGroupInfoText(QtProjectWizardWindow* window)
     : QtProjectWizardContent(window) {}
 
 void QtProjectWizardContentSourceGroupInfoText::populate(QGridLayout* layout, int& row) {

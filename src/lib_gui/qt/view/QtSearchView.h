@@ -8,29 +8,28 @@
 
 class QtSearchBar;
 
-class QtSearchView: public SearchView
-{
+class QtSearchView : public SearchView {
 public:
-	QtSearchView(ViewLayout* viewLayout);
-	~QtSearchView() = default;
+  QtSearchView(ViewLayout* viewLayout);
+  ~QtSearchView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	// SearchView implementation
-	std::wstring getQuery() const override;
-	void setMatches(const std::vector<SearchMatch>& matches) override;
-	void setFocus() override;
-	void findFulltext() override;
-	void setAutocompletionList(const std::vector<SearchMatch>& autocompletionList) override;
+  // SearchView implementation
+  std::wstring getQuery() const override;
+  void setMatches(const std::vector<SearchMatch>& matches) override;
+  void setFocus() override;
+  void findFulltext() override;
+  void setAutocompletionList(const std::vector<SearchMatch>& autocompletionList) override;
 
 private:
-	void setStyleSheet();
+  void setStyleSheet();
 
-	QtThreadedLambdaFunctor m_onQtThread;
+  QtThreadedLambdaFunctor m_onQtThread;
 
-	QtSearchBar* m_widget;
+  QtSearchBar* m_widget;
 };
 
-#endif	  // QT_SEARCH_VIEW_H
+#endif    // QT_SEARCH_VIEW_H

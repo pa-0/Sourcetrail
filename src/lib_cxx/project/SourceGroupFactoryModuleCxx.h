@@ -3,12 +3,10 @@
 
 #include "SourceGroupFactoryModule.h"
 
-class SourceGroupFactoryModuleCxx: public SourceGroupFactoryModule
-{
+class SourceGroupFactoryModuleCxx : public SourceGroupFactoryModule {
 public:
-	bool supports(SourceGroupType type) const override;
-	std::shared_ptr<SourceGroup> createSourceGroup(
-		std::shared_ptr<SourceGroupSettings> settings) const override;
+  bool supports(SourceGroupType type) const override;
+  std::shared_ptr<SourceGroup> createSourceGroup(std::shared_ptr<SourceGroupSettings> settings) const override;
 };
 
-#endif	  // SOURCE_GROUP_FACTORY_MODULE_CXX_H
+#endif    // SOURCE_GROUP_FACTORY_MODULE_CXX_H

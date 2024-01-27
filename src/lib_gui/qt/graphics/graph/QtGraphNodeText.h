@@ -3,20 +3,19 @@
 
 #include "QtGraphNode.h"
 
-class QtGraphNodeText: public QtGraphNode
-{
-	Q_OBJECT
+class QtGraphNodeText : public QtGraphNode {
+  Q_OBJECT
 public:
-	QtGraphNodeText(const std::wstring& name, int fontSizeDiff);
-	virtual ~QtGraphNodeText();
+  QtGraphNodeText(const std::wstring& name, int fontSizeDiff);
+  virtual ~QtGraphNodeText();
 
-	// QtGraphNode implementation
-	virtual bool isTextNode() const;
+  // QtGraphNode implementation
+  virtual bool isTextNode() const;
 
-	virtual void updateStyle();
+  virtual void updateStyle();
 
 private:
-	int m_fontSizeDiff;
+  int m_fontSizeDiff;
 };
 
-#endif	  // QT_GRAPH_NODE_TEXT_H
+#endif    // QT_GRAPH_NODE_TEXT_H

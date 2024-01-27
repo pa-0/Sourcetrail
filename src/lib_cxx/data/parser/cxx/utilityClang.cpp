@@ -23,8 +23,7 @@ bool utility::isImplicit(const clang::Decl* d) {
       }
     }
     return true;
-  } else if(const clang::ClassTemplateSpecializationDecl* ctsd =
-                clang::dyn_cast_or_null<clang::ClassTemplateSpecializationDecl>(d)) {
+  } else if(const clang::ClassTemplateSpecializationDecl* ctsd = clang::dyn_cast_or_null<clang::ClassTemplateSpecializationDecl>(d)) {
     if(!ctsd->isExplicitSpecialization()) {
       return true;
     }
@@ -34,8 +33,7 @@ bool utility::isImplicit(const clang::Decl* d) {
     {
       return true;
     } else if(fd->getMemberSpecializationInfo() &&
-              fd->getMemberSpecializationInfo()->getTemplateSpecializationKind() ==
-                  clang::TSK_ExplicitSpecialization) {
+              fd->getMemberSpecializationInfo()->getTemplateSpecializationKind() == clang::TSK_ExplicitSpecialization) {
       return false;
     }
   }
@@ -76,8 +74,7 @@ SymbolKind utility::convertTagKind(const clang::TagTypeKind tagKind) {
 }
 
 bool utility::isLocalVariable(const clang::VarDecl* d) {
-  if(!llvm::isa<clang::ParmVarDecl>(d) &&
-     !(d->getParentFunctionOrMethod() == nullptr)) {
+  if(!llvm::isa<clang::ParmVarDecl>(d) && !(d->getParentFunctionOrMethod() == nullptr)) {
     return true;
   }
   return false;
@@ -176,10 +173,8 @@ ParseLocation utility::getParseLocation(const clang::SourceRange& sourceRange,
     clang::SourceRange range = sourceRange;
     clang::SourceLocation endLoc = preprocessor->getLocForEndOfToken(range.getEnd());
 
-    if((sourceManager.isMacroArgExpansion(range.getBegin()) ||
-        sourceManager.isMacroBodyExpansion(range.getBegin())) &&
-       (sourceManager.isMacroArgExpansion(range.getEnd()) ||
-        sourceManager.isMacroBodyExpansion(range.getEnd()))) {
+    if((sourceManager.isMacroArgExpansion(range.getBegin()) || sourceManager.isMacroBodyExpansion(range.getBegin())) &&
+       (sourceManager.isMacroArgExpansion(range.getEnd()) || sourceManager.isMacroBodyExpansion(range.getEnd()))) {
       range = sourceManager.getExpansionRange(sourceRange).getAsRange();
       if(range.isValid()) {
         endLoc = preprocessor->getLocForEndOfToken(range.getBegin());
@@ -191,13 +186,11 @@ ParseLocation utility::getParseLocation(const clang::SourceRange& sourceRange,
     const clang::SourceLocation beginLoc = range.getBegin();
 
     const clang::PresumedLoc presumedBegin = sourceManager.getPresumedLoc(beginLoc, false);
-    const clang::PresumedLoc presumedEnd = sourceManager.getPresumedLoc(
-        endLoc.isValid() ? endLoc : range.getEnd(), false);
+    const clang::PresumedLoc presumedEnd = sourceManager.getPresumedLoc(endLoc.isValid() ? endLoc : range.getEnd(), false);
 
     Id fileSymbolId = canonicalFilePathCache->getFileSymbolId(sourceManager.getFileID(beginLoc));
     if(!fileSymbolId) {
-      fileSymbolId = canonicalFilePathCache->getFileSymbolId(
-          utility::decodeFromUtf8(presumedBegin.getFilename()));
+      fileSymbolId = canonicalFilePathCache->getFileSymbolId(utility::decodeFromUtf8(presumedBegin.getFilename()));
     }
 
     return ParseLocation(fileSymbolId,

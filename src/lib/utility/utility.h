@@ -7,16 +7,16 @@
 #include <list>
 #include <map>
 #include <set>
-#include <unordered_set>
 #include <vector>
+
+#include <unordered_set>
 // internal
 #include "FilePath.h"
 #include "utilityString.h"
 
 namespace utility {
 template <typename T>
-std::vector<std::vector<T>> splitToEquallySizedParts(const std::vector<T>& values,
-                                                     const size_t desiredPartCount);
+std::vector<std::vector<T>> splitToEquallySizedParts(const std::vector<T>& values, const size_t desiredPartCount);
 
 template <typename T>
 std::vector<T> concat(const std::vector<T>& a, const std::vector<T>& b);
@@ -71,8 +71,7 @@ template <typename SourceType, typename TargetType>
 std::vector<TargetType> convert(const std::vector<SourceType>& sourceContainer);
 
 template <typename SourceType, typename TargetType>
-std::set<TargetType> convert(const std::set<SourceType>& sourceContainer,
-                             std::function<TargetType(const SourceType&)> conversion);
+std::set<TargetType> convert(const std::set<SourceType>& sourceContainer, std::function<TargetType(const SourceType&)> conversion);
 
 template <typename SourceType, typename TargetType>
 std::set<TargetType> convert(const std::set<SourceType>& sourceContainer);
@@ -120,8 +119,7 @@ size_t digits(size_t n);
 }    // namespace utility
 
 template <typename T>
-std::vector<std::vector<T>> utility::splitToEquallySizedParts(const std::vector<T>& values,
-                                                              const size_t desiredPartCount) {
+std::vector<std::vector<T>> utility::splitToEquallySizedParts(const std::vector<T>& values, const size_t desiredPartCount) {
   const size_t partCount = std::max<size_t>(1, std::min(desiredPartCount, values.size()));
 
   std::vector<std::vector<T>> parts;
@@ -297,8 +295,7 @@ std::vector<std::string> utility::toStrings(const std::vector<T>& d) {
 
 template <>
 inline std::vector<std::string> utility::toStrings<FilePath>(const std::vector<FilePath>& d) {
-  return convert<FilePath, std::string>(
-      d, [](const FilePath& fp) { return utility::encodeToUtf8(fp.wstr()); });
+  return convert<FilePath, std::string>(d, [](const FilePath& fp) { return utility::encodeToUtf8(fp.wstr()); });
 }
 
 template <typename T>

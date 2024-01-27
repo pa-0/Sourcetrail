@@ -9,9 +9,7 @@
 #include "LogMessage.h"
 #include "utilityString.h"
 
-std::wstring FileLogger::generateDatedFileName(const std::wstring& prefix,
-                                               const std::wstring& suffix,
-                                               int offsetDays) {
+std::wstring FileLogger::generateDatedFileName(const std::wstring& prefix, const std::wstring& suffix, int offsetDays) {
   time_t time;
   std::time(&time);
 #ifdef _WIN32
@@ -146,8 +144,7 @@ void FileLogger::logMessage(const std::string& type, const LogMessage& message) 
   fileStream << message.threadId << " | ";
 
   if(message.filePath.size()) {
-    fileStream << message.getFileName() << ':' << message.line << ' ' << message.functionName
-               << "() | ";
+    fileStream << message.getFileName() << ':' << message.line << ' ' << message.functionName << "() | ";
   }
 
   fileStream << type << ": " << utility::encodeToUtf8(message.message) << std::endl;

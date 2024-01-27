@@ -3,21 +3,15 @@
 
 #include <string>
 
-namespace clang
-{
-namespace tooling
-{
+namespace clang { namespace tooling {
 class CompilationDatabase;
-}
-}	 // namespace clang
+}}    // namespace clang::tooling
 
-struct ClangInvocationInfo
-{
-	static ClangInvocationInfo getClangInvocationString(
-		const clang::tooling::CompilationDatabase* compilationDatabase);
+struct ClangInvocationInfo {
+  static ClangInvocationInfo getClangInvocationString(const clang::tooling::CompilationDatabase* compilationDatabase);
 
-	std::string invocation;
-	std::string errors;
+  std::string invocation;
+  std::string errors;
 };
 
-#endif	  // CLANG_INVOCATION_INFO_H
+#endif    // CLANG_INVOCATION_INFO_H

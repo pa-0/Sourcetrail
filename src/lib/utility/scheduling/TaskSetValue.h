@@ -19,8 +19,7 @@ private:
 };
 
 template <typename T>
-TaskSetValue<T>::TaskSetValue(const std::string& valueName, T value)
-    : m_valueName(valueName), m_value(value) {}
+TaskSetValue<T>::TaskSetValue(const std::string& valueName, T value) : m_valueName(valueName), m_value(value) {}
 
 template <typename T>
 void TaskSetValue<T>::doEnter(std::shared_ptr<Blackboard> /*blackboard*/) {}

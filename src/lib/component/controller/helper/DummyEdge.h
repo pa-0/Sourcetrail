@@ -1,9 +1,9 @@
 #pragma once
 // internal
-#include "Vector4.h"
-#include "types.h"
 #include "Edge.h"
 #include "TokenComponentBundledEdges.h"
+#include "Vector4.h"
+#include "types.h"
 
 class Edge;
 
@@ -11,10 +11,7 @@ class Edge;
 struct DummyEdge {
   DummyEdge() = default;
 
-  DummyEdge(const Id ownerId_, const Id targetId_, const Edge* data_)
-      : ownerId(ownerId_)
-      , targetId(targetId_)
-      , data(data_) {}
+  DummyEdge(const Id ownerId_, const Id targetId_, const Edge* data_) : ownerId(ownerId_), targetId(targetId_), data(data_) {}
 
   int getWeight() const {
     if(!data) {

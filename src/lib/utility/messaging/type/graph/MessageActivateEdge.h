@@ -13,10 +13,7 @@ public:
                       Edge::EdgeType type_,
                       const NameHierarchy& sourceNameHierarchy_,
                       const NameHierarchy& targetNameHierarchy_)
-      : tokenId(tokenId_)
-      , type(type_)
-      , sourceNameHierarchy(sourceNameHierarchy_)
-      , targetNameHierarchy(targetNameHierarchy_) {
+      : tokenId(tokenId_), type(type_), sourceNameHierarchy(sourceNameHierarchy_), targetNameHierarchy(targetNameHierarchy_) {
     if(!isBundledEdges()) {
       setKeepContent(true);
     }

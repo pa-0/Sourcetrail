@@ -41,10 +41,7 @@ protected:
   QLabel* createFormSubLabel(const QString& name) const;
   QToolButton* createSourceGroupButton(const QString& name, const QString& iconPath) const;
 
-  QtHelpButton* addHelpButton(const QString& helpTitle,
-                              const QString& helpText,
-                              QGridLayout* layout,
-                              int row) const;
+  QtHelpButton* addHelpButton(const QString& helpTitle, const QString& helpText, QGridLayout* layout, int row) const;
   QPushButton* addFilesButton(const QString& name, QGridLayout* layout, int row) const;
   QFrame* addSeparator(QGridLayout* layout, int row) const;
 

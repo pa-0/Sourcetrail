@@ -19,7 +19,7 @@ struct MockedController final : public Controller {
 
 // NOLINTNEXTLINE
 TEST(Component, goodCase) {
-  auto view       = std::make_shared<MockedView>();
+  auto view = std::make_shared<MockedView>();
   auto controller = std::make_shared<MockedController>();
   Component component(view, controller);
   EXPECT_EQ(view.get(), component.getViewPtr());

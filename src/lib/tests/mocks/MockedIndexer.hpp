@@ -1,4 +1,5 @@
 #include <gmock/gmock.h>
+
 #include "IndexerBase.h"
 
 struct MockedIndexer : public IndexerBase {

@@ -14,14 +14,12 @@
 class SourceLocationFile final {
 public:
   struct LocationComp final {
-    bool operator()(const std::shared_ptr<SourceLocation>& lhs,
-                    const std::shared_ptr<SourceLocation>& rhs) const {
+    bool operator()(const std::shared_ptr<SourceLocation>& lhs, const std::shared_ptr<SourceLocation>& rhs) const {
       return *(lhs) < *(rhs);
     }
   };
 
-  SourceLocationFile(
-      FilePath filePath, std::wstring language, bool isWhole, bool isComplete, bool isIndexed);
+  SourceLocationFile(FilePath filePath, std::wstring language, bool isWhole, bool isComplete, bool isIndexed);
 
   ~SourceLocationFile();
 
@@ -69,8 +67,7 @@ public:
 
   void forEachEndSourceLocation(const std::function<void(SourceLocation*)>& func) const;
 
-  std::shared_ptr<SourceLocationFile> getFilteredByLines(size_t firstLineNumber,
-                                                         size_t lastLineNumber) const;
+  std::shared_ptr<SourceLocationFile> getFilteredByLines(size_t firstLineNumber, size_t lastLineNumber) const;
 
   std::shared_ptr<SourceLocationFile> getFilteredByType(LocationType type) const;
 

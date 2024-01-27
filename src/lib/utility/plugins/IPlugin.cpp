@@ -5,4 +5,4 @@ namespace plugin {
 
 IPlugin::~IPlugin() noexcept = default;
 
-} // namespace plugin
+}    // namespace plugin

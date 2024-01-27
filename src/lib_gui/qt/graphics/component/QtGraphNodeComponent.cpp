@@ -1,6 +1,6 @@
 #include "QtGraphNodeComponent.h"
 
-QtGraphNodeComponent::QtGraphNodeComponent(QtGraphNode* graphNode): m_graphNode(graphNode) {}
+QtGraphNodeComponent::QtGraphNodeComponent(QtGraphNode* graphNode) : m_graphNode(graphNode) {}
 
 QtGraphNodeComponent::~QtGraphNodeComponent() {}
 

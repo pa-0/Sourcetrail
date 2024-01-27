@@ -20,10 +20,7 @@ public:
   void recordAccessKind(Id symbolId, AccessKind accessKind) override;
   void recordDefinitionKind(Id symbolId, DefinitionKind definitionKind) override;
 
-  Id recordReference(ReferenceKind referenceKind,
-                     Id referencedSymbolId,
-                     Id contextSymbolId,
-                     const ParseLocation& location) override;
+  Id recordReference(ReferenceKind referenceKind, Id referencedSymbolId, Id contextSymbolId, const ParseLocation& location) override;
 
   void recordLocalSymbol(const std::wstring& name, const ParseLocation& location) override;
   void recordLocation(Id elementId, const ParseLocation& location, ParseLocationType type) override;

@@ -86,7 +86,8 @@ TEST_F(CommandlineCommandIndexFix, projectIsInvalidProj) {
 
   auto ret = mConfig->parse(args);
 
-  constexpr auto Result = L"Provided Projectfile is not valid:\n* Provided Projectfile('invalid.srctrlprj')  could not be loaded (invalid)";
+  constexpr auto Result =
+      L"Provided Projectfile is not valid:\n* Provided Projectfile('invalid.srctrlprj')  could not be loaded (invalid)";
 
   ASSERT_EQ(CommandlineCommand::ReturnStatus::CMD_OK, ret);
   ASSERT_EQ(mParser->getError(), Result);

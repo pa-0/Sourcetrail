@@ -19,9 +19,7 @@ void QtLicenseWindow::populateWindow(QWidget* widget) {
   QLabel* licenseName = new QLabel();
   licenseName->setText(
       QString::fromLatin1(licenseApp.name) +
-      QString::fromLatin1(std::string(licenseApp.version).empty() ?
-                              "" :
-                              (std::string(" (v") + licenseApp.version + ")").c_str()));
+      QString::fromLatin1(std::string(licenseApp.version).empty() ? "" : (std::string(" (v") + licenseApp.version + ")").c_str()));
   QFont _font = licenseName->font();
   _font.setPixelSize(36);
   _font.setBold(true);
@@ -29,8 +27,7 @@ void QtLicenseWindow::populateWindow(QWidget* widget) {
   layout->addWidget(licenseName);
 
   QLabel* licenseURL = new QLabel();
-  licenseURL->setText(
-      QString::fromLatin1("<a href=\"%1\">%1</a>").arg(QString::fromLatin1(licenseApp.url)));
+  licenseURL->setText(QString::fromLatin1("<a href=\"%1\">%1</a>").arg(QString::fromLatin1(licenseApp.url)));
   licenseURL->setOpenExternalLinks(true);
   layout->addWidget(licenseURL);
 
@@ -42,11 +39,11 @@ void QtLicenseWindow::populateWindow(QWidget* widget) {
 
   layout->addSpacing(30);
 
-  QLabel* header3rdParties = new QLabel(QStringLiteral(
-      "<b>Copyrights and Licenses for Third Party Software Distributed with Sourcetrail:</b><br "
-      "/>"
-      "Sourcetrail contains code written by the following third parties that have <br />"
-      "additional or alternate copyrights, licenses, and/or restrictions:"));
+  QLabel* header3rdParties = new QLabel(
+      QStringLiteral("<b>Copyrights and Licenses for Third Party Software Distributed with Sourcetrail:</b><br "
+                     "/>"
+                     "Sourcetrail contains code written by the following third parties that have <br />"
+                     "additional or alternate copyrights, licenses, and/or restrictions:"));
   layout->addWidget(header3rdParties);
 
   layout->addSpacing(30);
@@ -55,15 +52,12 @@ void QtLicenseWindow::populateWindow(QWidget* widget) {
     QLabel* licenseNameLabel = new QLabel();
     licenseNameLabel->setText(
         QString::fromLatin1(license.name) +
-        QString::fromLatin1(std::string(license.version).empty() ?
-                                "" :
-                                (std::string(" (v") + license.version + ")").c_str()));
+        QString::fromLatin1(std::string(license.version).empty() ? "" : (std::string(" (v") + license.version + ")").c_str()));
     licenseNameLabel->setFont(_font);
     layout->addWidget(licenseNameLabel);
 
     QLabel* licenseUrlLabel = new QLabel();
-    licenseUrlLabel->setText(
-        QString::fromLatin1("<a href=\"%1\">%1</a>").arg(QString::fromLatin1(license.url)));
+    licenseUrlLabel->setText(QString::fromLatin1("<a href=\"%1\">%1</a>").arg(QString::fromLatin1(license.url)));
     licenseUrlLabel->setOpenExternalLinks(true);
     layout->addWidget(licenseUrlLabel);
 

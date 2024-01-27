@@ -9,9 +9,8 @@
 #include "TextAccess.h"
 #include "utility.h"
 
-RefreshInfo RefreshInfoGenerator::getRefreshInfoForUpdatedFiles(
-    const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups,
-    std::shared_ptr<const PersistentStorage> storage) {
+RefreshInfo RefreshInfoGenerator::getRefreshInfoForUpdatedFiles(const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups,
+                                                                std::shared_ptr<const PersistentStorage> storage) {
   // 1) Divide filepaths that are already known by the storage to "unchanged and indexed",
   // "unchanged and non-indexed" and "changed"
   std::set<FilePath> unchangedIndexedFilePaths;
@@ -24,13 +23,11 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForUpdatedFiles(
     std::set<FilePath> alreadyKnownPaths;
     {
       const std::set<FilePath> filePathsFromStorage = utility::toSet(
-          utility::convert<FileInfo, FilePath>(
-              fileInfosFromStorage, [](const FileInfo& info) { return info.path; }));
+          utility::convert<FileInfo, FilePath>(fileInfosFromStorage, [](const FileInfo& info) { return info.path; }));
 
       for(std::shared_ptr<SourceGroup> sourceGroup : sourceGroups) {
         if(sourceGroup->getStatus() == SOURCE_GROUP_STATUS_ENABLED) {
-          utility::append(
-              alreadyKnownPaths, sourceGroup->filterToContainedFilePaths(filePathsFromStorage));
+          utility::append(alreadyKnownPaths, sourceGroup->filterToContainedFilePaths(filePathsFromStorage));
         }
       }
     }
@@ -100,9 +97,8 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForUpdatedFiles(
   // 3) Figure out which files need to be indexed
   std::set<FilePath> filesToIndex;
   for(const FilePath& path : allSourceFilePathsFromSourcegroups) {
-    if(filesToClear.find(path) != filesToClear.end() ||    // file will be cleared
-       unchangedIndexedFilePaths.find(path) ==
-           unchangedIndexedFilePaths.end())    // file has been changed or added
+    if(filesToClear.find(path) != filesToClear.end() ||                            // file will be cleared
+       unchangedIndexedFilePaths.find(path) == unchangedIndexedFilePaths.end())    // file has been changed or added
     {
       filesToIndex.insert(path);
     }
@@ -123,16 +119,14 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForUpdatedFiles(
   return info;
 }
 
-RefreshInfo RefreshInfoGenerator::getRefreshInfoForIncompleteFiles(
-    const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups,
-    std::shared_ptr<const PersistentStorage> storage) {
+RefreshInfo RefreshInfoGenerator::getRefreshInfoForIncompleteFiles(const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups,
+                                                                   std::shared_ptr<const PersistentStorage> storage) {
   RefreshInfo info = getRefreshInfoForUpdatedFiles(sourceGroups, storage);
   info.mode = REFRESH_UPDATED_AND_INCOMPLETE_FILES;
 
   std::set<FilePath> incompleteFiles;
   {
-    const std::set<FilePath> filesToClear = utility::concat(
-        info.filesToClear, info.nonIndexedFilesToClear);
+    const std::set<FilePath> filesToClear = utility::concat(info.filesToClear, info.nonIndexedFilesToClear);
     for(const FilePath& path : storage->getIncompleteFiles()) {
       if(filesToClear.find(path) == filesToClear.end()) {
         incompleteFiles.insert(path);
@@ -156,8 +150,7 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForIncompleteFiles(
 
     for(const auto& sourceGroup : sourceGroups) {
       if(sourceGroup->getStatus() == SOURCE_GROUP_STATUS_ENABLED) {
-        utility::append(
-            info.filesToIndex, sourceGroup->filterToContainedSourceFilePath(staticSourceFilePaths));
+        utility::append(info.filesToIndex, sourceGroup->filterToContainedSourceFilePath(staticSourceFilePaths));
       }
     }
   }
@@ -165,16 +158,14 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForIncompleteFiles(
   return info;
 }
 
-RefreshInfo RefreshInfoGenerator::getRefreshInfoForAllFiles(
-    const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups) {
+RefreshInfo RefreshInfoGenerator::getRefreshInfoForAllFiles(const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups) {
   RefreshInfo info;
   info.mode = REFRESH_ALL_FILES;
   info.filesToIndex = getAllSourceFilePaths(sourceGroups);
   return info;
 }
 
-std::set<FilePath> RefreshInfoGenerator::getAllSourceFilePaths(
-    const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups) {
+std::set<FilePath> RefreshInfoGenerator::getAllSourceFilePaths(const std::vector<std::shared_ptr<SourceGroup>>& sourceGroups) {
   std::set<FilePath> allSourceFilePaths;
 
   for(const auto& sourceGroup : sourceGroups) {
@@ -190,8 +181,7 @@ std::set<FilePath> RefreshInfoGenerator::getAllSourceFilePaths(
   return allSourceFilePaths;
 }
 
-bool RefreshInfoGenerator::didFileChange(const FileInfo& info,
-                                         std::shared_ptr<const PersistentStorage> storage) {
+bool RefreshInfoGenerator::didFileChange(const FileInfo& info, std::shared_ptr<const PersistentStorage> storage) {
   FileInfo diskFileInfo = FileSystem::getFileInfoForPath(info.path);
   if(diskFileInfo.lastWriteTime > info.lastWriteTime) {
     if(!storage->hasContentForFile(info.path)) {

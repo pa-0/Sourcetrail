@@ -312,7 +312,7 @@ SettingsMigrator ProjectSettings::getMigrations() const {
       break;
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
     case LANGUAGE_CUSTOM:
-    [[fallthrough]];
+      [[fallthrough]];
     default:
       continue;
     }

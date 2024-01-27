@@ -13,10 +13,7 @@
 // SearchResult is only used as an internal type in the SearchIndex and the PersistentStorage
 struct SearchResult {
   SearchResult(std::wstring text_, std::vector<Id> elementIds_, std::vector<size_t> indices_, int score_)
-      : text(std::move(text_))
-      , elementIds(std::move(elementIds_))
-      , indices(std::move(indices_))
-      , score(score_) {}
+      : text(std::move(text_)), elementIds(std::move(elementIds_)), indices(std::move(indices_)), score(score_) {}
 
   bool operator<(const SearchResult& other) const {
     return score > other.score;

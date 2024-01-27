@@ -8,12 +8,8 @@ struct CodeScrollParams {
 
   enum class Target { VISIBLE, CENTER, TOP };
 
-  static CodeScrollParams toReference(const FilePath& filePath,
-                                      Id locationId,
-                                      Id scopeLocationId,
-                                      Target target) {
-    return CodeScrollParams(
-        Type::TO_REFERENCE, target, filePath, locationId, scopeLocationId, 0, 0, false);
+  static CodeScrollParams toReference(const FilePath& filePath, Id locationId, Id scopeLocationId, Target target) {
+    return CodeScrollParams(Type::TO_REFERENCE, target, filePath, locationId, scopeLocationId, 0, 0, false);
   }
 
   static CodeScrollParams toFile(const FilePath& filePath, Target target) {
@@ -28,14 +24,8 @@ struct CodeScrollParams {
     return CodeScrollParams(Type::TO_VALUE, Target::VISIBLE, FilePath(), 0, 0, 0, value, inListMode);
   }
 
-  CodeScrollParams(Type type_,
-                   Target target_,
-                   FilePath filePath_,
-                   Id locationId_,
-                   Id scopeLocationId_,
-                   size_t line_,
-                   size_t value_,
-                   bool inListMode_)
+  CodeScrollParams(
+      Type type_, Target target_, FilePath filePath_, Id locationId_, Id scopeLocationId_, size_t line_, size_t value_, bool inListMode_)
       : type(type_)
       , target(target_)
       , filePath(filePath_)

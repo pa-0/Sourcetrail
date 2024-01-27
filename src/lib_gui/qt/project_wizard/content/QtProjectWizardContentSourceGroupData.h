@@ -12,8 +12,7 @@ class QtProjectWizardContentSourceGroupData : public QtProjectWizardContent {
   Q_OBJECT
 
 public:
-  QtProjectWizardContentSourceGroupData(std::shared_ptr<SourceGroupSettings> settings,
-                                        QtProjectWizardWindow* window);
+  QtProjectWizardContentSourceGroupData(std::shared_ptr<SourceGroupSettings> settings, QtProjectWizardWindow* window);
 
   // QtProjectWizardContent implementation
   virtual void populate(QGridLayout* layout, int& row) override;

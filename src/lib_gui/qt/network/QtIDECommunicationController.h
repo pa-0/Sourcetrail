@@ -3,30 +3,28 @@
 
 #include <qobject.h>
 
-#include "QtTcpWrapper.h"
-
 #include "IDECommunicationController.h"
+#include "QtTcpWrapper.h"
 #include "QtThreadedFunctor.h"
 
 class StorageAccess;
 
-class QtIDECommunicationController: public IDECommunicationController
-{
+class QtIDECommunicationController : public IDECommunicationController {
 public:
-	QtIDECommunicationController(QObject* parent, StorageAccess* storageAccess);
-	~QtIDECommunicationController();
+  QtIDECommunicationController(QObject* parent, StorageAccess* storageAccess);
+  ~QtIDECommunicationController();
 
-	virtual void startListening();
-	virtual void stopListening();
+  virtual void startListening();
+  virtual void stopListening();
 
-	virtual bool isListening() const;
+  virtual bool isListening() const;
 
 private:
-	virtual void sendMessage(const std::wstring& message) const;
+  virtual void sendMessage(const std::wstring& message) const;
 
-	QtTcpWrapper m_tcpWrapper;
+  QtTcpWrapper m_tcpWrapper;
 
-	QtThreadedLambdaFunctor m_onQtThread;
+  QtThreadedLambdaFunctor m_onQtThread;
 };
 
-#endif	  // QT_IDE_COMMUNICATION_CONTROLLER
+#endif    // QT_IDE_COMMUNICATION_CONTROLLER

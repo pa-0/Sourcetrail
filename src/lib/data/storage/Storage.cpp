@@ -42,12 +42,7 @@ void Storage::inject(Storage* injected) {
     for(const StorageFile& file : injected->getStorageFiles()) {
       auto it = injectedIdToOwnElementId.find(file.id);
       if(it != injectedIdToOwnElementId.end()) {
-        addFile(StorageFile(it->second,
-                            file.filePath,
-                            file.languageIdentifier,
-                            file.modificationTime,
-                            file.indexed,
-                            file.complete));
+        addFile(StorageFile(it->second, file.filePath, file.languageIdentifier, file.modificationTime, file.indexed, file.complete));
       }
     }
   }
@@ -136,13 +131,8 @@ void Storage::inject(Storage* injected) {
       auto it = injectedIdToOwnElementId.find(location.fileNodeId);
       if(it != injectedIdToOwnElementId.end()) {
         const Id ownFileNodeId = it->second;
-        locations.emplace_back(location.id,
-                               ownFileNodeId,
-                               location.startLine,
-                               location.startCol,
-                               location.endLine,
-                               location.endCol,
-                               location.type);
+        locations.emplace_back(
+            location.id, ownFileNodeId, location.startLine, location.startCol, location.endLine, location.endCol, location.type);
       }
     }
 

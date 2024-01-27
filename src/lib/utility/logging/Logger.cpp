@@ -1,15 +1,15 @@
 #include "Logger.h"
 
 Logger::LogLevel Logger::convertStringToLogLevel(const std::string& level) {
-  if (level == "INFOS") {
+  if(level == "INFOS") {
     return LogLevel::LOG_INFOS;
   }
 
-  if (level == "WARNINGS") {
+  if(level == "WARNINGS") {
     return LogLevel::LOG_WARNINGS;
   }
 
-  if (level == "ERRORS") {
+  if(level == "ERRORS") {
     return LogLevel::LOG_ERRORS;
   }
   return LogLevel::LOG_ALL;
@@ -32,7 +32,7 @@ void Logger::setLogLevel(LogLevelMask mask) {
 }
 
 bool Logger::isLogLevel(LogLevelMask mask) const {
-  return (m_levelMask & mask) > 0; // NOLINT(hicpp-signed-bitwise)
+  return (m_levelMask & mask) > 0;    // NOLINT(hicpp-signed-bitwise)
 }
 
 void Logger::onInfo(const LogMessage& message) {

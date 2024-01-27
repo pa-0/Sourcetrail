@@ -15,8 +15,7 @@
 
 QtProjectWizardContentPathCDB::QtProjectWizardContentPathCDB(std::shared_ptr<ProjectWizardModel> model,
                                                              QtProjectWizardWindow* window)
-    : QtProjectWizardContentPath(window)
-    , m_model(std::move(model)) {
+    : QtProjectWizardContentPath(window), m_model(std::move(model)) {
   setObjectName("QtProjectWizardContentPathCDB");
   setTitleString(QStringLiteral("Compilation Database (compile_commands.json)"));
   setHelpString(
@@ -38,12 +37,8 @@ void QtProjectWizardContentPathCDB::populate(QGridLayout* layout, int& row) {
   m_picker->setPickDirectory(false);
   m_picker->setFileFilter(QStringLiteral("JSON Compilation Database (*.json)"));
 
-  connect(m_picker, &QtLocationPicker::locationPicked, [this]() {
-    m_model->pickedPath(m_window);
-  });
-  connect(m_picker, &QtLocationPicker::textChanged, [this](const QString& text) {
-    m_model->onPickerTextChanged(m_window, text);
-  });
+  connect(m_picker, &QtLocationPicker::locationPicked, [this]() { m_model->pickedPath(m_window); });
+  connect(m_picker, &QtLocationPicker::textChanged, [this](const QString& text) { m_model->onPickerTextChanged(m_window, text); });
 
   auto* description = new QLabel(
       "Sourcetrail will use all include paths and compiler flags from the Compilation Database "

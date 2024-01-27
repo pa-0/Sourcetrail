@@ -10,36 +10,35 @@ class QListWidgetItem;
 
 class QtListBox;
 
-class QtListBoxItem: public QWidget
-{
-	Q_OBJECT
+class QtListBoxItem : public QWidget {
+  Q_OBJECT
 
 public:
-	QtListBoxItem(QListWidgetItem* item, QWidget* parent = nullptr);
-	virtual ~QtListBoxItem() = default;
+  QtListBoxItem(QListWidgetItem* item, QWidget* parent = nullptr);
+  virtual ~QtListBoxItem() = default;
 
-	virtual QString getText() const;
-	void setText(const QString& text);
+  virtual QString getText() const;
+  void setText(const QString& text);
 
-	bool getReadOnly() const;
-	void setReadOnly(bool readOnly);
+  bool getReadOnly() const;
+  void setReadOnly(bool readOnly);
 
 public slots:
-	void setFocus();
+  void setFocus();
 
 protected:
-	virtual QtListBox* getListBox() = 0;
-	void selectItem();
+  virtual QtListBox* getListBox() = 0;
+  void selectItem();
 
 private slots:
-	void handleFocus();
+  void handleFocus();
 
 private:
-	virtual void onReadOnlyChanged();
+  virtual void onReadOnlyChanged();
 
-	QListWidgetItem* m_item;
-	QtLineEdit* m_data;
-	bool m_readOnly;
+  QListWidgetItem* m_item;
+  QtLineEdit* m_data;
+  bool m_readOnly;
 };
 
-#endif	  // QT_LIST_BOX_ITEM_H
+#endif    // QT_LIST_BOX_ITEM_H

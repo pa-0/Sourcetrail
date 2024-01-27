@@ -23,13 +23,13 @@ QtWindowBase::QtWindowBase(bool isSubWindow, QWidget* parent)
     setWindowFlags(Qt::Window);
   }
 
-  m_window = new QWidget(this); // NOLINT(cppcoreguidelines-owning-memory)
+  m_window = new QWidget(this);    // NOLINT(cppcoreguidelines-owning-memory)
   m_window->setObjectName(QStringLiteral("window"));
 
-  auto* layout = new QVBoxLayout(m_window); // NOLINT(cppcoreguidelines-owning-memory)
+  auto* layout = new QVBoxLayout(m_window);    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setSpacing(0);
 
-  m_content = new QWidget; // NOLINT(cppcoreguidelines-owning-memory)
+  m_content = new QWidget;    // NOLINT(cppcoreguidelines-owning-memory)
   layout->addWidget(m_content);
 
   if(isSubWindow) {
@@ -41,17 +41,17 @@ QtWindowBase::QtWindowBase(bool isSubWindow, QWidget* parent)
         "}";
     m_window->setStyleSheet(frameStyle.c_str());
 
-    auto* effect = new QGraphicsDropShadowEffect; // NOLINT(cppcoreguidelines-owning-memory)
+    auto* effect = new QGraphicsDropShadowEffect;    // NOLINT(cppcoreguidelines-owning-memory)
     effect->setBlurRadius(15);
     effect->setXOffset(0);
     effect->setYOffset(5);
     effect->setColor(Qt::darkGray);
     m_window->setGraphicsEffect(effect);
 
-    auto* gripLayout = new QHBoxLayout(); // NOLINT(cppcoreguidelines-owning-memory)
-    m_sizeGrip = new QSizeGrip(m_window); // NOLINT(cppcoreguidelines-owning-memory)
+    auto* gripLayout = new QHBoxLayout();    // NOLINT(cppcoreguidelines-owning-memory)
+    m_sizeGrip = new QSizeGrip(m_window);    // NOLINT(cppcoreguidelines-owning-memory)
     setSizeGripStyle(true);
-    gripLayout->addWidget(new QWidget); // NOLINT(cppcoreguidelines-owning-memory)
+    gripLayout->addWidget(new QWidget);    // NOLINT(cppcoreguidelines-owning-memory)
     gripLayout->addWidget(m_sizeGrip);
     layout->addLayout(gripLayout);
   }
@@ -64,8 +64,7 @@ QtWindowBase::QtWindowBase(bool isSubWindow, QWidget* parent)
 }
 
 QSize QtWindowBase::sizeHint() const {
-  return {ApplicationSettings::getInstance()->getWindowBaseWidth(),
-          ApplicationSettings::getInstance()->getWindowBaseHeight()};
+  return {ApplicationSettings::getInstance()->getWindowBaseWidth(), ApplicationSettings::getInstance()->getWindowBaseHeight()};
 }
 
 void QtWindowBase::setSizeGripStyle(bool isBlack) {
@@ -92,8 +91,7 @@ bool QtWindowBase::isSubWindow() const {
 void QtWindowBase::moveToCenter() {
   if(parentWidget() != nullptr) {
     if(m_isSubWindow) {
-      move(parentWidget()->width() / 2 - sizeHint().width() / 2,
-           parentWidget()->height() / 2 - sizeHint().height() / 2);
+      move(parentWidget()->width() / 2 - sizeHint().width() / 2, parentWidget()->height() / 2 - sizeHint().height() / 2);
     } else {
       move(parentWidget()->pos().x() + parentWidget()->width() / 2 - sizeHint().width() / 2,
            parentWidget()->pos().y() + parentWidget()->height() / 2 - sizeHint().height() / 2);

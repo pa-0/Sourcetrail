@@ -87,12 +87,14 @@ TEST(FileSystem, find file infos with symlinks) {
 
   EXPECT_TRUE(files.size() == 5);
   EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/Settings/player.h", L"./data/FileSystemTestSuite/player.h"));
-  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/Settings/sample.cpp", L"./data/FileSystemTestSuite/sample.cpp"));
+  EXPECT_TRUE(
+      isInFileInfos(files, L"./data/FileSystemTestSuite/src/Settings/sample.cpp", L"./data/FileSystemTestSuite/sample.cpp"));
   EXPECT_TRUE(
       isInFileInfos(files, L"./data/FileSystemTestSuite/src/main.cpp", L"./data/FileSystemTestSuite/src/Settings/src/main.cpp"));
   EXPECT_TRUE(
       isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.cpp", L"./data/FileSystemTestSuite/src/Settings/src/test.cpp"));
-  EXPECT_TRUE(isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.h", L"./data/FileSystemTestSuite/src/Settings/src/test.h"));
+  EXPECT_TRUE(
+      isInFileInfos(files, L"./data/FileSystemTestSuite/src/test.h", L"./data/FileSystemTestSuite/src/Settings/src/test.h"));
 #  endif
 }
 #endif

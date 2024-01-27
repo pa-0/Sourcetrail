@@ -8,7 +8,7 @@ class ConsoleLogger final : public Logger {
 public:
   ConsoleLogger() noexcept;
 
-	~ConsoleLogger() override;
+  ~ConsoleLogger() override;
 
 private:
   void logInfo(const LogMessage& message) override;

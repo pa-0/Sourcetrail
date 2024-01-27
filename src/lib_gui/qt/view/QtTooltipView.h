@@ -7,26 +7,25 @@
 class QTimer;
 class QtTooltip;
 
-class QtTooltipView: public TooltipView
-{
+class QtTooltipView : public TooltipView {
 public:
-	QtTooltipView(ViewLayout* viewLayout);
-	~QtTooltipView() = default;
+  QtTooltipView(ViewLayout* viewLayout);
+  ~QtTooltipView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	// TooltipView implementation
-	void showTooltip(const TooltipInfo& info, const View* parent) override;
-	void hideTooltip(bool force) override;
+  // TooltipView implementation
+  void showTooltip(const TooltipInfo& info, const View* parent) override;
+  void hideTooltip(bool force) override;
 
-	bool tooltipVisible() const override;
+  bool tooltipVisible() const override;
 
 private:
-	QtThreadedLambdaFunctor m_onQtThread;
+  QtThreadedLambdaFunctor m_onQtThread;
 
-	QtTooltip* m_widget;
+  QtTooltip* m_widget;
 };
 
-#endif	  // QT_TOOLTIP_VIEW
+#endif    // QT_TOOLTIP_VIEW

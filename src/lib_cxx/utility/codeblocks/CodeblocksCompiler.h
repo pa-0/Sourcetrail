@@ -13,23 +13,21 @@ class IndexerCommand;
 class SourceGroupSettings;
 class TextAccess;
 
-namespace Codeblocks
-{
-class Compiler
-{
+namespace Codeblocks {
+class Compiler {
 public:
-	static std::string getXmlElementName();
-	static std::shared_ptr<Compiler> create(const TiXmlElement* element);
+  static std::string getXmlElementName();
+  static std::shared_ptr<Compiler> create(const TiXmlElement* element);
 
-	const std::vector<std::wstring>& getOptions() const;
-	const std::vector<std::wstring>& getDirectories() const;
+  const std::vector<std::wstring>& getOptions() const;
+  const std::vector<std::wstring>& getDirectories() const;
 
 private:
-	Compiler() = default;
+  Compiler() = default;
 
-	std::vector<std::wstring> m_options;
-	std::vector<std::wstring> m_directories;
+  std::vector<std::wstring> m_options;
+  std::vector<std::wstring> m_directories;
 };
-}	 // namespace Codeblocks
+}    // namespace Codeblocks
 
-#endif	  // CODEBLOCKS_COMPILER_H
+#endif    // CODEBLOCKS_COMPILER_H

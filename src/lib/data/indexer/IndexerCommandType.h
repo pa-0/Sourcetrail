@@ -1,8 +1,8 @@
 #pragma once
 
-#include "language_packages.h"
-
 #include <string>
+
+#include "language_packages.h"
 
 enum IndexerCommandType {
   INDEXER_COMMAND_UNKNOWN,

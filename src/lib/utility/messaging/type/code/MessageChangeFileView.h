@@ -16,11 +16,7 @@ public:
                         ViewMode viewMode_,
                         CodeScrollParams scrollParams_,
                         bool switchesViewMode_ = false)
-      : filePath(filePath_)
-      , state(state_)
-      , viewMode(viewMode_)
-      , scrollParams(scrollParams_)
-      , switchesViewMode(switchesViewMode_) {
+      : filePath(filePath_), state(state_), viewMode(viewMode_), scrollParams(scrollParams_), switchesViewMode(switchesViewMode_) {
     setSchedulerId(TabId::currentTab());
   }
 

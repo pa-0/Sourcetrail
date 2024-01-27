@@ -10,8 +10,7 @@ public:
     return "MessageTabOpenWith";
   }
 
-  MessageTabOpenWith(Id tokenId_, Id locationId_ = 0)
-      : tokenId(tokenId_), locationId(locationId_) {}
+  MessageTabOpenWith(Id tokenId_, Id locationId_ = 0) : tokenId(tokenId_), locationId(locationId_) {}
 
   MessageTabOpenWith(const FilePath& path, size_t line_ = 0) : filePath(path), line(line_) {}
 

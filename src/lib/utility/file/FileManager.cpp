@@ -17,8 +17,7 @@ void FileManager::update(const std::vector<FilePath>& sourcePaths,
 
   m_allSourceFilePaths.clear();
 
-  for(const FileInfo& fileInfo :
-      FileSystem::getFileInfosFromPaths(m_sourcePaths, m_sourceExtensions)) {
+  for(const FileInfo& fileInfo : FileSystem::getFileInfosFromPaths(m_sourcePaths, m_sourceExtensions)) {
     const FilePath& filePath = fileInfo.path;
     if(isExcluded(filePath)) {
       continue;

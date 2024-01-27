@@ -6,8 +6,7 @@ SettingsMigration::SettingsMigration() = default;
 
 SettingsMigration::~SettingsMigration() = default;
 
-bool SettingsMigration::isValueDefinedInSettings(const Settings* settings,
-                                                 const std::string& key) const {
+bool SettingsMigration::isValueDefinedInSettings(const Settings* settings, const std::string& key) const {
   return settings->isValueDefined(key);
 }
 

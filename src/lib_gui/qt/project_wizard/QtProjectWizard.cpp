@@ -226,9 +226,7 @@ void addSourceGroupContents<SourceGroupSettingsUnloadable>(QtProjectWizardConten
 }
 }    // namespace
 
-QtProjectWizard::QtProjectWizard(QWidget* pParent)
-    : QtProjectWizardWindow(pParent, false)
-    , m_windowStack(this) {
+QtProjectWizard::QtProjectWizard(QWidget* pParent) : QtProjectWizardWindow(pParent, false), m_windowStack(this) {
   setObjectName("QtProjectWizard");
   setScrollAble(true);
 

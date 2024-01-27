@@ -3,27 +3,25 @@
 
 #include "MessageListener.h"
 #include "MessageScrollSpeedChange.h"
-
 #include "QtThreadedFunctor.h"
 
 class QScrollBar;
 
-class QtScrollSpeedChangeListener: public MessageListener<MessageScrollSpeedChange>
-{
+class QtScrollSpeedChangeListener : public MessageListener<MessageScrollSpeedChange> {
 public:
-	QtScrollSpeedChangeListener();
+  QtScrollSpeedChangeListener();
 
-	void setScrollBar(QScrollBar* scrollbar);
+  void setScrollBar(QScrollBar* scrollbar);
 
 private:
-	void handleMessage(MessageScrollSpeedChange* message);
+  void handleMessage(MessageScrollSpeedChange* message);
 
-	void doChangeScrollSpeed(float scrollSpeed);
+  void doChangeScrollSpeed(float scrollSpeed);
 
-	QtThreadedFunctor<float> m_changeScrollSpeedFunctor;
+  QtThreadedFunctor<float> m_changeScrollSpeedFunctor;
 
-	QScrollBar* m_scrollBar;
-	int m_singleStep;
+  QScrollBar* m_scrollBar;
+  int m_singleStep;
 };
 
-#endif	  // QT_SCROLL_SPEED_CHANGE_LISTENER
+#endif    // QT_SCROLL_SPEED_CHANGE_LISTENER

@@ -17,8 +17,7 @@ struct StorageBookmarkedNodeData {
 struct StorageBookmarkedNode final : public StorageBookmarkedNodeData {
   StorageBookmarkedNode() : StorageBookmarkedNodeData(), id(0) {}
 
-  StorageBookmarkedNode(Id id_, const StorageBookmarkedNodeData& data)
-      : StorageBookmarkedNodeData(data), id(id_) {}
+  StorageBookmarkedNode(Id id_, const StorageBookmarkedNodeData& data) : StorageBookmarkedNodeData(data), id(id_) {}
 
   StorageBookmarkedNode(Id id_, Id bookmarkId_, const std::wstring& serializedNodeName_)
       : StorageBookmarkedNodeData(bookmarkId_, serializedNodeName_), id(id_) {}

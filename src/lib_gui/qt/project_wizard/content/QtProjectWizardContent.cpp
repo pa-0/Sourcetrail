@@ -14,8 +14,7 @@
 QtProjectWizardContent::QtProjectWizardContent(QtProjectWizardWindow* window)
     : QWidget(window)
     , m_window(window)
-    , m_showFilesFunctor(
-          std::bind(&QtProjectWizardContent::showFilesDialog, this, std::placeholders::_1)) {}
+    , m_showFilesFunctor(std::bind(&QtProjectWizardContent::showFilesDialog, this, std::placeholders::_1)) {}
 
 void QtProjectWizardContent::populate(QGridLayout* /*layout*/, int& /*row**/) {}
 
@@ -74,8 +73,7 @@ QLabel* QtProjectWizardContent::createFormSubLabel(const QString& name) const {
   return label;
 }
 
-QToolButton* QtProjectWizardContent::createSourceGroupButton(const QString& name,
-                                                             const QString& iconPath) const {
+QToolButton* QtProjectWizardContent::createSourceGroupButton(const QString& name, const QString& iconPath) const {
   QToolButton* button = new QToolButton();
   button->setObjectName(QStringLiteral("sourceGroupButton"));
   button->setText(name);
@@ -96,9 +94,7 @@ QtHelpButton* QtProjectWizardContent::addHelpButton(const QString& helpTitle,
   return button;
 }
 
-QPushButton* QtProjectWizardContent::addFilesButton(const QString& name,
-                                                    QGridLayout* layout,
-                                                    int row) const {
+QPushButton* QtProjectWizardContent::addFilesButton(const QString& name, QGridLayout* layout, int row) const {
   QPushButton* button = new QPushButton(name);
   button->setObjectName(QStringLiteral("windowButton"));
   button->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
@@ -135,19 +131,15 @@ void QtProjectWizardContent::filesButtonClicked() {
 void QtProjectWizardContent::showFilesDialog(const std::vector<FilePath>& filePaths) {
   if(!m_filesDialog) {
     m_filesDialog = new QtTextEditDialog(
-        getFileNamesTitle(),
-        QString::number(filePaths.size()) + " " + getFileNamesDescription(),
-        m_window);
+        getFileNamesTitle(), QString::number(filePaths.size()) + " " + getFileNamesDescription(), m_window);
     m_filesDialog->setup();
 
     m_filesDialog->setText(utility::join(utility::toWStrings(filePaths), L"\n"));
     m_filesDialog->setCloseVisible(false);
     m_filesDialog->setReadOnly(true);
 
-    connect(
-        m_filesDialog, &QtTextEditDialog::finished, this, &QtProjectWizardContent::closedFilesDialog);
-    connect(
-        m_filesDialog, &QtTextEditDialog::canceled, this, &QtProjectWizardContent::closedFilesDialog);
+    connect(m_filesDialog, &QtTextEditDialog::finished, this, &QtProjectWizardContent::closedFilesDialog);
+    connect(m_filesDialog, &QtTextEditDialog::canceled, this, &QtProjectWizardContent::closedFilesDialog);
   }
 
   m_filesDialog->showWindow();

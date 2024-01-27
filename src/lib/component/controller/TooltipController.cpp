@@ -2,18 +2,16 @@
 
 #include "CodeView.h"
 #include "GraphView.h"
-#include "StorageAccess.h"
-#include "TooltipView.h"
-
 #include "MessageActivateSourceLocations.h"
+#include "StorageAccess.h"
 #include "TabId.h"
 #include "TaskDecoratorDelay.h"
 #include "TaskLambda.h"
+#include "TooltipView.h"
 
 Id TooltipController::TooltipRequest::s_requestId = 1;
 
-TooltipController::TooltipController(StorageAccess* storageAccess)
-    : m_storageAccess(storageAccess), m_hideRequest(false) {}
+TooltipController::TooltipController(StorageAccess* storageAccess) : m_storageAccess(storageAccess), m_hideRequest(false) {}
 
 TooltipController::~TooltipController() {}
 
@@ -100,9 +98,7 @@ View* TooltipController::getViewForOrigin(TooltipOrigin origin) const {
   return getView()->getViewLayout()->findFloatingView(viewName);
 }
 
-void TooltipController::requestTooltipShow(const std::vector<Id> tokenIds,
-                                           TooltipInfo info,
-                                           TooltipOrigin origin) {
+void TooltipController::requestTooltipShow(const std::vector<Id> tokenIds, TooltipInfo info, TooltipOrigin origin) {
   Id requestId = TooltipRequest::s_requestId++;
 
   {
@@ -120,28 +116,26 @@ void TooltipController::requestTooltipShow(const std::vector<Id> tokenIds,
     delayMS = 300;
   }
 
-  Task::dispatch(TabId::app(),
-                 std::make_shared<TaskDecoratorDelay>(delayMS)->addChildTask(
-                     std::make_shared<TaskLambda>([requestId, this]() {
-                       std::unique_ptr<TooltipRequest> request;
-                       {
-                         std::lock_guard<std::mutex> lock(m_showRequestMutex);
-                         if(!m_showRequest || m_showRequest->requestId != requestId) {
-                           return;
-                         }
-                         request = std::move(m_showRequest);
-                       }
+  Task::dispatch(
+      TabId::app(), std::make_shared<TaskDecoratorDelay>(delayMS)->addChildTask(std::make_shared<TaskLambda>([requestId, this]() {
+        std::unique_ptr<TooltipRequest> request;
+        {
+          std::lock_guard<std::mutex> lock(m_showRequestMutex);
+          if(!m_showRequest || m_showRequest->requestId != requestId) {
+            return;
+          }
+          request = std::move(m_showRequest);
+        }
 
-                       if(!request->info.isValid() && request->tokenIds.size()) {
-                         request->info = m_storageAccess->getTooltipInfoForTokenIds(
-                             request->tokenIds, request->origin);
-                       }
+        if(!request->info.isValid() && request->tokenIds.size()) {
+          request->info = m_storageAccess->getTooltipInfoForTokenIds(request->tokenIds, request->origin);
+        }
 
-                       if(request->info.isValid()) {
-                         getView()->showTooltip(request->info, getViewForOrigin(request->origin));
-                         m_hideRequest = false;
-                       }
-                     })));
+        if(request->info.isValid()) {
+          getView()->showTooltip(request->info, getViewForOrigin(request->origin));
+          m_hideRequest = false;
+        }
+      })));
 }
 
 void TooltipController::requestTooltipHide() {
@@ -151,13 +145,11 @@ void TooltipController::requestTooltipHide() {
   }
   m_hideRequest = true;
 
-  Task::dispatch(
-      TabId::app(),
-      std::make_shared<TaskDecoratorDelay>(500)->addChildTask(std::make_shared<TaskLambda>([this]() {
-        if(m_hideRequest) {
-          m_hideRequest = false;
+  Task::dispatch(TabId::app(), std::make_shared<TaskDecoratorDelay>(500)->addChildTask(std::make_shared<TaskLambda>([this]() {
+    if(m_hideRequest) {
+      m_hideRequest = false;
 
-          getView()->hideTooltip(false);
-        }
-      })));
+      getView()->hideTooltip(false);
+    }
+  })));
 }

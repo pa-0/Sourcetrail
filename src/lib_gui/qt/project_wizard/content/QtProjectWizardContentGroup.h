@@ -5,30 +5,29 @@
 
 class QCheckBox;
 
-class QtProjectWizardContentGroup: public QtProjectWizardContent
-{
-	Q_OBJECT
+class QtProjectWizardContentGroup : public QtProjectWizardContent {
+  Q_OBJECT
 
 public:
-	QtProjectWizardContentGroup(QtProjectWizardWindow* window);
+  QtProjectWizardContentGroup(QtProjectWizardWindow* window);
 
-	void addContent(QtProjectWizardContent* content);
-	void addSpace();
+  void addContent(QtProjectWizardContent* content);
+  void addSpace();
 
-	bool hasContents() const;
+  bool hasContents() const;
 
 protected:
-	// QtProjectWizardContent implementation
-	virtual void populate(QGridLayout* layout, int& row) override;
+  // QtProjectWizardContent implementation
+  virtual void populate(QGridLayout* layout, int& row) override;
 
-	virtual void load() override;
-	virtual void save() override;
-	virtual void refresh() override;
-	virtual bool check() override;
+  virtual void load() override;
+  virtual void save() override;
+  virtual void refresh() override;
+  virtual bool check() override;
 
 private:
-	std::vector<QtProjectWizardContent*> m_contents;
-	bool m_isForm;
+  std::vector<QtProjectWizardContent*> m_contents;
+  bool m_isForm;
 };
 
-#endif	  // QT_PROJECT_WIZARD_CONTENT_GROUP_H
+#endif    // QT_PROJECT_WIZARD_CONTENT_GROUP_H

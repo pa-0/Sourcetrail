@@ -7,12 +7,11 @@
 #include "Migration.h"
 #include "SqliteStorage.h"
 
-class SqliteStorageMigration: public Migration<SqliteStorage>
-{
+class SqliteStorageMigration : public Migration<SqliteStorage> {
 public:
-	virtual ~SqliteStorageMigration();
+  virtual ~SqliteStorageMigration();
 
-	bool executeStatementInStorage(SqliteStorage* storage, const std::string& statement) const;
+  bool executeStatementInStorage(SqliteStorage* storage, const std::string& statement) const;
 };
 
-#endif	  // SQLITE_STORAGE_MIGRATION_H
+#endif    // SQLITE_STORAGE_MIGRATION_H

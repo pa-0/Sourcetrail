@@ -34,10 +34,7 @@ QtCodeField::QtCodeField(size_t startLineNumber,
                          std::shared_ptr<SourceLocationFile> locationFile,
                          bool convertLocationsOnDemand,
                          QWidget* parent)
-    : QPlainTextEdit(parent)
-    , m_startLineNumber(startLineNumber)
-    , m_code(code)
-    , m_endTextEditPosition(0) {
+    : QPlainTextEdit(parent), m_startLineNumber(startLineNumber), m_code(code), m_endTextEditPosition(0) {
   setObjectName(QStringLiteral("code_area"));
   setReadOnly(true);
   setFrameStyle(QFrame::NoFrame);
@@ -86,8 +83,7 @@ QtCodeField::QtCodeField(size_t startLineNumber,
   setFont(font);
   setTabStopDistance(appSettings->getCodeTabWidth() * fontMetrics().boundingRect('9').width());
 
-  m_openInTabAction = new QAction(
-      QStringLiteral("Open in New Tab (Ctrl + Shift + Left Click)"), this);
+  m_openInTabAction = new QAction(QStringLiteral("Open in New Tab (Ctrl + Shift + Left Click)"), this);
 #if defined(Q_OS_MAC)
   m_openInTabAction->setText(QStringLiteral("Open in New Tab (Cmd + Shift + Left Click)"));
 #endif
@@ -194,8 +190,7 @@ void QtCodeField::paintEvent(QPaintEvent* event) {
     const AnnotationColor& color = getAnnotationColorForAnnotation(annotation);
 
     if(color.text != "transparent" &&
-       QColor(color.text.c_str()) !=
-           m_highlighter->getFormat(annotation.start, annotation.end).foreground().color()) {
+       QColor(color.text.c_str()) != m_highlighter->getFormat(annotation.start, annotation.end).foreground().color()) {
       // TODO: this causes another paint event if text color changes
       setTextColorForAnnotation(annotation, QColor(color.text.c_str()));
     }
@@ -216,13 +211,12 @@ void QtCodeField::paintEvent(QPaintEvent* event) {
     painter.setBrush(QBrush(color.fill.c_str()));
 
     if(annotation.locationType == LOCATION_SCOPE) {
-      painter.drawRoundedRect(
-          0,
-          static_cast<int>(top + (annotation.startLine - m_startLineNumber) * blockHeight),
-          width(),
-          (annotation.endLine - annotation.startLine + 1) * blockHeight,
-          borderRadius,
-          borderRadius);
+      painter.drawRoundedRect(0,
+                              static_cast<int>(top + (annotation.startLine - m_startLineNumber) * blockHeight),
+                              width(),
+                              (annotation.endLine - annotation.startLine + 1) * blockHeight,
+                              borderRadius,
+                              borderRadius);
     } else {
       std::vector<QRect> rects = getCursorRectsForAnnotation(annotation);
       for(QRect rect : rects) {
@@ -303,8 +297,7 @@ void QtCodeField::contextMenuEvent(QContextMenuEvent* event) {
 }
 
 void QtCodeField::focusTokenIds(const std::vector<Id>& focusedTokenIds) {
-  annotateText(
-      std::set<Id>(), std::set<Id>(), std::set<Id>(focusedTokenIds.begin(), focusedTokenIds.end()), 0);
+  annotateText(std::set<Id>(), std::set<Id>(), std::set<Id>(focusedTokenIds.begin(), focusedTokenIds.end()), 0);
 }
 
 void QtCodeField::defocusTokenIds(const std::vector<Id>& /*activeTokenIds*/) {
@@ -344,8 +337,7 @@ bool QtCodeField::annotateText(const std::set<Id>& activeSymbolIds,
       }
     }
 
-    if(wasActive != annotation.isActive || wasFocused != annotation.isFocused ||
-       wasCoFocused != annotation.isCoFocused) {
+    if(wasActive != annotation.isActive || wasFocused != annotation.isFocused || wasCoFocused != annotation.isCoFocused) {
       m_linesToRehighlight.push_back(static_cast<int>(annotation.startLine - m_startLineNumber));
     }
   }
@@ -397,8 +389,7 @@ void QtCodeField::createAnnotations(std::shared_ptr<SourceLocationFile> location
       annotation.endCol = m_lineLengths[document()->blockCount() - 1];
     } else if(endLocation->getLineNumber() >= m_startLineNumber) {
       const int endLine = static_cast<int>(endLocation->getLineNumber());
-      const int endCol = getColumnCorrectedForMultibyteCharacters(
-          endLine, static_cast<int>(endLocation->getColumnNumber()));
+      const int endCol = getColumnCorrectedForMultibyteCharacters(endLine, static_cast<int>(endLocation->getColumnNumber()));
 
       annotation.end = toTextEditPosition(endLine, endCol);
       annotation.endLine = endLine;
@@ -415,9 +406,7 @@ void QtCodeField::createAnnotations(std::shared_ptr<SourceLocationFile> location
   });
 }
 
-void QtCodeField::activateAnnotations(const std::vector<const Annotation*>& annotations,
-                                      bool fromMouse,
-                                      int mouseOffsetX) {
+void QtCodeField::activateAnnotations(const std::vector<const Annotation*>& annotations, bool fromMouse, int mouseOffsetX) {
   std::vector<Id> locationIds;
   std::set<Id> tokenIds;
   std::set<Id> localSymbolIds;
@@ -542,8 +531,7 @@ std::vector<QRect> QtCodeField::getCursorRectsForAnnotation(const Annotation& an
   while(line <= annotation.endLine) {
     if(line == annotation.endLine) {
       // Avoid that annotations at line end span down to first column of the next line.
-      if(annotation.startLine != annotation.endLine ||
-         m_lineLengths[line - m_startLineNumber] != annotation.endCol) {
+      if(annotation.startLine != annotation.endLine || m_lineLengths[line - m_startLineNumber] != annotation.endCol) {
         cursor.setPosition(annotation.end);
       }
     } else {
@@ -551,10 +539,8 @@ std::vector<QRect> QtCodeField::getCursorRectsForAnnotation(const Annotation& an
     }
 
     rectEnd = cursorRect(cursor);
-    rects.push_back(QRect(rectStart.left(),
-                          rectStart.top(),
-                          rectEnd.right() - rectStart.left(),
-                          rectEnd.bottom() - rectStart.top()));
+    rects.push_back(
+        QRect(rectStart.left(), rectStart.top(), rectEnd.right() - rectStart.left(), rectEnd.bottom() - rectStart.top()));
 
     line++;
 
@@ -567,14 +553,11 @@ std::vector<QRect> QtCodeField::getCursorRectsForAnnotation(const Annotation& an
   return rects;
 }
 
-const QtCodeField::AnnotationColor& QtCodeField::getAnnotationColorForAnnotation(
-    const Annotation& annotation) {
+const QtCodeField::AnnotationColor& QtCodeField::getAnnotationColorForAnnotation(const Annotation& annotation) {
   if(!s_annotationColors.size()) {
     ColorScheme* scheme = ColorScheme::getInstance().get();
-    std::vector<std::string> types = {
-        "token", "local_symbol", "scope", "error", "fulltext_search", "screen_search"};
-    std::vector<ColorScheme::ColorState> states = {
-        ColorScheme::NORMAL, ColorScheme::FOCUS, ColorScheme::ACTIVE};
+    std::vector<std::string> types = {"token", "local_symbol", "scope", "error", "fulltext_search", "screen_search"};
+    std::vector<ColorScheme::ColorState> states = {ColorScheme::NORMAL, ColorScheme::FOCUS, ColorScheme::ACTIVE};
 
     for(const std::string& type : types) {
       for(const ColorScheme::ColorState& state : states) {
@@ -634,16 +617,14 @@ const QtCodeField::Annotation* QtCodeField::getAnnotationForLocationId(Id locati
   return nullptr;
 }
 
-std::vector<const QtCodeField::Annotation*> QtCodeField::getInteractiveAnnotationsForLineNumber(
-    size_t lineNumber) const {
+std::vector<const QtCodeField::Annotation*> QtCodeField::getInteractiveAnnotationsForLineNumber(size_t lineNumber) const {
   std::vector<const QtCodeField::Annotation*> annotations;
 
   for(const Annotation& annotation : m_annotations) {
     const LocationType& type = annotation.locationType;
-    if((type == LOCATION_TOKEN || type == LOCATION_QUALIFIER || type == LOCATION_LOCAL_SYMBOL ||
-        type == LOCATION_UNSOLVED || type == LOCATION_ERROR) &&
-       static_cast<int>(lineNumber) >= annotation.startLine &&
-       static_cast<int>(lineNumber) <= annotation.endLine) {
+    if((type == LOCATION_TOKEN || type == LOCATION_QUALIFIER || type == LOCATION_LOCAL_SYMBOL || type == LOCATION_UNSOLVED ||
+        type == LOCATION_ERROR) &&
+       static_cast<int>(lineNumber) >= annotation.startLine && static_cast<int>(lineNumber) <= annotation.endLine) {
       annotations.push_back(&annotation);
     }
   }
@@ -651,8 +632,7 @@ std::vector<const QtCodeField::Annotation*> QtCodeField::getInteractiveAnnotatio
   return annotations;
 }
 
-std::vector<const QtCodeField::Annotation*> QtCodeField::getInteractiveAnnotationsForPosition(
-    QPoint position) const {
+std::vector<const QtCodeField::Annotation*> QtCodeField::getInteractiveAnnotationsForPosition(QPoint position) const {
   std::vector<const QtCodeField::Annotation*> annotations;
 
   QTextCursor cursor = this->cursorForPosition(position);
@@ -660,8 +640,8 @@ std::vector<const QtCodeField::Annotation*> QtCodeField::getInteractiveAnnotatio
 
   for(const Annotation& annotation : m_annotations) {
     const LocationType& type = annotation.locationType;
-    if((type == LOCATION_TOKEN || type == LOCATION_QUALIFIER || type == LOCATION_LOCAL_SYMBOL ||
-        type == LOCATION_UNSOLVED || type == LOCATION_ERROR) &&
+    if((type == LOCATION_TOKEN || type == LOCATION_QUALIFIER || type == LOCATION_LOCAL_SYMBOL || type == LOCATION_UNSOLVED ||
+        type == LOCATION_ERROR) &&
        pos >= annotation.start && pos <= annotation.end) {
       annotations.push_back(&annotation);
     }
@@ -707,8 +687,7 @@ void QtCodeField::createLineLengthCache() {
 
 void QtCodeField::createMultibyteCharacterLocationCache(const QString& code) {
   m_multibyteCharacterLocations.clear();
-  QTextCodec* codec = QTextCodec::codecForName(
-      ApplicationSettings::getInstance()->getTextEncoding().c_str());
+  QTextCodec* codec = QTextCodec::codecForName(ApplicationSettings::getInstance()->getTextEncoding().c_str());
 
   for(const QString& line : code.split(QStringLiteral("\n"))) {
     std::vector<std::pair<int, int>> columnsToOffsets;
@@ -729,8 +708,7 @@ int QtCodeField::getColumnCorrectedForMultibyteCharacters(int line, int column) 
 
   const size_t relativeLineNumber = line - m_startLineNumber;
   if(relativeLineNumber < m_multibyteCharacterLocations.size()) {
-    for(const auto& multibyteCharacterLocation :
-        m_multibyteCharacterLocations[relativeLineNumber]) {
+    for(const auto& multibyteCharacterLocation : m_multibyteCharacterLocations[relativeLineNumber]) {
       if(column > multibyteCharacterLocation.first) {
         column -= multibyteCharacterLocation.second - 1;
       }

@@ -9,7 +9,7 @@ public:
   enum ColorState { NORMAL, FOCUS, ACTIVE };
 
   static std::shared_ptr<ColorScheme> getInstance();
-	ColorScheme(const ColorScheme&) = delete;
+  ColorScheme(const ColorScheme&) = delete;
   void operator=(const ColorScheme&) = delete;
   ~ColorScheme() override;
 
@@ -24,14 +24,10 @@ public:
   std::string getEdgeTypeColor(Edge::EdgeType type) const;
   std::string getEdgeTypeColor(const std::string& type) const;
 
-  std::string getSearchTypeColor(const std::string& searchTypeName,
-                                 const std::string& key,
-                                 const std::string& state = "normal") const;
+  std::string getSearchTypeColor(const std::string& searchTypeName, const std::string& key, const std::string& state = "normal") const;
   std::string getSyntaxColor(const std::string& key) const;
 
-  std::string getCodeAnnotationTypeColor(const std::string& typeStr,
-                                         const std::string& key,
-                                         ColorState state) const;
+  std::string getCodeAnnotationTypeColor(const std::string& typeStr, const std::string& key, ColorState state) const;
 
 protected:
   ColorScheme();

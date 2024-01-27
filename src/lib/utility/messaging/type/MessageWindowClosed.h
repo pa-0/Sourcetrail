@@ -3,18 +3,15 @@
 
 #include "Message.h"
 
-class MessageWindowClosed: public Message<MessageWindowClosed>
-{
+class MessageWindowClosed : public Message<MessageWindowClosed> {
 public:
-	MessageWindowClosed()
-	{
-		setSendAsTask(false);
-	}
+  MessageWindowClosed() {
+    setSendAsTask(false);
+  }
 
-	static const std::string getStaticType()
-	{
-		return "MessageWindowClosed";
-	}
+  static const std::string getStaticType() {
+    return "MessageWindowClosed";
+  }
 };
 
-#endif	  // MESSAGE_WINDOW_CLOSED_H
+#endif    // MESSAGE_WINDOW_CLOSED_H

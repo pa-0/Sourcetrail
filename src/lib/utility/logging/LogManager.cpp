@@ -5,7 +5,7 @@
 // #include "MessageStatus.h"
 #include "Version.h"
 #include "logging.h"
-//#include "utilityApp.h"
+// #include "utilityApp.h"
 #include "utilityString.h"
 
 std::shared_ptr<LogManager> LogManager::getInstance() {
@@ -71,28 +71,19 @@ int LogManager::getLoggerCount() const {
   return m_logManagerImplementation.getLoggerCount();
 }
 
-void LogManager::logInfo(const std::string& message,
-                         const std::string& file,
-                         const std::string& function,
-                         const unsigned int line) {
+void LogManager::logInfo(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) {
   if(m_loggingEnabled) {
     m_logManagerImplementation.logInfo(utility::decodeFromUtf8(message), file, function, line);
   }
 }
 
-void LogManager::logInfo(const std::wstring& message,
-                         const std::string& file,
-                         const std::string& function,
-                         const unsigned int line) {
+void LogManager::logInfo(const std::wstring& message, const std::string& file, const std::string& function, const unsigned int line) {
   if(m_loggingEnabled) {
     m_logManagerImplementation.logInfo(message, file, function, line);
   }
 }
 
-void LogManager::logWarning(const std::string& message,
-                            const std::string& file,
-                            const std::string& function,
-                            const unsigned int line) {
+void LogManager::logWarning(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) {
   if(m_loggingEnabled) {
     m_logManagerImplementation.logWarning(utility::decodeFromUtf8(message), file, function, line);
   }
@@ -107,19 +98,13 @@ void LogManager::logWarning(const std::wstring& message,
   }
 }
 
-void LogManager::logError(const std::string& message,
-                          const std::string& file,
-                          const std::string& function,
-                          const unsigned int line) {
+void LogManager::logError(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) {
   if(m_loggingEnabled) {
     m_logManagerImplementation.logError(utility::decodeFromUtf8(message), file, function, line);
   }
 }
 
-void LogManager::logError(const std::wstring& message,
-                          const std::string& file,
-                          const std::string& function,
-                          const unsigned int line) {
+void LogManager::logError(const std::wstring& message, const std::string& file, const std::string& function, const unsigned int line) {
   if(m_loggingEnabled) {
     m_logManagerImplementation.logError(message, file, function, line);
   }

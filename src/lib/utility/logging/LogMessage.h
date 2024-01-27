@@ -12,7 +12,7 @@ struct LogMessage final {
              const std::time_t& time,
              const std::thread::id& threadId);
 
-	[[nodiscard]] std::string getTimeString() const;
+  [[nodiscard]] std::string getTimeString() const;
 
   [[nodiscard]] std::string getFileName() const;
 

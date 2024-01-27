@@ -13,32 +13,31 @@ class QLabel;
 class QPushButton;
 class QVBoxLayout;
 
-class QtIndexingDialog: public QtWindowBase
-{
-	Q_OBJECT
+class QtIndexingDialog : public QtWindowBase {
+  Q_OBJECT
 
 protected:
-	static QBoxLayout* createLayout(QWidget* parent);
-	static QLabel* createTitleLabel(const QString& title, QBoxLayout* layout);
-	static QLabel* createMessageLabel(QBoxLayout* layout);
-	static QWidget* createErrorWidget(QBoxLayout* layout);
-	static QLabel* createFlagLabel(QWidget* parent);
+  static QBoxLayout* createLayout(QWidget* parent);
+  static QLabel* createTitleLabel(const QString& title, QBoxLayout* layout);
+  static QLabel* createMessageLabel(QBoxLayout* layout);
+  static QWidget* createErrorWidget(QBoxLayout* layout);
+  static QLabel* createFlagLabel(QWidget* parent);
 
 public:
-	QtIndexingDialog(bool isSubWindow, QWidget* parent = nullptr);
-	QSize sizeHint() const override = 0;
+  QtIndexingDialog(bool isSubWindow, QWidget* parent = nullptr);
+  QSize sizeHint() const override = 0;
 
 signals:
-	void finished();
-	void canceled();
-	void visibleChanged(bool visible);
+  void finished();
+  void canceled();
+  void visibleChanged(bool visible);
 
 protected:
-	void resizeEvent(QResizeEvent* event) override;
+  void resizeEvent(QResizeEvent* event) override;
 
-	void setupDone();
+  void setupDone();
 
-	QVBoxLayout* m_layout;
+  QVBoxLayout* m_layout;
 };
 
-#endif	  // QT_INDEXING_DIALOG_H
+#endif    // QT_INDEXING_DIALOG_H

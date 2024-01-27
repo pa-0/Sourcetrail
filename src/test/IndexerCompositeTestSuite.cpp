@@ -28,7 +28,7 @@ struct IndexerCompositeFix : testing::Test {
 };
 
 TEST(IndexerComposite, getSupportedIndexerCommandType) {
-  EXPECT_EQ(INDEXER_COMMAND_UNKNOWN, IndexerComposite{}.getSupportedIndexerCommandType());
+  EXPECT_EQ(INDEXER_COMMAND_UNKNOWN, IndexerComposite {}.getSupportedIndexerCommandType());
 }
 
 #if BUILD_CXX_LANGUAGE_PACKAGE
@@ -37,9 +37,7 @@ TEST_F(IndexerCompositeFix, missingIndexer) {
   EXPECT_CALL(*mMockedLogger, logError(_)).WillOnce(Return());
 
   auto mockedIndexerCommand = std::make_shared<MockedIndexerCommand>();
-  EXPECT_CALL(*mockedIndexerCommand, getIndexerCommandType)
-    .WillOnce(Return(INDEXER_COMMAND_CXX))
-    .WillOnce(Return(INDEXER_COMMAND_CXX));
+  EXPECT_CALL(*mockedIndexerCommand, getIndexerCommandType).WillOnce(Return(INDEXER_COMMAND_CXX)).WillOnce(Return(INDEXER_COMMAND_CXX));
   EXPECT_FALSE(indexerComposite.index(mockedIndexerCommand));
 }
 #endif
@@ -49,8 +47,7 @@ TEST(IndexerComposite, goodCase) {
   IndexerComposite indexerComposite;
 
   auto mockedIndexerCommand = std::make_shared<MockedIndexerCommand>();
-  EXPECT_CALL(*mockedIndexerCommand, getIndexerCommandType)
-    .WillOnce(Return(INDEXER_COMMAND_CXX));
+  EXPECT_CALL(*mockedIndexerCommand, getIndexerCommandType).WillOnce(Return(INDEXER_COMMAND_CXX));
   auto mockedIndexer = std::make_shared<MockedIndexer>();
   EXPECT_CALL(*mockedIndexer, getSupportedIndexerCommandType).WillOnce(Return(INDEXER_COMMAND_CXX));
   indexerComposite.addIndexer(mockedIndexer);

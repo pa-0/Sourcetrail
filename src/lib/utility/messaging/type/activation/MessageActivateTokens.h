@@ -14,8 +14,7 @@ public:
     return "MessageActivateTokens";
   }
 
-  MessageActivateTokens(const MessageBase* other)
-      : isEdge(false), isBundledEdges(false), isFromSearch(false) {
+  MessageActivateTokens(const MessageBase* other) : isEdge(false), isBundledEdges(false), isFromSearch(false) {
     setIsParallel(true);
     setKeepContent(other->keepContent());
     setSchedulerId(other->getSchedulerId());

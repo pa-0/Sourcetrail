@@ -177,8 +177,7 @@ FilePath& FilePath::makeCanonical() {
           // boost bug). Therefore we need to make the path absolute again. We also have
           // to discard the trailing \0 characters so that we can continue appending to
           // the path.
-          canonicalPath = utility::substrBeforeFirst(
-              boost::filesystem::absolute(symlink).string(), '\0');
+          canonicalPath = utility::substrBeforeFirst(boost::filesystem::absolute(symlink).string(), '\0');
         }
       }
     }
@@ -213,8 +212,7 @@ std::vector<FilePath> FilePath::expandEnvironmentVariables() const {
 #  pragma warning(push)
 #  pragma warning(disable : 4996)
 #endif
-    const char* s = match[1].matched ? getenv(match[1].str().c_str()) :
-                                       getenv(match[2].str().c_str());
+    const char* s = match[1].matched ? getenv(match[1].str().c_str()) : getenv(match[2].str().c_str());
 #ifdef _WIN32
 #  pragma warning(pop)
 #endif

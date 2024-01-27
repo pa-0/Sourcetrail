@@ -15,7 +15,7 @@ struct FileInfo;
 struct ProjectBuilderIndex;
 
 #ifdef ST_TESTING
-#include <gtest/gtest.h>
+#  include <gtest/gtest.h>
 struct ProjectFix;
 #endif
 

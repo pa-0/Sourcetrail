@@ -3,22 +3,21 @@
 
 #include <QGraphicsRectItem>
 
-class QtRoundedRectItem: public QGraphicsRectItem
-{
+class QtRoundedRectItem : public QGraphicsRectItem {
 public:
-	QtRoundedRectItem(QGraphicsItem* parent);
-	virtual ~QtRoundedRectItem();
+  QtRoundedRectItem(QGraphicsItem* parent);
+  virtual ~QtRoundedRectItem();
 
-	virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget);
+  virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget);
 
-	void setShadow(QColor color, int blurRadius);
-	void setShadowEnabled(bool enabled);
+  void setShadow(QColor color, int blurRadius);
+  void setShadowEnabled(bool enabled);
 
-	qreal getRadius() const;
-	void setRadius(qreal radius);
+  qreal getRadius() const;
+  void setRadius(qreal radius);
 
 private:
-	qreal m_radius;
+  qreal m_radius;
 };
 
-#endif	  // QT_GRAPHICS_ROUNDED_RECT_ITEM_H
+#endif    // QT_GRAPHICS_ROUNDED_RECT_ITEM_H

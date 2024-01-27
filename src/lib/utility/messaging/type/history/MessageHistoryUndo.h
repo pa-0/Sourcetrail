@@ -4,18 +4,15 @@
 #include "Message.h"
 #include "TabId.h"
 
-class MessageHistoryUndo: public Message<MessageHistoryUndo>
-{
+class MessageHistoryUndo : public Message<MessageHistoryUndo> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageHistoryUndo";
-	}
+  static const std::string getStaticType() {
+    return "MessageHistoryUndo";
+  }
 
-	MessageHistoryUndo()
-	{
-		setSchedulerId(TabId::currentTab());
-	}
+  MessageHistoryUndo() {
+    setSchedulerId(TabId::currentTab());
+  }
 };
 
-#endif	  // MESSAGE_HISTORY_UNDO_H
+#endif    // MESSAGE_HISTORY_UNDO_H

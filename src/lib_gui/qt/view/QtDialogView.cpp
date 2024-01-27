@@ -62,9 +62,7 @@ void QtDialogView::hideUnknownProgressDialog() {
   setParentWindow(nullptr);
 }
 
-void QtDialogView::showProgressDialog(const std::wstring& title,
-                                      const std::wstring& message,
-                                      size_t progress) {
+void QtDialogView::showProgressDialog(const std::wstring& title, const std::wstring& message, size_t progress) {
   m_onQtThread([=]() {
     bool sendStatusMessage = true;
     QtKnownProgressDialog* window = dynamic_cast<QtKnownProgressDialog*>(m_windowStack.getTopWindow());
@@ -72,13 +70,11 @@ void QtDialogView::showProgressDialog(const std::wstring& title,
       m_windowStack.clearWindows();
       window = createWindow<QtKnownProgressDialog>(m_dialogsHideable);
     } else {
-      sendStatusMessage = (window->getTitle() != title || window->getMessage() != message ||
-                           window->getProgress() != progress);
+      sendStatusMessage = (window->getTitle() != title || window->getMessage() != message || window->getProgress() != progress);
     }
 
     if(sendStatusMessage) {
-      MessageStatus(title + L": " + message + L" [" + std::to_wstring(progress) + L"%]", false, true)
-          .dispatch();
+      MessageStatus(title + L": " + message + L" [" + std::to_wstring(progress) + L"%]", false, true).dispatch();
     }
 
     window->updateTitle(QString::fromStdWString(title));
@@ -121,9 +117,7 @@ void QtDialogView::startIndexingDialog(Project* project,
     QtIndexingStartDialog* window = createWindow<QtIndexingStartDialog>(
         enabledModes, initialMode, enabledShallowOption, initialShallowState);
 
-    connect(window, &QtIndexingStartDialog::setShallowIndexing, [=](bool enabled) {
-      m_shallowIndexingEnabled = enabled;
-    });
+    connect(window, &QtIndexingStartDialog::setShallowIndexing, [=](bool enabled) { m_shallowIndexingEnabled = enabled; });
 
     std::function<void(RefreshMode)> onRefreshModeChanged = ([=](RefreshMode refreshMode) {
       auto it = m_refreshInfos.find(refreshMode);
@@ -135,9 +129,7 @@ void QtDialogView::startIndexingDialog(Project* project,
 
       std::shared_ptr<QTimer> timer = std::make_shared<QTimer>();
       timer->setSingleShot(true);
-      connect(timer.get(), &QTimer::timeout, [=]() {
-        showUnknownProgress(L"Preparing Indexing", L"Processing Files", true);
-      });
+      connect(timer.get(), &QTimer::timeout, [=]() { showUnknownProgress(L"Preparing Indexing", L"Processing Files", true); });
       timer->start(200);
 
       Task::dispatch(TabId::app(), std::make_shared<TaskLambda>([=]() {
@@ -186,22 +178,20 @@ void QtDialogView::updateIndexingDialog(size_t startedFileCount,
     if(!sourcePaths.empty()) {
       std::vector<std::wstring> stati;
       for(const FilePath& path : sourcePaths) {
-        stati.push_back(L"[" + std::to_wstring(startedFileCount) + L"/" +
-                        std::to_wstring(totalFileCount) + L"] Indexing file: " + path.wstr());
+        stati.push_back(L"[" + std::to_wstring(startedFileCount) + L"/" + std::to_wstring(totalFileCount) + L"] Indexing file: " +
+                        path.wstr());
       }
       MessageStatus(stati, false, false, m_dialogsVisible).dispatch();
     }
 
-    QtIndexingProgressDialog* window = dynamic_cast<QtIndexingProgressDialog*>(
-        m_windowStack.getTopWindow());
+    QtIndexingProgressDialog* window = dynamic_cast<QtIndexingProgressDialog*>(m_windowStack.getTopWindow());
     if(!window) {
       m_windowStack.clearWindows();
 
       window = createWindow<QtIndexingProgressDialog>(m_dialogsHideable);
     }
 
-    window->updateIndexingProgress(
-        finishedFileCount, totalFileCount, sourcePaths.empty() ? FilePath() : sourcePaths.back());
+    window->updateIndexingProgress(finishedFileCount, totalFileCount, sourcePaths.empty() ? FilePath() : sourcePaths.back());
 
     m_mainWindow->setWindowsTaskbarProgress(float(finishedFileCount) / totalFileCount);
 
@@ -216,8 +206,7 @@ void QtDialogView::updateCustomIndexingDialog(size_t startedFileCount,
   updateIndexingDialog(startedFileCount, finishedFileCount, totalFileCount, sourcePaths);
 
   m_onQtThread([=]() {
-    QtIndexingProgressDialog* window = dynamic_cast<QtIndexingProgressDialog*>(
-        m_windowStack.getTopWindow());
+    QtIndexingProgressDialog* window = dynamic_cast<QtIndexingProgressDialog*>(m_windowStack.getTopWindow());
     if(window) {
       window->updateTitle(QStringLiteral("Executing Commands"));
     }
@@ -239,13 +228,8 @@ DatabasePolicy QtDialogView::finishedIndexingDialog(size_t indexedFileCount,
     m_dialogsVisible = true;
     m_windowStack.clearWindows();
 
-    QtIndexingReportDialog* window = createWindow<QtIndexingReportDialog>(indexedFileCount,
-                                                                          totalIndexedFileCount,
-                                                                          completedFileCount,
-                                                                          totalFileCount,
-                                                                          time,
-                                                                          interrupted,
-                                                                          shallow);
+    QtIndexingReportDialog* window = createWindow<QtIndexingReportDialog>(
+        indexedFileCount, totalIndexedFileCount, completedFileCount, totalFileCount, time, interrupted, shallow);
     window->updateErrorCount(errorInfo.total, errorInfo.fatal);
     connect(window, &QtIndexingDialog::finished, [this, &policy]() {
       setUIBlocked(false);
@@ -309,9 +293,7 @@ void QtDialogView::setParentWindow(QtWindow* window) {
   m_onQtThread([=]() { m_parentWindow = window; });
 }
 
-void QtDialogView::showUnknownProgress(const std::wstring& title,
-                                       const std::wstring& message,
-                                       bool stacked) {
+void QtDialogView::showUnknownProgress(const std::wstring& title, const std::wstring& message, bool stacked) {
   QtUnknownProgressDialog* window = nullptr;
 
   if(!stacked) {
@@ -334,8 +316,7 @@ void QtDialogView::showUnknownProgress(const std::wstring& title,
 }
 
 void QtDialogView::hideUnknownProgress() {
-  QtUnknownProgressDialog* window = dynamic_cast<QtUnknownProgressDialog*>(
-      m_windowStack.getTopWindow());
+  QtUnknownProgressDialog* window = dynamic_cast<QtUnknownProgressDialog*>(m_windowStack.getTopWindow());
   if(window) {
     m_windowStack.popWindow();
   }
@@ -396,11 +377,9 @@ void QtDialogView::handleMessage(MessageWindowClosed* /*message*/) {
 }
 
 void QtDialogView::updateErrorCount(size_t errorCount, size_t fatalCount) {
-  if(QtIndexingProgressDialog* progressWindow = dynamic_cast<QtIndexingProgressDialog*>(
-         m_windowStack.getTopWindow())) {
+  if(QtIndexingProgressDialog* progressWindow = dynamic_cast<QtIndexingProgressDialog*>(m_windowStack.getTopWindow())) {
     progressWindow->updateErrorCount(errorCount, fatalCount);
-  } else if(QtIndexingReportDialog* reportWindow = dynamic_cast<QtIndexingReportDialog*>(
-                m_windowStack.getTopWindow())) {
+  } else if(QtIndexingReportDialog* reportWindow = dynamic_cast<QtIndexingReportDialog*>(m_windowStack.getTopWindow())) {
     reportWindow->updateErrorCount(errorCount, fatalCount);
   }
 }
@@ -419,9 +398,7 @@ DialogType* QtDialogView::createWindow(ParamTypes... params) {
   connect(window, &QtIndexingDialog::visibleChanged, this, &QtDialogView::dialogVisibilityChanged);
 
   if(m_mainWindow) {
-    connect(m_mainWindow,
-            &QtMainWindow::hideIndexingDialog,
-            std::bind(&QtDialogView::dialogVisibilityChanged, this, true));
+    connect(m_mainWindow, &QtMainWindow::hideIndexingDialog, std::bind(&QtDialogView::dialogVisibilityChanged, this, true));
   }
 
   m_windowStack.pushWindow(window);

@@ -19,8 +19,8 @@ struct LicenseInfo {
 };
 
 // License Textfiles
-@LICENSES@
+@LICENSES @
 
-static const LicenseInfo licenseApp = @LICENSE_APP@;
+    static const LicenseInfo licenseApp = @LICENSE_APP @;
 
-static const LicenseInfo licenses3rdParties[] = {@LICENSE_ARRAY@};
+static const LicenseInfo licenses3rdParties[] = {@LICENSE_ARRAY @};

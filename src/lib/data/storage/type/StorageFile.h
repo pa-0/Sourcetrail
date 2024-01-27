@@ -7,12 +7,8 @@
 struct StorageFile {
   StorageFile() = default;
 
-  StorageFile(Id id_,
-              std::wstring filePath_,
-              std::wstring languageIdentifier_,
-              std::string modificationTime_,
-              bool indexed_,
-              bool complete_)
+  StorageFile(
+      Id id_, std::wstring filePath_, std::wstring languageIdentifier_, std::string modificationTime_, bool indexed_, bool complete_)
       : id(id_)
       , filePath(std::move(filePath_))
       , languageIdentifier(std::move(languageIdentifier_))

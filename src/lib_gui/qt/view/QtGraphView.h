@@ -111,11 +111,8 @@ private:
 
   void doResize();
 
-  QtGraphNode* createNodeRecursive(QGraphicsView* view,
-                                   QtGraphNode* parentNode,
-                                   const DummyNode* node,
-                                   bool multipleActive,
-                                   bool interactive);
+  QtGraphNode* createNodeRecursive(
+      QGraphicsView* view, QtGraphNode* parentNode, const DummyNode* node, bool multipleActive, bool interactive);
   QtGraphEdge* createEdge(QGraphicsView* view,
                           const DummyEdge* edge,
                           std::set<Id>* visibleEdgeIds,
@@ -123,10 +120,7 @@ private:
                           QPointF pathOffset,
                           bool useBezier,
                           bool interactive);
-  QtGraphEdge* createBundledEdgesEdge(QGraphicsView* view,
-                                      const DummyEdge* edge,
-                                      std::set<Id>* visibleEdgeIds,
-                                      bool interactive);
+  QtGraphEdge* createBundledEdgesEdge(QGraphicsView* view, const DummyEdge* edge, std::set<Id>* visibleEdgeIds, bool interactive);
 
   QRectF itemsBoundingRect(const std::list<QtGraphNode*>& items) const;
   QRectF getSceneRect(const std::list<QtGraphNode*>& items) const;

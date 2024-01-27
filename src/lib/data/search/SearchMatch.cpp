@@ -37,8 +37,7 @@ std::wstring SearchMatch::searchMatchesToString(const std::vector<SearchMatch>& 
   std::wstringstream ss;
 
   for(const SearchMatch& match : matches) {
-    ss << L'@' << match.getFullName() << L':'
-       << getReadableNodeKindWString(match.nodeType.getKind()) << L' ';
+    ss << L'@' << match.getFullName() << L':' << getReadableNodeKindWString(match.nodeType.getKind()) << L' ';
   }
 
   return ss.str();
@@ -84,16 +83,10 @@ std::wstring SearchMatch::getCommandName(CommandType type) {
   return L"none";
 }
 
-SearchMatch::SearchMatch()
-    : typeName(L""), nodeType(NODE_SYMBOL), searchType(SEARCH_NONE), hasChildren(false) {}
+SearchMatch::SearchMatch() : typeName(L""), nodeType(NODE_SYMBOL), searchType(SEARCH_NONE), hasChildren(false) {}
 
 SearchMatch::SearchMatch(const std::wstring& query)
-    : name(query)
-    , text(query)
-    , typeName(L"")
-    , nodeType(NODE_SYMBOL)
-    , searchType(SEARCH_NONE)
-    , hasChildren(false) {
+    : name(query), text(query), typeName(L""), nodeType(NODE_SYMBOL), searchType(SEARCH_NONE), hasChildren(false) {
   tokenNames.emplace_back(query, NAME_DELIMITER_UNKNOWN);
 }
 

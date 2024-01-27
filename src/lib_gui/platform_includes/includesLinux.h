@@ -38,9 +38,8 @@ inline void setupPlatform(int /*argc*/, [[maybe_unused]] char* argv[]) {
   }
 }
 
-inline void setupApp([[maybe_unused]] int argc,[[maybe_unused]] char* argv[]) {
-  FilePath appPath =
-      FilePath(QCoreApplication::applicationDirPath().toStdWString() + L"/").getAbsolute();
+inline void setupApp([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
+  FilePath appPath = FilePath(QCoreApplication::applicationDirPath().toStdWString() + L"/").getAbsolute();
   AppPath::setSharedDataDirectoryPath(appPath);
   AppPath::setCxxIndexerDirectoryPath(appPath);
 
@@ -58,11 +57,9 @@ inline void setupApp([[maybe_unused]] int argc,[[maybe_unused]] char* argv[]) {
     dataDir.mkpath(userDataPath);
   }
 
+  utility::copyNewFilesFromDirectory(QString::fromStdWString(ResourcePaths::getFallbackDirectoryPath().wstr()), userDataPath);
   utility::copyNewFilesFromDirectory(
-      QString::fromStdWString(ResourcePaths::getFallbackDirectoryPath().wstr()), userDataPath);
-  utility::copyNewFilesFromDirectory(
-      QString::fromStdWString(AppPath::getSharedDataDirectoryPath().concatenate(L"user/").wstr()),
-      userDataPath);
+      QString::fromStdWString(AppPath::getSharedDataDirectoryPath().concatenate(L"user/").wstr()), userDataPath);
 
   // Add u+w permissions because the source files may be marked read-only in some distros
   QDirIterator it(userDataPath, QDir::Files, QDirIterator::Subdirectories);

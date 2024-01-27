@@ -8,8 +8,7 @@ class QtProjectWizardContentUnloadable : public QtProjectWizardContent {
   Q_OBJECT
 
 public:
-  QtProjectWizardContentUnloadable(std::shared_ptr<SourceGroupSettingsUnloadable> settings,
-                                   QtProjectWizardWindow* window);
+  QtProjectWizardContentUnloadable(std::shared_ptr<SourceGroupSettingsUnloadable> settings, QtProjectWizardWindow* window);
 
   // QtProjectWizardContent implementation
   void populate(QGridLayout* layout, int& row) override;

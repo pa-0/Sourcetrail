@@ -22,8 +22,7 @@ struct IndexerStateInfo;
 
 class CxxParser final : public Parser {
 public:
-  static std::vector<std::string> getCommandlineArgumentsEssential(
-      const std::vector<std::wstring>& compilerFlags);
+  static std::vector<std::string> getCommandlineArgumentsEssential(const std::vector<std::wstring>& compilerFlags);
   static void initializeLLVM();
 
   CxxParser(std::shared_ptr<ParserClient> client,
@@ -37,13 +36,11 @@ public:
                   const std::vector<std::wstring>& compilerFlags = {});
 
 private:
-  void runTool(clang::tooling::CompilationDatabase* pCompilationDatabase,
-               const FilePath& sourceFilePath);
+  void runTool(clang::tooling::CompilationDatabase* pCompilationDatabase, const FilePath& sourceFilePath);
 
-  [[nodiscard]] std::shared_ptr<CxxDiagnosticConsumer> getDiagnostics(
-      const FilePath& sourceFilePath,
-      std::shared_ptr<CanonicalFilePathCache> canonicalFilePathCache,
-      bool logErrors) const;
+  [[nodiscard]] std::shared_ptr<CxxDiagnosticConsumer> getDiagnostics(const FilePath& sourceFilePath,
+                                                                      std::shared_ptr<CanonicalFilePathCache> canonicalFilePathCache,
+                                                                      bool logErrors) const;
 
   friend class TaskParseCxx;
 

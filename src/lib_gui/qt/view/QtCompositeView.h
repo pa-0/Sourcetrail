@@ -7,26 +7,24 @@
 class QBoxLayout;
 class QWidget;
 
-class QtCompositeView: public CompositeView
-{
+class QtCompositeView : public CompositeView {
 public:
-	QtCompositeView(
-		ViewLayout* viewLayout, CompositeDirection direction, const std::string& name, Id tabId);
-	~QtCompositeView() = default;
+  QtCompositeView(ViewLayout* viewLayout, CompositeDirection direction, const std::string& name, Id tabId);
+  ~QtCompositeView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	// CompositeView implementation
-	void addViewWidget(View* view) override;
-	void showFocusIndicator(bool focus) override;
+  // CompositeView implementation
+  void addViewWidget(View* view) override;
+  void showFocusIndicator(bool focus) override;
 
 private:
-	QtThreadedLambdaFunctor m_onQtThread;
-	QWidget* m_focusIndicator;
-	QWidget* m_widget;
-	QBoxLayout* m_layout;
+  QtThreadedLambdaFunctor m_onQtThread;
+  QWidget* m_focusIndicator;
+  QWidget* m_widget;
+  QBoxLayout* m_layout;
 };
 
-#endif	  // QT_COMPOSITE_VIEW
+#endif    // QT_COMPOSITE_VIEW

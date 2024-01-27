@@ -15,25 +15,22 @@ FileTree::FileTree(const FilePath& rootPath) : m_rootPath(rootPath.getAbsolute()
 }
 
 FilePath FileTree::getAbsoluteRootPathForRelativeFilePath(const FilePath& relativeFilePath) {
-  std::vector<FilePath> rootPaths = doGetAbsoluteRootPathsForRelativeFilePath(
-      relativeFilePath, false);
+  std::vector<FilePath> rootPaths = doGetAbsoluteRootPathsForRelativeFilePath(relativeFilePath, false);
   if(!rootPaths.empty()) {
     return rootPaths.front();
   }
   return FilePath();
 }
 
-std::vector<FilePath> FileTree::getAbsoluteRootPathsForRelativeFilePath(
-    const FilePath& relativeFilePath) {
+std::vector<FilePath> FileTree::getAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath) {
   return doGetAbsoluteRootPathsForRelativeFilePath(relativeFilePath, true);
 }
 
-std::vector<FilePath> FileTree::doGetAbsoluteRootPathsForRelativeFilePath(
-    const FilePath& relativeFilePath, bool allowMultipleResults) {
+std::vector<FilePath> FileTree::doGetAbsoluteRootPathsForRelativeFilePath(const FilePath& relativeFilePath,
+                                                                          bool allowMultipleResults) {
   std::vector<FilePath> rootPaths;
 
-  std::unordered_map<std::wstring, std::set<FilePath>>::const_iterator it = m_files.find(
-      relativeFilePath.fileName());
+  std::unordered_map<std::wstring, std::set<FilePath>>::const_iterator it = m_files.find(relativeFilePath.fileName());
   if(it != m_files.end()) {
     for(FilePath existingFilePath : it->second) {
       existingFilePath = existingFilePath.getParentDirectory();
@@ -42,8 +39,7 @@ std::vector<FilePath> FileTree::doGetAbsoluteRootPathsForRelativeFilePath(
         FilePath temp = relativeFilePath.getParentDirectory();
         while(!temp.empty()) {
           if(temp.fileName() == L"..") {
-            std::vector<FilePath> subDirectories = FileSystem::getDirectSubDirectories(
-                existingFilePath);
+            std::vector<FilePath> subDirectories = FileSystem::getDirectSubDirectories(existingFilePath);
             if(!subDirectories.empty()) {
               existingFilePath = subDirectories.front();
             } else {

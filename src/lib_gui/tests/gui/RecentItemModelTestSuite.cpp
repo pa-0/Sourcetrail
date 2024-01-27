@@ -55,7 +55,6 @@ void RecentItemModelTestSuite::init() {
 }
 
 void RecentItemModelTestSuite::indexMissingProject() {
-
   QModelIndex index = createModelIndex(2, mRecentItemModel.get());
 
   const auto title = mRecentItemModel->data(index);

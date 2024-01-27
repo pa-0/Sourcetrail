@@ -96,8 +96,7 @@ void ErrorController::handleMessage(MessageErrorsAll* /*pMessage*/) {
 void ErrorController::handleMessage(MessageErrorsForFile* pMessage) {
   std::shared_ptr<const Project> project = Application::getInstance()->getCurrentProject();
   if(project && project->isIndexing()) {
-    Application::getInstance()->handleDialog(
-        L"Showing errors for a file is not possible while indexing.");
+    Application::getInstance()->handleDialog(L"Showing errors for a file is not possible while indexing.");
     return;
   }
 
@@ -162,8 +161,7 @@ bool ErrorController::showErrors(const ErrorFilter& filter, bool scrollTo) {
   if(m_tabActiveFilePath[TabId::currentTab()].empty()) {
     errors = m_storageAccess->getErrorsLimited(filterUnlimited);
   } else {
-    errors = m_storageAccess->getErrorsForFileLimited(
-        filter, m_tabActiveFilePath[TabId::currentTab()]);
+    errors = m_storageAccess->getErrorsForFileLimited(filter, m_tabActiveFilePath[TabId::currentTab()]);
   }
 
   ErrorCountInfo errorCount(errors);

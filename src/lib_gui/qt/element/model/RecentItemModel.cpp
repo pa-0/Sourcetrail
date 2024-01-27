@@ -1,11 +1,12 @@
 #include "RecentItemModel.hpp"
+
 #include <tuple>
 
 #include <range/v3/to_container.hpp>
 #include <range/v3/view/transform.hpp>
 
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
 
 #include "MessageLoadProject.h"
 #include "ProjectSettings.h"

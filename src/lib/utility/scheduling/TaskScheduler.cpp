@@ -7,10 +7,7 @@
 #include "logging.h"
 
 TaskScheduler::TaskScheduler(Id schedulerId)
-    : m_schedulerId(schedulerId)
-    , m_loopIsRunning(false)
-    , m_threadIsRunning(false)
-    , m_terminateRunningTasks(false) {}
+    : m_schedulerId(schedulerId), m_loopIsRunning(false), m_threadIsRunning(false), m_terminateRunningTasks(false) {}
 
 TaskScheduler::~TaskScheduler() {
   stopSchedulerLoop();

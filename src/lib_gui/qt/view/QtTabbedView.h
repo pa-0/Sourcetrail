@@ -10,28 +10,27 @@ class QTabWidget;
 class QtSelfRefreshIconButton;
 
 class QtTabbedView
-	: public QObject
-	, public TabbedView
-{
+    : public QObject
+    , public TabbedView {
 public:
-	QtTabbedView(ViewLayout* viewLayout, const std::string& name);
-	~QtTabbedView() = default;
+  QtTabbedView(ViewLayout* viewLayout, const std::string& name);
+  ~QtTabbedView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	// TabbedView implementation
-	void addViewWidget(View* view) override;
-	void showView(View* view) override;
+  // TabbedView implementation
+  void addViewWidget(View* view) override;
+  void showView(View* view) override;
 
 private:
-	void setStyleSheet();
-	bool eventFilter(QObject* obj, QEvent* event) override;
+  void setStyleSheet();
+  bool eventFilter(QObject* obj, QEvent* event) override;
 
-	QtThreadedLambdaFunctor m_onQtThread;
-	QTabWidget* m_widget;
-	QtSelfRefreshIconButton* m_closeButton;
+  QtThreadedLambdaFunctor m_onQtThread;
+  QTabWidget* m_widget;
+  QtSelfRefreshIconButton* m_closeButton;
 };
 
-#endif	  // QT_TABBED_VIEW
+#endif    // QT_TABBED_VIEW

@@ -34,9 +34,7 @@ public:
   // ErrorView implementation
   void clear() override;
 
-  void addErrors(const std::vector<ErrorInfo>& errors,
-                 const ErrorCountInfo& errorCount,
-                 bool scrollTo) override;
+  void addErrors(const std::vector<ErrorInfo>& errors, const ErrorCountInfo& errorCount, bool scrollTo) override;
   void setErrorId(Id errorId) override;
 
   ErrorFilter getErrorFilter() const override;

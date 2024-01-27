@@ -2,9 +2,9 @@
 // STL
 #include <map>
 // internal
+#include "DummyNode.h"
 #include "Vector2.h"
 #include "types.h"
-#include "DummyNode.h"
 
 struct DummyEdge;
 
@@ -42,15 +42,15 @@ private:
 class BucketLayouter {
 public:
   BucketLayouter(Vec2i viewSize);
-  void createBuckets(std::vector<std::shared_ptr<DummyNode>>& nodes,
-                     const std::vector<std::shared_ptr<DummyEdge>>& edges);
+  void createBuckets(std::vector<std::shared_ptr<DummyNode>>& nodes, const std::vector<std::shared_ptr<DummyEdge>>& edges);
   void layoutBuckets(bool addVerticalSplit);
 
   std::vector<std::shared_ptr<DummyNode>> getSortedNodes();
 
 private:
-  std::shared_ptr<DummyNode> findTopMostDummyNodeRecursive(
-      std::vector<std::shared_ptr<DummyNode>>& nodes, Id tokenId, std::shared_ptr<DummyNode> top);
+  std::shared_ptr<DummyNode> findTopMostDummyNodeRecursive(std::vector<std::shared_ptr<DummyNode>>& nodes,
+                                                           Id tokenId,
+                                                           std::shared_ptr<DummyNode> top);
 
   Bucket* getBucket(int i, int j);
   Bucket* getBucket(std::shared_ptr<DummyNode> node);

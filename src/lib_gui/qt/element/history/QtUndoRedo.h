@@ -9,40 +9,39 @@
 class QtSearchBarButton;
 class QtHistoryList;
 
-class QtUndoRedo: public QFrame
-{
-	Q_OBJECT
+class QtUndoRedo : public QFrame {
+  Q_OBJECT
 
 public:
-	QtUndoRedo();
-	~QtUndoRedo();
+  QtUndoRedo();
+  ~QtUndoRedo();
 
-	void setRedoButtonEnabled(bool enabled);
-	void setUndoButtonEnabled(bool enabled);
+  void setRedoButtonEnabled(bool enabled);
+  void setUndoButtonEnabled(bool enabled);
 
-	void updateHistory(const std::vector<SearchMatch>& searchMatches, size_t currentIndex);
+  void updateHistory(const std::vector<SearchMatch>& searchMatches, size_t currentIndex);
 
 private slots:
-	void buttonPressed();
+  void buttonPressed();
 
-	void undoReleased();
-	void redoReleased();
+  void undoReleased();
+  void redoReleased();
 
-	void showHistory();
-	void hidHistory();
+  void showHistory();
+  void hidHistory();
 
 private:
-	QtSearchBarButton* m_undoButton;
-	QtSearchBarButton* m_historyButton;
-	QtSearchBarButton* m_redoButton;
+  QtSearchBarButton* m_undoButton;
+  QtSearchBarButton* m_historyButton;
+  QtSearchBarButton* m_redoButton;
 
-	std::vector<SearchMatch> m_history;
-	size_t m_currentIndex;
+  std::vector<SearchMatch> m_history;
+  size_t m_currentIndex;
 
-	bool m_pressed;
+  bool m_pressed;
 
-	QtHistoryList* m_historyList;
-	TimeStamp m_historyHiddenAt;
+  QtHistoryList* m_historyList;
+  TimeStamp m_historyHiddenAt;
 };
 
-#endif	  // QT_UNDO_REDO_H
+#endif    // QT_UNDO_REDO_H

@@ -1,9 +1,9 @@
 #pragma once
 // STL
+#include <cstdint>
 #include <deque>
 #include <memory>
 #include <vector>
-#include <cstdint>
 
 class SnippetMerger final {
 public:
@@ -15,8 +15,8 @@ public:
 
   struct Range final {
     template <template <class, class> class ContainerType>
-    static ContainerType<Range, std::allocator<Range>> mergeAdjacent(
-        ContainerType<Range, std::allocator<Range>> ranges, int rowDifference = 1) {
+    static ContainerType<Range, std::allocator<Range>> mergeAdjacent(ContainerType<Range, std::allocator<Range>> ranges,
+                                                                     int rowDifference = 1) {
       for(size_t i = 0; i + 1 < ranges.size(); i++) {
         const Range first = ranges[i];
         const Range second = ranges[i + 1];
@@ -41,9 +41,7 @@ public:
   std::deque<Range> merge(std::vector<SnippetMerger::Range> atomicRanges) const;
 
 private:
-  Range getExpandedRegardingAtomicRanges(Range range,
-                                         const int snippetExpandRange,
-                                         const std::vector<Range>& atomicRanges) const;
+  Range getExpandedRegardingAtomicRanges(Range range, const int snippetExpandRange, const std::vector<Range>& atomicRanges) const;
 
   const int m_start;
   const int m_end;

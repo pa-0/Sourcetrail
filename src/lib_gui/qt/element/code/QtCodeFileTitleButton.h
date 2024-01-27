@@ -5,49 +5,48 @@
 #include "QtSelfRefreshIconButton.h"
 #include "TimeStamp.h"
 
-class QtCodeFileTitleButton: public QtSelfRefreshIconButton
-{
-	Q_OBJECT
+class QtCodeFileTitleButton : public QtSelfRefreshIconButton {
+  Q_OBJECT
 
 public:
-	QtCodeFileTitleButton(QWidget* parent = nullptr);
-	virtual ~QtCodeFileTitleButton() = default;
+  QtCodeFileTitleButton(QWidget* parent = nullptr);
+  virtual ~QtCodeFileTitleButton() = default;
 
-	const FilePath& getFilePath() const;
-	void setFilePath(const FilePath& filePath);
+  const FilePath& getFilePath() const;
+  void setFilePath(const FilePath& filePath);
 
-	void setModificationTime(const TimeStamp modificationTime);
-	void setProject(const std::wstring& name);
+  void setModificationTime(const TimeStamp modificationTime);
+  void setProject(const std::wstring& name);
 
-	bool isComplete() const;
-	void setIsComplete(bool isComplete);
+  bool isComplete() const;
+  void setIsComplete(bool isComplete);
 
-	bool isIndexed() const;
-	void setIsIndexed(bool isIndexed);
+  bool isIndexed() const;
+  void setIsIndexed(bool isIndexed);
 
-	void updateTexts();
-	void updateFromOther(const QtCodeFileTitleButton* other);
+  void updateTexts();
+  void updateFromOther(const QtCodeFileTitleButton* other);
 
 protected:
-	void mouseReleaseEvent(QMouseEvent* event);
-	void contextMenuEvent(QContextMenuEvent* event);
+  void mouseReleaseEvent(QMouseEvent* event);
+  void contextMenuEvent(QContextMenuEvent* event);
 
-	virtual void refresh();
+  virtual void refresh();
 
 private slots:
-	void clickedTitle();
-	void openInTab();
+  void clickedTitle();
+  void openInTab();
 
 private:
-	void updateIcon();
-	void updateHatching();
+  void updateIcon();
+  void updateHatching();
 
-	FilePath m_filePath;
-	TimeStamp m_modificationTime;
-	bool m_isComplete;
-	bool m_isIndexed;
+  FilePath m_filePath;
+  TimeStamp m_modificationTime;
+  bool m_isComplete;
+  bool m_isIndexed;
 
-	QAction* m_openInTabAction;
+  QAction* m_openInTabAction;
 };
 
-#endif	  // QT_CODE_FILE_TITLE_BUTTON_H
+#endif    // QT_CODE_FILE_TITLE_BUTTON_H

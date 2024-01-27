@@ -23,30 +23,12 @@ public:
   Logger* getLoggerByType(const std::string& type);
   Logger* getLogger(std::shared_ptr<Logger> logger);
 
-  void logInfo(const std::string& message,
-               const std::string& file,
-               const std::string& function,
-               const unsigned int line);
-  void logInfo(const std::wstring& message,
-               const std::string& file,
-               const std::string& function,
-               const unsigned int line);
-  void logWarning(const std::string& message,
-                  const std::string& file,
-                  const std::string& function,
-                  const unsigned int line);
-  void logWarning(const std::wstring& message,
-                  const std::string& file,
-                  const std::string& function,
-                  const unsigned int line);
-  void logError(const std::string& message,
-                const std::string& file,
-                const std::string& function,
-                const unsigned int line);
-  void logError(const std::wstring& message,
-                const std::string& file,
-                const std::string& function,
-                const unsigned int line);
+  void logInfo(const std::string& message, const std::string& file, const std::string& function, const unsigned int line);
+  void logInfo(const std::wstring& message, const std::string& file, const std::string& function, const unsigned int line);
+  void logWarning(const std::string& message, const std::string& file, const std::string& function, const unsigned int line);
+  void logWarning(const std::wstring& message, const std::string& file, const std::string& function, const unsigned int line);
+  void logError(const std::string& message, const std::string& file, const std::string& function, const unsigned int line);
+  void logError(const std::wstring& message, const std::string& file, const std::string& function, const unsigned int line);
 
 private:
   static std::shared_ptr<LogManager> s_instance;

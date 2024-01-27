@@ -8,7 +8,7 @@ class LanguagePackage;
 
 class LanguagePackageManager final {
 public:
-	using Ptr = std::shared_ptr<LanguagePackageManager>;
+  using Ptr = std::shared_ptr<LanguagePackageManager>;
   static Ptr getInstance();
   static void destroyInstance();
 

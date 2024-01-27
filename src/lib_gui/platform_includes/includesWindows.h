@@ -1,9 +1,10 @@
 #pragma once
 
-#include <type_traits>
+#include <string>
 
 #include <QDir>
-#include <string>
+
+#include <type_traits>
 #include <windows.h>
 
 #include "AppPath.h"
@@ -56,8 +57,8 @@ void setupApp([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
         userDataPath.makeCanonical();
       } else {
         userDataPath = AppPath::getSharedDataDirectoryPath().concatenate(L"user_fallback/");
-        LOG_ERROR(L"The \"%LOCALAPPDATA%\" path could not be found. Falling back to \"" +
-                  userDataPath.wstr() + L"\" to store settings data.");
+        LOG_ERROR(L"The \"%LOCALAPPDATA%\" path could not be found. Falling back to \"" + userDataPath.wstr() +
+                  L"\" to store settings data.");
         FileSystem::createDirectory(userDataPath);
       }
     }
@@ -67,9 +68,7 @@ void setupApp([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
 
   // This "copyFile" method does nothing if the copy destination already exist
   FileSystem::copyFile(
-      ResourcePaths::getFallbackDirectoryPath().concatenate(L"ApplicationSettings.xml"),
-      UserPaths::getAppSettingsFilePath());
+      ResourcePaths::getFallbackDirectoryPath().concatenate(L"ApplicationSettings.xml"), UserPaths::getAppSettingsFilePath());
   FileSystem::copyFile(
-      ResourcePaths::getFallbackDirectoryPath().concatenate(L"window_settings.ini"),
-      UserPaths::getWindowSettingsFilePath());
+      ResourcePaths::getFallbackDirectoryPath().concatenate(L"window_settings.ini"), UserPaths::getWindowSettingsFilePath());
 }

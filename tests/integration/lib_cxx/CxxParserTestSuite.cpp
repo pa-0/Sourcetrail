@@ -1,6 +1,7 @@
 #include <algorithm>
-#include <gtest/gtest.h>
+
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include "CxxParser.h"
 #include "IndexerCommandCxx.h"
@@ -123,7 +124,8 @@ TEST(CxxParserTestSuite, cxxParserFindsStaticFunctionDeclaration) {
       "	return static_cast<int>(a) + 1;\n"
       "}\n");
 
-  EXPECT_THAT(client->functions, testing::Contains(testing::StrEq(L"static int ceil(float) (temp.cpp) <1:1 <1:1 <1:12 1:15> 1:24> 4:1>")));
+  EXPECT_THAT(client->functions,
+              testing::Contains(testing::StrEq(L"static int ceil(float) (temp.cpp) <1:1 <1:1 <1:12 1:15> 1:24> 4:1>")));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMethodDeclaration) {
@@ -145,7 +147,8 @@ TEST(CxxParserTestSuite, cxxParserFindsOverloadedOperatorDeclaration) {
       "	B& operator=(const B& other);\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->methods, L"public B & B::operator=(const B &) <4:2 <4:5 4:13> 4:29>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->methods, L"public B & B::operator=(const B &) <4:2 <4:5 4:13> 4:29>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMethodDeclarationAndDefinition) {
@@ -199,7 +202,8 @@ TEST(CxxParserTestSuite, cxxParserFindsAnonymousNamespaceDeclaration) {
       "{\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 3:1>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 3:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMultipleAnonymousNamespaceDeclarationsAsSameSymbol) {
@@ -211,9 +215,11 @@ TEST(CxxParserTestSuite, cxxParserFindsMultipleAnonymousNamespaceDeclarationsAsS
       "{\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 3:1>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 3:1>"));
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <4:1 <5:1 5:1> 6:1>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <4:1 <5:1 5:1> 6:1>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsMultipleNestedAnonymousNamespaceDeclarationsAsDifferentSymbol) {
@@ -225,7 +231,8 @@ TEST(CxxParserTestSuite, cxxParserFindsMultipleNestedAnonymousNamespaceDeclarati
       "	}\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 6:1>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->namespaces, L"anonymous namespace (temp.cpp<1:1>) <1:1 <2:1 2:1> 6:1>"));
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(
       client->namespaces,
@@ -1185,7 +1192,8 @@ TEST(CxxParserTestSuite, cxxParserFindsMethodDeclaredInNestedClass) {
       "	};\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->methods, L"private bool B::C::isGreat() const <5:3 <5:8 5:14> 5:22>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->methods, L"private bool B::C::isGreat() const <5:3 <5:8 5:14> 5:22>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsNestedNamedNamespace) {
@@ -1359,7 +1367,8 @@ TEST(CxxParserTestSuite, cxxParserFindsImplicitCopyConstructor) {
       "	TestClass b(a);\n"
       "}\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->methods, L"public void TestClass::TestClass() <1:7 <1:7 1:15> 1:15>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->methods, L"public void TestClass::TestClass() <1:7 <1:7 1:15> 1:15>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(
       client->methods, L"public void TestClass::TestClass(const TestClass &) <1:7 <1:7 1:15> 1:15>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(
@@ -2031,7 +2040,8 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfMemberInDependentScopeMemberExpres
       "	}\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->usages, L"void A<typename T>::foo() -> T A<typename T>::m_t <8:3 8:5>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->usages, L"void A<typename T>::foo() -> T A<typename T>::m_t <8:3 8:5>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsReturnTypeUseInFunction) {
@@ -2208,7 +2218,7 @@ TEST(CxxParserTestSuite, cxxParserFindsUsageOfTemplateParameterOfTemplateMemberV
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->localSymbols, L"temp.cpp<1:20> <1:20 1:20>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(    // TODO: fix FAIL because usage in name
-                                                     // qualifier is not recorded
+                                                         // qualifier is not recorded
       client->localSymbols,
       L"temp.cpp<5:20> <5:20 5:20>"));
 }
@@ -2301,7 +2311,8 @@ TEST(CxxParserTestSuite, cxxParserFindsTypedefInOtherClassThatDependsOnOwnTempla
       "B<int>::type f = 0;\n");
 
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"A<int>::type -> int <5:10 5:10>"));
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"B<typename U>::type -> A<typename T>::type <11:25 11:28>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->typeUses, L"B<typename U>::type -> A<typename T>::type <11:25 11:28>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"B<int>::type -> A<int>::type <11:25 11:28>"));
   EXPECT_TRUE(utility::containsElement<std::wstring>(client->typeUses, L"B<int>::type f -> B<int>::type <13:9 13:12>"));
 }
@@ -2930,18 +2941,17 @@ TEST(CxxParserTestSuite, cxxParserFindsClassInheritanceFromImplicitTemplateClass
 }
 
 // TODO(Hussein): Fix the test case
-TEST(CxxParserTestSuite, DISABLED_recordBaseClassOfImplicitTemplateClassSpecialization)
-{
-	std::shared_ptr<TestStorage> client = parseCode(
-		"template<class T, unsigned int N>\n"
-		"class VectorBase {}; \n"
-		"\n"
-		"template<class T>\n"
-		"class Vector2 : public VectorBase<T, 2> { void foo(); }; \n"
-		"\n"
-		"typedef Vector2<float> Vec2f; \n"
-		"\n"
-		"Vec2f v; \n");
+TEST(CxxParserTestSuite, DISABLED_recordBaseClassOfImplicitTemplateClassSpecialization) {
+  std::shared_ptr<TestStorage> client = parseCode(
+      "template<class T, unsigned int N>\n"
+      "class VectorBase {}; \n"
+      "\n"
+      "template<class T>\n"
+      "class Vector2 : public VectorBase<T, 2> { void foo(); }; \n"
+      "\n"
+      "typedef Vector2<float> Vec2f; \n"
+      "\n"
+      "Vec2f v; \n");
 
   EXPECT_THAT(client->inheritances, testing::Contains(testing::StrEq(L"Vector2<float> -> VectorBase<float, 2> <5:24 5:33>")));
 }
@@ -2972,7 +2982,8 @@ TEST(CxxParserTestSuite, cxxParserFindsCorrectOrderOfTemplateArgumentsForExplici
       "template<class Foo1, class Foo2>\n"
       "class vector<Foo2, Foo1, int> { };\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->classes, L"vector<class Foo2, class Foo1, int> <3:1 <4:7 4:12> 4:33>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->classes, L"vector<class Foo2, class Foo1, int> <3:1 <4:7 4:12> 4:33>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserReplacesDependentTemplateArgumentsOfExplicitTemplateSpecializationWithNameOfBaseTemplate) {
@@ -3010,7 +3021,8 @@ TEST(CxxParserTestSuite, cxxParserFindsTemplateClassConstructorUsageOfField) {
       "	T foo;\n"
       "};\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->usages, L"void A<typename T>::A<T>() -> T A<typename T>::foo <4:7 4:9>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->usages, L"void A<typename T>::A<T>() -> T A<typename T>::foo <4:7 4:9>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsCorrectMethodReturnTypeOfTemplateClassInDeclaration) {
@@ -3591,7 +3603,8 @@ TEST(CxxParserTestSuite, cxxParserFindsCorrectErrorLocationAfterLineDirective) {
       "#line 55 \"foo.hpp\"\n"
       "void foo()\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->errors, L"expected function body after function declarator <2:11 2:11>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->errors, L"expected function body after function declarator <2:11 2:11>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserCatchesErrorInMacroExpansion) {
@@ -3599,7 +3612,8 @@ TEST(CxxParserTestSuite, cxxParserCatchesErrorInMacroExpansion) {
       "#define MACRO_WITH_NONEXISTENT_PATH \"this_path_does_not_exist.txt\"\n"
       "#include MACRO_WITH_NONEXISTENT_PATH\n");
 
-  EXPECT_TRUE(utility::containsElement<std::wstring>(client->errors, L"'this_path_does_not_exist.txt' file not found <2:10 2:10>"));
+  EXPECT_TRUE(
+      utility::containsElement<std::wstring>(client->errors, L"'this_path_does_not_exist.txt' file not found <2:10 2:10>"));
 }
 
 TEST(CxxParserTestSuite, cxxParserFindsLocationOfLineComment) {

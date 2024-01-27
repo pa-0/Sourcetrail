@@ -7,13 +7,11 @@
 #include "ApplicationArchitectureType.h"
 #include "FilePath.h"
 
-namespace utility
-{
+namespace utility {
 std::vector<std::wstring> getCxxHeaderPaths(const std::string& compilerName);
 
 std::vector<FilePath> getWindowsSdkHeaderSearchPaths(ApplicationArchitectureType architectureType);
-FilePath getWindowsSdkRootPathUsingRegistry(
-	ApplicationArchitectureType architectureType, const std::string& sdkVersion);
-}	 // namespace utility
+FilePath getWindowsSdkRootPathUsingRegistry(ApplicationArchitectureType architectureType, const std::string& sdkVersion);
+}    // namespace utility
 
-#endif	  // UTILITY_CXX_HEADER_DETECTION_H
+#endif    // UTILITY_CXX_HEADER_DETECTION_H

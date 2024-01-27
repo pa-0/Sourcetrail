@@ -1,9 +1,12 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "MessageFocusView.h"
+#include "MessageRefreshUI.h"
 #include "Tab.h"
 #include "mocks/MockedBookmarkButtonsView.hpp"
 #include "mocks/MockedCodeView.hpp"
+#include "mocks/MockedCompositeView.hpp"
 #include "mocks/MockedGraphView.hpp"
 #include "mocks/MockedRefreshView.hpp"
 #include "mocks/MockedScreenSearchSender.hpp"
@@ -11,9 +14,6 @@
 #include "mocks/MockedUndoRedoView.hpp"
 #include "mocks/MockedViewFactory.hpp"
 #include "mocks/MockedViewLayout.hpp"
-#include "mocks/MockedCompositeView.hpp"
-#include "MessageFocusView.h"
-#include "MessageRefreshUI.h"
 
 using namespace testing;
 
@@ -26,13 +26,13 @@ struct TabIdFix : Test {
   }
 
   void mockSetupTab() {
-    mockedCompositeView= std::make_shared<MockedCompositeView>(&mockedLayout);
-    undoRedoView= std::make_shared<MockedUndoRedoView>(&mockedLayout);
-    refreshView= std::make_shared<MockedRefreshView>(&mockedLayout);
-    searchView= std::make_shared<MockedSearchView>(&mockedLayout);
-    bookmarkButtonsView= std::make_shared<MockedBookmarkButtonsView>(&mockedLayout);
-    graphView= std::make_shared<MockedGraphView>(&mockedLayout);
-    codeView= std::make_shared<MockedCodeView>(&mockedLayout);
+    mockedCompositeView = std::make_shared<MockedCompositeView>(&mockedLayout);
+    undoRedoView = std::make_shared<MockedUndoRedoView>(&mockedLayout);
+    refreshView = std::make_shared<MockedRefreshView>(&mockedLayout);
+    searchView = std::make_shared<MockedSearchView>(&mockedLayout);
+    bookmarkButtonsView = std::make_shared<MockedBookmarkButtonsView>(&mockedLayout);
+    graphView = std::make_shared<MockedGraphView>(&mockedLayout);
+    codeView = std::make_shared<MockedCodeView>(&mockedLayout);
     EXPECT_CALL(viewFactory, createCompositeView(_, _, _, _)).WillOnce(Return(mockedCompositeView));
     EXPECT_CALL(viewFactory, createUndoRedoView(_)).WillOnce(Return(undoRedoView));
     EXPECT_CALL(viewFactory, createRefreshView(_)).WillOnce(Return(refreshView));
@@ -59,7 +59,7 @@ struct TabIdFix : Test {
   }
 
   void TearDown() override {
-      MessageQueue::getInstance()->stopMessageLoop();
+    MessageQueue::getInstance()->stopMessageLoop();
   }
 
   std::shared_ptr<MockedCompositeView> mockedCompositeView;
@@ -87,10 +87,10 @@ TEST_F(TabIdFix, goodCase) {
 
   EXPECT_CALL(*graphView, setNavigationFocus(_)).WillOnce(Return());
   EXPECT_CALL(*codeView, setNavigationFocus(_)).WillOnce(Return());
-  MessageFocusView{MessageFocusView::ViewType::CODE}.dispatchImmediately();
+  MessageFocusView {MessageFocusView::ViewType::CODE}.dispatchImmediately();
 
   mockRefreshViews();
-  MessageRefreshUI{}.dispatchImmediately();
+  MessageRefreshUI {}.dispatchImmediately();
 }
 
 // NOLINTNEXTLINE

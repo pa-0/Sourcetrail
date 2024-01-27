@@ -8,76 +8,70 @@
 #include "Edge.h"
 #include "Node.h"
 
-class Graph
-{
+class Graph {
 public:
-	enum TrailMode
-	{
-		TRAIL_NONE,
-		TRAIL_HORIZONTAL,
-		TRAIL_VERTICAL
-	};
+  enum TrailMode { TRAIL_NONE, TRAIL_HORIZONTAL, TRAIL_VERTICAL };
 
-	Graph();
-	virtual ~Graph();
+  Graph();
+  virtual ~Graph();
 
-	void clear();
+  void clear();
 
-	void forEachNode(std::function<void(Node*)> func) const;
-	void forEachEdge(std::function<void(Edge*)> func) const;
-	void forEachToken(std::function<void(Token*)> func) const;
+  void forEachNode(std::function<void(Node*)> func) const;
+  void forEachEdge(std::function<void(Edge*)> func) const;
+  void forEachToken(std::function<void(Token*)> func) const;
 
-	Node* createNode(Id id, NodeType type, NameHierarchy nameHierarchy, DefinitionKind definitionKind);
-	Edge* createEdge(Id id, Edge::EdgeType type, Node* from, Node* to);
+  Node* createNode(Id id, NodeType type, NameHierarchy nameHierarchy, DefinitionKind definitionKind);
+  Edge* createEdge(Id id, Edge::EdgeType type, Node* from, Node* to);
 
-	size_t getNodeCount() const;
-	size_t getEdgeCount() const;
+  size_t getNodeCount() const;
+  size_t getEdgeCount() const;
 
-	Node* getNodeById(Id id) const;
-	Edge* getEdgeById(Id id) const;
+  Node* getNodeById(Id id) const;
+  Edge* getEdgeById(Id id) const;
 
-	const std::map<Id, std::shared_ptr<Node>>& getNodes() const;
-	const std::map<Id, std::shared_ptr<Edge>>& getEdges() const;
+  const std::map<Id, std::shared_ptr<Node>>& getNodes() const;
+  const std::map<Id, std::shared_ptr<Edge>>& getEdges() const;
 
-	void removeNode(Node* node);
-	void removeEdge(Edge* edge);
+  void removeNode(Node* node);
+  void removeEdge(Edge* edge);
 
-	Node* findNode(std::function<bool(Node*)> func) const;
-	Edge* findEdge(std::function<bool(Edge*)> func) const;
-	Token* findToken(std::function<bool(Token*)> func) const;
+  Node* findNode(std::function<bool(Node*)> func) const;
+  Edge* findEdge(std::function<bool(Edge*)> func) const;
+  Token* findToken(std::function<bool(Token*)> func) const;
 
-	Node* addNodeAsPlainCopy(Node* node);
-	Edge* addEdgeAsPlainCopy(Edge* edge);
+  Node* addNodeAsPlainCopy(Node* node);
+  Edge* addEdgeAsPlainCopy(Edge* edge);
 
-	Node* addNodeAndAllChildrenAsPlainCopy(Node* node);
-	Edge* addEdgeAndAllChildrenAsPlainCopy(Edge* edge);
+  Node* addNodeAndAllChildrenAsPlainCopy(Node* node);
+  Edge* addEdgeAndAllChildrenAsPlainCopy(Edge* edge);
 
-	size_t size() const;
+  size_t size() const;
 
-	Token* getTokenById(Id id) const;
+  Token* getTokenById(Id id) const;
 
-	TrailMode getTrailMode() const;
-	void setTrailMode(TrailMode trailMode);
+  TrailMode getTrailMode() const;
+  void setTrailMode(TrailMode trailMode);
 
-	bool hasTrailOrigin() const;
-	void setHasTrailOrigin(bool hasOrigin);
+  bool hasTrailOrigin() const;
+  void setHasTrailOrigin(bool hasOrigin);
 
-	void print(std::wostream& ostream) const;
-	void printBasic(std::wostream& ostream) const;
+  void print(std::wostream& ostream) const;
+  void printBasic(std::wostream& ostream) const;
 
 private:
-	Graph(const Graph&);
-	void operator=(const Graph&);
+  Graph(const Graph&);
+  void operator=(const Graph&);
 
-	void removeEdgeInternal(Edge* edge);
+  void removeEdgeInternal(Edge* edge);
 
-	std::map<Id, std::shared_ptr<Node>> m_nodes;
-	std::map<Id, std::shared_ptr<Edge>> m_edges;
+  std::map<Id, std::shared_ptr<Node>> m_nodes;
+  std::map<Id, std::shared_ptr<Edge>> m_edges;
 
-	TrailMode m_trailMode;
-	bool m_hasTrailOrigin;
+  TrailMode m_trailMode;
+  bool m_hasTrailOrigin;
 };
 
 std::wostream& operator<<(std::wostream& ostream, const Graph& graph);
 
-#endif	  // GRAPH_H
+#endif    // GRAPH_H

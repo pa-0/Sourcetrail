@@ -19,8 +19,7 @@ struct StorageLocalSymbolData {
 struct StorageLocalSymbol : public StorageLocalSymbolData {
   StorageLocalSymbol() : StorageLocalSymbolData() {}
 
-  StorageLocalSymbol(Id id_, const StorageLocalSymbolData& data_)
-      : StorageLocalSymbolData(data_), id(id_) {}
+  StorageLocalSymbol(Id id_, const StorageLocalSymbolData& data_) : StorageLocalSymbolData(data_), id(id_) {}
 
   StorageLocalSymbol(Id id_, std::wstring name_) : StorageLocalSymbolData(std::move(name_)), id(id_) {}
 

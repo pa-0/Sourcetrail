@@ -25,16 +25,14 @@ template <typename MigratableType>
 Migrator<MigratableType>::~Migrator() = default;
 
 template <typename MigratableType>
-void Migrator<MigratableType>::addMigration(size_t targetVersion,
-                                            std::shared_ptr<Migration<MigratableType>> migration) {
+void Migrator<MigratableType>::addMigration(size_t targetVersion, std::shared_ptr<Migration<MigratableType>> migration) {
   if(migration) {
     m_migrations.emplace(targetVersion, migration);
   }
 }
 
 template <typename MigratableType>
-bool Migrator<MigratableType>::willMigrate(const MigratableType* migratable,
-                                           size_t targetVersion) const {
+bool Migrator<MigratableType>::willMigrate(const MigratableType* migratable, size_t targetVersion) const {
   size_t sourceVersion = migratable->getVersion();
 
   if(sourceVersion < targetVersion) {

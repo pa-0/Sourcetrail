@@ -83,7 +83,7 @@ QtContextMenu* QtContextMenu::getInstance() {
   s_openContainingFolderAction->setStatusTip(tr("Opens the folder that contains this file"));
   s_openContainingFolderAction->setToolTip(tr("Opens the folder that contains this file"));
   connect(s_openContainingFolderAction, &QAction::triggered, s_instance, &QtContextMenu::openContainingFolderActionTriggered);
-  
+
   return s_instance;
 }
 

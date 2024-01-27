@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+
 #include <unordered_map>
 
 template <typename KeyType, typename ValType, typename Hasher = std::hash<KeyType>>

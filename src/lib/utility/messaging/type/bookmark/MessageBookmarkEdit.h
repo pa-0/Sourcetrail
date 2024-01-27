@@ -3,13 +3,11 @@
 
 #include "Message.h"
 
-class MessageBookmarkEdit: public Message<MessageBookmarkEdit>
-{
+class MessageBookmarkEdit : public Message<MessageBookmarkEdit> {
 public:
-	static const std::string getStaticType()
-	{
-		return "MessageBookmarkEdit";
-	}
+  static const std::string getStaticType() {
+    return "MessageBookmarkEdit";
+  }
 };
 
-#endif	  // MESSAGE_BOOKMARK_EDIT_H
+#endif    // MESSAGE_BOOKMARK_EDIT_H

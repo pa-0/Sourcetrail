@@ -1,7 +1,7 @@
 #pragma once
 // STL
-#include <vector>
 #include <string>
+#include <vector>
 // internal
 #include "LogMessage.h"
 

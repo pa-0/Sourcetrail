@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "language_packages.h"
-
 #include "CxxTypeName.h"
+#include "language_packages.h"
 
 TEST(CxxTypeName, typeNameCreatedWithNameHasNoQualifiersOrModifiers) {
   CxxTypeName typeName(L"int", std::vector<std::wstring>(), std::shared_ptr<CxxName>());

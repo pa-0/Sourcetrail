@@ -5,9 +5,8 @@
 
 #include <QGraphicsItem>
 
-#include "Vector4.h"
-
 #include "GraphViewStyle.h"
+#include "Vector4.h"
 
 class GraphFocusHandler;
 class QFont;
@@ -16,148 +15,147 @@ class QtRoundedRectItem;
 class QtGraphNodeComponent;
 
 class QtGraphNode
-	: public QObject
-	, public QGraphicsRectItem
-{
-	Q_OBJECT
-	Q_PROPERTY(QPointF pos READ pos WRITE setPos)
-	Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
-	Q_PROPERTY(QSize size READ size WRITE setSize)
+    : public QObject
+    , public QGraphicsRectItem {
+  Q_OBJECT
+  Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+  Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+  Q_PROPERTY(QSize size READ size WRITE setSize)
 
 public slots:
-	void blendIn();
-	void blendOut();
+  void blendIn();
+  void blendOut();
 
-	void showNode();
-	void hideNode();
+  void showNode();
+  void hideNode();
 
 public:
-	static QtGraphNode* findNodeRecursive(const std::list<QtGraphNode*>& nodes, Id tokenId);
+  static QtGraphNode* findNodeRecursive(const std::list<QtGraphNode*>& nodes, Id tokenId);
 
-	QtGraphNode(GraphFocusHandler* focusHandler = nullptr);
-	virtual ~QtGraphNode();
+  QtGraphNode(GraphFocusHandler* focusHandler = nullptr);
+  virtual ~QtGraphNode();
 
-	QtGraphNode* getParent() const;
-	QtGraphNode* getLastParent(bool noGroups = false) const;
-	QtGraphNode* getLastNonGroupParent() const;
-	void setParent(QtGraphNode* parentNode);
+  QtGraphNode* getParent() const;
+  QtGraphNode* getLastParent(bool noGroups = false) const;
+  QtGraphNode* getLastNonGroupParent() const;
+  void setParent(QtGraphNode* parentNode);
 
-	const std::list<QtGraphNode*>& getSubNodes() const;
+  const std::list<QtGraphNode*>& getSubNodes() const;
 
-	Vec2i getPosition() const;
-	virtual bool setPosition(const Vec2i& position);
+  Vec2i getPosition() const;
+  virtual bool setPosition(const Vec2i& position);
 
-	const Vec2i& getSize() const;
-	void setSize(const Vec2i& size);
+  const Vec2i& getSize() const;
+  void setSize(const Vec2i& size);
 
-	const Vec2i& getColumnSize() const;
-	void setColumnSize(const Vec2i& size);
+  const Vec2i& getColumnSize() const;
+  void setColumnSize(const Vec2i& size);
 
-	QSize size() const;
-	void setSize(QSize size);
+  QSize size() const;
+  void setSize(QSize size);
 
-	Vec4i getBoundingRect() const;
+  Vec4i getBoundingRect() const;
 
-	void addOutEdge(QtGraphEdge* edge);
-	void addInEdge(QtGraphEdge* edge);
+  void addOutEdge(QtGraphEdge* edge);
+  void addInEdge(QtGraphEdge* edge);
 
-	size_t getOutEdgeCount() const;
-	size_t getInEdgeCount() const;
+  size_t getOutEdgeCount() const;
+  size_t getInEdgeCount() const;
 
-	bool getIsActive() const;
-	void setIsActive(bool isActive);
-	void setMultipleActive(bool multipleActive);
-	bool hasActiveChild() const;
+  bool getIsActive() const;
+  void setIsActive(bool isActive);
+  void setMultipleActive(bool multipleActive);
+  bool hasActiveChild() const;
 
-	bool isFocusable() const;
+  bool isFocusable() const;
 
-	std::wstring getName() const;
-	void setName(const std::wstring& name);
+  std::wstring getName() const;
+  void setName(const std::wstring& name);
 
-	void addComponent(const std::shared_ptr<QtGraphNodeComponent>& component);
+  void addComponent(const std::shared_ptr<QtGraphNodeComponent>& component);
 
-	void hoverEnter();
+  void hoverEnter();
 
-	bool getIsFocused() const;
-	void setIsFocused(bool focused);
-	void focusIn();
-	void focusOut();
-	void coFocusIn();
-	void coFocusOut();
+  bool getIsFocused() const;
+  void setIsFocused(bool focused);
+  void focusIn();
+  void focusOut();
+  void coFocusIn();
+  void coFocusOut();
 
-	void showNodeRecursive();
+  void showNodeRecursive();
 
-	void matchNameRecursive(const std::wstring& query, std::vector<QtGraphNode*>* matchedNodes);
-	void removeNameMatch();
-	void setActiveMatch(bool active);
+  void matchNameRecursive(const std::wstring& query, std::vector<QtGraphNode*>* matchedNodes);
+  void removeNameMatch();
+  void setActiveMatch(bool active);
 
-	virtual bool isDataNode() const;
-	virtual bool isAccessNode() const;
-	virtual bool isExpandToggleNode() const;
-	virtual bool isBundleNode() const;
-	virtual bool isQualifierNode() const;
-	virtual bool isTextNode() const;
-	virtual bool isGroupNode() const;
+  virtual bool isDataNode() const;
+  virtual bool isAccessNode() const;
+  virtual bool isExpandToggleNode() const;
+  virtual bool isBundleNode() const;
+  virtual bool isQualifierNode() const;
+  virtual bool isTextNode() const;
+  virtual bool isGroupNode() const;
 
-	virtual Id getTokenId() const;
+  virtual Id getTokenId() const;
 
-	virtual void addSubNode(QtGraphNode* node);
+  virtual void addSubNode(QtGraphNode* node);
 
-	virtual void onClick();
-	virtual void onMiddleClick();
+  virtual void onClick();
+  virtual void onMiddleClick();
 
-	void onHide();
-	Id onCollapseExpand();
-	void onShowDefinition(bool inIDE);
+  void onHide();
+  Id onCollapseExpand();
+  void onShowDefinition(bool inIDE);
 
-	virtual void moved(const Vec2i& oldPosition);
+  virtual void moved(const Vec2i& oldPosition);
 
-	virtual void updateStyle() = 0;
+  virtual void updateStyle() = 0;
 
 protected:
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
-	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+  virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
+  virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
-	void forEachEdge(std::function<void(QtGraphEdge*)> func);
+  void forEachEdge(std::function<void(QtGraphEdge*)> func);
 
-	void notifyEdgesAfterMove();
+  void notifyEdgesAfterMove();
 
-	virtual void matchName(const std::wstring& query, std::vector<QtGraphNode*>* matchedNodes);
+  virtual void matchName(const std::wstring& query, std::vector<QtGraphNode*>* matchedNodes);
 
-	void setStyle(const GraphViewStyle::NodeStyle& style);
+  void setStyle(const GraphViewStyle::NodeStyle& style);
 
-	std::list<QtGraphEdge*> m_outEdges;
-	std::list<QtGraphEdge*> m_inEdges;
+  std::list<QtGraphEdge*> m_outEdges;
+  std::list<QtGraphEdge*> m_inEdges;
 
-	QtGraphNode* m_parentNode = nullptr;
-	std::list<QtGraphNode*> m_subNodes;
+  QtGraphNode* m_parentNode = nullptr;
+  std::list<QtGraphNode*> m_subNodes;
 
-	QGraphicsSimpleTextItem* m_text = nullptr;
-	QtRoundedRectItem* m_rect = nullptr;
-	QtRoundedRectItem* m_undefinedRect = nullptr;
-	QGraphicsPixmapItem* m_icon = nullptr;
+  QGraphicsSimpleTextItem* m_text = nullptr;
+  QtRoundedRectItem* m_rect = nullptr;
+  QtRoundedRectItem* m_undefinedRect = nullptr;
+  QGraphicsPixmapItem* m_icon = nullptr;
 
-	Vec2i m_size;
-	Vec2i m_columnSize;
+  Vec2i m_size;
+  Vec2i m_columnSize;
 
-	bool m_isActive = false;
-	bool m_multipleActive = false;
-	bool m_isFocused = false;
-	bool m_isCoFocused = false;
-	bool m_isInteractive = false;
+  bool m_isActive = false;
+  bool m_multipleActive = false;
+  bool m_isFocused = false;
+  bool m_isCoFocused = false;
+  bool m_isInteractive = false;
 
 private:
-	GraphFocusHandler* m_focusHandler;
+  GraphFocusHandler* m_focusHandler;
 
-	std::list<std::shared_ptr<QtGraphNodeComponent>> m_components;
+  std::list<std::shared_ptr<QtGraphNodeComponent>> m_components;
 
-	// Name match
-	QGraphicsSimpleTextItem* m_matchText = nullptr;
-	QtRoundedRectItem* m_matchRect = nullptr;
-	size_t m_matchPos = 0;
-	size_t m_matchLength = 0;
-	bool m_isActiveMatch = false;
+  // Name match
+  QGraphicsSimpleTextItem* m_matchText = nullptr;
+  QtRoundedRectItem* m_matchRect = nullptr;
+  size_t m_matchPos = 0;
+  size_t m_matchLength = 0;
+  bool m_isActiveMatch = false;
 };
 
-#endif	  // QT_GRAPH_NODE_H
+#endif    // QT_GRAPH_NODE_H

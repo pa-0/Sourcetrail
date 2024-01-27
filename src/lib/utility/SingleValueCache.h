@@ -18,8 +18,7 @@ private:
 };
 
 template <typename ValType>
-SingleValueCache<ValType>::SingleValueCache(std::function<ValType()> calculator)
-    : m_calculator(std::move(calculator)) {}
+SingleValueCache<ValType>::SingleValueCache(std::function<ValType()> calculator) : m_calculator(std::move(calculator)) {}
 
 template <typename ValType>
 ValType SingleValueCache<ValType>::getValue() {

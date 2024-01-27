@@ -4,14 +4,13 @@
 #include "CxxNameResolver.h"
 #include "CxxTypeName.h"
 
-class CxxTypeNameResolver: public CxxNameResolver
-{
+class CxxTypeNameResolver : public CxxNameResolver {
 public:
-	CxxTypeNameResolver(CanonicalFilePathCache* canonicalFilePathCache);
-	CxxTypeNameResolver(const CxxNameResolver* other);
+  CxxTypeNameResolver(CanonicalFilePathCache* canonicalFilePathCache);
+  CxxTypeNameResolver(const CxxNameResolver* other);
 
-	std::unique_ptr<CxxTypeName> getName(const clang::QualType& qualType);
-	std::unique_ptr<CxxTypeName> getName(const clang::Type* type);
+  std::unique_ptr<CxxTypeName> getName(const clang::QualType& qualType);
+  std::unique_ptr<CxxTypeName> getName(const clang::Type* type);
 };
 
-#endif	  // CXX_TYPE_NAME_RESOLVER_H
+#endif    // CXX_TYPE_NAME_RESOLVER_H

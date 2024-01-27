@@ -8,35 +8,34 @@
 
 class QTimer;
 
-class QtProgressBar: public QWidget
-{
-	Q_OBJECT
+class QtProgressBar : public QWidget {
+  Q_OBJECT
 
 public:
-	QtProgressBar(QWidget* parent = nullptr);
+  QtProgressBar(QWidget* parent = nullptr);
 
-	void showProgress(size_t percent);
-	size_t getProgress() const;
+  void showProgress(size_t percent);
+  size_t getProgress() const;
 
-	void showUnknownProgressAnimated();
+  void showUnknownProgressAnimated();
 
 protected:
-	void paintEvent(QPaintEvent* event);
+  void paintEvent(QPaintEvent* event);
 
 private slots:
-	void start();
-	void stop();
+  void start();
+  void stop();
 
-	void animate();
+  void animate();
 
 private:
-	size_t m_percent;
+  size_t m_percent;
 
-	size_t m_count;
-	QTimer* m_timer;
-	TimeStamp m_TimeStamp;
+  size_t m_count;
+  QTimer* m_timer;
+  TimeStamp m_TimeStamp;
 
-	QtDeviceScaledPixmap m_pixmap;
+  QtDeviceScaledPixmap m_pixmap;
 };
 
-#endif	  // QT_PROGRESS_BAR_H
+#endif    // QT_PROGRESS_BAR_H

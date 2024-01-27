@@ -4,39 +4,31 @@
 #include <map>
 #include <set>
 
+#include "TokenComponent.h"
 #include "types.h"
 
-#include "TokenComponent.h"
-
-class TokenComponentBundledEdges: public TokenComponent
-{
+class TokenComponentBundledEdges : public TokenComponent {
 public:
-	enum Direction
-	{
-		DIRECTION_NONE,
-		DIRECTION_FORWARD,
-		DIRECTION_BACKWARD,
-		DIRECTION_INVALID
-	};
+  enum Direction { DIRECTION_NONE, DIRECTION_FORWARD, DIRECTION_BACKWARD, DIRECTION_INVALID };
 
-	static Direction opposite(Direction direction);
+  static Direction opposite(Direction direction);
 
-	TokenComponentBundledEdges();
-	virtual ~TokenComponentBundledEdges();
+  TokenComponentBundledEdges();
+  virtual ~TokenComponentBundledEdges();
 
-	virtual std::shared_ptr<TokenComponent> copy() const;
+  virtual std::shared_ptr<TokenComponent> copy() const;
 
-	int getBundledEdgesCount() const;
-	std::set<Id> getBundledEdgesIds() const;
+  int getBundledEdgesCount() const;
+  std::set<Id> getBundledEdgesIds() const;
 
-	void addBundledEdgesId(Id id, bool forward);
-	void removeBundledEdgesId(Id id);
+  void addBundledEdgesId(Id id, bool forward);
+  void removeBundledEdgesId(Id id);
 
-	Direction getDirection();
+  Direction getDirection();
 
 private:
-	std::map<Id, Direction> m_ids;
-	Direction m_direction;
+  std::map<Id, Direction> m_ids;
+  Direction m_direction;
 };
 
-#endif	  // TOKEN_COMPONENT_BUNDLED_EDGES_H
+#endif    // TOKEN_COMPONENT_BUNDLED_EDGES_H

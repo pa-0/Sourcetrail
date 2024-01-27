@@ -75,24 +75,21 @@ public:
   virtual bool TraverseLambdaExpr(clang::LambdaExpr* s);
   virtual bool TraverseFunctionDecl(clang::FunctionDecl* d);
   virtual bool TraverseClassTemplateSpecializationDecl(clang::ClassTemplateSpecializationDecl* d);
-  virtual bool TraverseClassTemplatePartialSpecializationDecl(
-      clang::ClassTemplatePartialSpecializationDecl* d);
+  virtual bool TraverseClassTemplatePartialSpecializationDecl(clang::ClassTemplatePartialSpecializationDecl* d);
   virtual bool TraverseDeclRefExpr(clang::DeclRefExpr* s);
   virtual bool TraverseCXXForRangeStmt(clang::CXXForRangeStmt* s);
   virtual bool TraverseTemplateSpecializationTypeLoc(clang::TemplateSpecializationTypeLoc loc);
   virtual bool TraverseUnresolvedLookupExpr(clang::UnresolvedLookupExpr* s);
   virtual bool TraverseUnresolvedMemberExpr(clang::UnresolvedMemberExpr* S);
   virtual bool TraverseTemplateArgumentLoc(const clang::TemplateArgumentLoc& loc);
-  virtual bool TraverseLambdaCapture(clang::LambdaExpr* lambdaExpr,
-                                     const clang::LambdaCapture* capture,
-                                     clang::Expr* Init);
+  virtual bool TraverseLambdaCapture(clang::LambdaExpr* lambdaExpr, const clang::LambdaCapture* capture, clang::Expr* Init);
   virtual bool TraverseBinComma(clang::BinaryOperator* s);
 
   virtual bool TraverseDeclarationNameInfo(clang::DeclarationNameInfo NameInfo);
 
-#define OPERATOR(NAME)                                                                             \
-  virtual bool TraverseBin##NAME##Assign(clang::CompoundAssignOperator* s) {                       \
-    return TraverseAssignCommon(s);                                                                \
+#define OPERATOR(NAME)                                                                                                           \
+  virtual bool TraverseBin##NAME##Assign(clang::CompoundAssignOperator* s) {                                                     \
+    return TraverseAssignCommon(s);                                                                                              \
   }
   OPERATOR(Mul)
   OPERATOR(Div)

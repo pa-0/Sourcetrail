@@ -13,8 +13,7 @@ QtProjectWizardContentPathCodeblocksProject::QtProjectWizardContentPathCodeblock
     std::shared_ptr<SourceGroupSettingsCxxCodeblocks> settings, QtProjectWizardWindow* window)
     : QtProjectWizardContentPath(window), m_settings(settings), m_filePaths([&]() {
       return utility::getAsRelativeIfShorter(
-          utility::toVector(SourceGroupCxxCodeblocks(m_settings).getAllSourceFilePaths()),
-          m_settings->getProjectDirectoryPath());
+          utility::toVector(SourceGroupCxxCodeblocks(m_settings).getAllSourceFilePaths()), m_settings->getProjectDirectoryPath());
     }) {
   setTitleString(QStringLiteral("Code::Blocks Project (.cbp)"));
   setHelpString(
@@ -33,10 +32,7 @@ void QtProjectWizardContentPathCodeblocksProject::populate(QGridLayout* layout, 
   QtProjectWizardContentPath::populate(layout, row);
   m_picker->setPickDirectory(false);
   m_picker->setFileFilter(QStringLiteral("Code::Blocks Project (*.cbp)"));
-  connect(m_picker,
-          &QtLocationPicker::locationPicked,
-          this,
-          &QtProjectWizardContentPathCodeblocksProject::pickedPath);
+  connect(m_picker, &QtLocationPicker::locationPicked, this, &QtProjectWizardContentPathCodeblocksProject::pickedPath);
 
   QLabel* description = new QLabel(
       "Sourcetrail will use all settings from the Code::Blocks project and stay up-to-date with "
@@ -93,12 +89,9 @@ void QtProjectWizardContentPathCodeblocksProject::pickedPath() {
   const FilePath projectPath = m_settings->getProjectDirectoryPath();
 
   std::set<FilePath> indexedHeaderPaths;
-  for(const FilePath& path :
-      QtProjectWizardContentPathsIndexedHeaders::getIndexedPathsDerivedFromCodeblocksProject(
-          m_settings)) {
+  for(const FilePath& path : QtProjectWizardContentPathsIndexedHeaders::getIndexedPathsDerivedFromCodeblocksProject(m_settings)) {
     if(projectPath.contains(path)) {
-      indexedHeaderPaths.insert(path.getRelativeTo(
-          projectPath));    // the relative path is always shorter than the  absolute path
+      indexedHeaderPaths.insert(path.getRelativeTo(projectPath));    // the relative path is always shorter than the  absolute path
     }
   }
   m_settings->setIndexedHeaderPaths(utility::toVector(indexedHeaderPaths));

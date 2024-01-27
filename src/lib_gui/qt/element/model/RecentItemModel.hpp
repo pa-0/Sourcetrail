@@ -38,7 +38,6 @@ struct RecentItemModel final : QAbstractListModel {
 private:
   size_t mMaxRecentProjects = 0;
   std::vector<RecentItem> mRecentProjects;
-
 };
 
 }    // namespace qt::element::model

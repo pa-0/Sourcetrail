@@ -19,7 +19,7 @@ public:
   }
 
   std::string getType() const {
-		return m_alive ? doGetType() : "";
+    return m_alive ? doGetType() : "";
   }
 
   void handleMessageBase(MessageBase* pMessage) {

@@ -47,22 +47,16 @@ void InterprocessIndexer::work() {
     });
 
     while(auto pIndexerCommand = m_interprocessIndexerCommandManager.popIndexerCommand()) {
-      LOG_INFO(fmt::format("{} fetched indexer command for \"{}\"",
-                           m_processId,
-                           pIndexerCommand->getSourceFilePath().str()));
-      LOG_INFO(fmt::format("{} indexer commands left: {}",
-                           m_processId,
-                           m_interprocessIndexerCommandManager.indexerCommandCount()));
+      LOG_INFO(fmt::format("{} fetched indexer command for \"{}\"", m_processId, pIndexerCommand->getSourceFilePath().str()));
+      LOG_INFO(fmt::format("{} indexer commands left: {}", m_processId, m_interprocessIndexerCommandManager.indexerCommandCount()));
 
       while(updaterThreadRunning) {
-        const size_t storageCount =
-            m_interprocessIntermediateStorageManager.getIntermediateStorageCount();
+        const size_t storageCount = m_interprocessIntermediateStorageManager.getIntermediateStorageCount();
         if(storageCount < 2) {
           break;
         }
 
-        LOG_INFO(
-            fmt::format("{} waits, too many intermediate storages: {}", m_processId, storageCount));
+        LOG_INFO(fmt::format("{} waits, too many intermediate storages: {}", m_processId, storageCount));
 
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
       }

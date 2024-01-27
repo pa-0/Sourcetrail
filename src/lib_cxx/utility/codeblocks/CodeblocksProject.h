@@ -15,38 +15,35 @@ class SourceGroupSettingsCxxCodeblocks;
 class SourceGroupSettingsWithSourceExtensions;
 class TextAccess;
 
-namespace Codeblocks
-{
+namespace Codeblocks {
 class Target;
 class Unit;
 
-class Project
-{
+class Project {
 public:
-	static std::shared_ptr<Project> load(const FilePath& projectFilePath);
-	static std::shared_ptr<Project> load(std::shared_ptr<TextAccess> xmlAccess);
+  static std::shared_ptr<Project> load(const FilePath& projectFilePath);
+  static std::shared_ptr<Project> load(std::shared_ptr<TextAccess> xmlAccess);
 
-	std::set<FilePath> getAllSourceFilePathsCanonical(
-		const std::vector<std::wstring>& sourceExtensions) const;
-	std::set<FilePath> getAllCxxHeaderSearchPathsCanonical() const;
+  std::set<FilePath> getAllSourceFilePathsCanonical(const std::vector<std::wstring>& sourceExtensions) const;
+  std::set<FilePath> getAllCxxHeaderSearchPathsCanonical() const;
 
-	std::vector<std::shared_ptr<IndexerCommandCxx>> getIndexerCommands(
-		std::shared_ptr<const SourceGroupSettingsCxxCodeblocks> sourceGroupSettings,
-		std::shared_ptr<const ApplicationSettings> appSettings) const;
+  std::vector<std::shared_ptr<IndexerCommandCxx>> getIndexerCommands(
+      std::shared_ptr<const SourceGroupSettingsCxxCodeblocks> sourceGroupSettings,
+      std::shared_ptr<const ApplicationSettings> appSettings) const;
 
 private:
-	Project(const FilePath& projectFilePath);
+  Project(const FilePath& projectFilePath);
 
-	FilePath m_projectFilePath;
+  FilePath m_projectFilePath;
 
-	int m_versionMajor = 0;
-	int m_versionMinor = 0;
+  int m_versionMajor = 0;
+  int m_versionMinor = 0;
 
-	std::wstring m_title;
+  std::wstring m_title;
 
-	std::vector<std::shared_ptr<Target>> m_targets;
-	std::vector<std::shared_ptr<Unit>> m_units;
+  std::vector<std::shared_ptr<Target>> m_targets;
+  std::vector<std::shared_ptr<Unit>> m_units;
 };
-}	 // namespace Codeblocks
+}    // namespace Codeblocks
 
-#endif	  // CODEBLOCKS_PROJECT_H
+#endif    // CODEBLOCKS_PROJECT_H

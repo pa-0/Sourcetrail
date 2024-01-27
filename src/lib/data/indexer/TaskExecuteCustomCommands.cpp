@@ -21,12 +21,11 @@
 #include "utilityFile.h"
 #include "utilityString.h"
 
-TaskExecuteCustomCommands::TaskExecuteCustomCommands(
-    std::unique_ptr<IndexerCommandProvider> indexerCommandProvider,
-    std::shared_ptr<PersistentStorage> storage,
-    std::shared_ptr<DialogView> dialogView,
-    size_t indexerThreadCount,
-    const FilePath& projectDirectory)
+TaskExecuteCustomCommands::TaskExecuteCustomCommands(std::unique_ptr<IndexerCommandProvider> indexerCommandProvider,
+                                                     std::shared_ptr<PersistentStorage> storage,
+                                                     std::shared_ptr<DialogView> dialogView,
+                                                     size_t indexerThreadCount,
+                                                     const FilePath& projectDirectory)
     : m_indexerCommandProvider(std::move(indexerCommandProvider))
     , m_storage(storage)
     , m_dialogView(dialogView)
@@ -39,11 +38,9 @@ void TaskExecuteCustomCommands::doEnter(std::shared_ptr<Blackboard> /*blackboard
   m_start = TimeStamp::now();
 
   if(m_indexerCommandProvider) {
-    for(const FilePath& sourceFilePath :
-        utility::partitionFilePathsBySize(m_indexerCommandProvider->getAllSourceFilePaths(), 2)) {
-      if(std::shared_ptr<IndexerCommandCustom> indexerCommand =
-             std::dynamic_pointer_cast<IndexerCommandCustom>(
-                 m_indexerCommandProvider->consumeCommandForSourceFilePath(sourceFilePath))) {
+    for(const FilePath& sourceFilePath : utility::partitionFilePathsBySize(m_indexerCommandProvider->getAllSourceFilePaths(), 2)) {
+      if(std::shared_ptr<IndexerCommandCustom> indexerCommand = std::dynamic_pointer_cast<IndexerCommandCustom>(
+             m_indexerCommandProvider->consumeCommandForSourceFilePath(sourceFilePath))) {
         if(m_targetDatabaseFilePath.empty()) {
           m_targetDatabaseFilePath = indexerCommand->getDatabaseFilePath();
         }
@@ -69,11 +66,8 @@ Task::TaskState TaskExecuteCustomCommands::doUpdate(std::shared_ptr<Blackboard> 
 
   std::vector<std::shared_ptr<std::thread>> indexerThreads;
   for(size_t i = 1 /*this method is counting as the first thread*/; i < m_indexerThreadCount; i++) {
-    indexerThreads.push_back(
-        std::make_shared<std::thread>(&TaskExecuteCustomCommands::executeParallelIndexerCommands,
-                                      this,
-                                      static_cast<int>(i),
-                                      blackboard));
+    indexerThreads.push_back(std::make_shared<std::thread>(
+        &TaskExecuteCustomCommands::executeParallelIndexerCommands, this, static_cast<int>(i), blackboard));
   }
 
   while(!m_interrupted && !m_serialCommands.empty()) {
@@ -114,23 +108,20 @@ Task::TaskState TaskExecuteCustomCommands::doUpdate(std::shared_ptr<Blackboard> 
 void TaskExecuteCustomCommands::doExit(std::shared_ptr<Blackboard> blackboard) {
   m_storage.reset();
   const float duration = static_cast<float>(TimeStamp::durationSeconds(m_start));
-  blackboard->update<float>(
-      "index_time", [duration](float currentDuration) { return currentDuration + duration; });
+  blackboard->update<float>("index_time", [duration](float currentDuration) { return currentDuration + duration; });
 }
 
 void TaskExecuteCustomCommands::doReset(std::shared_ptr<Blackboard> /*blackboard*/) {}
 
-void TaskExecuteCustomCommands::handleMessage(MessageIndexingInterrupted*  /*message*/) {
+void TaskExecuteCustomCommands::handleMessage(MessageIndexingInterrupted* /*message*/) {
   LOG_INFO("Interrupting custom command execution.");
 
   m_interrupted = true;
 
-  m_dialogView->showUnknownProgressDialog(
-      L"Interrupting Indexing", L"Waiting for running\ncommand to finish");
+  m_dialogView->showUnknownProgressDialog(L"Interrupting Indexing", L"Waiting for running\ncommand to finish");
 }
 
-void TaskExecuteCustomCommands::executeParallelIndexerCommands(int threadId,
-                                                               std::shared_ptr<Blackboard> blackboard) {
+void TaskExecuteCustomCommands::executeParallelIndexerCommands(int threadId, std::shared_ptr<Blackboard> blackboard) {
   std::shared_ptr<PersistentStorage> storage;
   while(!m_interrupted) {
     std::shared_ptr<IndexerCommandCustom> indexerCommand;
@@ -147,8 +138,8 @@ void TaskExecuteCustomCommands::executeParallelIndexerCommands(int threadId,
       storage = m_storage;
     } else {
       FilePath databaseFilePath = indexerCommand->getDatabaseFilePath();
-      databaseFilePath = databaseFilePath.getParentDirectory().concatenate(
-          databaseFilePath.fileName() + L"_thread" + std::to_wstring(threadId));
+      databaseFilePath = databaseFilePath.getParentDirectory().concatenate(databaseFilePath.fileName() + L"_thread" +
+                                                                           std::to_wstring(threadId));
 
       bool databaseFilePathKnown = true;
       {
@@ -195,22 +186,20 @@ void TaskExecuteCustomCommands::runIndexerCommand(std::shared_ptr<IndexerCommand
     const std::wstring command = indexerCommand->getCommand();
     const std::vector<std::wstring> arguments = indexerCommand->getArguments();
 
-    LOG_INFO("Start processing command \"" +
-             utility::encodeToUtf8(command + L" " + utility::join(arguments, L" ")) + "\"");
+    LOG_INFO("Start processing command \"" + utility::encodeToUtf8(command + L" " + utility::join(arguments, L" ")) + "\"");
 
     const ErrorCountInfo previousErrorCount = storage ? storage->getErrorCount() : ErrorCountInfo();
 
     LOG_INFO("Starting to index");
-    const utility::ProcessOutput out = utility::executeProcess(
-        command, arguments, m_projectDirectory, false, -1, true);
+    const utility::ProcessOutput out = utility::executeProcess(command, arguments, m_projectDirectory, false, -1, true);
     LOG_INFO("Finished indexing");
 
     if(storage) {
       std::vector<ErrorInfo> errors = storage->getErrorInfos();
       const ErrorCountInfo currentErrorCount(errors);
       if(currentErrorCount.total > previousErrorCount.total) {
-        const ErrorCountInfo diff(currentErrorCount.total - previousErrorCount.total,
-                                  currentErrorCount.fatal - previousErrorCount.fatal);
+        const ErrorCountInfo diff(
+            currentErrorCount.total - previousErrorCount.total, currentErrorCount.fatal - previousErrorCount.fatal);
 
         ErrorCountInfo errorCount;    // local copy to release lock early
         {
@@ -229,8 +218,8 @@ void TaskExecuteCustomCommands::runIndexerCommand(std::shared_ptr<IndexerCommand
       std::wstring message = L"Process returned successfully.\n";
       LOG_INFO(message);
     } else {
-      std::wstring statusText = L"command \"" + indexerCommand->getCommand() + L" " +
-          utility::join(arguments, L" ") + L"\" returned";
+      std::wstring statusText = L"command \"" + indexerCommand->getCommand() + L" " + utility::join(arguments, L" ") +
+          L"\" returned";
       if(out.exitCode != 0) {
         statusText += L" code \"" + std::to_wstring(out.exitCode) + L"\"";
       }

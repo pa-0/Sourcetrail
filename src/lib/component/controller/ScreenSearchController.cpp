@@ -46,8 +46,7 @@ void ScreenSearchController::removeResponder(ScreenSearchResponder* responder) {
   }
 }
 
-void ScreenSearchController::search(const std::wstring& query,
-                                    const std::set<std::string>& responderNames) {
+void ScreenSearchController::search(const std::wstring& query, const std::set<std::string>& responderNames) {
   clearMatches();
 
   for(ScreenSearchResponder* responder : m_responders) {

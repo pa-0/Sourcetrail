@@ -1,4 +1,5 @@
 #include "FullTextSearchIndex.h"
+
 #include <limits>
 
 #include "logging.h"

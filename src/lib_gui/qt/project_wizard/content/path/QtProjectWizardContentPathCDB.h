@@ -9,8 +9,7 @@ class QtProjectWizardContentPathCDB final : public QtProjectWizardContentPath {
   Q_OBJECT
 
 public:
-  QtProjectWizardContentPathCDB(std::shared_ptr<ProjectWizardModel> model,
-                                QtProjectWizardWindow* window);
+  QtProjectWizardContentPathCDB(std::shared_ptr<ProjectWizardModel> model, QtProjectWizardWindow* window);
 
   ~QtProjectWizardContentPathCDB() override;
 

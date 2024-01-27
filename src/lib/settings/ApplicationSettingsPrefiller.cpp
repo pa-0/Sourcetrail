@@ -26,8 +26,8 @@ bool ApplicationSettingsPrefiller::prefillCxxHeaderPaths(ApplicationSettings* se
   std::shared_ptr<CombinedPathDetector> cxxHeaderDetector = utility::getCxxHeaderPathDetector();
   std::vector<FilePath> paths = cxxHeaderDetector->getPaths();
   if(!paths.empty()) {
-    MessageStatus(L"Ran C/C++ header path detection, found " + std::to_wstring(paths.size()) +
-                  L" path" + (paths.size() == 1 ? L"" : L"s"))
+    MessageStatus(L"Ran C/C++ header path detection, found " + std::to_wstring(paths.size()) + L" path" +
+                  (paths.size() == 1 ? L"" : L"s"))
         .dispatch();
 
     settings->setHeaderSearchPaths(paths);
@@ -47,8 +47,8 @@ bool ApplicationSettingsPrefiller::prefillCxxFrameworkPaths(ApplicationSettings*
   std::shared_ptr<CombinedPathDetector> cxxFrameworkDetector = utility::getCxxFrameworkPathDetector();
   std::vector<FilePath> paths = cxxFrameworkDetector->getPaths();
   if(!paths.empty()) {
-    MessageStatus(L"Ran C/C++ framework path detection, found " + std::to_wstring(paths.size()) +
-                  L" path" + (paths.size() == 1 ? L"" : L"s"))
+    MessageStatus(L"Ran C/C++ framework path detection, found " + std::to_wstring(paths.size()) + L" path" +
+                  (paths.size() == 1 ? L"" : L"s"))
         .dispatch();
 
     settings->setFrameworkSearchPaths(paths);

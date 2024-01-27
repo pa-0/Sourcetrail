@@ -14,7 +14,7 @@ public:
   SettingsMigrationDeleteKey(SettingsMigrationDeleteKey&&) = delete;
   SettingsMigrationDeleteKey& operator=(const SettingsMigrationDeleteKey&) = delete;
   SettingsMigrationDeleteKey& operator=(SettingsMigrationDeleteKey&&) = delete;
-	/**  @} */
+  /**  @} */
   ~SettingsMigrationDeleteKey() override;
   void apply(Settings* migratable) const override;
 

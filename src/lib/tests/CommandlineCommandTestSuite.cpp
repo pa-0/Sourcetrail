@@ -45,6 +45,7 @@ TEST(CommandlineCommand, goodCase) {
   CollectOutStream collectStream(std::cout);
   mockedCommandLine.printHelp();
   collectStream.close();
-  constexpr std::string_view HelpMessage = "Usage:\n\n  Sourcetrail name [option...]\n\ndesc\n\n\nPositional Arguments: \n  1: pos\n";
+  constexpr std::string_view HelpMessage =
+      "Usage:\n\n  Sourcetrail name [option...]\n\ndesc\n\n\nPositional Arguments: \n  1: pos\n";
   EXPECT_THAT(collectStream.str(), StrEq(HelpMessage));
 }

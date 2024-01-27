@@ -26,11 +26,8 @@ private slots:
 
 public:
   QtThreadedFunctorHelper() : m_freeCallbacks(1) {
-    QObject::connect(this,
-                     &QtThreadedFunctorHelper::signalExecution,
-                     this,
-                     &QtThreadedFunctorHelper::execute,
-                     Qt::QueuedConnection);
+    QObject::connect(
+        this, &QtThreadedFunctorHelper::signalExecution, this, &QtThreadedFunctorHelper::execute, Qt::QueuedConnection);
   }
 
   void operator()(std::function<void(void)> callback) {

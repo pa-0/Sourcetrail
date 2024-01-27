@@ -5,30 +5,22 @@
 
 #include "types.h"
 
-struct StorageBookmarkCategoryData
-{
-	StorageBookmarkCategoryData() = default;
+struct StorageBookmarkCategoryData {
+  StorageBookmarkCategoryData() = default;
 
-	StorageBookmarkCategoryData(const std::wstring& name_): name(name_) {}
+  StorageBookmarkCategoryData(const std::wstring& name_) : name(name_) {}
 
-	std::wstring name;
+  std::wstring name;
 };
 
-struct StorageBookmarkCategory: public StorageBookmarkCategoryData
-{
-	StorageBookmarkCategory() = default;
+struct StorageBookmarkCategory : public StorageBookmarkCategoryData {
+  StorageBookmarkCategory() = default;
 
-	StorageBookmarkCategory(Id id_, const StorageBookmarkCategoryData& data)
-		: StorageBookmarkCategoryData(data), id(id_)
-	{
-	}
+  StorageBookmarkCategory(Id id_, const StorageBookmarkCategoryData& data) : StorageBookmarkCategoryData(data), id(id_) {}
 
-	StorageBookmarkCategory(Id id_, const std::wstring& name_)
-		: StorageBookmarkCategoryData(name_), id(id_)
-	{
-	}
+  StorageBookmarkCategory(Id id_, const std::wstring& name_) : StorageBookmarkCategoryData(name_), id(id_) {}
 
-	Id id = 0;
+  Id id = 0;
 };
 
-#endif	  // STORAGE_BOOKMARK_CATEGORY_H
+#endif    // STORAGE_BOOKMARK_CATEGORY_H

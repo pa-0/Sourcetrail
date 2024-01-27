@@ -9,8 +9,7 @@ class MessageActivateTrail
     : public Message<MessageActivateTrail>
     , public MessageActivateBase {
 public:
-  MessageActivateTrail(
-      Id originId_, Id targetId_, Edge::TypeMask edgeTypes_, size_t depth_, bool horizontalLayout_)
+  MessageActivateTrail(Id originId_, Id targetId_, Edge::TypeMask edgeTypes_, size_t depth_, bool horizontalLayout_)
       : originId(originId_)
       , targetId(targetId_)
       , nodeTypes(0)

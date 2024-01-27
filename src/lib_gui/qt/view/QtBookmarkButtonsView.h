@@ -2,42 +2,40 @@
 #define QT_BOOKMARK_BUTTONS_VIEW_H
 
 #include "BookmarkButtonsView.h"
-
 #include "QtThreadedFunctor.h"
 
 class QFrame;
 class QtSearchBarButton;
 
 class QtBookmarkButtonsView
-	: public QObject
-	, public BookmarkButtonsView
-{
-	Q_OBJECT
+    : public QObject
+    , public BookmarkButtonsView {
+  Q_OBJECT
 
 public:
-	QtBookmarkButtonsView(ViewLayout* viewLayout);
-	~QtBookmarkButtonsView() = default;
+  QtBookmarkButtonsView(ViewLayout* viewLayout);
+  ~QtBookmarkButtonsView() = default;
 
-	// View implementation
-	void createWidgetWrapper() override;
-	void refreshView() override;
+  // View implementation
+  void createWidgetWrapper() override;
+  void refreshView() override;
 
-	// BookmarkView implementation
-	void setCreateButtonState(const MessageBookmarkButtonState::ButtonState& state) override;
+  // BookmarkView implementation
+  void setCreateButtonState(const MessageBookmarkButtonState::ButtonState& state) override;
 
 private slots:
-	void createBookmarkClicked();
-	void showBookmarksClicked();
+  void createBookmarkClicked();
+  void showBookmarksClicked();
 
 private:
-	QtThreadedLambdaFunctor m_onQtThread;
+  QtThreadedLambdaFunctor m_onQtThread;
 
-	QFrame* m_widget;
+  QFrame* m_widget;
 
-	QtSearchBarButton* m_createBookmarkButton;
-	QtSearchBarButton* m_showBookmarksButton;
+  QtSearchBarButton* m_createBookmarkButton;
+  QtSearchBarButton* m_showBookmarksButton;
 
-	MessageBookmarkButtonState::ButtonState m_createButtonState;
+  MessageBookmarkButtonState::ButtonState m_createButtonState;
 };
 
-#endif	  // QT_BOOKMARK_BUTTONS_VIEW_H
+#endif    // QT_BOOKMARK_BUTTONS_VIEW_H

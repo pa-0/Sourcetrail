@@ -1,5 +1,6 @@
 #pragma once
 #include <gmock/gmock.h>
+
 #include "BookmarkButtonsView.h"
 
 struct MockedBookmarkButtonsView final : BookmarkButtonsView {

@@ -6,25 +6,23 @@
 #include "SharedMemory.h"
 #include "types.h"
 
-class BaseInterprocessDataManager
-{
+class BaseInterprocessDataManager {
 public:
-	BaseInterprocessDataManager(
-		const std::string& sharedMemoryName,
-		size_t initialSharedMemorySize,
-		const std::string& instanceUuid,
-		Id processId,
-		bool isOwner);
+  BaseInterprocessDataManager(const std::string& sharedMemoryName,
+                              size_t initialSharedMemorySize,
+                              const std::string& instanceUuid,
+                              Id processId,
+                              bool isOwner);
 
-	virtual ~BaseInterprocessDataManager() = default;
+  virtual ~BaseInterprocessDataManager() = default;
 
-	Id getProcessId() const;
+  Id getProcessId() const;
 
 protected:
-	SharedMemory m_sharedMemory;
+  SharedMemory m_sharedMemory;
 
-	const std::string m_instanceUuid;
-	const Id m_processId;
+  const std::string m_instanceUuid;
+  const Id m_processId;
 };
 
-#endif	  // BASE_INTERPROCESS_DATA_MANAGER_H
+#endif    // BASE_INTERPROCESS_DATA_MANAGER_H

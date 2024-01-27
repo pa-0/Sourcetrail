@@ -12,11 +12,9 @@ ASTConsumer::ASTConsumer(clang::ASTContext* context,
   auto* pAppSettings = ApplicationSettings::getInstance().get();
 
   if(pAppSettings->getLoggingEnabled() && pAppSettings->getVerboseIndexerLoggingEnabled()) {
-    m_visitor = std::make_shared<CxxVerboseAstVisitor>(
-        context, preprocessor, client, canonicalFilePathCache, indexerStateInfo);
+    m_visitor = std::make_shared<CxxVerboseAstVisitor>(context, preprocessor, client, canonicalFilePathCache, indexerStateInfo);
   } else {
-    m_visitor = std::make_shared<CxxAstVisitor>(
-        context, preprocessor, client, canonicalFilePathCache, indexerStateInfo);
+    m_visitor = std::make_shared<CxxAstVisitor>(context, preprocessor, client, canonicalFilePathCache, indexerStateInfo);
   }
 }
 

@@ -7,8 +7,7 @@ class FilePath;
 
 namespace utility {
 
-std::vector<FilePath> partitionFilePathsBySize(std::vector<FilePath> filePaths,
-                                               int partitionCount = 0);
+std::vector<FilePath> partitionFilePathsBySize(std::vector<FilePath> filePaths, int partitionCount = 0);
 
 std::vector<FilePath> getTopLevelPaths(const std::vector<FilePath>& paths);
 
@@ -22,7 +21,6 @@ FilePath getExpandedAndAbsolutePath(const FilePath& path, const FilePath& baseDi
 
 FilePath getAsRelativeIfShorter(const FilePath& absolutePath, const FilePath& baseDirectory);
 
-std::vector<FilePath> getAsRelativeIfShorter(const std::vector<FilePath>& absolutePaths,
-                                             const FilePath& baseDirectory);
+std::vector<FilePath> getAsRelativeIfShorter(const std::vector<FilePath>& absolutePaths, const FilePath& baseDirectory);
 
 }    // namespace utility
