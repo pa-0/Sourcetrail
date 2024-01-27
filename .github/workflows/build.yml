@@ -5,6 +5,18 @@ on:
     branches: [ "main" ]
 
 jobs:
+  clang-format:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt install -y clang-format-15
+
+      - name: Run clang-tidy
+        run: find src -not -path "*test*" -type f -iname "*.cpp" -exec clang-format-15 -n --Werror {} \;
+
   build:
     strategy:
       fail-fast: false
