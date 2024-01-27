@@ -34,7 +34,7 @@ jobs:
             cc: "clang",
             cxx: "clang++"
           }
-  
+
     name: ${{ matrix.config.name }}
     runs-on: ubuntu-22.04
     steps:
@@ -45,7 +45,7 @@ jobs:
 
     - name: Get tags
       run: git fetch --tags origin
-    
+
     - name: Install dependencies
       run: sudo apt install -y clang libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev python3-pip grep
 
@@ -66,3 +66,28 @@ jobs:
 
     - name: Test
       run: ctest --test-dir ${{github.workspace}}/build
+
+  linters:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+
+    - name: Install dependencies
+      run: sudo apt install -y clang-tidy-15 libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev
+
+    - name: Install conan
+      run: sudo pip install conan
+
+    - name: Install conan dependencies
+      run: conan install . -s build_type=Release -of .conan/gcc --build=missing -pr:a .conan/gcc/profile
+
+    - name: Configure CMake
+      run: cmake --preset="ci_gnu_release"
+
+    - name: Run clang-tidy
+      run: find src -not -path "*test*" -type f -name "*.cpp" -exec clang-tidy-15 -p ${{github.workspace}}/build/compile_commands.json {} \;
