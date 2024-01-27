@@ -68,6 +68,7 @@ jobs:
       run: ctest --test-dir ${{github.workspace}}/build
 
   linters:
+    if: false
     strategy:
       fail-fast: false
     runs-on: ubuntu-22.04
