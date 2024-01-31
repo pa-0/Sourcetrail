@@ -27,12 +27,6 @@ set(ENABLE_INTEGRATION_TEST
 set(ENABLE_E2E_TEST
     OFF
     CACHE BOOL "Build e2e-tests.")
-set(ENABLE_CLANG_TIDY
-    OFF
-    CACHE BOOL "Run clang-tidy after building.")
-set(ENABLE_CPPCHECK
-    OFF
-    CACHE BOOL "Run cppcheck after building.")
 set(ENABLE_SANITIZER_ADDRESS
     OFF
     CACHE BOOL "Inject address sanitizer.")
@@ -163,7 +157,7 @@ set(Boost_USE_STATIC_LIBS
     CACHE BOOL "Set to ON to force the use of the static libraries.")
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(
-  Boost 1.67
+  Boost 1.74
   COMPONENTS date_time
              filesystem
              locale
