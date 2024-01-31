@@ -1,10 +1,10 @@
 #pragma once
-// STL
+#include <atomic>
 #include <deque>
 #include <memory>
 #include <mutex>
 #include <vector>
-// internal
+
 #include "types.h"
 
 class MessageBase;
@@ -25,14 +25,14 @@ public:
 
   ~MessageQueue();
 
-  void registerListener(MessageListenerBase* pListener);
+  void registerListener(MessageListenerBase* listener);
   void unregisterListener(MessageListenerBase* listener);
 
-  MessageListenerBase* getListenerById(Id listenerId) const;
+  [[nodiscard]] MessageListenerBase* getListenerById(Id listenerId) const;
 
-  void addMessageFilter(std::shared_ptr<MessageFilter> pFilter);
+  void addMessageFilter(std::shared_ptr<MessageFilter> filter);
 
-  void pushMessage(std::shared_ptr<MessageBase> pMessage);
+  void pushMessage(std::shared_ptr<MessageBase> message);
   void processMessage(const std::shared_ptr<MessageBase>&, bool asNextTask);
 
   void startMessageLoopThreaded();
@@ -45,28 +45,26 @@ public:
   void setSendMessagesAsTasks(bool sendMessagesAsTasks);
 
 private:
-  static Ptr s_instance;    // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+  static Ptr sInstance;    // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
   MessageQueue();
 
   void processMessages();
-  void sendMessage(const std::shared_ptr<MessageBase>& pMessage);
-  void sendMessageAsTask(const std::shared_ptr<MessageBase>& pMessage, bool asNextTask) const;
+  void sendMessage(const std::shared_ptr<MessageBase>& message);
+  void sendMessageAsTask(const std::shared_ptr<MessageBase>& message, bool asNextTask) const;
 
-  MessageBufferType m_messageBuffer;
-  std::vector<MessageListenerBase*> m_listeners;
-  std::vector<std::shared_ptr<MessageFilter>> m_filters;
+  MessageBufferType mMessageBuffer;
+  std::vector<MessageListenerBase*> mListeners;
+  std::vector<std::shared_ptr<MessageFilter>> mFilters;
 
-  size_t m_currentListenerIndex;
-  size_t m_listenersLength;
+  size_t mCurrentListenerIndex = 0;
+  size_t mListenersLength = 0;
 
-  bool m_loopIsRunning;
-  bool m_threadIsRunning;
+  std::atomic_bool mLoopIsRunning = false;
+  std::atomic_bool mThreadIsRunning = false;
 
-  mutable std::mutex m_messageBufferMutex;
-  mutable std::mutex m_listenersMutex;
-  mutable std::mutex m_loopMutex;
-  mutable std::mutex m_threadMutex;
+  mutable std::mutex mMessageBufferMutex;
+  mutable std::mutex mListenersMutex;
 
-  bool m_sendMessagesAsTasks;
+  bool mSendMessagesAsTasks = false;
 };

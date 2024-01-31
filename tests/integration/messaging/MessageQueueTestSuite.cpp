@@ -107,6 +107,12 @@ void waitForThread() {
 }
 }    // namespace
 
+TEST(MessageQueue, singleInstance) {
+  auto messageQueue0 = MessageQueue::getInstance();
+  auto messageQueue1 = MessageQueue::getInstance();
+  EXPECT_EQ(messageQueue0, messageQueue1);
+}
+
 TEST(MessageQueue, messageLoopStartsAndStops) {
   auto messageQueue = MessageQueue::getInstance();
   EXPECT_FALSE(messageQueue->loopIsRunning());
@@ -224,11 +230,11 @@ TEST(MessageQueue, listenerRegistrationToFrontAndBackWithinMessageHandling) {
 struct MessageQueueRegistration : testing::Test {
   void SetUp() override {
     messageQueue = MessageQueue::getInstance();
-    messageQueue->m_listeners.clear();
+    messageQueue->mListeners.clear();
   }
 
   void TearDown() override {
-    messageQueue->m_listeners.clear();
+    messageQueue->mListeners.clear();
     if(messageQueue->loopIsRunning()) {
       messageQueue->stopMessageLoop();
     }
@@ -244,13 +250,12 @@ TEST_F(MessageQueueRegistration, registerIsUnique) {
   messageQueue->registerListener(&messageListener);
   messageQueue->registerListener(&messageListener);
 
-  // TODO(Hussein): It should be Eq 1
-  EXPECT_EQ(4, messageQueue->m_listeners.size());
+  EXPECT_EQ(1, messageQueue->mListeners.size());
 }
 
 TEST_F(MessageQueueRegistration, registerGoodCase) {
   TestMessageListener messageListener;
-  ASSERT_EQ(1, messageQueue->m_listeners.size());
+  ASSERT_EQ(1, messageQueue->mListeners.size());
 
   messageQueue->startMessageLoopThreaded();
 
@@ -262,7 +267,7 @@ TEST_F(MessageQueueRegistration, registerGoodCase) {
   EXPECT_EQ(1, messageListener.m_messageCount);
 
   messageQueue->unregisterListener(&messageListener);
-  EXPECT_THAT(messageQueue->m_listeners, testing::IsEmpty());
+  EXPECT_THAT(messageQueue->mListeners, testing::IsEmpty());
 
   TestMessage {}.dispatch();
 
@@ -280,14 +285,14 @@ struct MessageQueueProcess : testing::Test {
 
   void SetUp() override {
     messageQueue = MessageQueue::getInstance();
-    messageQueue->m_messageBuffer.clear();
-    messageQueue->m_filters.clear();
+    messageQueue->mMessageBuffer.clear();
+    messageQueue->mFilters.clear();
   }
 
   void TearDown() override {
     messageQueue->setSendMessagesAsTasks(false);
-    messageQueue->m_filters.clear();
-    messageQueue->m_messageBuffer.clear();
+    messageQueue->mFilters.clear();
+    messageQueue->mMessageBuffer.clear();
   }
 
   static void TearDownTestSuite() {
@@ -300,7 +305,7 @@ struct MessageQueueProcess : testing::Test {
 
 TEST_F(MessageQueueProcess, goodCase) {
   TestMessageListener messageListener;
-  ASSERT_EQ(1, messageQueue->m_listeners.size());
+  ASSERT_EQ(1, messageQueue->mListeners.size());
 
   auto message = std::make_shared<TestMessage>();
   message->setIsLogged(true);
@@ -316,7 +321,7 @@ TEST_F(MessageQueueProcess, goodCaseAsTask) {
   messageQueue->setSendMessagesAsTasks(true);
 
   TestMessageListener messageListener;
-  ASSERT_EQ(1, messageQueue->m_listeners.size());
+  ASSERT_EQ(1, messageQueue->mListeners.size());
 
   auto message = std::make_shared<TestMessage>();
   message->setSendAsTask(true);
@@ -355,7 +360,7 @@ struct MessageQueueSendMessage : testing::Test {
 
 TEST_F(MessageQueueSendMessage, goodCase) {
   TestMessageListener messageListener;
-  ASSERT_EQ(1, messageQueue->m_listeners.size());
+  ASSERT_EQ(1, messageQueue->mListeners.size());
 
   auto message = std::make_shared<TestMessage>();
   message->setIsLogged(true);
@@ -401,6 +406,5 @@ TEST_F(MessageQueueFilter, goodCase) {
   messageQueue->addMessageFilter(filter);
   messageQueue->addMessageFilter(filter);
 
-  // TODO(Hussein): It should be Eq 1
-  EXPECT_EQ(3, messageQueue->m_filters.size());
+  EXPECT_EQ(1, messageQueue->mFilters.size());
 }
