@@ -14,8 +14,14 @@ public:
 
   static const size_t VERSION;
 
-  ApplicationSettings() = default;
-  ~ApplicationSettings() override = default;
+  ApplicationSettings();
+
+  ApplicationSettings(const ApplicationSettings&) = delete;
+  ApplicationSettings(ApplicationSettings&&) = delete;
+  ApplicationSettings& operator=(const ApplicationSettings&) = delete;
+  ApplicationSettings& operator=(ApplicationSettings&&) = delete;
+
+  ~ApplicationSettings() override;
 
   bool load(const FilePath& filePath, bool readOnly = false) override;
 
@@ -152,8 +158,5 @@ public:
   void setControlsGraphZoomOnMouseWheel(bool zoomingDefault);
 
 private:
-  ApplicationSettings(const ApplicationSettings&);
-  void operator=(const ApplicationSettings&);
-
   static std::shared_ptr<ApplicationSettings> s_instance;
 };

@@ -1,5 +1,8 @@
 #include "ApplicationSettings.h"
 
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
+
 #include "AppPath.h"
 #include "Logger.h"
 #include "ResourcePaths.h"
@@ -23,6 +26,9 @@ std::shared_ptr<ApplicationSettings> ApplicationSettings::getInstance() {
 
   return s_instance;
 }
+
+ApplicationSettings::ApplicationSettings() = default;
+ApplicationSettings::~ApplicationSettings() = default;
 
 bool ApplicationSettings::load(const FilePath& filePath, bool readOnly) {
   bool loaded = Settings::load(filePath, readOnly);
@@ -370,17 +376,13 @@ void ApplicationSettings::setCodeViewModeSingle(bool enabled) {
 }
 
 std::vector<FilePath> ApplicationSettings::getRecentProjects() const {
-  std::vector<FilePath> recentProjects;
-  std::vector<FilePath> loadedRecentProjects = getPathValues("user/recent_projects/recent_project");
+  constexpr auto RecentProjectKey = "user/recent_projects/recent_project";
+  auto loadedRecentProjects = getPathValues(RecentProjectKey);
 
-  for(const FilePath& project : loadedRecentProjects) {
-    if(project.isAbsolute()) {
-      recentProjects.push_back(project);
-    } else {
-      recentProjects.push_back(UserPaths::getUserDataDirectoryPath().concatenate(project));
-    }
-  }
-  return recentProjects;
+  return loadedRecentProjects | ranges::view::transform([](auto project) {
+           return project.isAbsolute() ? project : UserPaths::getUserDataDirectoryPath().concatenate(project);
+         }) |
+      ranges::to<std::vector>();
 }
 
 bool ApplicationSettings::setRecentProjects(const std::vector<FilePath>& recentProjects) {
