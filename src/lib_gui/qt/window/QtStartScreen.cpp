@@ -4,6 +4,10 @@
 
 #include <fmt/format.h>
 
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
+
+#include <QDebug>
 #include <QDesktopServices>
 #include <QHBoxLayout>
 #include <QIcon>
@@ -14,6 +18,7 @@
 
 #include "ApplicationSettings.h"
 #include "RecentItemModel.hpp"
+#include "UserPaths.h"
 #include "Version.h"
 #include "globalStrings.h"
 #include "utilityQt.h"
@@ -50,12 +55,14 @@ void QtStartScreen::setupStartScreen() {
 
   // Create the main layout
   auto* layout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
-  layout->setContentsMargins(15, 170, 15, 0);
+  constexpr QMargins LayoutMargins {15, 170, 15, 0};
+  layout->setContentsMargins(LayoutMargins);
   m_content->setLayout(layout);
 
   createVersionAndGithub(layout);
 
-  layout->addSpacing(50);
+  constexpr auto LayoutSpacing = 50;
+  layout->addSpacing(LayoutSpacing);
 
   createRecentProjects(layout);
 
@@ -66,6 +73,24 @@ void QtStartScreen::setupStartScreen() {
   setStyleSheet(utility::getStyleSheet("://startscreen/startscreen.css"));
 }
 
+void QtStartScreen::hideEvent(QHideEvent* ev) {
+  if(mRecentModel->isDirty()) {
+    auto updatedRecentProjects = mRecentModel->getRecentProjects() |
+        ranges::view::transform([](auto item) { qDebug() << QString::fromStdWString(item.path.wstr()); return item.path; }) | ranges::to<std::vector>();
+
+    ApplicationSettings::getInstance()->setRecentProjects(updatedRecentProjects);
+    if(ApplicationSettings::getInstance()->save(UserPaths::getAppSettingsFilePath())) {
+      mRecentModel->clearDirty();
+    }
+  }
+
+  QtWindow::hideEvent(ev);
+}
+
+void QtStartScreen::closeEvent(QCloseEvent* event) {
+  QtWindow::closeEvent(event);
+}
+
 void QtStartScreen::createRecentProjects(QHBoxLayout* layout) {
   auto* vBoxLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   layout->addLayout(vBoxLayout, 1);
@@ -74,15 +99,18 @@ void QtStartScreen::createRecentProjects(QHBoxLayout* layout) {
   recentProjectsLabel->setObjectName(QStringLiteral("titleLabel"));
   vBoxLayout->addWidget(recentProjectsLabel);
 
-  vBoxLayout->addSpacing(20);
+  constexpr int VBoxLayoutSpacing = 20;
+  vBoxLayout->addSpacing(VBoxLayoutSpacing);
 
   auto maxRecentProjectsCount = ApplicationSettings::getInstance()->getMaxRecentProjectsCount();
   auto recentProjects = ApplicationSettings::getInstance()->getRecentProjects();
 
   auto* viewList = new QListView;    // NOLINT(cppcoreguidelines-owning-memory)
-  mRecentModel = new element::model::RecentItemModel(
-      recentProjects, maxRecentProjectsCount);    // NOLINT(cppcoreguidelines-owning-memory)
+  // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+  mRecentModel = new element::model::RecentItemModel(recentProjects, maxRecentProjectsCount);
   connect(viewList, &QListView::clicked, mRecentModel, &element::model::RecentItemModel::clicked);
+
+  viewList->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
   connect(viewList, &QListView::customContextMenuRequested, this, [viewList, this](const QPoint& point) {
     QMenu contextMenu(tr("Context menu"), viewList);
 
@@ -97,15 +125,22 @@ void QtStartScreen::createRecentProjects(QHBoxLayout* layout) {
 
     contextMenu.exec(viewList->mapToGlobal(point));
   });
-  viewList->setIconSize(QSize(30, 30));
-  viewList->setModel(mRecentModel);
-  viewList->setDragDropMode(QAbstractItemView::InternalMove);
-  viewList->setMovement(QListView::Snap);
+
+  // Drap/Drop
   viewList->setDefaultDropAction(Qt::MoveAction);
+  viewList->setDragDropMode(QAbstractItemView::InternalMove);
+  viewList->setDragEnabled(true);
+  viewList->setDropIndicatorShown(true);
+  viewList->setMovement(QListView::Snap);
+  viewList->setSelectionMode(QAbstractItemView::SingleSelection);
+  // Icon size
+  constexpr QSize IconSize {30, 30};
+  viewList->setIconSize(IconSize);
   viewList->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContentsOnFirstShow);
-  viewList->setUniformItemSizes(true);
   viewList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-  viewList->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+  viewList->setUniformItemSizes(true);
+  // Model
+  viewList->setModel(mRecentModel);
   vBoxLayout->addWidget(viewList, 1);
 
   vBoxLayout->addStretch();
@@ -120,7 +155,8 @@ void QtStartScreen::createVersionAndGithub(QHBoxLayout* layout) {
   pVersionLabel->setObjectName(QStringLiteral("boldLabel"));
   vBoxLayout->addWidget(pVersionLabel);
 
-  vBoxLayout->addSpacing(20);
+  constexpr std::array<int, 3> BoxLayoutSpacing = {20, 35, 8};
+  vBoxLayout->addSpacing(BoxLayoutSpacing[0]);
 
   // Create a GitHub button
   auto* githubButton = createButton(this, QStringLiteral("View on GitHub"), QStringLiteral("infoButton"), []() {
@@ -129,12 +165,12 @@ void QtStartScreen::createVersionAndGithub(QHBoxLayout* layout) {
   githubButton->setIcon(QIcon("://startscreen/github_icon.png"));
   vBoxLayout->addWidget(githubButton);
 
-  vBoxLayout->addSpacing(35);
+  vBoxLayout->addSpacing(BoxLayoutSpacing[1]);
   vBoxLayout->addStretch();
 
   vBoxLayout->addWidget(createButton(
       this, QStringLiteral("New Project"), QStringLiteral("projectButton"), [this]() { emit openNewProjectDialog(); }));
-  vBoxLayout->addSpacing(8);
+  vBoxLayout->addSpacing(BoxLayoutSpacing[2]);
   vBoxLayout->addWidget(createButton(
       this, QStringLiteral("Open Project"), QStringLiteral("projectButton"), [this]() { emit openOpenProjectDialog(); }));
 }

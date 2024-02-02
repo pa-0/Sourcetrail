@@ -52,6 +52,10 @@ public:
    */
   void setupStartScreen();
 
+protected:
+  void hideEvent(QHideEvent *ev) override;
+  void closeEvent(QCloseEvent *ev) override;
+
 signals:
   /**
    * @brief A signal emitted when the open button clicked.

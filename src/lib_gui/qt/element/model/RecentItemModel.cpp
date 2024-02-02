@@ -1,21 +1,24 @@
 #include "RecentItemModel.hpp"
 
-#include <tuple>
-
 #include <range/v3/to_container.hpp>
 #include <range/v3/view/transform.hpp>
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QMimeData>
 
 #include "MessageLoadProject.h"
 #include "ProjectSettings.h"
 
 namespace {
 
+constexpr const char* MIME_TYPE = "application/x-recent-item-model";
+
 QIcon getProjectIcon(LanguageType lang) {
+#if BUILD_CXX_LANGUAGE_PACKAGE
   static const auto CppIcon = QIcon("://icon/cpp_icon.png");
   static const auto CIcon = QIcon("://icon/c_icon.png");
+#endif
   static const auto ProjectIcon = QIcon("://icon/empty_icon.png");
 
   switch(lang) {
@@ -59,6 +62,66 @@ RecentItemModel::RecentItemModel(const std::vector<FilePath>& recentProjects, si
       ranges::to<std::vector<RecentItem>>;
 }
 
+QStringList RecentItemModel::mimeTypes() const {
+  return {MIME_TYPE};
+}
+
+QMimeData* RecentItemModel::mimeData(const QModelIndexList& indexes) const {
+  if(indexes.count() <= 0) {
+    return nullptr;
+  }
+  const auto types = mimeTypes();
+  if(types.isEmpty()) {
+    return nullptr;
+  }
+
+  auto* data = new QMimeData;
+  const auto& format = types.at(0);
+  QByteArray encoded;
+  QDataStream stream(&encoded, QIODevice::WriteOnly);
+
+  auto item = mRecentProjects[static_cast<size_t>(indexes.front().row())];
+  stream << item;
+
+  data->setData(format, encoded);
+
+  return data;
+}
+
+bool RecentItemModel::canDropMimeData(const QMimeData* data,
+                                      [[maybe_unused]] Qt::DropAction action,
+                                      [[maybe_unused]] int row,
+                                      int column,
+                                      [[maybe_unused]] const QModelIndex& parent) const {
+  if(!data->hasFormat(MIME_TYPE)) {
+    return false;
+  }
+  if(column > 0) {
+    return false;
+  }
+  return true;
+}
+
+bool RecentItemModel::dropMimeData(const QMimeData* data, [[maybe_unused]] Qt::DropAction action, int row, [[maybe_unused]] int column, const QModelIndex& parent) {
+  int beginRow;
+  if(row != -1) {
+    beginRow = row;
+  } else if(parent.isValid()) {
+    beginRow = parent.row();
+  } else {
+    beginRow = rowCount(QModelIndex {});
+  }
+
+  QByteArray encodedData = data->data(MIME_TYPE);
+  QDataStream stream(&encodedData, QIODevice::ReadOnly);
+  RecentItem item;
+  stream >> item;
+
+  insertRows(beginRow, 1, QModelIndex());
+  QModelIndex idx = index(beginRow, 0, QModelIndex());
+  return setData(idx, QVariant::fromValue(item), Qt::EditRole);
+}
+
 QVariant RecentItemModel::data(const QModelIndex& index, int role) const {
   if(!index.isValid()) {
     return {};
@@ -87,6 +150,34 @@ QVariant RecentItemModel::data(const QModelIndex& index, int role) const {
   }
 
   return {};
+}
+
+bool RecentItemModel::setData(const QModelIndex& index, const QVariant& value, [[maybe_unused]] int role) {
+  if(index.isValid()) {
+    if(value.canConvert<RecentItem>()) {
+      mRecentProjects[static_cast<size_t>(index.row())] = value.value<RecentItem>();
+    }
+    emit dataChanged(index, index);
+    mDirty = true;
+    return true;
+  }
+  return false;
+}
+
+bool RecentItemModel::insertRows(int row, int count, const QModelIndex& /*parent*/) {
+  beginInsertRows(QModelIndex(), row, row + count - 1);
+  mRecentProjects.insert(mRecentProjects.begin() + row, static_cast<size_t>(count), {});
+  endInsertRows();
+  return true;
+}
+
+bool RecentItemModel::removeRows(int row, int count, const QModelIndex& /*parent*/) {
+  beginRemoveRows(QModelIndex(), row, row + count - 1);
+  auto begin = std::begin(mRecentProjects) + row;
+  auto end = begin + count;
+  mRecentProjects.erase(begin, end);
+  endRemoveRows();
+  return true;
 }
 
 void RecentItemModel::clicked(const QModelIndex& index) {
