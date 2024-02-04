@@ -19,7 +19,6 @@ target_sources(
           ${CMAKE_SOURCE_DIR}/src/lib/utility/tracing.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/utility.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/utilityUuid.cpp
-          ${CMAKE_SOURCE_DIR}/src/lib/utility/utilityXml.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/Version.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/ConsoleLogger.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/FileLogger.cpp
