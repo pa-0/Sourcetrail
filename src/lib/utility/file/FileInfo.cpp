@@ -2,6 +2,6 @@
 
 FileInfo::FileInfo() : path(FilePath(L"")) {}
 
-FileInfo::FileInfo(const FilePath& path) : path(path) {}
+FileInfo::FileInfo(FilePath path_) : path(std::move(path_)) {}
 
-FileInfo::FileInfo(const FilePath& path, const TimeStamp& lastWriteTime) : path(path), lastWriteTime(lastWriteTime) {}
+FileInfo::FileInfo(FilePath path_, TimeStamp lastWriteTime_) : path(std::move(path_)), lastWriteTime(lastWriteTime_) {}

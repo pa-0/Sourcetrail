@@ -1,12 +1,11 @@
 #pragma once
-// internal
 #include "FilePath.h"
 #include "TimeStamp.h"
 
 struct FileInfo final {
   FileInfo();
-  FileInfo(const FilePath& path);
-  FileInfo(const FilePath& path, const TimeStamp& lastWriteTime);
+  explicit FileInfo(FilePath path);
+  FileInfo(FilePath path, TimeStamp lastWriteTime);
 
   FilePath path;
   TimeStamp lastWriteTime;
