@@ -13,21 +13,21 @@ public:
   FileManager();
   virtual ~FileManager();
 
-  void update(const std::vector<FilePath>& sourcePaths,
-              const std::vector<FilePathFilter>& excludeFilters,
-              const std::vector<std::wstring>& sourceExtensions);
+  void update(std::vector<FilePath> sourcePaths,
+              std::vector<FilePathFilter> excludeFilters,
+              std::vector<std::wstring> sourceExtensions);
 
   // returns a list of source paths (can be directories) specified in the project settings
-  std::vector<FilePath> getSourcePaths() const;
+  [[nodiscard]] std::vector<FilePath> getSourcePaths() const;
 
   // checks if file is in non-excluded source directory
-  bool hasSourceFilePath(const FilePath& filePath) const;
+  [[nodiscard]] bool hasSourceFilePath(const FilePath& filePath) const;
 
   // returns a list of paths to all files that reside in the non-excluded source paths
-  std::set<FilePath> getAllSourceFilePaths() const;
+  [[nodiscard]] std::set<FilePath> getAllSourceFilePaths() const;
 
 private:
-  bool isExcluded(const FilePath& filePath) const;
+  [[nodiscard]] bool isExcluded(const FilePath& filePath) const;
 
   std::vector<FilePath> m_sourcePaths;
   std::vector<FilePathFilter> m_excludeFilters;
