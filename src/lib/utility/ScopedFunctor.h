@@ -1,11 +1,10 @@
 #pragma once
-// STL
 #include <functional>
 
-class ScopedFunctor {
+class ScopedFunctor final {
 public:
   ScopedFunctor();
-  ScopedFunctor(std::function<void(void)> onDestroy);
+  explicit ScopedFunctor(std::function<void(void)> onDestroy);
   ~ScopedFunctor();
 
 private:
