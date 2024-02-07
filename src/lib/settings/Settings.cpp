@@ -1,5 +1,8 @@
 #include "Settings.h"
 
+#include <range/v3/to_container.hpp>
+#include <range/v3/view/transform.hpp>
+
 #include "TextAccess.h"
 #include "logging.h"
 
@@ -92,19 +95,13 @@ void Settings::setFilePath(const FilePath& filePath) {
 }
 
 std::vector<FilePath> Settings::getPathValues(const std::string& key) const {
-  std::vector<FilePath> paths;
-  for(const std::wstring& value : getValues<std::wstring>(key, {})) {
-    paths.push_back(FilePath(value));
-  }
-  return paths;
+  auto values = getValues<std::wstring>(key, {});
+  return values | ranges::cpp20::views::transform([](const auto& value) { return FilePath {value}; }) | ranges::to<std::vector>();
 }
 
 bool Settings::setPathValues(const std::string& key, const std::vector<FilePath>& paths) {
-  std::vector<std::wstring> values;
-  for(const FilePath& path : paths) {
-    values.push_back(path.wstr());
-  }
-
+  std::vector<std::wstring> values = paths | ranges::cpp20::views::transform([](const auto& value) { return value.wstr(); }) |
+      ranges::to<std::vector>();
   return setValues(key, values);
 }
 

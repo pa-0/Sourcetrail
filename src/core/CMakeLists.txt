@@ -40,7 +40,7 @@ target_link_libraries(Sourcetrail_core PUBLIC Boost::date_time Boost::system Boo
 
 target_link_libraries(
   Sourcetrail_core
-  PUBLIC fmt::fmt range-v3::range-v3
+  PUBLIC fmt::fmt range-v3::range-v3 Sourcetrail::lib_utility
   PRIVATE Boost::filesystem
           Sourcetrail::lib_utility
           tinyxml::tinyxml

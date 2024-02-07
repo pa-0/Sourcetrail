@@ -1,8 +1,14 @@
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "Settings.h"
 
+using namespace testing;
+
 namespace {
+constexpr std::wstring_view SettingPath = L"data/SettingsTestSuite/settings.xml";
+constexpr std::wstring_view WrongSettingPath = L"data/SettingsTestSuite/wrong_settings.xml";
+
 class TestSettings : public Settings {
 public:
   bool getBool() const {
@@ -58,63 +64,63 @@ public:
 
 TEST(Settings, settingsGetLoadedFromFile) {
   TestSettings settings;
-  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  EXPECT_TRUE(settings.load(FilePath(SettingPath.data())));
 }
 
 TEST(Settings, settingsGetNotLoadedFromFile) {
   TestSettings settings;
-  EXPECT_TRUE(!settings.load(FilePath(L"data/SettingsTestSuite/wrong_settings.xml")));
+  EXPECT_FALSE(settings.load(FilePath(WrongSettingPath.data())));
 }
 
 TEST(Settings, settingsGetLoadedValue) {
   constexpr auto FloatValue = 3.1416F;
 
   TestSettings settings;
-  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  ASSERT_TRUE(settings.load(FilePath(SettingPath.data())));
 
-  EXPECT_TRUE(settings.getBool() == true);
-  EXPECT_TRUE(settings.getInt() == 42);
-  EXPECT_TRUE(settings.getFloat() == FloatValue);
-  EXPECT_TRUE(settings.getString() == "Hello World!");
-  EXPECT_TRUE(settings.getWString() == L"Hello World!");
+  EXPECT_TRUE(settings.getBool());
+  EXPECT_EQ(42, settings.getInt());
+  EXPECT_FLOAT_EQ(FloatValue, settings.getFloat());
+  EXPECT_THAT(settings.getString(), StrEq("Hello World!"));
+  EXPECT_THAT(settings.getWString(), StrEq(L"Hello World!"));
 }
 
 TEST(Settings, settingsGetDefaultValueWhenNotLoaded) {
   constexpr auto FloatValue = 0.01F;
 
   const TestSettings settings;
-  EXPECT_TRUE(settings.getBool() == false);
-  EXPECT_TRUE(settings.getInt() == -1);
-  EXPECT_TRUE(settings.getFloat() == FloatValue);
-  EXPECT_TRUE(settings.getString() == "<empty>");
-  EXPECT_TRUE(settings.getWString() == L"<empty>");
+  EXPECT_FALSE(settings.getBool());
+  EXPECT_EQ(-1, settings.getInt());
+  EXPECT_FLOAT_EQ(FloatValue, settings.getFloat());
+  EXPECT_THAT(settings.getString(), StrEq("<empty>"));
+  EXPECT_THAT(settings.getWString(), StrEq(L"<empty>"));
 }
 
 TEST(Settings, settingsGetDefaultValueWhenWronglyLoaded) {
   constexpr auto FloatValue = 0.01F;
 
   TestSettings settings;
-  EXPECT_TRUE(!settings.load(FilePath(L"data/SettingsTestSuite/wrong_settings.xml")));
+  ASSERT_FALSE(settings.load(FilePath(WrongSettingPath.data())));
 
-  EXPECT_TRUE(settings.getBool() == false);
-  EXPECT_TRUE(settings.getInt() == -1);
-  EXPECT_TRUE(settings.getFloat() == FloatValue);
-  EXPECT_TRUE(settings.getString() == "<empty>");
-  EXPECT_TRUE(settings.getWString() == L"<empty>");
+  EXPECT_FALSE(settings.getBool());
+  EXPECT_EQ(-1, settings.getInt());
+  EXPECT_FLOAT_EQ(FloatValue, settings.getFloat());
+  EXPECT_THAT(settings.getString(), StrEq("<empty>"));
+  EXPECT_THAT(settings.getWString(), StrEq(L"<empty>"));
 }
 
 TEST(Settings, settingsGetDefaultValueAfterClearing) {
   constexpr auto FloatValue = 0.01F;
 
   TestSettings settings;
-  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  ASSERT_TRUE(settings.load(FilePath(SettingPath.data())));
 
   settings.clear();
-  EXPECT_TRUE(settings.getBool() == false);
-  EXPECT_TRUE(settings.getInt() == -1);
-  EXPECT_TRUE(settings.getFloat() == FloatValue);
-  EXPECT_TRUE(settings.getString() == "<empty>");
-  EXPECT_TRUE(settings.getWString() == L"<empty>");
+  EXPECT_FALSE(settings.getBool());
+  EXPECT_EQ(-1, settings.getInt());
+  EXPECT_FLOAT_EQ(FloatValue, settings.getFloat());
+  EXPECT_THAT(settings.getString(), StrEq("<empty>"));
+  EXPECT_THAT(settings.getWString(), StrEq( L"<empty>"));
 }
 
 TEST(Settings, settingsCanBeSetWhenNotLoaded) {
@@ -122,49 +128,49 @@ TEST(Settings, settingsCanBeSetWhenNotLoaded) {
 
   TestSettings settings;
 
-  EXPECT_TRUE(settings.setBool(false));
-  EXPECT_TRUE(settings.getBool() == false);
+  ASSERT_TRUE(settings.setBool(false));
+  EXPECT_FALSE(settings.getBool());
 
-  EXPECT_TRUE(settings.setInt(2));
-  EXPECT_TRUE(settings.getInt() == 2);
+  ASSERT_TRUE(settings.setInt(2));
+  EXPECT_EQ(2, settings.getInt());
 
-  EXPECT_TRUE(settings.setFloat(FloatValue));
-  EXPECT_TRUE(settings.getFloat() == FloatValue);
+  ASSERT_TRUE(settings.setFloat(FloatValue));
+  EXPECT_FLOAT_EQ(FloatValue, settings.getFloat());
 
-  EXPECT_TRUE(settings.setString("foo"));
-  EXPECT_TRUE(settings.getString() == "foo");
+  ASSERT_TRUE(settings.setString("foo"));
+  EXPECT_THAT(settings.getString(), StrEq("foo"));
 
-  EXPECT_TRUE(settings.setWString(L"bar"));
-  EXPECT_TRUE(settings.getWString() == L"bar");
+  ASSERT_TRUE(settings.setWString(L"bar"));
+  EXPECT_THAT(settings.getWString(), StrEq(L"bar"));
 }
 
 TEST(Settings, settingsCanBeReplacedWhenLoaded) {
   constexpr auto FloatValue = 2.5F;
 
   TestSettings settings;
-  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  ASSERT_TRUE(settings.load(FilePath(SettingPath.data())));
 
-  EXPECT_TRUE(settings.setBool(false));
-  EXPECT_TRUE(settings.getBool() == false);
+  ASSERT_TRUE(settings.setBool(false));
+  EXPECT_FALSE(settings.getBool());
 
-  EXPECT_TRUE(settings.setInt(2));
-  EXPECT_TRUE(settings.getInt() == 2);
+  ASSERT_TRUE(settings.setInt(2));
+  EXPECT_EQ(2, settings.getInt());
 
-  EXPECT_TRUE(settings.setFloat(FloatValue));
-  EXPECT_TRUE(settings.getFloat() == FloatValue);
+  ASSERT_TRUE(settings.setFloat(FloatValue));
+  EXPECT_FLOAT_EQ(FloatValue, settings.getFloat());
 
-  EXPECT_TRUE(settings.setString("foo"));
-  EXPECT_TRUE(settings.getString() == "foo");
+  ASSERT_TRUE(settings.setString("foo"));
+  EXPECT_THAT(settings.getString(), StrEq("foo"));
 
-  EXPECT_TRUE(settings.setWString(L"bar"));
-  EXPECT_TRUE(settings.getWString() == L"bar");
+  ASSERT_TRUE(settings.setWString(L"bar"));
+  EXPECT_THAT(settings.getWString(), StrEq(L"bar"));
 }
 
 TEST(Settings, settingsCanBeAddedWhenLoaded) {
   TestSettings settings;
-  EXPECT_TRUE(settings.load(FilePath(L"data/SettingsTestSuite/settings.xml")));
+  EXPECT_TRUE(settings.load(FilePath(SettingPath.data())));
 
-  EXPECT_TRUE(settings.getNewBool() == false);
+  EXPECT_FALSE(settings.getNewBool());
   EXPECT_TRUE(settings.setNewBool(true));
-  EXPECT_TRUE(settings.getNewBool() == true);
+  EXPECT_TRUE(settings.getNewBool());
 }

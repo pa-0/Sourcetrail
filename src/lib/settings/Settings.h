@@ -9,6 +9,9 @@
 
 class SettingsMigration;
 
+/**
+ * Base Setting
+ */
 class Settings {
 public:
   Settings(const Settings& other);
@@ -74,9 +77,8 @@ private:
 template <typename T>
 T Settings::getValue(const std::string& key, T defaultValue) const {
   if(m_config) {
-    T value;
-    if(m_config->getValue(key, value)) {
-      return value;
+    if(std::optional<T> result = m_config->getValue<T>(key); result.has_value()) {
+      return result.value();
     }
   }
   return defaultValue;
@@ -85,9 +87,8 @@ T Settings::getValue(const std::string& key, T defaultValue) const {
 template <typename T>
 std::vector<T> Settings::getValues(const std::string& key, std::vector<T> defaultValues) const {
   if(m_config) {
-    std::vector<T> values;
-    if(m_config->getValues(key, values)) {
-      return values;
+    if(auto values = m_config->getValues<T>(key); values.has_value()) {
+      return values.value();
     }
   }
   return defaultValues;
