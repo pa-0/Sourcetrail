@@ -64,7 +64,7 @@ TEST(FileSystem, findAllSourceFiles) {
 
 // TODO(Hussein): Fix next test
 #if DISABLED
-TEST(FileSystem, find file infos) {
+TEST(FileSystem, findFileInfos) {
 #  ifndef _WIN32
   std::vector<FilePath> directoryPaths;
   directoryPaths.emplace_back(L"./data/FileSystemTestSuite/src");
@@ -78,7 +78,7 @@ TEST(FileSystem, find file infos) {
 #  endif
 }
 
-TEST(FileSystem, find file infos with symlinks) {
+TEST(FileSystem, findFileInfosWithSymlinks) {
 #  ifndef _WIN32
   std::vector<FilePath> directoryPaths;
   directoryPaths.emplace_back(L"./data/FileSystemTestSuite/src");
@@ -101,7 +101,7 @@ TEST(FileSystem, find file infos with symlinks) {
 
 // TODO(Hussein): Fix next test
 #if DISABLED
-TEST(FileSystem, find symlinked directories") {
+TEST(FileSystem, findSymlinkedDirectories) {
 #  ifndef _WIN32
   std::vector<FilePath> directoryPaths;
   directoryPaths.emplace_back("./data/FileSystemTestSuite/src");
