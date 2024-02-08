@@ -8,7 +8,7 @@
 
 namespace {
 std::shared_ptr<TextAccess> getConfigTextAccess() {
-  const std::string text =
+  static constexpr std::string_view text =
       "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
       "<config>\n"
       "	<path>\n"
@@ -25,119 +25,80 @@ std::shared_ptr<TextAccess> getConfigTextAccess() {
       "		<path>8</path>\n"
       "	</paths>\n"
       "</config>\n";
-  return TextAccess::createFromString(text);
+  return TextAccess::createFromString(text.data());
 }
 }    // namespace
 
-TEST(ConfigManager, returnsTrueWhenKeyIsFound) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
+struct ConfigManagerFix : testing::Test {
+  void SetUp() override {
+    configManager = ConfigManager::createAndLoad(getConfigTextAccess());
+  }
 
-  float value = 0;
-  bool success = config->getValue("path/to/single_value", value);
+  ConfigManager::Ptr configManager;
+};
 
-  EXPECT_TRUE(success);
+TEST_F(ConfigManagerFix, returnsTrueWhenKeyIsFound) {
+  const auto result = configManager->getValue<float>("path/to/single_value");
+  ASSERT_TRUE(result);
+  EXPECT_FLOAT_EQ(42, result.value());
 }
 
-TEST(ConfigManager, returnsFalseWhenKeyIsNotFound) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
-
-  float value = 0;
-  bool success = config->getValue("path/to/nowhere", value);
-
-  EXPECT_TRUE(!success);
+TEST_F(ConfigManagerFix, returnsFalseWhenKeyIsNotFound) {
+  EXPECT_FALSE(configManager->getValue<float>("path/to/nowhere"));
 }
 
-TEST(ConfigManager, returnsCorrectStringForKey) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
-
-  std::wstring value;
-  config->getValue("path/to/single_value", value);
-
-  EXPECT_TRUE(L"42" == value);
+TEST_F(ConfigManagerFix, returnsCorrectFloatForKey) {
+  const auto result = configManager->getValue<int>("path/to/single_value");
+  ASSERT_TRUE(result);
+  EXPECT_EQ(42, result.value());
 }
 
-TEST(ConfigManager, returnsCorrectFloatForKey) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
-
-  float value = 0;
-  config->getValue("path/to/single_value", value);
-
-  EXPECT_FLOAT_EQ(value, 42.0F);
+TEST_F(ConfigManagerFix, returnsCorrectBoolForKeyIfValueIsTrue) {
+  const auto result = configManager->getValue<float>("path/to/bool_that_is_true");
+  ASSERT_TRUE(result);
+  EXPECT_FLOAT_EQ(1, result.value());
 }
 
-TEST(ConfigManager, returnsCorrectBoolForKeyIfValueIsTrue) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
-
-  float value = 0;
-  bool success(config->getValue("path/to/bool_that_is_true", value));
-
-  EXPECT_TRUE(success);
-  EXPECT_TRUE(value);
+TEST_F(ConfigManagerFix, returnsCorrectBoolForKeyIfValueIsFalse) {
+  const auto result = configManager->getValue<float>("path/to/bool_that_is_false");
+  ASSERT_TRUE(result);
+  EXPECT_FLOAT_EQ(0, result.value());
 }
 
-TEST(ConfigManager, returnsCorrectBoolForKeyIfValueIsFalse) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
+TEST_F(ConfigManagerFix, addsNewKeyWhenNotEmpty) {
+  configManager->setValue("path/to/true_bool", true);
 
-  float value = 0;
-  bool success(config->getValue("path/to/bool_that_is_false", value));
-
-  EXPECT_TRUE(success);
-  EXPECT_TRUE(!value);
+  const auto result = configManager->getValue<bool>("path/to/true_bool");
+  ASSERT_TRUE(result);
+  EXPECT_TRUE(result.value());
 }
 
-TEST(ConfigManager, addsNewKeyWhenEmpty) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createEmpty();
+TEST_F(ConfigManagerFix, returnsCorrectListForKey) {
+  auto result = configManager->getValues<int>("paths/path");
+  ASSERT_TRUE(result.has_value());
 
-  config->setValue("path/to/true_bool", true);
-
-  bool value = false;
-  bool success(config->getValue("path/to/true_bool", value));
-
-  EXPECT_TRUE(success);
-  EXPECT_TRUE(value);
-}
-
-TEST(ConfigManager, addsNewKeyWhenNotEmpty) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
-
-  config->setValue("path/to/true_bool", true);
-
-  bool value = false;
-  bool success(config->getValue("path/to/true_bool", value));
-
-  EXPECT_TRUE(success);
-  EXPECT_TRUE(value);
-}
-
-TEST(ConfigManager, returnsCorrectListForKey) {
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
-
-  std::vector<int> values;
-
-  bool success(config->getValues("paths/path", values));
-
-  EXPECT_TRUE(success);
-  EXPECT_TRUE(values.size() == 3);
+  auto values = result.value();
+  ASSERT_EQ(3, values.size());
   EXPECT_TRUE(values[0] == 2);
   EXPECT_TRUE(values[1] == 5);
   EXPECT_TRUE(values[2] == 8);
 }
 
-TEST(ConfigManager, saveAndLoadConfigurationAndCompare) {
-  const FilePath path(L"data/ConfigManagerTestSuite/temp.xml");
+TEST_F(ConfigManagerFix, saveAndLoadConfigurationAndCompare) {
+  constexpr std::string_view path = "data/ConfigManagerTestSuite/temp.xml";
+  configManager->save(path);
 
-  std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(getConfigTextAccess());
-  config->save(path.str());
-  std::shared_ptr<ConfigManager> config2 = ConfigManager::createAndLoad(TextAccess::createFromFile(path));
-  EXPECT_TRUE(config->toString() == config2->toString());
+  std::shared_ptr<ConfigManager> config2 = ConfigManager::createAndLoad(TextAccess::createFromFile(FilePath {path.data()}));
+  EXPECT_TRUE(configManager->toString() == config2->toString());
 }
 
 TEST(ConfigManager, loadsSpecialCharacter) {
   std::shared_ptr<ConfigManager> config = ConfigManager::createAndLoad(
       TextAccess::createFromFile(FilePath(L"data/ConfigManagerTestSuite/test_data.xml")));
-  std::wstring loadedSpecialCharacter;
-  config->getValue("path/to/special_character", loadedSpecialCharacter);
+  auto result = config->getValue<std::wstring>("path/to/special_character");
 
+  ASSERT_TRUE(result);
+  std::wstring loadedSpecialCharacter = result.value();
   EXPECT_TRUE(loadedSpecialCharacter.size() == 1);
   EXPECT_TRUE(loadedSpecialCharacter[0] == wchar_t(252));
   ;    // special character needs to be encoded as ASCII code because
@@ -155,4 +116,15 @@ TEST(ConfigManager, saveAndLoadSpecialCharacterAndCompare) {
 
   std::shared_ptr<ConfigManager> config2 = ConfigManager::createAndLoad(TextAccess::createFromFile(path));
   EXPECT_TRUE(config->toString() == config2->toString());
+}
+
+TEST(ConfigManager, addsNewKeyWhenEmpty) {
+  std::shared_ptr<ConfigManager> config = ConfigManager::createEmpty();
+
+  config->setValue("path/to/true_bool", true);
+
+  const auto result = config->getValue<bool>("path/to/true_bool");
+
+  ASSERT_TRUE(result);
+  EXPECT_TRUE(result.value());
 }
