@@ -15,9 +15,24 @@ namespace fs = std::filesystem;
 namespace utility {
 
 ScopedTemporaryFile::Ptr ScopedTemporaryFile::createEmptyFile(std::filesystem::path filePath) {
-  std::error_code errorCode;
-  if(!filePath.empty() && fs::exists(filePath, errorCode)) {
+  if(filePath.empty()) {
+    LOG_WARNING("The input filePath is empty.");
+    return {};
   }
+
+  std::error_code errorCode;
+  if(fs::exists(filePath, errorCode)) {
+    LOG_WARNING(fmt::format("The file exists \"{}\".", filePath.string()));
+    return {};
+  }
+
+  std::ofstream oStream(filePath);
+  oStream.flush();
+  if(!fs::exists(filePath, errorCode)) {
+    LOG_WARNING(fmt::format("Failed to create \"{}\".", filePath.string()));
+    return {};
+  }
+
   auto handler = ScopedTemporaryFile::Ptr(new ScopedTemporaryFile);
   handler->mFilePath = std::move(filePath);
   return handler;
