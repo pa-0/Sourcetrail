@@ -1,5 +1,7 @@
 #include "SharedMemory.h"
 
+#include <fmt/format.h>
+
 #include "SharedMemoryGarbageCollector.h"
 #include "logging.h"
 
@@ -14,7 +16,7 @@ SharedMemory::ScopedAccess::ScopedAccess(SharedMemory* memory)
   try {
     m_memory = boost::interprocess::managed_shared_memory(boost::interprocess::open_only, memory->getMemoryName().c_str());
   } catch(boost::interprocess::interprocess_exception& e) {
-    LOG_ERROR_STREAM(<< "boost exception thrown at ScopedAccess constructor - " << memory->getMemoryName() << ": " << e.what());
+    LOG_ERROR(fmt::format("boost exception thrown at ScopedAccess constructor - {}: {}", memory->getMemoryName(), e.what()));
 
     // Behaves the same as the initializer construction, with the error printed out
     // throw e;
@@ -26,7 +28,7 @@ SharedMemory::ScopedAccess::ScopedAccess(SharedMemory* memory)
   }
 }
 
-SharedMemory::ScopedAccess::~ScopedAccess() {}
+SharedMemory::ScopedAccess::~ScopedAccess() = default;
 
 SharedMemory::Allocator* SharedMemory::ScopedAccess::getAllocator() {
   return m_memory.get_segment_manager();
@@ -84,7 +86,7 @@ std::string SharedMemory::checkSharedMemory(const std::string& name) {
   try {
     SharedMemory memory("test_" + name, 65536 /* 64 kB */, CREATE_AND_DELETE);
   } catch(boost::interprocess::interprocess_exception& e) {
-    LOG_ERROR_STREAM(<< "boost exception thrown at shared memory check: " << e.what());
+    LOG_ERROR(fmt::format("boost exception thrown at shared memory check: {}", e.what()));
     error = e.what();
   }
 
@@ -104,7 +106,7 @@ SharedMemory::SharedMemory(const std::string& name, size_t initialMemorySize, Ac
     switch(mode) {
     case CREATE_AND_DELETE: {
       SharedMemoryGarbageCollector* collector = SharedMemoryGarbageCollector::getInstance();
-      if(collector) {
+      if(collector != nullptr) {
         collector->registerSharedMemory(m_name);
       }
 
@@ -113,8 +115,8 @@ SharedMemory::SharedMemory(const std::string& name, size_t initialMemorySize, Ac
       boost::interprocess::permissions permissions;
       permissions.set_unrestricted();
 
-      boost::interprocess::managed_shared_memory(
-          boost::interprocess::create_only, getMemoryName().c_str(), initialMemorySize, 0, permissions);
+      boost::interprocess::managed_shared_memory managedSharedMemory(
+          boost::interprocess::create_only, getMemoryName().c_str(), initialMemorySize, nullptr, permissions);
       boost::interprocess::named_mutex(boost::interprocess::create_only, getMutexName().c_str());
     } break;
 
@@ -128,7 +130,7 @@ SharedMemory::SharedMemory(const std::string& name, size_t initialMemorySize, Ac
       boost::interprocess::permissions permissions;
       permissions.set_unrestricted();
 
-      boost::interprocess::managed_shared_memory(
+      boost::interprocess::managed_shared_memory managedSharedMemory(
           boost::interprocess::open_or_create, getMemoryName().c_str(), initialMemorySize, 0, permissions);
       boost::interprocess::named_mutex(boost::interprocess::open_or_create, getMutexName().c_str());
     } break;
@@ -138,9 +140,9 @@ SharedMemory::SharedMemory(const std::string& name, size_t initialMemorySize, Ac
       boost::interprocess::named_mutex mutex(boost::interprocess::open_only, getMutexName().c_str());
       boost::interprocess::scoped_lock<boost::interprocess::named_mutex> lock(mutex, boost::interprocess::try_to_lock);
     }
-  } catch(boost::interprocess::interprocess_exception& e) {
-    LOG_ERROR_STREAM(<< "boost exception thrown at shared memory creation - " << getMemoryName() << ": " << e.what());
-    throw e;
+  } catch(boost::interprocess::interprocess_exception& exception) {
+    LOG_ERROR(fmt::format("boost exception thrown at shared memory creation - {}: {}", getMemoryName(), exception.what()));
+    throw exception;
   }
 }
 
@@ -148,14 +150,14 @@ SharedMemory::~SharedMemory() {
   try {
     if(m_mode == CREATE_AND_DELETE) {
       SharedMemoryGarbageCollector* collector = SharedMemoryGarbageCollector::getInstance();
-      if(collector) {
+      if(collector != nullptr) {
         collector->unregisterSharedMemory(m_name);
       }
 
       deleteSharedMemory(m_name);
     }
-  } catch(boost::interprocess::interprocess_exception& e) {
-    LOG_ERROR_STREAM(<< "boost exception thrown at shared memory destruction - " << getMemoryName() << ": " << e.what());
+  } catch(boost::interprocess::interprocess_exception& exception) {
+    LOG_ERROR(fmt::format("boost exception thrown at shared memory destruction - {}: {}", getMemoryName(), exception.what()));
   }
 }
 
@@ -163,24 +165,26 @@ bool SharedMemory::checkSharedMutex() {
   try {
     boost::interprocess::named_mutex& mutex = getMutex();
 
-    for(size_t i = 0; i < 5; i++) {
+    constexpr uint32_t TryCount = 5;
+    for(size_t i = 0; i < TryCount; i++) {
       {
         // try to get ownership of the mutex a couple times
         boost::interprocess::scoped_lock<boost::interprocess::named_mutex> lock(mutex, boost::interprocess::try_to_lock);
-        if(lock.owns())    // mutex successfully locked
-        {
+        if(lock.owns()) {
+          // mutex successfully locked
           return true;
         }
       }
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(250));
+      constexpr auto SleepTimeInMs = 250;
+      std::this_thread::sleep_for(std::chrono::milliseconds(SleepTimeInMs));
     }
 
     // locking kept failing, try to get ownership
     boost::interprocess::scoped_lock<boost::interprocess::named_mutex> lock(mutex, boost::interprocess::accept_ownership);
     return true;
-  } catch(boost::interprocess::interprocess_exception& e) {
-    LOG_ERROR_STREAM(<< "boost exception thrown at shared mutex check: " << e.what());
+  } catch(boost::interprocess::interprocess_exception& exception) {
+    LOG_ERROR(fmt::format("boost exception thrown at shared mutex check: {}", exception.what()));
   }
 
   return false;
@@ -199,7 +203,7 @@ boost::interprocess::named_mutex& SharedMemory::getMutex() {
     m_mutex = std::make_shared<boost::interprocess::named_mutex>(boost::interprocess::open_only, getMutexName().c_str());
   }
 
-  return *m_mutex.get();
+  return *m_mutex;
 }
 
 size_t SharedMemory::getInitialMemorySize() const {

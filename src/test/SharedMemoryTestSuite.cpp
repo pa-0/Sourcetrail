@@ -18,9 +18,9 @@ TEST(SharedMemory, goodCase) {
   std::vector<std::shared_ptr<std::thread>> threads;
   for(unsigned int i = 0; i < 4; i++) {
     threads.push_back(std::make_shared<std::thread>([]() {
-      SharedMemory memory("memory", 0, SharedMemory::OPEN_ONLY);
+      SharedMemory memory_("memory", 0, SharedMemory::OPEN_ONLY);
 
-      SharedMemory::ScopedAccess access(&memory);
+      SharedMemory::ScopedAccess access(&memory_);
 
       if(access.getMemorySize() < 5000) {
         access.growMemory(5000 - access.getMemorySize());
@@ -29,17 +29,16 @@ TEST(SharedMemory, goodCase) {
       int* count = access.accessValue<int>("count");
       *count += 1;
 
-      SharedMemory::String* str = access.accessValueWithAllocator<SharedMemory::String>("string");
+      auto* str = access.accessValueWithAllocator<SharedMemory::String>("string");
       str->append("hi");
 
-      SharedMemory::Vector<int>* nums = access.accessValueWithAllocator<SharedMemory::Vector<int>>("nums");
+      auto* nums = access.accessValueWithAllocator<SharedMemory::Vector<int>>("nums");
       nums->push_back(static_cast<int>(nums->size()));
 
-      SharedMemory::Vector<SharedMemory::String>* strings =
-          access.accessValueWithAllocator<SharedMemory::Vector<SharedMemory::String>>("strings");
+      auto* strings = access.accessValueWithAllocator<SharedMemory::Vector<SharedMemory::String>>("strings");
       strings->push_back(SharedMemory::String("ho", access.getAllocator()));
 
-      SharedMemory::Map<int, int>* vals = access.accessValueWithAllocator<SharedMemory::Map<int, int>>("vals");
+      auto* vals = access.accessValueWithAllocator<SharedMemory::Map<int, int>>("vals");
       vals->emplace(static_cast<int>(vals->size()), static_cast<int>(vals->size() * vals->size()));
     }));
   }
@@ -52,30 +51,30 @@ TEST(SharedMemory, goodCase) {
   {
     SharedMemory::ScopedAccess access(&memory);
 
-    EXPECT_TRUE(access.getMemorySize() == 5000);
-    EXPECT_TRUE(*access.accessValue<int>("count") == 4);
+    EXPECT_EQ(5000, access.getMemorySize());
+    EXPECT_EQ(4, *access.accessValue<int>("count"));
     const std::string value = access.accessValueWithAllocator<SharedMemory::String>("string")->c_str();
     EXPECT_TRUE(value == "hihihihi");
 
     auto* nums = access.accessValueWithAllocator<SharedMemory::Vector<int>>("nums");
-    EXPECT_TRUE(nums->size() == 4);
+    EXPECT_EQ(4, nums->size());
     for(int i : *nums) {
       EXPECT_TRUE(i == i);
     }
 
     auto* strings = access.accessValueWithAllocator<SharedMemory::Vector<SharedMemory::String>>("strings");
-    EXPECT_TRUE(strings->size() == 4);
+    EXPECT_EQ(4, strings->size());
     for(SharedMemory::String& str : *strings) {
       EXPECT_TRUE(str == "ho");
     }
 
     auto* vals = access.accessValueWithAllocator<SharedMemory::Map<int, int>>("vals");
-    EXPECT_TRUE(vals->size() == 4);
+    EXPECT_EQ(4, vals->size());
 
     size_t i = 0;
     for(auto val : *vals) {
-      EXPECT_TRUE(val.first == i);
-      EXPECT_TRUE(val.second == i * i);
+      EXPECT_EQ(i, val.first);
+      EXPECT_EQ(i * i, val.second);
       i++;
     }
   }

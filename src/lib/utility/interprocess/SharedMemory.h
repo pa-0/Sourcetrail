@@ -1,5 +1,4 @@
-#ifndef SHARED_MEMORY_H
-#define SHARED_MEMORY_H
+#pragma once
 
 #include <string>
 
@@ -42,14 +41,14 @@ public:
 
   class ScopedAccess : public boost::interprocess::scoped_lock<boost::interprocess::named_mutex> {
   public:
-    ScopedAccess(SharedMemory* memory);
+    explicit ScopedAccess(SharedMemory* memory);
     ~ScopedAccess();
 
     Allocator* getAllocator();
 
-    size_t getMemorySize() const;
-    size_t getFreeMemorySize() const;
-    size_t getUsedMemorySize() const;
+    [[nodiscard]] size_t getMemorySize() const;
+    [[nodiscard]] size_t getFreeMemorySize() const;
+    [[nodiscard]] size_t getUsedMemorySize() const;
 
     void growMemory(size_t size);
     void shrinkToFitMemory();
@@ -79,7 +78,7 @@ public:
       m_memory.destroy<T>(key.c_str());
     }
 
-    std::string logString() const;
+    [[nodiscard]] std::string logString() const;
 
   private:
     boost::interprocess::managed_shared_memory m_memory;
@@ -93,12 +92,12 @@ private:
   static const char* s_memoryNamePrefix;
   static const char* s_mutexNamePrefix;
 
-  std::string getMemoryName() const;
-  std::string getMutexName() const;
+  [[nodiscard]] std::string getMemoryName() const;
+  [[nodiscard]] std::string getMutexName() const;
 
   boost::interprocess::named_mutex& getMutex();
 
-  size_t getInitialMemorySize() const;
+  [[nodiscard]] size_t getInitialMemorySize() const;
 
   std::shared_ptr<boost::interprocess::named_mutex> m_mutex;
   std::string m_name;
@@ -106,5 +105,3 @@ private:
 
   size_t m_initialMemorySize;
 };
-
-#endif    // SHARED_MEMORY_H
