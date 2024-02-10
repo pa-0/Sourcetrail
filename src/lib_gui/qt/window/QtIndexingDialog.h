@@ -1,17 +1,11 @@
-#ifndef QT_INDEXING_DIALOG_H
-#define QT_INDEXING_DIALOG_H
-
-#include <QHBoxLayout>
-#include <QResizeEvent>
-#include <QSizeGrip>
-#include <QWidget>
+#pragma once
 
 #include "QtWindowBase.h"
-#include "QtWindowStack.h"
 
 class QLabel;
 class QPushButton;
 class QVBoxLayout;
+class QBoxLayout;
 
 class QtIndexingDialog : public QtWindowBase {
   Q_OBJECT
@@ -24,8 +18,8 @@ protected:
   static QLabel* createFlagLabel(QWidget* parent);
 
 public:
-  QtIndexingDialog(bool isSubWindow, QWidget* parent = nullptr);
-  QSize sizeHint() const override = 0;
+  explicit QtIndexingDialog(bool isSubWindow, QWidget* parent = nullptr);
+  [[nodiscard]] QSize sizeHint() const override = 0;
 
 signals:
   void finished();
@@ -39,5 +33,3 @@ protected:
 
   QVBoxLayout* m_layout;
 };
-
-#endif    // QT_INDEXING_DIALOG_H

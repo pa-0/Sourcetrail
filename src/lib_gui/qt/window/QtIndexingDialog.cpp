@@ -1,20 +1,21 @@
 #include "QtIndexingDialog.h"
 
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QResizeEvent>
 
-#include "MessageErrorsHelpMessage.h"
 #include "QtDeviceScaledPixmap.h"
 #include "QtHelpButton.h"
 #include "ResourcePaths.h"
 #include "utilityQt.h"
 
 QLabel* QtIndexingDialog::createTitleLabel(const QString& title, QBoxLayout* layout) {
-  QLabel* label = new QLabel(title);
+  auto* label = new QLabel(title);    // NOLINT(cppcoreguidelines-owning-memory)
   label->setObjectName(QStringLiteral("title"));
   label->setAlignment(Qt::AlignRight | Qt::AlignBottom);
 
-  if(layout) {
+  if(layout != nullptr) {
     layout->addWidget(label, 0, Qt::AlignRight);
   }
 
@@ -22,7 +23,7 @@ QLabel* QtIndexingDialog::createTitleLabel(const QString& title, QBoxLayout* lay
 }
 
 QLabel* QtIndexingDialog::createMessageLabel(QBoxLayout* layout) {
-  QLabel* label = new QLabel();
+  auto* label = new QLabel;    // NOLINT(cppcoreguidelines-owning-memory)
   label->setObjectName(QStringLiteral("message"));
   label->setAlignment(Qt::AlignRight);
   label->setWordWrap(true);
@@ -31,12 +32,12 @@ QLabel* QtIndexingDialog::createMessageLabel(QBoxLayout* layout) {
 }
 
 QWidget* QtIndexingDialog::createErrorWidget(QBoxLayout* layout) {
-  QWidget* errorWidget = new QWidget();
-  QHBoxLayout* errorLayout = new QHBoxLayout(errorWidget);
+  auto* errorWidget = new QWidget;                     // NOLINT(cppcoreguidelines-owning-memory)
+  auto* errorLayout = new QHBoxLayout(errorWidget);    // NOLINT(cppcoreguidelines-owning-memory)
   errorLayout->setContentsMargins(0, 0, 0, 0);
   errorLayout->setSpacing(5);
 
-  QPushButton* errorCount = new QPushButton();
+  auto* errorCount = new QPushButton();    // NOLINT(cppcoreguidelines-owning-memory)
   errorCount->setObjectName(QStringLiteral("errorCount"));
   errorCount->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
 
@@ -44,7 +45,7 @@ QWidget* QtIndexingDialog::createErrorWidget(QBoxLayout* layout) {
       QPixmap(QString::fromStdWString(ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/error.png").wstr())));
   errorLayout->addWidget(errorCount);
 
-  QtHelpButton* helpButton = new QtHelpButton(QtHelpButtonInfo(createErrorHelpButtonInfo()));
+  auto* helpButton = new QtHelpButton(QtHelpButtonInfo(createErrorHelpButtonInfo()));    // NOLINT(cppcoreguidelines-owning-memory)
   helpButton->setColor(Qt::white);
   errorLayout->addWidget(helpButton);
 
@@ -58,7 +59,7 @@ QLabel* QtIndexingDialog::createFlagLabel(QWidget* parent) {
       QString::fromStdWString(ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/flag.png").wstr()));
   flag.scaleToWidth(120);
 
-  QLabel* flagLabel = new QLabel(parent);
+  auto* flagLabel = new QLabel(parent);    // NOLINT(cppcoreguidelines-owning-memory)
   flagLabel->setPixmap(flag.pixmap());
   flagLabel->resize(static_cast<int>(flag.width()), static_cast<int>(flag.height()));
   flagLabel->move(15, 75);
@@ -68,7 +69,8 @@ QLabel* QtIndexingDialog::createFlagLabel(QWidget* parent) {
 }
 
 
-QtIndexingDialog::QtIndexingDialog(bool isSubWindow, QWidget* parent) : QtWindowBase(isSubWindow, parent) {
+QtIndexingDialog::QtIndexingDialog(bool isSubWindow, QWidget* parent)
+    : QtWindowBase(isSubWindow, parent), m_layout(new QVBoxLayout(this)) {
   m_window->setStyleSheet(m_window->styleSheet() +
                           QStringLiteral("#window { "
                                          "background: #2E3C86;"
@@ -80,7 +82,6 @@ QtIndexingDialog::QtIndexingDialog(bool isSubWindow, QWidget* parent) : QtWindow
                                                                                          L"indexing_dialog.css")))
                     .c_str());
 
-  m_layout = new QVBoxLayout(this);
   m_layout->setContentsMargins(20, 20, 20, 0);
   m_layout->setSpacing(3);
 
