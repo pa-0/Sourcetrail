@@ -29,8 +29,8 @@ public:
   void clearComponents();
   void refreshViews();
 
-  View* getView(const std::string& name) const;
-  std::shared_ptr<DialogView> getDialogView(DialogView::UseCase useCase) const;
+  [[nodiscard]] View* getView(const std::string& name) const;
+  [[nodiscard]] std::shared_ptr<DialogView> getDialogView(DialogView::UseCase useCase) const;
 
 private:
   ComponentFactory m_componentFactory;

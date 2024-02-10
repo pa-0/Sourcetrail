@@ -1,7 +1,8 @@
 #include "ComponentManager.h"
 
+#include <fmt/format.h>
+
 #include "BookmarkButtonsView.h"
-#include "BookmarkView.h"
 #include "CodeView.h"
 #include "CompositeView.h"
 #include "Controller.h"
@@ -18,8 +19,9 @@
 namespace {
 template <class Container>
 void reverseErase(Container& container) {
-  while(!container.empty())
+  while(!container.empty()) {
     container.pop_back();
+  }
 }
 }    // namespace
 
@@ -140,9 +142,7 @@ void ComponentManager::teardownTab(ScreenSearchSender* screenSearchSender) {
 
 void ComponentManager::clearComponents() {
   for(const auto& component : m_components) {
-    Controller* controller = component->getController<Controller>();
-
-    if(controller) {
+    if(auto* controller = component->getController<Controller>(); controller != nullptr) {
       controller->clear();
     }
   }
@@ -183,7 +183,7 @@ View* ComponentManager::getView(const std::string& name) const {
 std::shared_ptr<DialogView> ComponentManager::getDialogView(DialogView::UseCase useCase) const {
   auto iterator = m_dialogViews.find(useCase);
   if(iterator == m_dialogViews.end()) {
-    LOG_ERROR_STREAM(<< "No DialogView available for useCase " << int(useCase));
+    LOG_ERROR(fmt::format("No DialogView available for useCase ", int(useCase)));
     return nullptr;
   }
 
