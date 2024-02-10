@@ -1,5 +1,4 @@
-#ifndef QT_BOOKMARK_H
-#define QT_BOOKMARK_H
+#pragma once
 
 #include <QFrame>
 #include <QLabel>
@@ -16,24 +15,24 @@ class QtBookmark : public QFrame {
   Q_OBJECT
 
 public:
-  QtBookmark(ControllerProxy<BookmarkController>* controllerProxy);
-  virtual ~QtBookmark();
+  explicit QtBookmark(ControllerProxy<BookmarkController>* controllerProxy);
+  ~QtBookmark() override;
 
-  void setBookmark(const std::shared_ptr<Bookmark> bookmark);
-  Id getBookmarkId() const;
+  void setBookmark(std::shared_ptr<Bookmark> bookmark);
+  [[nodiscard]] Id getBookmarkId() const;
 
-  QTreeWidgetItem* getTreeWidgetItem() const;
+  [[nodiscard]] QTreeWidgetItem* getTreeWidgetItem() const;
   void setTreeWidgetItem(QTreeWidgetItem* treeWidgetItem);
 
 public slots:
   void commentToggled();
 
 protected:
-  virtual void resizeEvent(QResizeEvent* event) override;
-  virtual void showEvent(QShowEvent* event) override;
+  void resizeEvent(QResizeEvent* event) override;
+  void showEvent(QShowEvent* event) override;
 
-  virtual void enterEvent(QEvent* event) override;
-  virtual void leaveEvent(QEvent* event) override;
+  void enterEvent(QEvent* event) override;
+  void leaveEvent(QEvent* event) override;
 
 private slots:
   void activateClicked();
@@ -44,7 +43,7 @@ private slots:
 private:
   void updateArrow();
 
-  std::string getDateString() const;
+  [[nodiscard]] std::string getDateString() const;
 
   ControllerProxy<BookmarkController>* m_controllerProxy;
 
@@ -68,5 +67,3 @@ private:
 
   bool m_ignoreNextResize;
 };
-
-#endif    // QT_BOOKMARK_H

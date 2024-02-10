@@ -11,30 +11,34 @@
 
 QtBookmark::QtBookmark(ControllerProxy<BookmarkController>* controllerProxy)
     : m_controllerProxy(controllerProxy)
+    , m_activateButton(new QPushButton)
+    , m_editButton(new QPushButton)
+    , m_deleteButton(new QPushButton)
+    , m_toggleCommentButton(new QPushButton)
+    , m_comment(new QLabel(QLatin1String("")))
+    , m_dateLabel(new QLabel)
     , m_treeWidgetItem(nullptr)
     , m_arrowImageName(L"arrow_line_down.png")
     , m_hovered(false)
     , m_ignoreNextResize(false) {
   setObjectName(QStringLiteral("bookmark"));
 
-  QVBoxLayout* layout = new QVBoxLayout();
+  auto* layout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setSpacing(0);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setAlignment(Qt::AlignTop);
   setLayout(layout);
 
-  QHBoxLayout* buttonsLayout = new QHBoxLayout();
+  auto* buttonsLayout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   buttonsLayout->setSpacing(0);
   buttonsLayout->setContentsMargins(0, 0, 0, 0);
   buttonsLayout->setAlignment(Qt::AlignTop);
 
-  m_activateButton = new QPushButton();
   m_activateButton->setObjectName(QStringLiteral("activate_button"));
   m_activateButton->setToolTip(QStringLiteral("Activate bookmark"));
   m_activateButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
   buttonsLayout->addWidget(m_activateButton);
 
-  m_toggleCommentButton = new QPushButton();
   m_toggleCommentButton->setObjectName(QStringLiteral("comment_button"));
   m_toggleCommentButton->setToolTip(QStringLiteral("Show Comment"));
   m_toggleCommentButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
@@ -45,11 +49,9 @@ QtBookmark::QtBookmark(ControllerProxy<BookmarkController>* controllerProxy)
 
   buttonsLayout->addStretch();
 
-  m_dateLabel = new QLabel();
   m_dateLabel->setObjectName(QStringLiteral("date_label"));
   buttonsLayout->addWidget(m_dateLabel);
 
-  m_editButton = new QPushButton();
   m_editButton->setObjectName(QStringLiteral("edit_button"));
   m_editButton->setToolTip(QStringLiteral("Edit bookmark"));
   m_editButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
@@ -60,7 +62,6 @@ QtBookmark::QtBookmark(ControllerProxy<BookmarkController>* controllerProxy)
   m_editButton->hide();
   buttonsLayout->addWidget(m_editButton);
 
-  m_deleteButton = new QPushButton();
   m_deleteButton->setObjectName(QStringLiteral("delete_button"));
   m_deleteButton->setToolTip(QStringLiteral("Delete bookmark"));
   m_deleteButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
@@ -73,7 +74,6 @@ QtBookmark::QtBookmark(ControllerProxy<BookmarkController>* controllerProxy)
 
   layout->addLayout(buttonsLayout);
 
-  m_comment = new QLabel(QLatin1String(""));
   m_comment->setObjectName(QStringLiteral("bookmark_comment"));
   m_comment->setWordWrap(true);
   m_comment->hide();
@@ -85,15 +85,15 @@ QtBookmark::QtBookmark(ControllerProxy<BookmarkController>* controllerProxy)
   connect(m_toggleCommentButton, &QPushButton::clicked, this, &QtBookmark::commentToggled);
 }
 
-QtBookmark::~QtBookmark() {}
+QtBookmark::~QtBookmark() = default;
 
-void QtBookmark::setBookmark(const std::shared_ptr<Bookmark> bookmark) {
+void QtBookmark::setBookmark(std::shared_ptr<Bookmark> bookmark) {
   if(bookmark) {
-    m_bookmark = bookmark;
+    m_bookmark = std::move(bookmark);
 
     m_activateButton->setText(QString::fromStdWString(m_bookmark->getName()));
 
-    if(m_bookmark->isValid() == false) {
+    if(!m_bookmark->isValid()) {
       m_activateButton->setEnabled(false);
       m_editButton->setEnabled(false);
     }
@@ -128,7 +128,7 @@ void QtBookmark::commentToggled() {
 
   m_ignoreNextResize = true;
 
-  if(m_comment->isVisible() == false) {
+  if(!m_comment->isVisible()) {
     m_arrowImageName = L"arrow_line_up.png";
     m_comment->show();
     m_comment->setMinimumHeight(m_comment->heightForWidth(m_comment->width()));
@@ -140,7 +140,7 @@ void QtBookmark::commentToggled() {
   updateArrow();
 
   // forces the parent tree view to rescale
-  if(m_treeWidgetItem) {
+  if(m_treeWidgetItem != nullptr) {
     m_treeWidgetItem->setExpanded(false);
     m_treeWidgetItem->setExpanded(true);
   }
@@ -216,14 +216,14 @@ std::string QtBookmark::getDateString() const {
   TimeStamp creationDate = m_bookmark->getTimeStamp();
   TimeStamp now = TimeStamp::now();
 
-  size_t delta = now.deltaS(creationDate);
+  const auto delta = static_cast<double>(now.deltaS(creationDate));
 
-  if(delta < 3600.0f)    // less than an hour ago
+  if(delta < 3600.0)    // less than an hour ago
   {
-    result = std::to_string(int(delta / 60.0f)) + " minutes ago";
-  } else if(delta < (3600.0f * 6.0f))    // less than 6 hours ago
+    result = std::to_string(int(delta / 60.0)) + " minutes ago";
+  } else if(delta < (3600 * 6))    // less than 6 hours ago
   {
-    result = std::to_string(int(delta / 3600.0f)) + " hours ago";
+    result = std::to_string(int(delta / 3600.0)) + " hours ago";
   } else if(creationDate.isSameDay(now))    // today
   {
     result = "today";
