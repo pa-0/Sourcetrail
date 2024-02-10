@@ -1,18 +1,16 @@
 #pragma once
-// STL
 #include "LanguageType.h"
 #include "QtProjectWizardContent.h"
 #include "SourceGroupType.h"
 
-QT_FORWARD_DECLARE_CLASS(QButtonGroup);
-
+class QButtonGroup;
 class SolutionParserManager;
 
 class QtProjectWizardContentSelect : public QtProjectWizardContent {
   Q_OBJECT
 
 public:
-  QtProjectWizardContentSelect(QtProjectWizardWindow* window);
+  explicit QtProjectWizardContentSelect(QtProjectWizardWindow* window);
 
   // QtProjectWizardContent implementation
   void populate(QGridLayout* layout, int& row) override;

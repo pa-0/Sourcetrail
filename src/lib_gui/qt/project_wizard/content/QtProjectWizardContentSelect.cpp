@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QToolButton>
+#include <QVariant>
 
 #include "LanguageType.h"
 #include "QtFlowLayout.h"
@@ -21,7 +22,7 @@ QtProjectWizardContentSelect::QtProjectWizardContentSelect(QtProjectWizardWindow
 
 void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
   struct SourceGroupInfo {
-    SourceGroupInfo(SourceGroupType type_, bool recommended_ = false) : type(type_), recommended(recommended_) {}
+    explicit SourceGroupInfo(SourceGroupType type_, bool recommended_ = false) : type(type_), recommended(recommended_) {}
     const SourceGroupType type;
     const bool recommended;
   };
@@ -29,16 +30,16 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
   // define which kind of source groups are available for each language
   std::map<LanguageType, std::vector<SourceGroupInfo>> sourceGroupInfos;
 #if BUILD_CXX_LANGUAGE_PACKAGE
-  sourceGroupInfos[LANGUAGE_C].push_back(SourceGroupInfo(SOURCE_GROUP_CXX_CDB, true));
-  sourceGroupInfos[LANGUAGE_C].push_back(SourceGroupInfo(SOURCE_GROUP_CXX_VS));
-  sourceGroupInfos[LANGUAGE_C].push_back(SourceGroupInfo(SOURCE_GROUP_CXX_CODEBLOCKS));
-  sourceGroupInfos[LANGUAGE_C].push_back(SourceGroupInfo(SOURCE_GROUP_C_EMPTY));
-  sourceGroupInfos[LANGUAGE_CPP].push_back(SourceGroupInfo(SOURCE_GROUP_CXX_CDB, true));
-  sourceGroupInfos[LANGUAGE_CPP].push_back(SourceGroupInfo(SOURCE_GROUP_CXX_VS));
-  sourceGroupInfos[LANGUAGE_CPP].push_back(SourceGroupInfo(SOURCE_GROUP_CXX_CODEBLOCKS));
-  sourceGroupInfos[LANGUAGE_CPP].push_back(SourceGroupInfo(SOURCE_GROUP_CPP_EMPTY));
+  sourceGroupInfos[LANGUAGE_C].emplace_back(SOURCE_GROUP_CXX_CDB, true);
+  sourceGroupInfos[LANGUAGE_C].emplace_back(SOURCE_GROUP_CXX_VS);
+  sourceGroupInfos[LANGUAGE_C].emplace_back(SOURCE_GROUP_CXX_CODEBLOCKS);
+  sourceGroupInfos[LANGUAGE_C].emplace_back(SOURCE_GROUP_C_EMPTY);
+  sourceGroupInfos[LANGUAGE_CPP].emplace_back(SOURCE_GROUP_CXX_CDB, true);
+  sourceGroupInfos[LANGUAGE_CPP].emplace_back(SOURCE_GROUP_CXX_VS);
+  sourceGroupInfos[LANGUAGE_CPP].emplace_back(SOURCE_GROUP_CXX_CODEBLOCKS);
+  sourceGroupInfos[LANGUAGE_CPP].emplace_back(SOURCE_GROUP_CPP_EMPTY);
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
-  sourceGroupInfos[LANGUAGE_CUSTOM].push_back(SourceGroupInfo(SOURCE_GROUP_CUSTOM_COMMAND));
+  sourceGroupInfos[LANGUAGE_CUSTOM].emplace_back(SOURCE_GROUP_CUSTOM_COMMAND);
 
   // define which icons should be used for which kind of source group
 #if BUILD_CXX_LANGUAGE_PACKAGE
@@ -81,18 +82,18 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
       "custom language support to Sourcetrail.<br /><br />Current Database Version: " +
       std::to_string(SqliteIndexStorage::getStorageVersion());
 
-  QVBoxLayout* vlayout = new QVBoxLayout();
+  auto* vlayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   vlayout->setContentsMargins(0, 10, 0, 0);
   vlayout->setSpacing(10);
 
-  m_languages = new QButtonGroup();
-  for(auto& it : sourceGroupInfos) {
-    QPushButton* b = new QPushButton(languageTypeToString(it.first).c_str(), this);
-    b->setObjectName(QStringLiteral("menuButton"));
-    b->setCheckable(true);
-    b->setProperty("language_type", it.first);
-    m_languages->addButton(b);
-    vlayout->addWidget(b);
+  m_languages = new QButtonGroup;    // NOLINT(cppcoreguidelines-owning-memory)
+  for(auto& soureGroupItem : sourceGroupInfos) {
+    auto* button = new QPushButton(languageTypeToString(soureGroupItem.first).c_str(), this);
+    button->setObjectName(QStringLiteral("menuButton"));
+    button->setCheckable(true);
+    button->setProperty("language_type", soureGroupItem.first);
+    m_languages->addButton(button);
+    vlayout->addWidget(button);
   }
 
   vlayout->addStretch();
@@ -109,17 +110,17 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
             }
 
             bool hasRecommended = false;
-            for(auto& it : m_buttons) {
-              it.second->setExclusive(false);
-              for(QAbstractButton* abstractButton : it.second->buttons()) {
+            for(auto& [languageType, buttonGroup] : m_buttons) {
+              buttonGroup->setExclusive(false);
+              for(QAbstractButton* abstractButton : buttonGroup->buttons()) {
                 abstractButton->setChecked(false);
-                abstractButton->setVisible(it.first == selectedLanguage);
+                abstractButton->setVisible(languageType == selectedLanguage);
 
-                if(it.first == selectedLanguage) {
+                if(languageType == selectedLanguage) {
                   hasRecommended = hasRecommended | abstractButton->property("recommended").toBool();
                 }
               }
-              it.second->setExclusive(true);
+              buttonGroup->setExclusive(true);
             }
 
             m_window->setNextEnabled(false);
@@ -128,10 +129,10 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
             m_description->setText(hasRecommended ? QStringLiteral("<b>* recommended</b>") : QLatin1String(""));
           });
 
-  QtFlowLayout* flayout = new QtFlowLayout(10, 0, 0);
+  auto* flayout = new QtFlowLayout(10, 0, 0);    // NOLINT(cppcoreguidelines-owning-memory)
 
   for(auto& languageIt : sourceGroupInfos) {
-    QButtonGroup* sourceGroupButtons = new QButtonGroup(this);
+    auto* sourceGroupButtons = new QButtonGroup(this);    // NOLINT(cppcoreguidelines-owning-memory)
 
     for(auto& sourceGroupIt : languageIt.second) {
       std::string name = sourceGroupTypeToProjectSetupString(sourceGroupIt.type);
@@ -139,27 +140,27 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
         name += "*";
       }
 
-      QToolButton* b = createSourceGroupButton(
+      QToolButton* toolButton = createSourceGroupButton(
           utility::insertLineBreaksAtBlankSpaces(name, 15).c_str(),
           QString::fromStdWString(ResourcePaths::getGuiDirectoryPath()
                                       .concatenate(L"icon/" + m_sourceGroupTypeIconName[sourceGroupIt.type] + L".png")
                                       .wstr()));
 
       if(sourceGroupIt.recommended) {
-        b->setStyleSheet(QStringLiteral("font-weight: bold"));
+        toolButton->setStyleSheet(QStringLiteral("font-weight: bold"));
       }
 
-      b->setProperty("source_group_type", int(sourceGroupIt.type));
-      b->setProperty("recommended", sourceGroupIt.recommended);
-      sourceGroupButtons->addButton(b);
-      flayout->addWidget(b);
+      toolButton->setProperty("source_group_type", int(sourceGroupIt.type));
+      toolButton->setProperty("recommended", sourceGroupIt.recommended);
+      sourceGroupButtons->addButton(toolButton);
+      flayout->addWidget(toolButton);
     }
 
     m_buttons[languageIt.first] = sourceGroupButtons;
   }
 
-  for(auto& it : m_buttons) {
-    connect(it.second,
+  for(auto& button : m_buttons) {
+    connect(button.second,
             static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked),
             [this](QAbstractButton* button) {
               SourceGroupType selectedType = SOURCE_GROUP_UNKNOWN;
@@ -175,16 +176,16 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
             });
   }
 
-  QWidget* container = new QWidget();
-  QVBoxLayout* containerLayout = new QVBoxLayout();
+  auto* container = new QWidget;              // NOLINT(cppcoreguidelines-owning-memory)
+  auto* containerLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   containerLayout->setContentsMargins(0, 0, 0, 0);
 
-  QFrame* groupContainer = new QFrame();
+  QFrame* groupContainer = new QFrame;    // NOLINT(cppcoreguidelines-owning-memory)
   groupContainer->setObjectName(QStringLiteral("sourceGroupContainer"));
   groupContainer->setLayout(flayout);
   containerLayout->addWidget(groupContainer, 0);
 
-  m_description = new QLabel(QStringLiteral(" \n \n"));
+  m_description = new QLabel(QStringLiteral(" \n \n"));    // NOLINT(cppcoreguidelines-owning-memory)
   m_description->setWordWrap(true);
   m_description->setOpenExternalLinks(true);
   m_description->setObjectName(QStringLiteral("sourceGroupDescription"));
@@ -195,7 +196,7 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
   container->setLayout(containerLayout);
   layout->addWidget(container, 0, QtProjectWizardWindow::BACK_COL);
 
-  m_title = new QLabel(QStringLiteral("Source Group Types"));
+  m_title = new QLabel(QStringLiteral("Source Group Types"));    // NOLINT(cppcoreguidelines-owning-memory)
   m_title->setObjectName(QStringLiteral("sourceGroupTitle"));
 
   layout->addWidget(m_title, 0, QtProjectWizardWindow::BACK_COL, Qt::AlignLeft | Qt::AlignTop);
@@ -209,12 +210,12 @@ void QtProjectWizardContentSelect::populate(QGridLayout* layout, int& /*row*/) {
 }
 
 void QtProjectWizardContentSelect::save() {
-  SourceGroupType selectedType;
+  SourceGroupType selectedType = SOURCE_GROUP_UNKNOWN;
 
-  for(auto& it : m_buttons) {
-    if(QAbstractButton* b = it.second->checkedButton()) {
+  for(const auto& [languageType, buttonGroup] : m_buttons) {
+    if(QAbstractButton* button = buttonGroup->checkedButton()) {
       bool ok = false;
-      int selectedTypeInt = b->property("source_group_type").toInt(&ok);
+      int selectedTypeInt = button->property("source_group_type").toInt(&ok);
       if(ok) {
         selectedType = SourceGroupType(selectedTypeInt);
         break;
@@ -227,8 +228,8 @@ void QtProjectWizardContentSelect::save() {
 bool QtProjectWizardContentSelect::check() {
   bool sourceGroupChosen = false;
 
-  for(auto& it : m_buttons) {
-    if(it.second->checkedId() != -1) {
+  for(auto& button : m_buttons) {
+    if(button.second->checkedId() != -1) {
       sourceGroupChosen = true;
       break;
     }
