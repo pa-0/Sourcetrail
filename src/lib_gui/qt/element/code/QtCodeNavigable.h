@@ -1,5 +1,4 @@
-#ifndef QT_CODE_NAVIGABLE_H
-#define QT_CODE_NAVIGABLE_H
+#pragma once
 
 #include <set>
 
@@ -49,5 +48,3 @@ protected:
 
   QRect getFocusRectForWidget(const QWidget* childWidget, const QWidget* parentWidget) const;
 };
-
-#endif    // QT_CODE_NAVIGABLE_H

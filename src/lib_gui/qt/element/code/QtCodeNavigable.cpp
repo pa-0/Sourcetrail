@@ -6,12 +6,12 @@
 
 #include "ApplicationSettings.h"
 
-QtCodeNavigable::~QtCodeNavigable() {}
+QtCodeNavigable::~QtCodeNavigable() = default;
 
 void QtCodeNavigable::ensureWidgetVisibleAnimated(
     const QWidget* parentWidget, const QWidget* childWidget, const QRectF& rect, bool animated, CodeScrollParams::Target target) {
   QAbstractScrollArea* area = getScrollArea();
-  if(!area || !parentWidget->isAncestorOf(childWidget)) {
+  if((area == nullptr) || !parentWidget->isAncestorOf(childWidget)) {
     return;
   }
 
@@ -60,9 +60,9 @@ void QtCodeNavigable::ensureWidgetVisibleAnimated(
   }
 
   QScrollBar* scrollBar = area->verticalScrollBar();
-  if(scrollBar && value) {
+  if((scrollBar != nullptr) && (value != 0)) {
     if(animated && ApplicationSettings::getInstance()->getUseAnimations() && area->isVisible()) {
-      QPropertyAnimation* anim = new QPropertyAnimation(scrollBar, "value");
+      auto* anim = new QPropertyAnimation(scrollBar, "value");
       anim->setDuration(300);
       anim->setStartValue(scrollBar->value());
       anim->setEndValue(scrollBar->value() + value);
@@ -76,7 +76,7 @@ void QtCodeNavigable::ensureWidgetVisibleAnimated(
 
 void QtCodeNavigable::ensurePercentVisibleAnimated(double percentA, double percentB, bool animated, CodeScrollParams::Target target) {
   QAbstractScrollArea* area = getScrollArea();
-  if(!area) {
+  if(area == nullptr) {
     return;
   }
 
@@ -92,7 +92,7 @@ void QtCodeNavigable::ensurePercentVisibleAnimated(double percentA, double perce
 
   const int visibleY = static_cast<int>(double(scrollBar->value()) / scrollFactor);
   int scrollY = static_cast<int>(totalHeight * percentA);
-  const int rectHeight = percentB ? static_cast<int>((totalHeight * percentB) - scrollY) : 0;
+  const int rectHeight = percentB != 0.0 ? static_cast<int>((totalHeight * percentB) - scrollY) : 0;
 
   if(rectHeight > visibleHeight) {
     target = CodeScrollParams::Target::TOP;
@@ -132,7 +132,7 @@ void QtCodeNavigable::ensurePercentVisibleAnimated(double percentA, double perce
   if(diff > 5 || diff < -5) {
     const int value = static_cast<int>(scrollY * scrollFactor);
     if(animated && ApplicationSettings::getInstance()->getUseAnimations() && area->isVisible()) {
-      QPropertyAnimation* anim = new QPropertyAnimation(scrollBar, "value");
+      auto* anim = new QPropertyAnimation(scrollBar, "value");
       anim->setDuration(300);
       anim->setStartValue(scrollBar->value());
       anim->setEndValue(value);
@@ -149,8 +149,8 @@ QRect QtCodeNavigable::getFocusRectForWidget(const QWidget* childWidget, const Q
   const QRect defaultMicroFocus = childWidget->QWidget::inputMethodQuery(Qt::ImCursorRectangle).toRect();
 
   if(microFocus != defaultMicroFocus) {
-    return QRect(childWidget->mapTo(parentWidget, microFocus.topLeft()), microFocus.size());
+    return {childWidget->mapTo(parentWidget, microFocus.topLeft()), microFocus.size()};
   } else {
-    return QRect(childWidget->mapTo(parentWidget, QPoint(0, 0)), childWidget->size());
+    return {childWidget->mapTo(parentWidget, QPoint(0, 0)), childWidget->size()};
   }
 }
