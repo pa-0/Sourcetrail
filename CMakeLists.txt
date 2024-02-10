@@ -87,7 +87,7 @@ if(NOT
   set_alternate_linker(${USE_ALTERNATE_LINKER})
 endif()
 
-include(cmake/CompilerWarnings.cmake)
+include(cmake/compiler_warnings.cmake)
 # Variables --------------------------------------------------------------------
 set(PROJECT_NAME Sourcetrail)
 
