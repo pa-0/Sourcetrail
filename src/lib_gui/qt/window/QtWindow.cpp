@@ -1,9 +1,12 @@
 #include "QtWindow.h"
-// Qt5
+
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QScrollArea>
-// internal
+#include <QSizeGrip>
+
 #include "QtDeviceScaledPixmap.h"
 #include "ResourcePaths.h"
 #include "utilityQt.h"
@@ -84,7 +87,7 @@ void QtWindow::updateTitle(const QString& title) {
 }
 
 std::wstring QtWindow::getTitle() const {
-  return (m_title != nullptr) ? L"" : m_title->text().toStdWString();
+  return (m_title == nullptr) ? L"" : m_title->text().toStdWString();
 }
 
 void QtWindow::updateSubTitle(const QString& subTitle) {

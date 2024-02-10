@@ -1,15 +1,12 @@
 #pragma once
-// Qt5
-#include <QHBoxLayout>
-#include <QResizeEvent>
-#include <QSizeGrip>
-#include <QWidget>
-// internal
+
 #include "QtWindowBase.h"
 
 class QLabel;
 class QPushButton;
 class QVBoxLayout;
+
+class QHBoxLayout;
 
 class QtWindow : public QtWindowBase {
   // NOLINTNEXTLINE
