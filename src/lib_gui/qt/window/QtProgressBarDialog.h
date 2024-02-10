@@ -1,28 +1,21 @@
-#ifndef QT_PROGRESS_BAR_DIALOG_H
-#define QT_PROGRESS_BAR_DIALOG_H
-
-#include <functional>
-
+#pragma once
 #include "QtIndexingDialog.h"
-#include "RefreshInfo.h"
 
-class QCheckBox;
 class QLabel;
-class QRadioButton;
 class QtProgressBar;
 
 class QtProgressBarDialog : public QtIndexingDialog {
   Q_OBJECT
 
 public:
-  QtProgressBarDialog(float topRatio, bool hideable, QWidget* parent = 0);
+  explicit QtProgressBarDialog(float topRatio, QWidget* parent = nullptr);
   void updateTitle(const QString& title);
-  std::wstring getTitle() const;
+  [[nodiscard]] std::wstring getTitle() const;
   void updateMessage(const QString& message);
-  std::wstring getMessage() const;
+  [[nodiscard]] std::wstring getMessage() const;
   void setUnknownProgress();
   void updateProgress(size_t progress);
-  size_t getProgress() const;
+  [[nodiscard]] size_t getProgress() const;
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
@@ -36,5 +29,3 @@ private:
   QLabel* m_percentLabel;
   QLabel* m_messageLabel;
 };
-
-#endif    // QT_PROGRESS_BAR_DIALOG_H
