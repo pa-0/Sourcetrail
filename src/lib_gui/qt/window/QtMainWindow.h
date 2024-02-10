@@ -1,11 +1,10 @@
 #pragma once
-// STL
 #include <memory>
 #include <utility>
 #include <vector>
-// Qt5
+
 #include <QMainWindow>
-// internal
+
 #include "FilePath.h"
 #include "QtWindowStack.h"
 #include "QtWindowsTaskbarButton.h"
@@ -19,7 +18,7 @@ class QtViewToggle : public QWidget {
   Q_OBJECT
 
 public:
-  QtViewToggle(View* view, QWidget* parent = nullptr);
+  explicit QtViewToggle(View* view, QWidget* parent = nullptr);
   void clear();
 
 public slots:
@@ -35,10 +34,10 @@ class MouseReleaseFilter : public QObject {
   Q_OBJECT
 
 public:
-  MouseReleaseFilter(QObject* parent);
+  explicit MouseReleaseFilter(QObject* parent);
 
 protected:
-  bool eventFilter(QObject* obj, QEvent* event);
+  bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
   size_t m_backButton;
@@ -60,7 +59,7 @@ public:
   void showView(View* view);
   void hideView(View* view);
 
-  View* findFloatingView(const std::string& name) const;
+  [[nodiscard]] View* findFloatingView(const std::string& name) const;
 
   void loadLayout();
   void saveLayout();
@@ -85,13 +84,13 @@ signals:
   void hideIndexingDialog();
 
 protected:
-  virtual void showEvent(QShowEvent* event) override;
-  virtual void keyPressEvent(QKeyEvent* event) override;
-  virtual void contextMenuEvent(QContextMenuEvent* event) override;
-  virtual void closeEvent(QCloseEvent* event) override;
-  virtual void resizeEvent(QResizeEvent* event) override;
+  void showEvent(QShowEvent* event) override;
+  void keyPressEvent(QKeyEvent* event) override;
+  void contextMenuEvent(QContextMenuEvent* event) override;
+  void closeEvent(QCloseEvent* event) override;
+  void resizeEvent(QResizeEvent* event) override;
 
-  virtual bool focusNextPrevChild(bool next) override;
+  bool focusNextPrevChild(bool next) override;
 
 public slots:
   void about();

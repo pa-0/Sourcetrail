@@ -1,10 +1,14 @@
 #include "QtMainWindow.h"
 
+#include <fmt/format.h>
+
 #include <QApplication>
 #include <QDesktopServices>
 #include <QDir>
 #include <QDockWidget>
+#include <QLayout>
 #include <QMenuBar>
+#include <QMouseEvent>
 #include <QSettings>
 #include <QTimer>
 #include <QToolBar>
@@ -145,7 +149,7 @@ QtMainWindow::~QtMainWindow() {
 void QtMainWindow::addView(View* view) {
   const QString name = QString::fromStdString(view->getName());
   if(name == QLatin1String("Tabs")) {
-    QToolBar* toolBar = new QToolBar();
+    auto* toolBar = new QToolBar;    // NOLINT(cppcoreguidelines-owning-memory)
     toolBar->setObjectName("Tool" + name);
     toolBar->setMovable(false);
     toolBar->setFloatable(false);
@@ -155,11 +159,11 @@ void QtMainWindow::addView(View* view) {
     return;
   }
 
-  QDockWidget* dock = new QDockWidget(name, this);
+  auto* dock = new QDockWidget(name, this);    // NOLINT(cppcoreguidelines-owning-memory)
   dock->setObjectName("Dock" + name);
 
-  dock->setWidget(new QWidget());
-  QVBoxLayout* layout = new QVBoxLayout(dock->widget());
+  dock->setWidget(new QWidget);                      // NOLINT(cppcoreguidelines-owning-memory)
+  auto* layout = new QVBoxLayout(dock->widget());    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(0);
   layout->addWidget(QtViewWidgetWrapper::getWidgetOfView(view));
@@ -171,20 +175,20 @@ void QtMainWindow::addView(View* view) {
 
   if(!m_showDockWidgetTitleBars) {
     dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    dock->setTitleBarWidget(new QWidget());
+    dock->setTitleBarWidget(new QWidget);    // NOLINT(cppcoreguidelines-owning-memory)
   }
 
   addDockWidget(Qt::TopDockWidgetArea, dock);
 
-  QtViewToggle* toggle = new QtViewToggle(view, this);
+  auto* toggle = new QtViewToggle(view, this);    // NOLINT(cppcoreguidelines-owning-memory)
   connect(dock, &QDockWidget::visibilityChanged, toggle, &QtViewToggle::toggledByUI);
 
-  QAction* action = new QAction(name + " Window", this);
+  auto* action = new QAction(name + " Window", this);    // NOLINT(cppcoreguidelines-owning-memory)
   action->setCheckable(true);
   connect(action, &QAction::triggered, toggle, &QtViewToggle::toggledByAction);
   m_viewMenu->insertAction(m_viewSeparator, action);
 
-  DockWidget dockWidget;
+  DockWidget dockWidget {};
   dockWidget.widget = dock;
   dockWidget.view = view;
   dockWidget.action = action;
@@ -207,8 +211,8 @@ void QtMainWindow::overrideView(View* view) {
     }
   }
 
-  if(!dock) {
-    LOG_ERROR_STREAM(<< "Couldn't find view to override: " << name.toStdString());
+  if(dock == nullptr) {
+    LOG_ERROR(fmt::format("Couldn't find view to override: {}", name.toStdString()));
     return;
   }
 
@@ -244,9 +248,9 @@ void QtMainWindow::hideView(View* view) {
 }
 
 View* QtMainWindow::findFloatingView(const std::string& name) const {
-  for(size_t i = 0; i < m_dockWidgets.size(); i++) {
-    if(m_dockWidgets[i].view->getName() == name && m_dockWidgets[i].widget->isFloating()) {
-      return m_dockWidgets[i].view;
+  for(const auto& m_dockWidget : m_dockWidgets) {
+    if(m_dockWidget.view->getName() == name && m_dockWidget.widget->isFloating()) {
+      return m_dockWidget.view;
     }
   }
 
@@ -302,7 +306,7 @@ void QtMainWindow::updateHistoryMenu(std::shared_ptr<MessageBase> message) {
 
   if(const auto* base = dynamic_cast<MessageActivateBase*>(message.get()); base != nullptr) {
     std::vector<SearchMatch> matches = base->getSearchMatches();
-    if(matches.size() && !matches[0].text.empty()) {
+    if(!matches.empty() && !matches[0].text.empty()) {
       std::vector<std::shared_ptr<MessageBase>> history = {message};
       std::set<SearchMatch> uniqueMatches = {matches[0]};
 
@@ -424,12 +428,12 @@ bool QtMainWindow::focusNextPrevChild(bool /*next*/) {
 }
 
 void QtMainWindow::about() {
-  QtAbout* aboutWindow = createWindow<QtAbout>();
+  auto* aboutWindow = createWindow<QtAbout>();
   aboutWindow->setupAbout();
 }
 
 void QtMainWindow::openSettings() {
-  QtPreferencesWindow* window = createWindow<QtPreferencesWindow>();
+  auto* window = createWindow<QtPreferencesWindow>();
   window->setup();
 }
 
@@ -438,7 +442,7 @@ void QtMainWindow::showDocumentation() {
 }
 
 void QtMainWindow::showKeyboardShortcuts() {
-  QtKeyboardShortcuts* keyboardShortcutWindow = createWindow<QtKeyboardShortcuts>();
+  auto* keyboardShortcutWindow = createWindow<QtKeyboardShortcuts>();
   keyboardShortcutWindow->setup();
 }
 
@@ -455,7 +459,7 @@ void QtMainWindow::showBugtracker() {
 }
 
 void QtMainWindow::showLicenses() {
-  QtLicenseWindow* licenseWindow = createWindow<QtLicenseWindow>();
+  auto* licenseWindow = createWindow<QtLicenseWindow>();
   licenseWindow->setup();
 }
 
@@ -502,7 +506,7 @@ void QtMainWindow::hideStartScreen() {
 }
 
 void QtMainWindow::newProject() {
-  QtProjectWizard* wizard = createWindow<QtProjectWizard>();
+  auto* wizard = createWindow<QtProjectWizard>();
   wizard->newProject();
 }
 
@@ -528,7 +532,7 @@ void QtMainWindow::openProject() {
 void QtMainWindow::editProject() {
   std::shared_ptr<const Project> currentProject = Application::getInstance()->getCurrentProject();
   if(currentProject) {
-    QtProjectWizard* wizard = createWindow<QtProjectWizard>();
+    auto* wizard = createWindow<QtProjectWizard>();
 
     wizard->editProject(currentProject->getProjectSettingsFilePath());
   }
@@ -578,10 +582,10 @@ void QtMainWindow::overview() {
 }
 
 void QtMainWindow::closeWindow() {
-  QApplication* app = dynamic_cast<QApplication*>(QCoreApplication::instance());
+  auto* app = dynamic_cast<QApplication*>(QCoreApplication::instance());
 
   QWidget* activeWindow = app->activeWindow();
-  if(activeWindow) {
+  if(activeWindow != nullptr) {
     activeWindow->close();
   }
 }
@@ -635,8 +639,8 @@ void QtMainWindow::resetWindowLayout() {
 }
 
 void QtMainWindow::openRecentProject() {
-  QAction* action = qobject_cast<QAction*>(sender());
-  if(action) {
+  auto* action = qobject_cast<QAction*>(sender());
+  if(action != nullptr) {
     MessageLoadProject(FilePath(action->data().toString().toStdWString())).dispatch();
     m_windowStack.clearWindows();
   }
@@ -651,7 +655,7 @@ void QtMainWindow::updateRecentProjectsMenu() {
   for(size_t i = 0; i < recentProjects.size() && i < recentProjectsCount; ++i) {
     const FilePath& project = recentProjects[i];
     if(project.exists()) {
-      QAction* recentProject = new QAction(this);
+      auto* recentProject = new QAction(this);
       recentProject->setText(QString::fromStdWString(project.fileName()));
       recentProject->setData(QString::fromStdWString(project.wstr()));
       connect(recentProject, &QAction::triggered, this, &QtMainWindow::openRecentProject);
@@ -683,8 +687,8 @@ void QtMainWindow::showBookmarkBrowser() {
 }
 
 void QtMainWindow::openHistoryAction() {
-  QAction* action = qobject_cast<QAction*>(sender());
-  if(action) {
+  auto* action = qobject_cast<QAction*>(sender());
+  if(action != nullptr) {
     std::shared_ptr<MessageBase> m = m_history[action->data().toInt()];
     m->setSchedulerId(TabId::currentTab());
     m->setIsReplayed(false);
@@ -693,21 +697,21 @@ void QtMainWindow::openHistoryAction() {
 }
 
 void QtMainWindow::activateBookmarkAction() {
-  QAction* action = qobject_cast<QAction*>(sender());
-  if(action) {
+  auto* action = qobject_cast<QAction*>(sender());
+  if(action != nullptr) {
     std::shared_ptr<Bookmark> bookmark = m_bookmarks[action->data().toInt()];
     MessageBookmarkActivate(bookmark).dispatch();
   }
 }
 
 void QtMainWindow::setupProjectMenu() {
-  QMenu* menu = new QMenu(tr("&Project"), this);
+  auto* menu = new QMenu(tr("&Project"), this);
   menuBar()->addMenu(menu);
 
   menu->addAction(tr("&New Project..."), this, &QtMainWindow::newProject, QKeySequence::New);
   menu->addAction(tr("&Open Project..."), this, &QtMainWindow::openProject, QKeySequence::Open);
 
-  m_recentProjectsMenu = new QMenu(tr("Recent Projects"));
+  m_recentProjectsMenu = new QMenu(tr("Recent Projects"));    // NOLINT(cppcoreguidelines-owning-memory)
   menu->addMenu(m_recentProjectsMenu);
   updateRecentProjectsMenu();
 
@@ -721,7 +725,7 @@ void QtMainWindow::setupProjectMenu() {
 }
 
 void QtMainWindow::setupEditMenu() {
-  QMenu* menu = new QMenu(tr("&Edit"), this);
+  auto* menu = new QMenu(tr("&Edit"), this);    // NOLINT(cppcoreguidelines-owning-memory)
   menuBar()->addMenu(menu);
 
   menu->addAction(tr("&Refresh"), this, &QtMainWindow::refresh, QKeySequence::Refresh);
@@ -766,7 +770,7 @@ void QtMainWindow::setupEditMenu() {
 }
 
 void QtMainWindow::setupViewMenu() {
-  QMenu* menu = new QMenu(tr("&View"), this);
+  auto* menu = new QMenu(tr("&View"), this);    // NOLINT(cppcoreguidelines-owning-memory)
   menuBar()->addMenu(menu);
 
   menu->addAction(tr("New Tab"), this, &QtMainWindow::openTab, QKeySequence::AddTab);
@@ -784,7 +788,7 @@ void QtMainWindow::setupViewMenu() {
 
   menu->addAction(tr("Show Start Window"), this, &QtMainWindow::showStartScreen);
 
-  m_showTitleBarsAction = new QAction(QStringLiteral("Show Title Bars"), this);
+  m_showTitleBarsAction = new QAction(QStringLiteral("Show Title Bars"), this);    // NOLINT(cppcoreguidelines-owning-memory)
   m_showTitleBarsAction->setCheckable(true);
   m_showTitleBarsAction->setChecked(m_showDockWidgetTitleBars);
   connect(m_showTitleBarsAction, &QAction::triggered, this, &QtMainWindow::toggleShowDockWidgetTitleBars);
@@ -803,8 +807,8 @@ void QtMainWindow::setupViewMenu() {
 }
 
 void QtMainWindow::setupHistoryMenu() {
-  if(!m_historyMenu) {
-    m_historyMenu = new QMenu(tr("&History"), this);
+  if(m_historyMenu == nullptr) {
+    m_historyMenu = new QMenu(tr("&History"), this);    // NOLINT(cppcoreguidelines-owning-memory)
     menuBar()->addMenu(m_historyMenu);
   } else {
     m_historyMenu->clear();
@@ -815,20 +819,20 @@ void QtMainWindow::setupHistoryMenu() {
 
   m_historyMenu->addSeparator();
 
-  QAction* title = new QAction(tr("Recently Active Symbols"));
+  auto* title = new QAction(tr("Recently Active Symbols"));
   title->setEnabled(false);
   m_historyMenu->addAction(title);
 
   for(size_t i = 0; i < m_history.size(); i++) {
-    MessageActivateBase* msg = dynamic_cast<MessageActivateBase*>(m_history[i].get());
-    if(!msg) {
+    auto* msg = dynamic_cast<MessageActivateBase*>(m_history[i].get());
+    if(msg == nullptr) {
       continue;
     }
 
     const SearchMatch match = msg->getSearchMatches()[0];
     const std::wstring name = utility::elide(match.getFullName(), utility::ElideMode::RIGHT, 50);
 
-    QAction* action = new QAction();
+    auto* action = new QAction;    // NOLINT(cppcoreguidelines-owning-memory)
     action->setText(QString::fromStdWString(name));
     action->setData(QVariant(int(i)));
 
@@ -838,8 +842,8 @@ void QtMainWindow::setupHistoryMenu() {
 }
 
 void QtMainWindow::setupBookmarksMenu() {
-  if(!m_bookmarksMenu) {
-    m_bookmarksMenu = new QMenu(tr("&Bookmarks"), this);
+  if(m_bookmarksMenu == nullptr) {
+    m_bookmarksMenu = new QMenu(tr("&Bookmarks"), this);    // NOLINT(cppcoreguidelines-owning-memory)
     menuBar()->addMenu(m_bookmarksMenu);
   } else {
     m_bookmarksMenu->clear();
@@ -850,7 +854,7 @@ void QtMainWindow::setupBookmarksMenu() {
 
   m_bookmarksMenu->addSeparator();
 
-  QAction* title = new QAction(tr("Recent Bookmarks"));
+  auto* title = new QAction(tr("Recent Bookmarks"));    // NOLINT(cppcoreguidelines-owning-memory)
   title->setEnabled(false);
   m_bookmarksMenu->addAction(title);
 
@@ -858,7 +862,7 @@ void QtMainWindow::setupBookmarksMenu() {
     Bookmark* bookmark = m_bookmarks[i].get();
     std::wstring name = utility::elide(bookmark->getName(), utility::ElideMode::RIGHT, 50);
 
-    QAction* action = new QAction();
+    auto* action = new QAction;    // NOLINT(cppcoreguidelines-owning-memory)
     action->setText(QString::fromStdWString(name));
     action->setData(QVariant(int(i)));
 
@@ -868,7 +872,7 @@ void QtMainWindow::setupBookmarksMenu() {
 }
 
 void QtMainWindow::setupHelpMenu() {
-  QMenu* menu = new QMenu(tr("&Help"), this);
+  auto* menu = new QMenu(tr("&Help"), this);    // NOLINT(cppcoreguidelines-owning-memory)
   menuBar()->addMenu(menu);
 
   menu->addAction(tr("Keyboard Shortcuts"), this, &QtMainWindow::showKeyboardShortcuts);
@@ -894,19 +898,17 @@ QtMainWindow::DockWidget* QtMainWindow::getDockWidgetForView(View* view) {
       return &dock;
     }
 
-    const CompositeView* compositeView = dynamic_cast<const CompositeView*>(dock.view);
-    if(compositeView) {
-      for(const View* v : compositeView->getViews()) {
-        if(v == view) {
+    if(const auto* compositeView = dynamic_cast<const CompositeView*>(dock.view); compositeView != nullptr) {
+      for(const View* compositeV : compositeView->getViews()) {
+        if(compositeV == view) {
           return &dock;
         }
       }
     }
 
-    const TabbedView* tabbedView = dynamic_cast<const TabbedView*>(dock.view);
-    if(tabbedView) {
-      for(const View* v : tabbedView->getViews()) {
-        if(v == view) {
+    if(const auto* tabbedView = dynamic_cast<const TabbedView*>(dock.view); tabbedView != nullptr) {
+      for(const View* tabbedV : tabbedView->getViews()) {
+        if(tabbedV == view) {
           return &dock;
         }
       }
@@ -920,7 +922,7 @@ QtMainWindow::DockWidget* QtMainWindow::getDockWidgetForView(View* view) {
 void QtMainWindow::setShowDockWidgetTitleBars(bool showTitleBars) {
   m_showDockWidgetTitleBars = showTitleBars;
 
-  if(m_showTitleBarsAction) {
+  if(m_showTitleBarsAction != nullptr) {
     m_showTitleBarsAction->setChecked(showTitleBars);
   }
 
@@ -930,14 +932,14 @@ void QtMainWindow::setShowDockWidgetTitleBars(bool showTitleBars) {
       dock.widget->setTitleBarWidget(nullptr);
     } else {
       dock.widget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-      dock.widget->setTitleBarWidget(new QWidget());
+      dock.widget->setTitleBarWidget(new QWidget);    // NOLINT(cppcoreguidelines-owning-memory)
     }
   }
 }
 
 template <typename T>
 T* QtMainWindow::createWindow() {
-  T* pWindow = new T(this);
+  T* pWindow = new T(this);    // NOLINT(cppcoreguidelines-owning-memory)
 
   connect(pWindow, &QtWindow::canceled, &m_windowStack, &QtWindowStack::popWindow);
   connect(pWindow, &QtWindow::finished, &m_windowStack, &QtWindowStack::clearWindows);
