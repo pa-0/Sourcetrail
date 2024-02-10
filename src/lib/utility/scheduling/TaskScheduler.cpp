@@ -1,8 +1,8 @@
 #include "TaskScheduler.h"
-// STL
+
 #include <chrono>
 #include <thread>
-// internal
+
 #include "ScopedFunctor.h"
 #include "logging.h"
 
@@ -21,7 +21,7 @@ void TaskScheduler::pushTask(std::shared_ptr<Task> task) {
 void TaskScheduler::pushNextTask(std::shared_ptr<Task> task) {
   std::lock_guard<std::mutex> lock(m_tasksMutex);
 
-  if(m_taskRunners.size() == 0) {
+  if(m_taskRunners.empty()) {
     m_taskRunners.push_front(std::make_shared<TaskRunner>(task));
   } else {
     m_taskRunners.insert(m_taskRunners.begin() + 1, std::make_shared<TaskRunner>(task));
@@ -58,7 +58,8 @@ void TaskScheduler::startSchedulerLoop() {
       }
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(25));
+    constexpr auto SleepTimeForMs = 25;
+    std::this_thread::sleep_for(std::chrono::milliseconds(SleepTimeForMs));
   }
 
   {
@@ -88,7 +89,8 @@ void TaskScheduler::stopSchedulerLoop() {
       }
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(25));
+    constexpr auto SleepTimeForMs = 25;
+    std::this_thread::sleep_for(std::chrono::milliseconds(SleepTimeForMs));
   }
 }
 
@@ -99,7 +101,7 @@ bool TaskScheduler::loopIsRunning() const {
 
 bool TaskScheduler::hasTasksQueued() const {
   std::lock_guard<std::mutex> lock(m_tasksMutex);
-  return m_taskRunners.size();
+  return !m_taskRunners.empty();
 }
 
 void TaskScheduler::terminateRunningTasks() {
@@ -109,7 +111,7 @@ void TaskScheduler::terminateRunningTasks() {
 void TaskScheduler::processTasks() {
   std::lock_guard<std::mutex> lock(m_tasksMutex);
 
-  while(m_taskRunners.size()) {
+  while(!m_taskRunners.empty()) {
     std::shared_ptr<TaskRunner> runner = m_taskRunners.front();
     Task::TaskState state = Task::STATE_RUNNING;
 

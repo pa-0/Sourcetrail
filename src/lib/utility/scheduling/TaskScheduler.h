@@ -1,5 +1,4 @@
-#ifndef TASK_SCHEDULER_H
-#define TASK_SCHEDULER_H
+#pragma once
 
 #include <deque>
 #include <memory>
@@ -11,7 +10,7 @@
 
 class TaskScheduler {
 public:
-  TaskScheduler(Id schedulerId);
+  explicit TaskScheduler(Id schedulerId);
   ~TaskScheduler();
 
   void pushTask(std::shared_ptr<Task> task);
@@ -41,5 +40,3 @@ private:
   mutable std::mutex m_loopMutex;
   mutable std::mutex m_threadMutex;
 };
-
-#endif    // TASK_SCHEDULER_H

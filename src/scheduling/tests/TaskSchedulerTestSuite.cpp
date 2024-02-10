@@ -21,8 +21,8 @@ void executeTask(Task& task) {
 
 class TestTask : public Task {
 public:
-  TestTask(int* orderCountPtr, int updateCount, TaskState returnState = STATE_SUCCESS)
-      : orderCount(*orderCountPtr), updateCount(updateCount), returnState(returnState) {}
+  TestTask(int* orderCountPtr, int updateCount_, TaskState returnState_ = STATE_SUCCESS)
+      : orderCount(*orderCountPtr), updateCount(updateCount_), returnState(returnState_) {}
 
   void doEnter(std::shared_ptr<Blackboard> /*blackboard*/) override {
     enterCallOrder = ++orderCount;
