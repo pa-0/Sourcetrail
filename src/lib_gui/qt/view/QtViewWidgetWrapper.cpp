@@ -1,7 +1,7 @@
 #include "QtViewWidgetWrapper.h"
-// Qt5
+
 #include <QWidget>
-// internal
+
 #include "View.h"
 #include "logging.h"
 
@@ -28,7 +28,7 @@ QWidget* QtViewWidgetWrapper::getWidgetOfView(const View* pView) {
 QtViewWidgetWrapper::QtViewWidgetWrapper(QWidget* pWidget) : m_pWidget(pWidget) {}
 
 QtViewWidgetWrapper::~QtViewWidgetWrapper() {
-  if(m_pWidget != nullptr) {
+  if(m_pWidget == nullptr) {
     LOG_WARNING("Widget is nullptr.");
     return;
   }

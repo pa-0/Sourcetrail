@@ -1,11 +1,7 @@
 #pragma once
-// Qt5
-#include <qglobal.h>
-// internal
 #include "ViewWidgetWrapper.h"
 
-QT_FORWARD_DECLARE_CLASS(QWidget)
-
+class QWidget;
 class View;
 
 class QtViewWidgetWrapper : public ViewWidgetWrapper {
