@@ -1,5 +1,9 @@
 #include "QtProjectWizardContentGroup.h"
 
+#include <range/v3/algorithm/any_of.hpp>
+
+#include <QGridLayout>
+
 QtProjectWizardContentGroup::QtProjectWizardContentGroup(QtProjectWizardWindow* window) : QtProjectWizardContent(window) {}
 
 void QtProjectWizardContentGroup::addContent(QtProjectWizardContent* content) {
@@ -11,20 +15,14 @@ void QtProjectWizardContentGroup::addSpace() {
 }
 
 bool QtProjectWizardContentGroup::hasContents() const {
-  for(QtProjectWizardContent* content : m_contents) {
-    if(content) {
-      return true;
-    }
-  }
-
-  return false;
+  return ranges::cpp20::any_of(m_contents, [](QtProjectWizardContent* content) { return content != nullptr; });
 }
 
 void QtProjectWizardContentGroup::populate(QGridLayout* layout, int& row) {
   layout->setRowMinimumHeight(row++, 10);
 
   for(QtProjectWizardContent* content : m_contents) {
-    if(content) {
+    if(content != nullptr) {
       content->populate(layout, row);
     } else {
       layout->setRowMinimumHeight(row++, 15);
@@ -37,7 +35,7 @@ void QtProjectWizardContentGroup::populate(QGridLayout* layout, int& row) {
 
 void QtProjectWizardContentGroup::load() {
   for(QtProjectWizardContent* content : m_contents) {
-    if(content) {
+    if(content != nullptr) {
       content->load();
     }
   }
@@ -45,7 +43,7 @@ void QtProjectWizardContentGroup::load() {
 
 void QtProjectWizardContentGroup::save() {
   for(QtProjectWizardContent* content : m_contents) {
-    if(content) {
+    if(content != nullptr) {
       content->save();
     }
   }
@@ -53,7 +51,7 @@ void QtProjectWizardContentGroup::save() {
 
 void QtProjectWizardContentGroup::refresh() {
   for(QtProjectWizardContent* content : m_contents) {
-    if(content) {
+    if(content != nullptr) {
       content->refresh();
     }
   }
@@ -61,7 +59,7 @@ void QtProjectWizardContentGroup::refresh() {
 
 bool QtProjectWizardContentGroup::check() {
   for(QtProjectWizardContent* content : m_contents) {
-    if(content && !content->check()) {
+    if((content != nullptr) && !content->check()) {
       return false;
     }
   }
