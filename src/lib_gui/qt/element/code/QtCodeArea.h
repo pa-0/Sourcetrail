@@ -1,5 +1,4 @@
-#ifndef QT_CODE_AREA_H
-#define QT_CODE_AREA_H
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -23,19 +22,19 @@ public:
   MouseWheelOverScrollbarFilter();
 
 protected:
-  bool eventFilter(QObject* obj, QEvent* event);
+  bool eventFilter(QObject* obj, QEvent* event) override;
 };
 
 class QtLineNumberArea : public QWidget {
   Q_OBJECT
 public:
-  QtLineNumberArea(QtCodeArea* codeArea);
-  virtual ~QtLineNumberArea();
+  explicit QtLineNumberArea(QtCodeArea* codeArea);
+  ~QtLineNumberArea() override;
 
-  QSize sizeHint() const override;
+  [[nodiscard]] QSize sizeHint() const override;
 
 protected:
-  virtual void paintEvent(QPaintEvent* event) override;
+  void paintEvent(QPaintEvent* event) override;
 
 private:
   QtCodeArea* m_codeArea;
@@ -52,32 +51,32 @@ public:
              QtCodeNavigator* navigator,
              bool showLineNumbers,
              QWidget* parent = nullptr);
-  virtual ~QtCodeArea();
+  ~QtCodeArea() override;
 
-  virtual QSize sizeHint() const override;
+  [[nodiscard]] QSize sizeHint() const override;
 
   void lineNumberAreaPaintEvent(QPaintEvent* event);
-  int lineNumberDigits() const;
-  int lineNumberAreaWidth() const;
-  int lineHeight() const;
+  [[nodiscard]] int lineNumberDigits() const;
+  [[nodiscard]] int lineNumberAreaWidth() const;
+  [[nodiscard]] int lineHeight() const;
   void updateLineNumberAreaWidthForDigits(int digits);
 
-  void updateSourceLocations(std::shared_ptr<SourceLocationFile> locationFile);
+  void updateSourceLocations(const std::shared_ptr<SourceLocationFile>& locationFile);
   void updateContent();
 
   void setIsActiveFile(bool isActiveFile);
 
-  size_t getLineNumberForLocationId(Id locationId) const;
-  std::pair<size_t, size_t> getLineNumbersForLocationId(Id locationId) const;
-  size_t getColumnNumberForLocationId(Id locationId) const;
+  [[nodiscard]] size_t getLineNumberForLocationId(Id locationId) const;
+  [[nodiscard]] std::pair<size_t, size_t> getLineNumbersForLocationId(Id locationId) const;
+  [[nodiscard]] size_t getColumnNumberForLocationId(Id locationId) const;
 
-  Id getLocationIdOfFirstActiveLocation(Id tokenId) const;
-  Id getLocationIdOfFirstActiveScopeLocation(Id tokenId) const;
-  Id getLocationIdOfFirstHighlightedLocation() const;
+  [[nodiscard]] Id getLocationIdOfFirstActiveLocation(Id tokenId) const;
+  [[nodiscard]] Id getLocationIdOfFirstActiveScopeLocation(Id tokenId) const;
+  [[nodiscard]] Id getLocationIdOfFirstHighlightedLocation() const;
 
-  size_t getActiveLocationCount() const;
+  [[nodiscard]] size_t getActiveLocationCount() const;
 
-  QRectF getLineRectForLineNumber(size_t lineNumber) const;
+  [[nodiscard]] QRectF getLineRectForLineNumber(size_t lineNumber) const;
 
   void findScreenMatches(const std::wstring& query, std::vector<std::pair<QtCodeArea*, Id>>* screenMatches);
   void clearScreenMatches();
@@ -93,16 +92,16 @@ public:
   void copySelection();
 
 protected:
-  virtual void resizeEvent(QResizeEvent* event) override;
-  virtual void mouseReleaseEvent(QMouseEvent* event) override;
-  virtual void mousePressEvent(QMouseEvent* event) override;
-  virtual void mouseMoveEvent(QMouseEvent* event) override;
-  virtual void wheelEvent(QWheelEvent* event) override;
+  void resizeEvent(QResizeEvent* event) override;
+  void mouseReleaseEvent(QMouseEvent* event) override;
+  void mousePressEvent(QMouseEvent* event) override;
+  void mouseMoveEvent(QMouseEvent* event) override;
+  void wheelEvent(QWheelEvent* event) override;
 
-  virtual void contextMenuEvent(QContextMenuEvent* event) override;
+  void contextMenuEvent(QContextMenuEvent* event) override;
 
-  virtual void focusTokenIds(const std::vector<Id>& tokenIds) override;
-  virtual void defocusTokenIds(const std::vector<Id>& tokenIds) override;
+  void focusTokenIds(const std::vector<Id>& tokenIds) override;
+  void defocusTokenIds(const std::vector<Id>& tokenIds) override;
 
 private slots:
   void updateLineNumberAreaWidth(int newBlockCount = 0);
@@ -114,7 +113,7 @@ private:
   void clearSelection();
   void setNewTextCursor(const QTextCursor& cursor);
   void dragSelectedText();
-  bool isSelectionPosition(QPoint positionPoint) const;
+  [[nodiscard]] bool isSelectionPosition(QPoint positionPoint) const;
 
   void activateAnnotationsOrErrors(const std::vector<const Annotation*>& annotations, bool fromMouse);
   void focusAnnotation(const Annotation* annotation, bool updateTargetColumn, bool fromMouse);
@@ -144,5 +143,3 @@ private:
 
   QtScrollSpeedChangeListener m_scrollSpeedChangeListener;
 };
-
-#endif    // QT_CODE_AREA_H
