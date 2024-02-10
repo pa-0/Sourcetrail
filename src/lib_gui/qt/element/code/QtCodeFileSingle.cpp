@@ -14,29 +14,29 @@
 #include "QtCodeNavigator.h"
 #include "SourceLocationFile.h"
 #include "logging.h"
-#include "utilityQt.h"
 
-QtCodeFileSingle::QtCodeFileSingle(QtCodeNavigator* navigator, QWidget* /*parent*/) : m_navigator(navigator), m_area(nullptr) {
+QtCodeFileSingle::QtCodeFileSingle(QtCodeNavigator* navigator, QWidget* /*parent*/)
+    : m_navigator(navigator), m_areaWrapper(new QWidget()), m_titleBar(new QtCodeFileTitleBar(this, false, true)), m_area(nullptr) {
   setObjectName(QStringLiteral("code_container"));
 
-  setLayout(new QVBoxLayout(this));
+  setLayout(new QVBoxLayout(this));    // NOLINT(cppcoreguidelines-owning-memory)
   layout()->setContentsMargins(0, 0, 0, 0);
   layout()->setSpacing(0);
 
-  m_titleBar = new QtCodeFileTitleBar(this, false, true);
   m_titleBar->setObjectName(QStringLiteral("title_bar_single"));
   layout()->addWidget(m_titleBar);
 
   connect(m_titleBar, &QtCodeFileTitleBar::snippet, this, &QtCodeFileSingle::clickedSnippetButton);
 
-  m_areaWrapper = new QWidget();
   m_areaWrapper->setObjectName(QStringLiteral("code_file_single"));
   m_areaWrapper->setSizePolicy(m_areaWrapper->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding);
-  m_areaWrapper->setLayout(new QVBoxLayout());
+  m_areaWrapper->setLayout(new QVBoxLayout);    // NOLINT(cppcoreguidelines-owning-memory)
   m_areaWrapper->layout()->setContentsMargins(0, 0, 0, 0);
   m_areaWrapper->layout()->setSpacing(0);
   layout()->addWidget(m_areaWrapper);
 }
+
+QtCodeFileSingle::~QtCodeFileSingle() = default;
 
 void QtCodeFileSingle::clearFile() {
   setFileData(FileData());
@@ -45,8 +45,8 @@ void QtCodeFileSingle::clearFile() {
 void QtCodeFileSingle::clearCache() {
   clearFile();
 
-  for(auto& p : m_fileDatas) {
-    p.second.area->deleteLater();
+  for(auto& [filePath, fileData] : m_fileDatas) {
+    fileData.area->deleteLater();
   }
 
   m_fileDatas.clear();
@@ -64,7 +64,7 @@ bool QtCodeFileSingle::addFile(const CodeFileParams& params, bool useSingleFileC
   std::shared_ptr<SourceLocationFile> locationFile = params.fileParams->locationFile;
 
   FileData file = useSingleFileCache ? getFileData(locationFile->getFilePath()) : FileData();
-  if(file.area) {
+  if(file.area != nullptr) {
     if(file.area == m_area) {
       return false;
     }
@@ -93,6 +93,7 @@ bool QtCodeFileSingle::addFile(const CodeFileParams& params, bool useSingleFileC
     file.title = params.fileParams->title;
   }
 
+  // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
   file.area = new QtCodeArea(1, params.fileParams->code, locationFile, m_navigator, !params.fileParams->isOverview, this);
   connect(file.area->verticalScrollBar(), &QScrollBar::valueChanged, m_navigator, &QtCodeNavigator::scrolled);
 
@@ -108,10 +109,10 @@ bool QtCodeFileSingle::addFile(const CodeFileParams& params, bool useSingleFileC
       FilePath toDelete = m_filePaths.front();
       m_filePaths.pop_front();
 
-      auto it = m_fileDatas.find(toDelete);
-      if(it != m_fileDatas.end()) {
-        it->second.area->deleteLater();
-        m_fileDatas.erase(it);
+      auto iterator = m_fileDatas.find(toDelete);
+      if(iterator != m_fileDatas.end()) {
+        iterator->second.area->deleteLater();
+        m_fileDatas.erase(iterator);
       }
     }
   }
@@ -130,7 +131,7 @@ void QtCodeFileSingle::updateSourceLocations(const CodeSnippetParams& params) {
 }
 
 void QtCodeFileSingle::updateFiles() {
-  if(m_area) {
+  if(m_area != nullptr) {
     m_area->updateContent();
     m_area->show();
 
@@ -148,7 +149,7 @@ void QtCodeFileSingle::scrollTo(const FilePath& filePath,
                                 bool focusTarget) {
   if(m_currentFilePath != filePath) {
     FileData file = getFileData(filePath);
-    if(!file.area) {
+    if(file.area == nullptr) {
       return;
     }
 
@@ -156,11 +157,11 @@ void QtCodeFileSingle::scrollTo(const FilePath& filePath,
     animated = false;
   }
 
-  Id targetLocationId = scopeLocationId ? scopeLocationId : locationId;
+  Id targetLocationId = scopeLocationId != 0U ? scopeLocationId : locationId;
 
   size_t endLineNumber = 0;
-  if(!lineNumber) {
-    if(targetLocationId) {
+  if(lineNumber == 0U) {
+    if(targetLocationId != 0U) {
       std::pair<size_t, size_t> lineNumbers = m_area->getLineNumbersForLocationId(targetLocationId);
 
       lineNumber = lineNumbers.first;
@@ -173,13 +174,13 @@ void QtCodeFileSingle::scrollTo(const FilePath& filePath,
     }
   }
 
-  double percentA = double(lineNumber - 1) / m_area->getEndLineNumber();
-  double percentB = endLineNumber ? double(endLineNumber - 1) / m_area->getEndLineNumber() : 0.0;
+  double percentA = static_cast<double>(lineNumber - 1) / static_cast<double>(m_area->getEndLineNumber());
+  double percentB = endLineNumber != 0U ? double(endLineNumber - 1) / static_cast<double>(m_area->getEndLineNumber()) : 0.0;
   ensurePercentVisibleAnimated(percentA, percentB, animated, target);
 
   m_area->ensureLocationIdVisible(targetLocationId, width(), animated);
 
-  if(focusTarget && locationId) {
+  if(focusTarget && (locationId != 0U)) {
     m_navigator->setFocusedLocationId(
         m_area, lineNumber, m_area->getColumnNumberForLocationId(locationId), locationId, {}, false, false);
   }
@@ -190,19 +191,19 @@ void QtCodeFileSingle::onWindowFocus() {
 }
 
 void QtCodeFileSingle::findScreenMatches(const std::wstring& query, std::vector<std::pair<QtCodeArea*, Id>>* screenMatches) {
-  if(m_area) {
+  if(m_area != nullptr) {
     m_area->findScreenMatches(query, screenMatches);
   }
 }
 
 void QtCodeFileSingle::setFocus(Id locationId) {
-  if(m_area) {
+  if(m_area != nullptr) {
     m_area->setFocus(locationId);
   }
 }
 
 void QtCodeFileSingle::setFocusOnTop() {
-  if(m_area) {
+  if(m_area != nullptr) {
     m_area->moveFocusToLine(static_cast<int>(m_area->getStartLineNumber()), 0, false);
   }
 }
@@ -214,7 +215,7 @@ void QtCodeFileSingle::moveFocus(const CodeFocusHandler::Focus& focus, CodeFocus
 }
 
 void QtCodeFileSingle::copySelection() {
-  if(m_area) {
+  if(m_area != nullptr) {
     m_area->copySelection();
   }
 }
@@ -228,12 +229,12 @@ bool QtCodeFileSingle::hasFileCached(const FilePath& filePath) const {
 }
 
 Id QtCodeFileSingle::getLocationIdOfFirstActiveLocationOfTokenId(Id tokenId) const {
-  if(!m_area) {
+  if(m_area == nullptr) {
     return 0;
   }
 
   Id scopeId = m_area->getLocationIdOfFirstActiveScopeLocation(tokenId);
-  if(scopeId) {
+  if(scopeId != 0U) {
     return scopeId;
   }
 
@@ -252,12 +253,12 @@ void QtCodeFileSingle::clickedSnippetButton() {
 }
 
 QtCodeFileSingle::FileData QtCodeFileSingle::getFileData(const FilePath& filePath) const {
-  std::map<FilePath, FileData>::const_iterator it = m_fileDatas.find(filePath);
-  if(it != m_fileDatas.end()) {
-    return it->second;
+  auto iterator = m_fileDatas.find(filePath);
+  if(iterator != m_fileDatas.end()) {
+    return iterator->second;
   }
 
-  return FileData();
+  return {};
 }
 
 void QtCodeFileSingle::setFileData(const FileData& file) {
@@ -265,7 +266,7 @@ void QtCodeFileSingle::setFileData(const FileData& file) {
     return;
   }
 
-  if(m_area) {
+  if(m_area != nullptr) {
     m_area->hide();
     m_area = nullptr;
     m_currentFilePath = FilePath();
@@ -274,7 +275,7 @@ void QtCodeFileSingle::setFileData(const FileData& file) {
   m_areaWrapper->layout()->takeAt(0);
 
   QtCodeFileTitleButton* titleButton = m_titleBar->getTitleButton();
-  if(file.area) {
+  if(file.area != nullptr) {
     m_area = file.area;
     m_area->setSizePolicy(m_area->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding);
     m_areaWrapper->layout()->addWidget(m_area);

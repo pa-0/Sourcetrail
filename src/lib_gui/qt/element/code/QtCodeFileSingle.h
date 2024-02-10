@@ -1,5 +1,4 @@
-#ifndef QT_CODE_FILE_SINGLE_H
-#define QT_CODE_FILE_SINGLE_H
+#pragma once
 
 #include <deque>
 #include <map>
@@ -22,8 +21,8 @@ class QtCodeFileSingle
   Q_OBJECT
 
 public:
-  QtCodeFileSingle(QtCodeNavigator* navigator, QWidget* parent = nullptr);
-  virtual ~QtCodeFileSingle() = default;
+  explicit QtCodeFileSingle(QtCodeNavigator* navigator, QWidget* parent = nullptr);
+   ~QtCodeFileSingle() override;
 
   void clearFile();
   void clearCache();
@@ -91,5 +90,3 @@ private:
 
   std::shared_ptr<SourceLocationFile> m_lastLocationFile;
 };
-
-#endif    // QT_CODE_FILE_SINGLE_H
