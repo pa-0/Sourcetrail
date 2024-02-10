@@ -1,16 +1,16 @@
-#ifndef QT_INDEXING_PROGRESS_DIALOG_H
-#define QT_INDEXING_PROGRESS_DIALOG_H
+#pragma once
 
 #include "QtProgressBarDialog.h"
 
 class QLabel;
+class FilePath;
 
 class QtIndexingProgressDialog : public QtProgressBarDialog {
   Q_OBJECT
 
 public:
-  QtIndexingProgressDialog(bool hideable, QWidget* parent = 0);
-  QSize sizeHint() const override;
+  explicit QtIndexingProgressDialog(bool hideable, QWidget* parent = nullptr);
+  [[nodiscard]] QSize sizeHint() const override;
 
   void updateIndexingProgress(size_t fileCount, size_t totalFileCount, const FilePath& sourcePath);
   void updateErrorCount(size_t errorCount, size_t fatalCount);
@@ -27,5 +27,3 @@ private:
   QWidget* m_errorWidget;
   QString m_sourcePath;
 };
-
-#endif    // QT_INDEXING_PROGRESS_DIALOG_H

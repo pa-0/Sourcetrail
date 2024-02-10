@@ -2,36 +2,40 @@
 
 #include <QLabel>
 #include <QPushButton>
+#include <QVBoxLayout>
 
+#include "FilePath.h"
 #include "MessageIndexingInterrupted.h"
 
 QtIndexingProgressDialog::QtIndexingProgressDialog(bool /*hideable*/, QWidget* parent)
-    : QtProgressBarDialog(0.38f, true, parent), m_filePathLabel(nullptr), m_errorWidget(nullptr) {
+    : QtProgressBarDialog(0.38F, parent)
+    , m_filePathLabel(new QLabel())
+    , m_errorWidget(QtIndexingDialog::createErrorWidget(m_layout)) {
   setSizeGripStyle(false);
 
   updateTitle(QStringLiteral("Indexing Files"));
 
-  m_filePathLabel = new QLabel();
+
   m_filePathLabel->setObjectName(QStringLiteral("filePath"));
   m_filePathLabel->setAlignment(Qt::AlignRight);
   m_layout->addWidget(m_filePathLabel);
 
   m_layout->addSpacing(12);
-  m_errorWidget = QtIndexingDialog::createErrorWidget(m_layout);
+
 
   m_layout->addStretch();
 
   {
-    QHBoxLayout* buttons = new QHBoxLayout();
+    auto* buttons = new QHBoxLayout();    // NOLINT(cppcoreguidelines-owning-memory)
 
-    QPushButton* stopButton = new QPushButton(QStringLiteral("Stop"));
+    auto* stopButton = new QPushButton(QStringLiteral("Stop"));    // NOLINT(cppcoreguidelines-owning-memory)
     stopButton->setObjectName(QStringLiteral("windowButton"));
     connect(stopButton, &QPushButton::clicked, this, &QtIndexingProgressDialog::onStopPressed);
     buttons->addWidget(stopButton);
 
     buttons->addStretch();
 
-    QPushButton* hideButton = new QPushButton(QStringLiteral("Hide"));
+    auto* hideButton = new QPushButton(QStringLiteral("Hide"));    // NOLINT(cppcoreguidelines-owning-memory)
     hideButton->setObjectName(QStringLiteral("windowButton"));
     hideButton->setDefault(true);
     connect(hideButton, &QPushButton::clicked, this, &QtIndexingProgressDialog::onHidePressed);
@@ -45,7 +49,7 @@ QtIndexingProgressDialog::QtIndexingProgressDialog(bool /*hideable*/, QWidget* p
 }
 
 QSize QtIndexingProgressDialog::sizeHint() const {
-  return QSize(350, 350);
+  return {350, 350};
 }
 
 void QtIndexingProgressDialog::updateIndexingProgress(size_t fileCount, size_t totalFileCount, const FilePath& sourcePath) {
@@ -64,17 +68,17 @@ void QtIndexingProgressDialog::updateIndexingProgress(size_t fileCount, size_t t
 }
 
 void QtIndexingProgressDialog::updateErrorCount(size_t errorCount, size_t fatalCount) {
-  if(m_errorWidget && errorCount) {
+  if((m_errorWidget != nullptr) && (errorCount != 0U)) {
     QString str = QString::number(errorCount) + " Error";
     if(errorCount > 1) {
       str += QLatin1String("s");
     }
 
-    if(fatalCount) {
+    if(fatalCount != 0U) {
       str += " (" + QString::number(fatalCount) + " Fatal)";
     }
 
-    QPushButton* errorCountButton = m_errorWidget->findChild<QPushButton*>(QStringLiteral("errorCount"));
+    auto* errorCountButton = m_errorWidget->findChild<QPushButton*>(QStringLiteral("errorCount"));
     errorCountButton->setText(str);
 
     m_errorWidget->show();
@@ -98,7 +102,7 @@ void QtIndexingProgressDialog::closeEvent(QCloseEvent* /*event*/) {
 void QtIndexingProgressDialog::setGeometries() {
   QtProgressBarDialog::setGeometries();
 
-  if(m_filePathLabel) {
+  if(m_filePathLabel != nullptr) {
     m_filePathLabel->setText(m_filePathLabel->fontMetrics().elidedText(m_sourcePath, Qt::ElideLeft, m_filePathLabel->width()));
   }
 }
