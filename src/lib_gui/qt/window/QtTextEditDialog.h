@@ -1,5 +1,4 @@
-#ifndef QT_TEXT_EDIT_DIALOG_H
-#define QT_TEXT_EDIT_DIALOG_H
+#pragma once
 
 #include "QtWindow.h"
 
@@ -9,9 +8,9 @@ class QtTextEditDialog : public QtWindow {
   Q_OBJECT
 
 public:
-  QtTextEditDialog(const QString& title, const QString& description, QWidget* parent = 0);
+  QtTextEditDialog(QString title, QString description, QWidget* parent = nullptr);
 
-  QSize sizeHint() const override;
+  [[nodiscard]] QSize sizeHint() const override;
 
   void setText(const std::wstring& text);
   std::wstring getText();
@@ -28,5 +27,3 @@ protected:
 private:
   QPlainTextEdit* m_text;
 };
-
-#endif    // QT_TEXT_EDIT_DIALOG_H

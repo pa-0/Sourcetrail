@@ -1,13 +1,16 @@
 #include "QtTextEditDialog.h"
 
+#include <utility>
+
 #include <QLabel>
 #include <QPlainTextEdit>
+#include <QVBoxLayout>
 
-QtTextEditDialog::QtTextEditDialog(const QString& title, const QString& description, QWidget* parent)
-    : QtWindow(false, parent), m_title(title), m_description(description) {}
+QtTextEditDialog::QtTextEditDialog(QString title, QString description, QWidget* parent)
+    : QtWindow(false, parent), m_title(std::move(title)), m_description(std::move(description)) {}
 
 QSize QtTextEditDialog::sizeHint() const {
-  return QSize(550, 550);
+  return {550, 550};
 }
 
 void QtTextEditDialog::setText(const std::wstring& text) {
@@ -29,15 +32,15 @@ void QtTextEditDialog::setReadOnly(bool readOnly) {
 }
 
 void QtTextEditDialog::populateWindow(QWidget* widget) {
-  QVBoxLayout* layout = new QVBoxLayout();
+  auto* layout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setContentsMargins(0, 0, 0, 0);
 
-  QLabel* description = new QLabel(m_description);
+  auto* description = new QLabel(m_description);    // NOLINT(cppcoreguidelines-owning-memory)
   description->setObjectName(QStringLiteral("description"));
   description->setWordWrap(true);
   layout->addWidget(description);
 
-  m_text = new QPlainTextEdit();
+  m_text = new QPlainTextEdit;    // NOLINT(cppcoreguidelines-owning-memory)
   m_text->setObjectName(QStringLiteral("textField"));
   m_text->setLineWrapMode(QPlainTextEdit::NoWrap);
   m_text->setTabStopDistance(8 * m_text->fontMetrics().boundingRect('9').width());
