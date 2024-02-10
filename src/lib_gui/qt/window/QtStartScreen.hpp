@@ -53,8 +53,8 @@ public:
   void setupStartScreen();
 
 protected:
-  void hideEvent(QHideEvent *ev) override;
-  void closeEvent(QCloseEvent *ev) override;
+  void hideEvent(QHideEvent* hideEvent) override;
+  void closeEvent(QCloseEvent* closeEvent) override;
 
 signals:
   /**

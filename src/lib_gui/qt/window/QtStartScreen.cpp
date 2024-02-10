@@ -15,6 +15,7 @@
 #include <QListView>
 #include <QMenu>
 #include <QPushButton>
+#include <QUrl>
 
 #include "ApplicationSettings.h"
 #include "RecentItemModel.hpp"
@@ -73,10 +74,13 @@ void QtStartScreen::setupStartScreen() {
   setStyleSheet(utility::getStyleSheet("://startscreen/startscreen.css"));
 }
 
-void QtStartScreen::hideEvent(QHideEvent* ev) {
+void QtStartScreen::hideEvent(QHideEvent* hideEvent) {
   if(mRecentModel->isDirty()) {
-    auto updatedRecentProjects = mRecentModel->getRecentProjects() |
-        ranges::view::transform([](auto item) { qDebug() << QString::fromStdWString(item.path.wstr()); return item.path; }) | ranges::to<std::vector>();
+    auto updatedRecentProjects = mRecentModel->getRecentProjects() | ranges::views::transform([](auto item) {
+                                   qDebug() << QString::fromStdWString(item.path.wstr());
+                                   return item.path;
+                                 }) |
+        ranges::to<std::vector>();
 
     ApplicationSettings::getInstance()->setRecentProjects(updatedRecentProjects);
     if(ApplicationSettings::getInstance()->save(UserPaths::getAppSettingsFilePath())) {
@@ -84,11 +88,11 @@ void QtStartScreen::hideEvent(QHideEvent* ev) {
     }
   }
 
-  QtWindow::hideEvent(ev);
+  QtWindow::hideEvent(hideEvent);
 }
 
-void QtStartScreen::closeEvent(QCloseEvent* event) {
-  QtWindow::closeEvent(event);
+void QtStartScreen::closeEvent(QCloseEvent* closeEvent) {
+  QtWindow::closeEvent(closeEvent);
 }
 
 void QtStartScreen::createRecentProjects(QHBoxLayout* layout) {
