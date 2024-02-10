@@ -1,5 +1,4 @@
 #pragma once
-// STL
 #include <memory>
 #include <set>
 #include <vector>

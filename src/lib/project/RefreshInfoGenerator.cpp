@@ -1,5 +1,5 @@
 #include "RefreshInfoGenerator.h"
-// internal
+
 #include "FileInfo.h"
 #include "FileSystem.h"
 #include "PersistentStorage.h"
@@ -25,7 +25,7 @@ RefreshInfo RefreshInfoGenerator::getRefreshInfoForUpdatedFiles(const std::vecto
       const std::set<FilePath> filePathsFromStorage = utility::toSet(
           utility::convert<FileInfo, FilePath>(fileInfosFromStorage, [](const FileInfo& info) { return info.path; }));
 
-      for(std::shared_ptr<SourceGroup> sourceGroup : sourceGroups) {
+      for(const std::shared_ptr<SourceGroup>& sourceGroup : sourceGroups) {
         if(sourceGroup->getStatus() == SOURCE_GROUP_STATUS_ENABLED) {
           utility::append(alreadyKnownPaths, sourceGroup->filterToContainedFilePaths(filePathsFromStorage));
         }
