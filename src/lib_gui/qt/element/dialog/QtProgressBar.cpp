@@ -11,9 +11,9 @@ QtProgressBar::QtProgressBar(QWidget* parent)
     : QWidget(parent)
     , m_percent(0)
     , m_count(0)
+    , m_timer(new QTimer(this))
     , m_pixmap(QString::fromStdWString(
           ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/progress_bar_element.png").wstr())) {
-  m_timer = new QTimer(this);
   connect(m_timer, &QTimer::timeout, this, &QtProgressBar::animate);
 
   m_pixmap.scaleToHeight(20);
@@ -40,14 +40,15 @@ void QtProgressBar::showUnknownProgressAnimated() {
 void QtProgressBar::paintEvent(QPaintEvent* /*event*/) {
   QPainter painter(this);
 
-  if(m_count) {
+  if(m_count != 0U) {
     const QPixmap& pixmap = m_pixmap.pixmap();
 
-    for(int x = -36 + (m_count % 36); x < geometry().width(); x += 18) {
+    for(int x = -36 + (m_count % 36); x < static_cast<int>(geometry().width()); x += 18) {
       painter.drawPixmap(QPointF(x, -5), pixmap);
     }
   } else {
-    painter.fillRect(0, 2, static_cast<int>(geometry().width() * m_percent / 100), 6, "white");
+    painter.fillRect(
+        0, 2, static_cast<int>(static_cast<float>(geometry().width()) * static_cast<float>(m_percent) / 100.0F), 6, "white");
   }
 }
 
@@ -62,14 +63,14 @@ void QtProgressBar::stop() {
 }
 
 void QtProgressBar::animate() {
-  TimeStamp t = TimeStamp::now();
-  size_t dt = t.deltaMS(m_TimeStamp);
+  const TimeStamp timeStamp = TimeStamp::now();
+  const size_t deltaTime = timeStamp.deltaMS(m_TimeStamp);
 
-  if(dt < 5) {
+  if(deltaTime < 5) {
     return;
   }
 
-  m_TimeStamp = t;
+  m_TimeStamp = timeStamp;
   m_count++;
 
   update();

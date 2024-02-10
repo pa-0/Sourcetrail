@@ -1,5 +1,4 @@
-#ifndef QT_PROGRESS_BAR_H
-#define QT_PROGRESS_BAR_H
+#pragma once
 
 #include <QWidget>
 
@@ -12,15 +11,15 @@ class QtProgressBar : public QWidget {
   Q_OBJECT
 
 public:
-  QtProgressBar(QWidget* parent = nullptr);
+  explicit QtProgressBar(QWidget* parent = nullptr);
 
   void showProgress(size_t percent);
-  size_t getProgress() const;
+  [[nodiscard]] size_t getProgress() const;
 
   void showUnknownProgressAnimated();
 
 protected:
-  void paintEvent(QPaintEvent* event);
+  void paintEvent(QPaintEvent* event) override;
 
 private slots:
   void start();
@@ -37,5 +36,3 @@ private:
 
   QtDeviceScaledPixmap m_pixmap;
 };
-
-#endif    // QT_PROGRESS_BAR_H
