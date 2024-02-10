@@ -1,7 +1,5 @@
-#ifndef QT_GRAPH_NODE_BUNDLE_H
-#define QT_GRAPH_NODE_BUNDLE_H
+#pragma once
 
-#include "Node.h"
 #include "QtGraphNode.h"
 
 class QtCountCircleItem;
@@ -11,23 +9,21 @@ class QtGraphNodeBundle : public QtGraphNode {
 public:
   QtGraphNodeBundle(
       GraphFocusHandler* focusHandler, Id tokenId, size_t nodeCount, NodeType type, const std::wstring& name, bool interactive);
-  virtual ~QtGraphNodeBundle();
+  ~QtGraphNodeBundle() override;
 
   // QtGraphNode implementation
-  virtual bool isBundleNode() const;
-  virtual Id getTokenId() const;
+  [[nodiscard]] bool isBundleNode() const override;
+  [[nodiscard]] Id getTokenId() const override;
 
-  virtual void onClick();
-  virtual void updateStyle();
+  void onClick() override;
+  void updateStyle() override;
 
 protected:
-  virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
-  virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+  void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
+  void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override;
 
 private:
   QtCountCircleItem* m_circle;
   Id m_tokenId;
   NodeType m_type;
 };
-
-#endif    // QT_GRAPH_NODE_BUNDLE_H

@@ -9,12 +9,11 @@
 
 QtGraphNodeBundle::QtGraphNodeBundle(
     GraphFocusHandler* focusHandler, Id tokenId, size_t nodeCount, NodeType type, const std::wstring& name, bool interactive)
-    : QtGraphNode(focusHandler), m_tokenId(tokenId), m_type(type) {
+    : QtGraphNode(focusHandler), m_circle(new QtCountCircleItem(this)), m_tokenId(tokenId), m_type(type) {
   m_isInteractive = interactive;
 
   this->setName(name);
 
-  m_circle = new QtCountCircleItem(this);
   m_circle->setNumber(nodeCount);
 
   this->setAcceptHoverEvents(true);
@@ -22,7 +21,7 @@ QtGraphNodeBundle::QtGraphNodeBundle(
   this->setToolTip(QStringLiteral("bundle"));
 }
 
-QtGraphNodeBundle::~QtGraphNodeBundle() {}
+QtGraphNodeBundle::~QtGraphNodeBundle() = default;
 
 bool QtGraphNodeBundle::isBundleNode() const {
   return true;
@@ -56,8 +55,10 @@ void QtGraphNodeBundle::updateStyle() {
   m_circle->setPosition(pos);
 
   GraphViewStyle::NodeStyle accessStyle = GraphViewStyle::getStyleOfCountCircle();
-  m_circle->setStyle(
-      accessStyle.color.fill.c_str(), accessStyle.color.text.c_str(), accessStyle.color.border.c_str(), style.borderWidth);
+  m_circle->setStyle(accessStyle.color.fill.c_str(),
+                     accessStyle.color.text.c_str(),
+                     accessStyle.color.border.c_str(),
+                     static_cast<size_t>(style.borderWidth));
 }
 
 
