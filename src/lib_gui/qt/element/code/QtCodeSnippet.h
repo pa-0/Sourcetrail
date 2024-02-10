@@ -1,5 +1,4 @@
-#ifndef QT_CODE_SNIPPET_H
-#define QT_CODE_SNIPPET_H
+#pragma once
 
 #include <vector>
 
@@ -22,15 +21,15 @@ class QtCodeSnippet : public QFrame {
 
 public:
   QtCodeSnippet(const CodeSnippetParams& params, QtCodeNavigator* navigator, QtCodeFile* file);
-  virtual ~QtCodeSnippet();
+  ~QtCodeSnippet() override;
 
-  QtCodeFile* getFile() const;
-  QtCodeArea* getArea() const;
+  [[nodiscard]] QtCodeFile* getFile() const;
+  [[nodiscard]] QtCodeArea* getArea() const;
 
-  size_t getStartLineNumber() const;
-  size_t getEndLineNumber() const;
+  [[nodiscard]] size_t getStartLineNumber() const;
+  [[nodiscard]] size_t getEndLineNumber() const;
 
-  int lineNumberDigits() const;
+  [[nodiscard]] int lineNumberDigits() const;
 
   void updateSourceLocations(const CodeSnippetParams& params);
 
@@ -39,17 +38,17 @@ public:
 
   void setIsActiveFile(bool isActiveFile);
 
-  size_t getLineNumberForLocationId(Id locationId) const;
-  std::pair<size_t, size_t> getLineNumbersForLocationId(Id locationId) const;
+  [[nodiscard]] size_t getLineNumberForLocationId(Id locationId) const;
+  [[nodiscard]] std::pair<size_t, size_t> getLineNumbersForLocationId(Id locationId) const;
 
-  Id getFirstActiveLocationId(Id tokenId) const;
-  QRectF getLineRectForLineNumber(size_t lineNumber) const;
+  [[nodiscard]] Id getFirstActiveLocationId(Id tokenId) const;
+  [[nodiscard]] QRectF getLineRectForLineNumber(size_t lineNumber) const;
 
-  std::string getCode() const;
+  [[nodiscard]] std::string getCode() const;
 
   void findScreenMatches(const std::wstring& query, std::vector<std::pair<QtCodeArea*, Id>>* screenMatches);
 
-  bool hasFocus(const CodeFocusHandler::Focus& focus) const;
+  [[nodiscard]] bool hasFocus(const CodeFocusHandler::Focus& focus) const;
   bool setFocus(Id locationId);
   bool moveFocus(const CodeFocusHandler::Focus& focus, CodeFocusHandler::Direction direction);
   void focusTop();
@@ -87,5 +86,3 @@ private:
 
   QtCodeArea* m_codeArea = nullptr;
 };
-
-#endif    // QT_CODE_SNIPPET_H

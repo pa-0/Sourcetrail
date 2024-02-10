@@ -22,7 +22,7 @@ QtCodeSnippet::QtCodeSnippet(const CodeSnippetParams& params, QtCodeNavigator* n
     , m_footerString(params.footer) {
   setObjectName(QStringLiteral("code_snippet"));
 
-  QVBoxLayout* layout = new QVBoxLayout(this);
+  auto* layout = new QVBoxLayout(this);    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(0);
   layout->setAlignment(Qt::AlignTop);
@@ -40,6 +40,7 @@ QtCodeSnippet::QtCodeSnippet(const CodeSnippetParams& params, QtCodeNavigator* n
     connect(m_title, &QPushButton::clicked, this, &QtCodeSnippet::clickedTitle);
   }
 
+  // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
   m_codeArea = new QtCodeArea(params.startLineNumber, params.code, params.locationFile, navigator, !params.isOverview, this);
   layout->addWidget(m_codeArea);
 
@@ -56,7 +57,7 @@ QtCodeSnippet::QtCodeSnippet(const CodeSnippetParams& params, QtCodeNavigator* n
   }
 }
 
-QtCodeSnippet::~QtCodeSnippet() {}
+QtCodeSnippet::~QtCodeSnippet() = default;
 
 QtCodeFile* QtCodeSnippet::getFile() const {
   return m_file;
@@ -111,7 +112,7 @@ std::pair<size_t, size_t> QtCodeSnippet::getLineNumbersForLocationId(Id location
 
 Id QtCodeSnippet::getFirstActiveLocationId(Id tokenId) const {
   Id scopeId = m_codeArea->getLocationIdOfFirstActiveScopeLocation(tokenId);
-  if(scopeId) {
+  if(scopeId != 0U) {
     return scopeId;
   }
 
@@ -140,7 +141,7 @@ bool QtCodeSnippet::setFocus(Id locationId) {
 
 bool QtCodeSnippet::moveFocus(const CodeFocusHandler::Focus& focus, CodeFocusHandler::Direction direction) {
   if(m_codeArea == focus.area) {
-    if(focus.scopeLine) {
+    if(focus.scopeLine != nullptr) {
       if(m_title == focus.scopeLine && direction == CodeFocusHandler::Direction::DOWN) {
         return m_codeArea->moveFocus(direction, m_codeArea->getStartLineNumber() - 1, 0);
       } else if(m_footer == focus.scopeLine && direction == CodeFocusHandler::Direction::UP) {
@@ -149,10 +150,10 @@ bool QtCodeSnippet::moveFocus(const CodeFocusHandler::Focus& focus, CodeFocusHan
     } else {
       bool moved = m_codeArea->moveFocus(direction, focus.lineNumber, focus.locationId);
       if(!moved) {
-        if(m_title && direction == CodeFocusHandler::Direction::UP) {
+        if((m_title != nullptr) && direction == CodeFocusHandler::Direction::UP) {
           m_navigator->setFocusedScopeLine(m_codeArea, m_title, getStartLineNumber());
           return true;
-        } else if(m_footer && direction == CodeFocusHandler::Direction::DOWN) {
+        } else if((m_footer != nullptr) && direction == CodeFocusHandler::Direction::DOWN) {
           m_navigator->setFocusedScopeLine(m_codeArea, m_footer, getEndLineNumber());
           return true;
         }
@@ -164,7 +165,7 @@ bool QtCodeSnippet::moveFocus(const CodeFocusHandler::Focus& focus, CodeFocusHan
 }
 
 void QtCodeSnippet::focusTop() {
-  if(m_title) {
+  if(m_title != nullptr) {
     m_navigator->setFocusedScopeLine(m_codeArea, m_title, getStartLineNumber());
   } else {
     m_codeArea->moveFocus(CodeFocusHandler::Direction::DOWN, m_codeArea->getStartLineNumber() - 1, 0);
@@ -172,7 +173,7 @@ void QtCodeSnippet::focusTop() {
 }
 
 void QtCodeSnippet::focusBottom() {
-  if(m_footer) {
+  if(m_footer != nullptr) {
     m_navigator->setFocusedScopeLine(m_codeArea, m_footer, getEndLineNumber());
   } else {
     m_codeArea->moveFocus(CodeFocusHandler::Direction::UP, m_codeArea->getEndLineNumber() + 1, 0);
@@ -208,19 +209,19 @@ void QtCodeSnippet::clickedFooter() {
 }
 
 QtHoverButton* QtCodeSnippet::createScopeLine(QBoxLayout* layout) {
-  QHBoxLayout* lineLayout = new QHBoxLayout();
+  auto* lineLayout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   lineLayout->setContentsMargins(0, 0, 0, 0);
   lineLayout->setSpacing(0);
   lineLayout->setAlignment(Qt::AlignLeft);
   layout->addLayout(lineLayout);
 
-  QPushButton* dots = new QPushButton(this);
+  auto* dots = new QPushButton(this);    // NOLINT(cppcoreguidelines-owning-memory)
   dots->setObjectName(QStringLiteral("dots"));
   dots->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
   lineLayout->addWidget(dots);
   m_dots.push_back(dots);
 
-  QtHoverButton* line = new QtHoverButton(this);
+  auto* line = new QtHoverButton(this);    // NOLINT(cppcoreguidelines-owning-memory)
   line->setObjectName(QStringLiteral("scope_name"));
   line->minimumSizeHint();                            // force font loading
   line->setAttribute(Qt::WA_LayoutUsesWidgetRect);    // fixes layouting on Mac
@@ -237,13 +238,13 @@ QtHoverButton* QtCodeSnippet::createScopeLine(QBoxLayout* layout) {
 
 void QtCodeSnippet::updateDots() {
   for(QPushButton* dots : m_dots) {
-    dots->setText(QString::fromStdString(std::string(lineNumberDigits(), '.')));
+    dots->setText(QString::fromStdString(std::string(static_cast<size_t>(lineNumberDigits()), '.')));
     dots->setMinimumWidth(m_codeArea->lineNumberAreaWidth());
   }
 }
 
 void QtCodeSnippet::updateScopeLineFocus(QPushButton* line, QPushButton* dots) {
-  if(line && dots) {
+  if((line != nullptr) && (dots != nullptr)) {
     bool focus = line == m_navigator->getCurrentFocus().scopeLine;
     if(focus != dots->property("focused").toBool()) {
       line->setProperty("focused", focus);
