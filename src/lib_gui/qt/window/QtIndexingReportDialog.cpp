@@ -1,11 +1,11 @@
 #include "QtIndexingReportDialog.h"
 
+#include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 #include "MessageErrorsHelpMessage.h"
-#include "MessageIndexingShowDialog.h"
-#include "MessageRefresh.h"
 #include "TimeStamp.h"
 
 QtIndexingReportDialog::QtIndexingReportDialog(size_t indexedFileCount,
@@ -53,14 +53,14 @@ QtIndexingReportDialog::QtIndexingReportDialog(size_t indexedFileCount,
   }
 
   {
-    QHBoxLayout* buttons = new QHBoxLayout();
+    auto* buttons = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
     if(interrupted) {
-      QPushButton* discardButton = new QPushButton(QStringLiteral("Discard"));
+      auto* discardButton = new QPushButton(QStringLiteral("Discard"));
       discardButton->setObjectName(QStringLiteral("windowButton"));
       connect(discardButton, &QPushButton::clicked, this, &QtIndexingReportDialog::onDiscardPressed);
       buttons->addWidget(discardButton);
     } else if(shallow) {
-      QPushButton* startInDepthButton = new QPushButton(QStringLiteral("Start In-Depth Indexing"));
+      auto* startInDepthButton = new QPushButton(QStringLiteral("Start In-Depth Indexing"));
       startInDepthButton->setObjectName(QStringLiteral("windowButton"));
       connect(startInDepthButton, &QPushButton::clicked, this, &QtIndexingReportDialog::onStartInDepthPressed);
       buttons->addWidget(startInDepthButton);
@@ -68,8 +68,8 @@ QtIndexingReportDialog::QtIndexingReportDialog(size_t indexedFileCount,
 
     buttons->addStretch();
 
-    QPushButton* confirmButton = new QPushButton(interrupted ? QStringLiteral("Keep") :
-                                                               (shallow ? QStringLiteral("Later") : QStringLiteral("OK")));
+    auto* confirmButton = new QPushButton(interrupted ? QStringLiteral("Keep") :
+                                                        (shallow ? QStringLiteral("Later") : QStringLiteral("OK")));
     confirmButton->setObjectName(QStringLiteral("windowButton"));
     confirmButton->setDefault(true);
     connect(confirmButton, &QPushButton::clicked, this, &QtIndexingReportDialog::onConfirmPressed);
@@ -86,21 +86,21 @@ QtIndexingReportDialog::QtIndexingReportDialog(size_t indexedFileCount,
 }
 
 QSize QtIndexingReportDialog::sizeHint() const {
-  return QSize(m_interrupted ? 400 : 430, 280);
+  return {m_interrupted ? 400 : 430, 280};
 }
 
 void QtIndexingReportDialog::updateErrorCount(size_t errorCount, size_t fatalCount) {
-  if(m_errorWidget && errorCount) {
+  if((m_errorWidget != nullptr) && (errorCount != 0U)) {
     QString str = QString::number(errorCount) + QStringLiteral(" Error");
     if(errorCount > 1) {
       str += QStringLiteral("s");
     }
 
-    if(fatalCount) {
+    if(fatalCount != 0U) {
       str += QStringLiteral(" (") + QString::number(fatalCount) + QStringLiteral(" Fatal)");
     }
 
-    QPushButton* errorCountButton = m_errorWidget->findChild<QPushButton*>(QStringLiteral("errorCount"));
+    auto* errorCountButton = m_errorWidget->findChild<QPushButton*>(QStringLiteral("errorCount"));
     errorCountButton->setText(str);
 
     m_errorWidget->show();

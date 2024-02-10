@@ -1,5 +1,4 @@
-#ifndef QT_INDEXING_REPORT_DIALOG_H
-#define QT_INDEXING_REPORT_DIALOG_H
+#pragma once
 
 #include "QtIndexingDialog.h"
 
@@ -17,8 +16,8 @@ public:
                          float time,
                          bool interrupted,
                          bool shallow,
-                         QWidget* parent = 0);
-  QSize sizeHint() const override;
+                         QWidget* parent = nullptr);
+  [[nodiscard]] QSize sizeHint() const override;
 
   void updateErrorCount(size_t errorCount, size_t fatalCount);
 
@@ -34,5 +33,3 @@ private:
   QWidget* m_errorWidget;
   bool m_interrupted;
 };
-
-#endif    // QT_INDEXING_REPORT_DIALOG_H
