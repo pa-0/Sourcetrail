@@ -1,11 +1,11 @@
 #pragma once
-// STL
 #include <functional>
 #include <map>
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
-// internal
+
 #include "FilePath.h"
 #include "NodeKind.h"
 #include "Tree.h"
@@ -16,15 +16,15 @@ public:
   enum StyleType { STYLE_PACKAGE = 0, STYLE_SMALL_NODE = 1, STYLE_BIG_NODE = 2, STYLE_GROUP = 3 };
 
   struct BundleInfo {
-    BundleInfo() {}
+    BundleInfo() = default;
 
-    BundleInfo(std::wstring bundleName_) : nameMatcher([](const std::wstring&) { return true; }), bundleName(bundleName_) {}
+    explicit BundleInfo(std::wstring bundleName_) : nameMatcher([](const std::wstring&) { return true; }), bundleName(std::move(bundleName_)) {}
 
     BundleInfo(std::function<bool(std::wstring)> nameMatcher_, std::wstring bundleName_)
-        : nameMatcher(nameMatcher_), bundleName(bundleName_) {}
+        : nameMatcher(nameMatcher_), bundleName(std::move(bundleName_)) {}
 
-    bool isValid() const {
-      return bundleName.size() > 0;
+    [[nodiscard]] bool isValid() const {
+      return !bundleName.empty();
     }
 
     std::function<bool(const std::wstring&)> nameMatcher = nullptr;
@@ -35,37 +35,37 @@ public:
 
   explicit NodeType(NodeKind kind);
 
-  bool operator==(const NodeType& o) const;
-  bool operator!=(const NodeType& o) const;
-  bool operator<(const NodeType& o) const;
+  bool operator==(const NodeType& other) const;
+  bool operator!=(const NodeType& other) const;
+  bool operator<(const NodeType& other) const;
 
-  NodeKind getKind() const;
+  [[nodiscard]] NodeKind getKind() const;
 
-  Id getId() const;
-  bool isFile() const;
-  bool isBuiltin() const;
-  bool isUnknownSymbol() const;
-  bool isInheritable() const;
-  bool isPackage() const;
-  bool isCallable() const;
-  bool isVariable() const;
-  bool isUsable() const;
-  bool isPotentialMember() const;
-  bool isCollapsible() const;
-  bool isVisibleAsParentInGraph() const;
-  bool hasSearchFilter() const;
-  Tree<BundleInfo> getOverviewBundleTree() const;
+  [[nodiscard]] Id getId() const;
+  [[nodiscard]] bool isFile() const;
+  [[nodiscard]] bool isBuiltin() const;
+  [[nodiscard]] bool isUnknownSymbol() const;
+  [[nodiscard]] bool isInheritable() const;
+  [[nodiscard]] bool isPackage() const;
+  [[nodiscard]] bool isCallable() const;
+  [[nodiscard]] bool isVariable() const;
+  [[nodiscard]] bool isUsable() const;
+  [[nodiscard]] bool isPotentialMember() const;
+  [[nodiscard]] bool isCollapsible() const;
+  [[nodiscard]] bool isVisibleAsParentInGraph() const;
+  [[nodiscard]] bool hasSearchFilter() const;
+  [[nodiscard]] Tree<BundleInfo> getOverviewBundleTree() const;
 
-  FilePath getIconPath() const;
+  [[nodiscard]] FilePath getIconPath() const;
 
-  bool hasIcon() const;
-  StyleType getNodeStyle() const;
+  [[nodiscard]] bool hasIcon() const;
+  [[nodiscard]] StyleType getNodeStyle() const;
 
-  bool hasOverviewBundle() const;
-  std::string getUnderscoredTypeString() const;
-  std::string getReadableTypeString() const;
-  std::wstring getUnderscoredTypeWString() const;
-  std::wstring getReadableTypeWString() const;
+  [[nodiscard]] bool hasOverviewBundle() const;
+  [[nodiscard]] std::string getUnderscoredTypeString() const;
+  [[nodiscard]] std::string getReadableTypeString() const;
+  [[nodiscard]] std::wstring getUnderscoredTypeWString() const;
+  [[nodiscard]] std::wstring getReadableTypeWString() const;
 
   static std::vector<NodeType> const overviewBundleNodeTypesOrdered;
 

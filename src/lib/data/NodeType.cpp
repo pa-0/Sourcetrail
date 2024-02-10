@@ -22,16 +22,16 @@ std::vector<NodeType> const NodeType::overviewBundleNodeTypesOrdered = {NodeType
 
 NodeType::NodeType(NodeKind kind) : m_kind(kind) {}
 
-bool NodeType::operator==(const NodeType& o) const {
-  return m_kind == o.m_kind;
+bool NodeType::operator==(const NodeType& other) const {
+  return m_kind == other.m_kind;
 }
 
-bool NodeType::operator!=(const NodeType& o) const {
-  return !operator==(o);
+bool NodeType::operator!=(const NodeType& other) const {
+  return !operator==(other);
 }
 
-bool NodeType::operator<(const NodeType& o) const {
-  return m_kind < o.m_kind;
+bool NodeType::operator<(const NodeType& other) const {
+  return m_kind < other.m_kind;
 }
 NodeKind NodeType::getKind() const {
   return m_kind;
@@ -39,7 +39,7 @@ NodeKind NodeType::getKind() const {
 
 Id NodeType::getId() const {
   // TODO: add id in constructor and return it here
-  return nodeKindToInt(m_kind);
+  return static_cast<Id>(nodeKindToInt(m_kind));
 }
 
 bool NodeType::isFile() const {
@@ -112,45 +112,45 @@ bool NodeType::hasSearchFilter() const {
 Tree<NodeType::BundleInfo> NodeType::getOverviewBundleTree() const {
   switch(m_kind) {
   case NODE_FILE:
-    return Tree<BundleInfo>(BundleInfo(L"Files"));
+    return {BundleInfo(L"Files")};
   case NODE_MACRO:
-    return Tree<BundleInfo>(BundleInfo(L"Macros"));
+    return {BundleInfo(L"Macros")};
   case NODE_NAMESPACE: {
     Tree<BundleInfo> tree(BundleInfo(L"Namespaces"));
-    tree.children.push_back(Tree<BundleInfo>(
+    tree.children.emplace_back(
         BundleInfo([](const std::wstring& nodeName) { return nodeName.find(L"anonymous namespace") != std::wstring::npos; },
-                   L"Anonymous Namespaces")));
+                   L"Anonymous Namespaces"));
     return tree;
   }
   case NODE_MODULE:
-    return Tree<BundleInfo>(BundleInfo(L"Modules"));
+    return {BundleInfo(L"Modules")};
   case NODE_PACKAGE:
-    return Tree<BundleInfo>(BundleInfo(L"Packages"));
+    return {BundleInfo(L"Packages")};
   case NODE_CLASS:
-    return Tree<BundleInfo>(BundleInfo(L"Classes"));
+    return {BundleInfo(L"Classes")};
   case NODE_INTERFACE:
-    return Tree<BundleInfo>(BundleInfo(L"Interfaces"));
+    return {BundleInfo(L"Interfaces")};
   case NODE_ANNOTATION:
-    return Tree<BundleInfo>(BundleInfo(L"Annotations"));
+    return {BundleInfo(L"Annotations")};
   case NODE_STRUCT:
-    return Tree<BundleInfo>(BundleInfo(L"Structs"));
+    return {BundleInfo(L"Structs")};
   case NODE_FUNCTION:
-    return Tree<BundleInfo>(BundleInfo(L"Functions"));
+    return {BundleInfo(L"Functions")};
   case NODE_GLOBAL_VARIABLE:
-    return Tree<BundleInfo>(BundleInfo(L"Global Variables"));
+    return {BundleInfo(L"Global Variables")};
   case NODE_TYPE:
-    return Tree<BundleInfo>(BundleInfo(L"Types"));
+    return {BundleInfo(L"Types")};
   case NODE_TYPEDEF:
-    return Tree<BundleInfo>(BundleInfo(L"Typedefs"));
+    return {BundleInfo(L"Typedefs")};
   case NODE_ENUM:
-    return Tree<BundleInfo>(BundleInfo(L"Enums"));
+    return {BundleInfo(L"Enums")};
   case NODE_UNION:
-    return Tree<BundleInfo>(BundleInfo(L"Unions"));
+    return {BundleInfo(L"Unions")};
   default:
     break;
   }
 
-  return Tree<BundleInfo>();
+  return {};
 }
 
 FilePath NodeType::getIconPath() const {
@@ -171,7 +171,7 @@ FilePath NodeType::getIconPath() const {
   case NODE_FILE:
     return ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/file.png");
   default:
-    return FilePath();
+    return {};
   }
 }
 
@@ -228,10 +228,10 @@ std::string NodeType::getReadableTypeString() const {
 
 std::wstring NodeType::getUnderscoredTypeWString() const {
   std::string str = getUnderscoredTypeString();
-  return std::wstring(str.begin(), str.end());
+  return {str.begin(), str.end()};
 }
 
 std::wstring NodeType::getReadableTypeWString() const {
   std::string str = getReadableTypeString();
-  return std::wstring(str.begin(), str.end());
+  return {str.begin(), str.end()};
 }
