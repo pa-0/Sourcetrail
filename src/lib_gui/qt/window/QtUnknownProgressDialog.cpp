@@ -1,8 +1,10 @@
 #include "QtUnknownProgressDialog.h"
 
+#include <QHBoxLayout>
 #include <QPushButton>
+#include <QVBoxLayout>
 
-QtUnknownProgressDialog::QtUnknownProgressDialog(bool hideable, QWidget* parent) : QtProgressBarDialog(0.5, true, parent) {
+QtUnknownProgressDialog::QtUnknownProgressDialog(bool hideable, QWidget* parent) : QtProgressBarDialog(0.5, parent) {
   setSizeGripStyle(false);
 
   updateTitle(QStringLiteral("Status"));
@@ -10,10 +12,10 @@ QtUnknownProgressDialog::QtUnknownProgressDialog(bool hideable, QWidget* parent)
   m_layout->addStretch();
 
   if(hideable) {
-    QHBoxLayout* buttons = new QHBoxLayout();
+    auto* buttons = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
     buttons->addStretch();
 
-    QPushButton* hideButton = new QPushButton(QStringLiteral("Hide"));
+    auto* hideButton = new QPushButton(QStringLiteral("Hide"));
     hideButton->setObjectName(QStringLiteral("windowButton"));
     hideButton->setDefault(true);
     connect(hideButton, &QPushButton::clicked, this, &QtUnknownProgressDialog::onHidePressed);
@@ -29,7 +31,7 @@ QtUnknownProgressDialog::QtUnknownProgressDialog(bool hideable, QWidget* parent)
 }
 
 QSize QtUnknownProgressDialog::sizeHint() const {
-  return QSize(350, 280);
+  return {350, 280};
 }
 
 void QtUnknownProgressDialog::closeEvent(QCloseEvent* /*event*/) {
