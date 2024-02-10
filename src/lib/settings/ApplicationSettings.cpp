@@ -1,9 +1,10 @@
 #include "ApplicationSettings.h"
 
+#include <memory>
+
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 
-#include "AppPath.h"
 #include "Logger.h"
 #include "ResourcePaths.h"
 #include "SettingsMigrationLambda.h"
@@ -11,7 +12,6 @@
 #include "SettingsMigrator.h"
 #include "Status.h"
 #include "UserPaths.h"
-#include "Version.h"
 #include "utility.h"
 #include "utilityFile.h"
 
@@ -21,7 +21,7 @@ std::shared_ptr<ApplicationSettings> ApplicationSettings::s_instance;
 
 std::shared_ptr<ApplicationSettings> ApplicationSettings::getInstance() {
   if(!s_instance) {
-    s_instance = std::shared_ptr<ApplicationSettings>(new ApplicationSettings());
+    s_instance = std::make_shared<ApplicationSettings>();
   }
 
   return s_instance;
@@ -379,7 +379,7 @@ std::vector<FilePath> ApplicationSettings::getRecentProjects() const {
   constexpr auto RecentProjectKey = "user/recent_projects/recent_project";
   auto loadedRecentProjects = getPathValues(RecentProjectKey);
 
-  return loadedRecentProjects | ranges::view::transform([](auto project) {
+  return loadedRecentProjects | ranges::views::transform([](auto project) {
            return project.isAbsolute() ? project : UserPaths::getUserDataDirectoryPath().concatenate(project);
          }) |
       ranges::to<std::vector>();
