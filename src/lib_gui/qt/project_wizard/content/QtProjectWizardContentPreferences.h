@@ -1,5 +1,4 @@
-#ifndef QT_PROJECT_WIZARD_CONTENT_PREFERENCES_H
-#define QT_PROJECT_WIZARD_CONTENT_PREFERENCES_H
+#pragma once
 
 #include <QComboBox>
 
@@ -21,7 +20,7 @@ signals:
   void opened();
 
 public:
-  virtual void showPopup() {
+  void showPopup() override {
     emit opened();
   }
 };
@@ -31,15 +30,15 @@ class QtProjectWizardContentPreferences : public QtProjectWizardContent {
   Q_OBJECT
 
 public:
-  QtProjectWizardContentPreferences(QtProjectWizardWindow* window);
-  ~QtProjectWizardContentPreferences();
+  explicit QtProjectWizardContentPreferences(QtProjectWizardWindow* window);
+  ~QtProjectWizardContentPreferences() override;
 
   // QtProjectWizardContent implementation
-  virtual void populate(QGridLayout* layout, int& row) override;
+  void populate(QGridLayout* layout, int& row) override;
 
-  virtual void load() override;
-  virtual void save() override;
-  virtual bool check() override;
+  void load() override;
+  void save() override;
+  bool check() override;
 
 private slots:
   void colorSchemeChanged(int index);
@@ -59,7 +58,7 @@ private:
   QCheckBox* addCheckBox(const QString& label, const QString& text, const QString& helpText, QGridLayout* layout, int& row);
   QComboBox* addComboBox(const QString& label, const QString& helpText, QGridLayout* layout, int& row);
   QComboBox* addComboBoxWithWidgets(
-      const QString& label, const QString& helpText, std::vector<QWidget*> widgets, QGridLayout* layout, int& row);
+      const QString& label, const QString& helpText, const std::vector<QWidget*>& widgets, QGridLayout* layout, int& row);
   QComboBox* addComboBox(const QString& label, int min, int max, const QString& helpText, QGridLayout* layout, int& row);
   QComboBox* addComboBoxWithWidgets(
       const QString& label, int min, int max, const QString& helpText, std::vector<QWidget*> widgets, QGridLayout* layout, int& row);
@@ -102,5 +101,3 @@ private:
 
   QCheckBox* m_multiProcessIndexing;
 };
-
-#endif    // QT_PROJECT_WIZARD_CONTENT_PREFERENCES_H

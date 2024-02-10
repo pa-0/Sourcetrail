@@ -1,8 +1,11 @@
 #include "QtProjectWizardContentPreferences.h"
 
+#include <utility>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFontComboBox>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QTextCodec>
@@ -41,8 +44,8 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
   addTitle(QStringLiteral("USER INTERFACE"), layout, row);
 
   // font face
-  m_fontFacePlaceHolder = new QtComboBoxPlaceHolder();
-  m_fontFace = new QFontComboBox();
+  m_fontFacePlaceHolder = new QtComboBoxPlaceHolder;    // NOLINT(cppcoreguidelines-owning-memory)
+  m_fontFace = new QFontComboBox;                       // NOLINT(cppcoreguidelines-owning-memory)
   m_fontFace->setEditable(false);
   addLabelAndWidget(QStringLiteral("Font Face"), m_fontFacePlaceHolder, layout, row);
 
@@ -113,12 +116,12 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
     // screen
     addTitle(QStringLiteral("SCREEN"), layout, row);
 
-    QLabel* hint = new QLabel(QStringLiteral("<changes need restart>"));
+    auto* hint = new QLabel(QStringLiteral("<changes need restart>"));    // NOLINT(cppcoreguidelines-owning-memory)
     hint->setStyleSheet(QStringLiteral("color: grey"));
     layout->addWidget(hint, row - 1, QtProjectWizardWindow::BACK_COL, Qt::AlignRight);
 
     // auto scaling
-    m_screenAutoScalingInfoLabel = new QLabel(QLatin1String(""));
+    m_screenAutoScalingInfoLabel = new QLabel(QLatin1String(""));    // NOLINT(cppcoreguidelines-owning-memory)
     m_screenAutoScaling = addComboBoxWithWidgets(
         QStringLiteral("Auto Scaling to DPI"),
         QStringLiteral("<p>Define if automatic scaling to screen DPI resolution is active. "
@@ -140,7 +143,7 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
     connect(m_screenAutoScaling, &QComboBox::activated, this, &QtProjectWizardContentPreferences::uiAutoScalingChanges);
 
     // scale factor
-    m_screenScaleFactorInfoLabel = new QLabel(QLatin1String(""));
+    m_screenScaleFactorInfoLabel = new QLabel(QLatin1String(""));    // NOLINT(cppcoreguidelines-owning-memory)
     m_screenScaleFactor = addComboBoxWithWidgets(
         QStringLiteral("Scale Factor"),
         QStringLiteral("<p>Define a screen scale factor for the user interface of the application. "
@@ -215,7 +218,7 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
       layout,
       row);
 
-  m_logPath = new QtLocationPicker(this);
+  m_logPath = new QtLocationPicker(this);    // NOLINT(cppcoreguidelines-owning-memory)
   m_logPath->setPickDirectory(true);
   addLabelAndWidget(QStringLiteral("Log Directory Path"), m_logPath, layout, row);
   addHelpButton(QStringLiteral("Log Directory Path"), QStringLiteral("<p>Log file will be saved to this path.</p>"), layout, row);
@@ -246,7 +249,7 @@ void QtProjectWizardContentPreferences::populate(QGridLayout* layout, int& row) 
   addTitle(QStringLiteral("INDEXING"), layout, row);
 
   // indexer threads
-  m_threadsInfoLabel = new QLabel(QLatin1String(""));
+  m_threadsInfoLabel = new QLabel(QLatin1String(""));    // NOLINT(cppcoreguidelines-owning-memory)
   utility::setWidgetRetainsSpaceWhenHidden(m_threadsInfoLabel);
   m_threads = addComboBoxWithWidgets(QStringLiteral("Indexer Threads"),
                                      0,
@@ -301,12 +304,12 @@ void QtProjectWizardContentPreferences::load() {
   m_showBuiltinTypes->setChecked(appSettings->getShowBuiltinTypesInGraph());
   m_showDirectoryInCode->setChecked(appSettings->getShowDirectoryInCodeFileTitle());
 
-  if(m_screenAutoScaling) {
+  if(m_screenAutoScaling != nullptr) {
     m_screenAutoScaling->setCurrentIndex(m_screenAutoScaling->findData(appSettings->getScreenAutoScaling()));
     uiAutoScalingChanges(m_screenAutoScaling->currentIndex());
   }
 
-  if(m_screenScaleFactor) {
+  if(m_screenScaleFactor != nullptr) {
     m_screenScaleFactor->setCurrentIndex(m_screenScaleFactor->findData(appSettings->getScreenScaleFactor()));
     uiScaleFactorChanges(m_screenScaleFactor->currentIndex());
   }
@@ -317,7 +320,7 @@ void QtProjectWizardContentPreferences::load() {
   m_loggingEnabled->setChecked(appSettings->getLoggingEnabled());
   m_verboseIndexerLoggingEnabled->setChecked(appSettings->getVerboseIndexerLoggingEnabled());
   m_verboseIndexerLoggingEnabled->setEnabled(m_loggingEnabled->isChecked());
-  if(m_logPath) {
+  if(m_logPath != nullptr) {
     m_logPath->setText(QString::fromStdWString(appSettings->getLogDirectoryPath().wstr()));
   }
 
@@ -346,39 +349,42 @@ void QtProjectWizardContentPreferences::save() {
   appSettings->setShowBuiltinTypesInGraph(m_showBuiltinTypes->isChecked());
   appSettings->setShowDirectoryInCodeFileTitle(m_showDirectoryInCode->isChecked());
 
-  if(m_screenAutoScaling) {
+  if(m_screenAutoScaling != nullptr) {
     appSettings->setScreenAutoScaling(m_screenAutoScaling->currentData().toInt());
   }
 
-  if(m_screenScaleFactor) {
+  if(m_screenScaleFactor != nullptr) {
     appSettings->setScreenScaleFactor(m_screenScaleFactor->currentData().toFloat());
   }
 
   float scrollSpeed = m_scrollSpeed->text().toFloat();
-  if(scrollSpeed)
+  if(scrollSpeed != 0.0F) {
     appSettings->setScrollSpeed(scrollSpeed);
+  }
 
   appSettings->setControlsGraphZoomOnMouseWheel(m_graphZooming->isChecked());
 
   appSettings->setLoggingEnabled(m_loggingEnabled->isChecked());
   appSettings->setVerboseIndexerLoggingEnabled(m_verboseIndexerLoggingEnabled->isChecked());
-  if(m_logPath && m_logPath->getText().toStdWString() != appSettings->getLogDirectoryPath().wstr()) {
+  if((m_logPath != nullptr) && m_logPath->getText().toStdWString() != appSettings->getLogDirectoryPath().wstr()) {
     appSettings->setLogDirectoryPath(FilePath((m_logPath->getText() + '/').toStdWString()));
     Logger* logger = LogManager::getInstance()->getLoggerByType("FileLogger");
-    if(logger) {
-      const auto fileLogger = dynamic_cast<FileLogger*>(logger);
+    if(logger != nullptr) {
+      auto* const fileLogger = dynamic_cast<FileLogger*>(logger);
       fileLogger->setLogDirectory(appSettings->getLogDirectoryPath());
       fileLogger->setFileName(FileLogger::generateDatedFileName(L"log"));
     }
   }
 
   int sourcetrailPort = m_sourcetrailPort->text().toInt();
-  if(sourcetrailPort)
+  if(sourcetrailPort != 0) {
     appSettings->setSourcetrailPort(sourcetrailPort);
+  }
 
   int pluginPort = m_pluginPort->text().toInt();
-  if(pluginPort)
+  if(pluginPort != 0) {
     appSettings->setPluginPort(pluginPort);
+  }
 
   appSettings->setIndexerThreadCount(m_threads->currentIndex());    // index and value are the same
   appSettings->setMultiProcessIndexingEnabled(m_multiProcessIndexing->isChecked());
@@ -464,10 +470,10 @@ void QtProjectWizardContentPreferences::addGap(QGridLayout* layout, int& row) {
 
 QCheckBox* QtProjectWizardContentPreferences::addCheckBox(
     const QString& label, const QString& text, const QString& helpText, QGridLayout* layout, int& row) {
-  QCheckBox* checkBox = new QCheckBox(text, this);
+  auto* checkBox = new QCheckBox(text, this);    // NOLINT(cppcoreguidelines-owning-memory)
   addLabelAndWidget(label, checkBox, layout, row, Qt::AlignLeft);
 
-  if(helpText.size()) {
+  if(!helpText.isEmpty()) {
     addHelpButton(label, helpText, layout, row);
   }
 
@@ -480,10 +486,10 @@ QComboBox* QtProjectWizardContentPreferences::addComboBox(const QString& label,
                                                           const QString& helpText,
                                                           QGridLayout* layout,
                                                           int& row) {
-  QComboBox* comboBox = new QComboBox(this);
+  auto* comboBox = new QComboBox(this);    // NOLINT(cppcoreguidelines-owning-memory)
   addLabelAndWidget(label, comboBox, layout, row, Qt::AlignLeft);
 
-  if(helpText.size()) {
+  if(!helpText.isEmpty()) {
     addHelpButton(label, helpText, layout, row);
   }
 
@@ -493,10 +499,10 @@ QComboBox* QtProjectWizardContentPreferences::addComboBox(const QString& label,
 }
 
 QComboBox* QtProjectWizardContentPreferences::addComboBoxWithWidgets(
-    const QString& label, const QString& helpText, std::vector<QWidget*> widgets, QGridLayout* layout, int& row) {
-  QComboBox* comboBox = new QComboBox(this);
+    const QString& label, const QString& helpText, const std::vector<QWidget*>& widgets, QGridLayout* layout, int& row) {
+  auto* comboBox = new QComboBox(this);    // NOLINT(cppcoreguidelines-owning-memory)
 
-  QHBoxLayout* hlayout = new QHBoxLayout();
+  auto* hlayout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   hlayout->setContentsMargins(0, 0, 0, 0);
   hlayout->addWidget(comboBox);
 
@@ -504,12 +510,12 @@ QComboBox* QtProjectWizardContentPreferences::addComboBoxWithWidgets(
     hlayout->addWidget(widget);
   }
 
-  QWidget* container = new QWidget();
+  auto* container = new QWidget;    // NOLINT(cppcoreguidelines-owning-memory)
   container->setLayout(hlayout);
 
   addLabelAndWidget(label, container, layout, row, Qt::AlignLeft);
 
-  if(helpText.size()) {
+  if(!helpText.isEmpty()) {
     addHelpButton(label, helpText, layout, row);
   }
 
@@ -533,7 +539,7 @@ QComboBox* QtProjectWizardContentPreferences::addComboBox(
 
 QComboBox* QtProjectWizardContentPreferences::addComboBoxWithWidgets(
     const QString& label, int min, int max, const QString& helpText, std::vector<QWidget*> widgets, QGridLayout* layout, int& row) {
-  QComboBox* comboBox = addComboBoxWithWidgets(label, helpText, widgets, layout, row);
+  QComboBox* comboBox = addComboBoxWithWidgets(label, helpText, std::move(widgets), layout, row);
 
   if(min != max) {
     for(int i = min; i <= max; i++) {
@@ -548,13 +554,13 @@ QLineEdit* QtProjectWizardContentPreferences::addLineEdit(const QString& label,
                                                           const QString& helpText,
                                                           QGridLayout* layout,
                                                           int& row) {
-  QLineEdit* lineEdit = new QLineEdit(this);
+  auto* lineEdit = new QLineEdit(this);    // NOLINT(cppcoreguidelines-owning-memory)
   lineEdit->setObjectName(QStringLiteral("name"));
-  lineEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
+  lineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
 
   addLabelAndWidget(label, lineEdit, layout, row);
 
-  if(helpText.size()) {
+  if(!helpText.isEmpty()) {
     addHelpButton(label, helpText, layout, row);
   }
 
