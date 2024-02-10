@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QScrollArea>
 #include <QTableWidget>
 
@@ -8,7 +7,7 @@
 class QtShortcutTable : public QTableWidget {
   Q_OBJECT
 public:
-  QtShortcutTable(QWidget* parent = nullptr);
+  explicit QtShortcutTable(QWidget* parent = nullptr);
   void updateSize();
 
 protected:
@@ -18,7 +17,7 @@ protected:
 class QtKeyboardShortcuts : public QtWindow {
   Q_OBJECT
 public:
-  QtKeyboardShortcuts(QWidget* parent = nullptr);
+  explicit QtKeyboardShortcuts(QWidget* parent = nullptr);
   ~QtKeyboardShortcuts() override;
 
   [[nodiscard]] QSize sizeHint() const override;
@@ -31,7 +30,7 @@ private:
     const QString name;
     const QString shortcut;
 
-    Shortcut(const QString& name, const QString& shortcut);
+    Shortcut(QString name, QString shortcut);
     static Shortcut defaultOrMac(const QString& name, const QString& defaultShortcut, const QString& macShortcut);
     static Shortcut winMacOrLinux(const QString& name,
                                   const QString& winShortcut,

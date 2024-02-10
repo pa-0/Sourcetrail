@@ -1,7 +1,11 @@
 #include "QtKeyboardShortcuts.h"
 
+#include <utility>
+
 #include <QHeaderView>
 #include <QLabel>
+#include <QVBoxLayout>
+#include <QWheelEvent>
 
 #include "ResourcePaths.h"
 #include "utilityQt.h"
@@ -23,16 +27,16 @@ QtKeyboardShortcuts::QtKeyboardShortcuts(QWidget* parent) : QtWindow(false, pare
   setScrollAble(true);
 }
 
-QtKeyboardShortcuts::~QtKeyboardShortcuts() {}
+QtKeyboardShortcuts::~QtKeyboardShortcuts() = default;
 
 QSize QtKeyboardShortcuts::sizeHint() const {
-  return QSize(666, 666);
+  return {666, 666};
 }
 
 void QtKeyboardShortcuts::populateWindow(QWidget* widget) {
-  QVBoxLayout* layout = new QVBoxLayout(widget);
+  auto* layout = new QVBoxLayout(widget);    // NOLINT(cppcoreguidelines-owning-memory)
 
-  QLabel* generalLabel = new QLabel(this);
+  auto* generalLabel = new QLabel(this);    // NOLINT(cppcoreguidelines-owning-memory)
   generalLabel->setObjectName(QStringLiteral("general_label"));
   generalLabel->setText(QStringLiteral("General Shortcuts"));
   layout->addWidget(generalLabel);
@@ -41,7 +45,7 @@ void QtKeyboardShortcuts::populateWindow(QWidget* widget) {
 
   layout->addSpacing(20);
 
-  QLabel* codeLabel = new QLabel(this);
+  auto* codeLabel = new QLabel(this);    // NOLINT(cppcoreguidelines-owning-memory)
   codeLabel->setObjectName(QStringLiteral("code_label"));
   codeLabel->setText(QStringLiteral("Code View Shortcuts"));
   layout->addWidget(codeLabel);
@@ -50,7 +54,7 @@ void QtKeyboardShortcuts::populateWindow(QWidget* widget) {
 
   layout->addSpacing(20);
 
-  QLabel* graphLabel = new QLabel(this);
+  auto* graphLabel = new QLabel(this);    // NOLINT(cppcoreguidelines-owning-memory)
   graphLabel->setObjectName(QStringLiteral("graph_label"));
   graphLabel->setText(QStringLiteral("Graph View Shortcuts"));
   layout->addWidget(graphLabel);
@@ -71,7 +75,8 @@ void QtKeyboardShortcuts::windowReady() {
   setPreviousVisible(false);
 }
 
-QtKeyboardShortcuts::Shortcut::Shortcut(const QString& name_, const QString& shortcut_) : name(name_), shortcut(shortcut_) {}
+QtKeyboardShortcuts::Shortcut::Shortcut(QString name_, QString shortcut_)
+    : name(std::move(name_)), shortcut(std::move(shortcut_)) {}
 
 QtKeyboardShortcuts::Shortcut QtKeyboardShortcuts::Shortcut::defaultOrMac(const QString& name_,
                                                                           const QString& defaultShortcut,
@@ -97,7 +102,7 @@ QtKeyboardShortcuts::Shortcut QtKeyboardShortcuts::Shortcut::winMacOrLinux(const
 }
 
 QtShortcutTable* QtKeyboardShortcuts::createTableWidget(const std::string& objectName) {
-  QtShortcutTable* table = new QtShortcutTable(this);
+  auto* table = new QtShortcutTable(this);    // NOLINT(cppcoreguidelines-owning-memory)
   table->setObjectName(objectName.c_str());
 
   table->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
@@ -115,8 +120,8 @@ QtShortcutTable* QtKeyboardShortcuts::createTableWidget(const std::string& objec
   table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
   table->setColumnCount(2);
-  table->setHorizontalHeaderItem(0, new QTableWidgetItem(QStringLiteral("Command")));
-  table->setHorizontalHeaderItem(1, new QTableWidgetItem(QStringLiteral("Shortcut")));
+  table->setHorizontalHeaderItem(0, new QTableWidgetItem(QStringLiteral("Command")));    // NOLINT(cppcoreguidelines-owning-memory)
+  table->setHorizontalHeaderItem(1, new QTableWidgetItem(QStringLiteral("Shortcut")));    // NOLINT(cppcoreguidelines-owning-memory)
 
   return table;
 }
@@ -125,8 +130,8 @@ void QtKeyboardShortcuts::addShortcuts(QtShortcutTable* table, const std::vector
   table->setRowCount(static_cast<int>(shortcuts.size()));
 
   for(size_t i = 0; i < shortcuts.size(); ++i) {
-    table->setItem(static_cast<int>(i), 0, new QTableWidgetItem(shortcuts[i].name));
-    table->setItem(static_cast<int>(i), 1, new QTableWidgetItem(shortcuts[i].shortcut));
+    table->setItem(static_cast<int>(i), 0, new QTableWidgetItem(shortcuts[i].name));    // NOLINT(cppcoreguidelines-owning-memory)
+    table->setItem(static_cast<int>(i), 1, new QTableWidgetItem(shortcuts[i].shortcut));    // NOLINT(cppcoreguidelines-owning-memory)
   }
 
   table->updateSize();
