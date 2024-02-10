@@ -1,5 +1,4 @@
-#ifndef QT_CUSTOM_TRAIL_VIEW_H
-#define QT_CUSTOM_TRAIL_VIEW_H
+#pragma once
 
 #include <QWidget>
 
@@ -20,7 +19,7 @@ class QtCustomTrailView
     : public QWidget
     , public CustomTrailView {
 public:
-  QtCustomTrailView(ViewLayout*);
+  explicit QtCustomTrailView(ViewLayout* viewLayout);
 
   // View implementation
   void createWidgetWrapper() override;
@@ -46,10 +45,10 @@ private:
                           const std::vector<QColor>& colors,
                           std::vector<QCheckBox*>* checkBoxes,
                           size_t filtersInFirstColumn);
-  QHBoxLayout* addCheckButtons(const std::vector<QCheckBox*>& checkBoxes) const;
+  [[nodiscard]] QHBoxLayout* addCheckButtons(const std::vector<QCheckBox*>& checkBoxes) const;
 
-  NodeKindMask getCheckedNodeTypes() const;
-  Edge::TypeMask getCheckedEdgeTypes() const;
+  [[nodiscard]] NodeKindMask getCheckedNodeTypes() const;
+  [[nodiscard]] Edge::TypeMask getCheckedEdgeTypes() const;
 
   void setError(const QString& error);
 
@@ -80,5 +79,3 @@ private:
 
   QLabel* m_errorLabel;
 };
-
-#endif    // QT_CUSTOM_TRAIL_VIEW_H
