@@ -1,5 +1,4 @@
-#ifndef QT_INDEXING_START_DIALOG_H
-#define QT_INDEXING_START_DIALOG_H
+#pragma once
 
 #include "QtIndexingDialog.h"
 #include "RefreshInfo.h"
@@ -20,8 +19,8 @@ public:
                         const RefreshMode initialMode,
                         bool enabledShallowOption,
                         bool initialShallowState,
-                        QWidget* parent = 0);
-  QSize sizeHint() const override;
+                        QWidget* parent = nullptr);
+  [[nodiscard]] QSize sizeHint() const override;
 
   void updateRefreshInfo(const RefreshInfo& info);
 
@@ -38,5 +37,3 @@ private:
   QLabel* m_indexLabel;
   std::map<RefreshMode, QRadioButton*> m_refreshModeButtons;
 };
-
-#endif    // QT_INDEXING_START_DIALOG_H

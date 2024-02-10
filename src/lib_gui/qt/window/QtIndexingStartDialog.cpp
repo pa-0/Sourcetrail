@@ -1,9 +1,12 @@
 #include "QtIndexingStartDialog.h"
 
 #include <QCheckBox>
+#include <QHBoxLayout>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QVBoxLayout>
 
 #include "QtHelpButton.h"
 
@@ -12,34 +15,34 @@ QtIndexingStartDialog::QtIndexingStartDialog(const std::vector<RefreshMode>& ena
                                              bool enabledShallowOption,
                                              bool initialShallowState,
                                              QWidget* parent)
-    : QtIndexingDialog(true, parent) {
+    : QtIndexingDialog(true, parent)
+    , m_clearLabel(QtIndexingDialog::createMessageLabel(m_layout))
+    , m_indexLabel(QtIndexingDialog::createMessageLabel(m_layout)) {
   setSizeGripStyle(false);
 
   QtIndexingDialog::createTitleLabel(QStringLiteral("Start Indexing"), m_layout);
   m_layout->addSpacing(5);
 
-  m_clearLabel = QtIndexingDialog::createMessageLabel(m_layout);
-  m_indexLabel = QtIndexingDialog::createMessageLabel(m_layout);
 
   m_clearLabel->setVisible(false);
   m_indexLabel->setVisible(false);
 
   m_layout->addStretch();
 
-  QHBoxLayout* subLayout = new QHBoxLayout();
+  auto* subLayout = new QHBoxLayout();    // NOLINT(cppcoreguidelines-owning-memory)
   subLayout->addStretch();
 
-  QVBoxLayout* modeLayout = new QVBoxLayout();
+  auto* modeLayout = new QVBoxLayout();    // NOLINT(cppcoreguidelines-owning-memory)
   modeLayout->setSpacing(7);
 
-  QHBoxLayout* modeTitleLayout = new QHBoxLayout();
+  auto* modeTitleLayout = new QHBoxLayout();    // NOLINT(cppcoreguidelines-owning-memory)
   modeTitleLayout->setSpacing(7);
 
   QLabel* modeLabel = QtIndexingDialog::createMessageLabel(modeTitleLayout);
   modeLabel->setText(QStringLiteral("Mode:"));
   modeLabel->setAlignment(Qt::AlignLeft);
 
-  QtHelpButton* helpButton = new QtHelpButton(QtHelpButtonInfo(
+  auto* helpButton = new QtHelpButton(QtHelpButtonInfo(
       QStringLiteral("Indexing Modes"),
       QString("<b>Updated files:</b> Reindexes all files that were modified since the last "
               "indexing, all new files and all files depending "
@@ -64,29 +67,31 @@ QtIndexingStartDialog::QtIndexingStartDialog(const std::vector<RefreshMode>& ena
   modeLayout->addLayout(modeTitleLayout);
   modeLayout->addSpacing(5);
 
-  m_refreshModeButtons.emplace(REFRESH_UPDATED_FILES, new QRadioButton(QStringLiteral("Updated files")));
   m_refreshModeButtons.emplace(
-      REFRESH_UPDATED_AND_INCOMPLETE_FILES, new QRadioButton(QStringLiteral("Incomplete && updated files")));
-  m_refreshModeButtons.emplace(REFRESH_ALL_FILES, new QRadioButton(QStringLiteral("All files")));
+      REFRESH_UPDATED_FILES, new QRadioButton(QStringLiteral("Updated files")));    // NOLINT(cppcoreguidelines-owning-memory)
+  m_refreshModeButtons.emplace(
+      REFRESH_UPDATED_AND_INCOMPLETE_FILES,
+      new QRadioButton(QStringLiteral("Incomplete && updated files")));    // NOLINT(cppcoreguidelines-owning-memory)
+  m_refreshModeButtons.emplace(
+      REFRESH_ALL_FILES, new QRadioButton(QStringLiteral("All files")));    // NOLINT(cppcoreguidelines-owning-memory)
 
   std::function<void(bool)> func = [=](bool checked) {
     if(!checked) {
       return;
     }
 
-    for(auto p : m_refreshModeButtons) {
-      if(p.second->isChecked()) {
-        emit setMode(p.first);
+    for(const auto& [refreshMode, button] : m_refreshModeButtons) {
+      if(button->isChecked()) {
+        emit setMode(refreshMode);
         return;
       }
     }
   };
 
-  for(auto p : m_refreshModeButtons) {
-    QRadioButton* button = p.second;
+  for(const auto& [refreshMode, button] : m_refreshModeButtons) {
     button->setObjectName(QStringLiteral("option"));
     button->setEnabled(false);
-    if(p.first == initialMode) {
+    if(refreshMode == initialMode) {
       button->setChecked(true);
     }
     modeLayout->addWidget(button);
@@ -98,7 +103,7 @@ QtIndexingStartDialog::QtIndexingStartDialog(const std::vector<RefreshMode>& ena
   }
 
   if(enabledShallowOption) {
-    QCheckBox* shallowIndexingCheckBox = new QCheckBox(QStringLiteral("Shallow Python Indexing"));
+    auto* shallowIndexingCheckBox = new QCheckBox(QStringLiteral("Shallow Python Indexing"));
     connect(shallowIndexingCheckBox, &QCheckBox::toggled, [=]() { emit setShallowIndexing(shallowIndexingCheckBox->isChecked()); });
     shallowIndexingCheckBox->setChecked(initialShallowState);
     modeLayout->addWidget(shallowIndexingCheckBox);
@@ -110,15 +115,15 @@ QtIndexingStartDialog::QtIndexingStartDialog(const std::vector<RefreshMode>& ena
   m_layout->addSpacing(20);
 
   {
-    QHBoxLayout* buttons = new QHBoxLayout();
-    QPushButton* cancelButton = new QPushButton(QStringLiteral("Cancel"));
+    auto* buttons = new QHBoxLayout();                                 // NOLINT(cppcoreguidelines-owning-memory)
+    auto* cancelButton = new QPushButton(QStringLiteral("Cancel"));    // NOLINT(cppcoreguidelines-owning-memory)
     cancelButton->setObjectName(QStringLiteral("windowButton"));
     connect(cancelButton, &QPushButton::clicked, this, &QtIndexingStartDialog::onCancelPressed);
     buttons->addWidget(cancelButton);
 
     buttons->addStretch();
 
-    QPushButton* startButton = new QPushButton(QStringLiteral("Start"));
+    auto* startButton = new QPushButton(QStringLiteral("Start"));    // NOLINT(cppcoreguidelines-owning-memory)
     startButton->setObjectName(QStringLiteral("windowButton"));
     startButton->setDefault(true);
     connect(startButton, &QPushButton::clicked, this, &QtIndexingStartDialog::onStartPressed);
@@ -130,7 +135,7 @@ QtIndexingStartDialog::QtIndexingStartDialog(const std::vector<RefreshMode>& ena
 }
 
 QSize QtIndexingStartDialog::sizeHint() const {
-  return QSize(350, 310);
+  return {350, 310};
 }
 
 void QtIndexingStartDialog::updateRefreshInfo(const RefreshInfo& info) {
@@ -145,7 +150,7 @@ void QtIndexingStartDialog::updateRefreshInfo(const RefreshInfo& info) {
   m_clearLabel->setText("Files to clear: " + QString::number(clearCount));
   m_indexLabel->setText("Source files to index: " + QString::number(indexCount));
 
-  m_clearLabel->setVisible(clearCount && info.mode != REFRESH_ALL_FILES);
+  m_clearLabel->setVisible((clearCount != 0U) && info.mode != REFRESH_ALL_FILES);
   m_indexLabel->setVisible(true);
 }
 
