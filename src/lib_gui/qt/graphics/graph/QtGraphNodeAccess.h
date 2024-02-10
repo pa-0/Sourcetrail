@@ -1,27 +1,25 @@
-#ifndef QT_GRAPH_NODE_ACCESS_H
-#define QT_GRAPH_NODE_ACCESS_H
-
+#pragma once
 #include "AccessKind.h"
 #include "QtGraphNode.h"
 
 class QtGraphNodeAccess : public QtGraphNode {
   Q_OBJECT
 public:
-  QtGraphNodeAccess(AccessKind accessKind);
-  virtual ~QtGraphNodeAccess();
+  explicit QtGraphNodeAccess(AccessKind accessKind);
+  ~QtGraphNodeAccess() override;
 
-  AccessKind getAccessKind() const;
+  [[nodiscard]] AccessKind getAccessKind() const;
 
   // QtGraphNode implementation
-  virtual bool isAccessNode() const override;
+  [[nodiscard]] bool isAccessNode() const override;
 
-  virtual void addSubNode(QtGraphNode* node) override;
-  virtual void updateStyle() override;
+  void addSubNode(QtGraphNode* node) override;
+  void updateStyle() override;
 
   void hideLabel();
 
 protected:
-  virtual void matchName(const std::wstring& /*query*/, std::vector<QtGraphNode*>* /*matchedNodes*/) override {}
+  void matchName(const std::wstring& /*query*/, std::vector<QtGraphNode*>* /*matchedNodes*/) override {}
 
 private:
   AccessKind m_accessKind;
@@ -29,5 +27,3 @@ private:
   QGraphicsPixmapItem* m_accessIcon;
   int m_accessIconSize;
 };
-
-#endif    // QT_GRAPH_NODE_ACCESS_H

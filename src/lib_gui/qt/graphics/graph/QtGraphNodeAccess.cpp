@@ -12,7 +12,7 @@
 #include "utilityQt.h"
 
 QtGraphNodeAccess::QtGraphNodeAccess(AccessKind accessKind)
-    : QtGraphNode(), m_accessKind(accessKind), m_accessIcon(nullptr), m_accessIconSize(16) {
+    : m_accessKind(accessKind), m_accessIcon(nullptr), m_accessIconSize(16) {
   std::wstring accessString = TokenComponentAccess::getAccessString(m_accessKind);
   this->setName(accessString);
   this->setCursor(Qt::ArrowCursor);
@@ -40,18 +40,18 @@ QtGraphNodeAccess::QtGraphNodeAccess(AccessKind accessKind)
     break;
   }
 
-  if(iconFileName.size() > 0) {
+  if(!iconFileName.empty()) {
     QtDeviceScaledPixmap pixmap(QString::fromStdWString(
         ResourcePaths::getGuiDirectoryPath().concatenate(L"graph_view/images/" + iconFileName + L".png").wstr()));
     pixmap.scaleToHeight(m_accessIconSize);
 
-    m_accessIcon = new QGraphicsPixmapItem(pixmap.pixmap(), this);
+    m_accessIcon = new QGraphicsPixmapItem(pixmap.pixmap(), this);    // NOLINT(cppcoreguidelines-owning-memory)
     m_accessIcon->setTransformationMode(Qt::SmoothTransformation);
     m_accessIcon->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
   }
 }
 
-QtGraphNodeAccess::~QtGraphNodeAccess() {}
+QtGraphNodeAccess::~QtGraphNodeAccess() = default;
 
 AccessKind QtGraphNodeAccess::getAccessKind() const {
   return m_accessKind;
@@ -74,15 +74,15 @@ void QtGraphNodeAccess::updateStyle() {
   font.setCapitalization(QFont::AllUppercase);
   m_text->setFont(font);
 
-  if(m_accessIcon) {
+  if(m_accessIcon != nullptr) {
     m_text->setPos(static_cast<qreal>(style.textOffset.x + m_accessIconSize + 3),
-                   static_cast<qreal>(style.textOffset.y + m_accessIconSize - style.fontSize));
+                   static_cast<qreal>(style.textOffset.y + m_accessIconSize - static_cast<int>(style.fontSize)));
     m_accessIcon->setPos(style.textOffset.x, style.textOffset.y);
 
     m_accessIcon->setPixmap(utility::colorizePixmap(m_accessIcon->pixmap(), style.color.icon.c_str()));
   } else {
-    m_text->setPos(
-        static_cast<qreal>(style.textOffset.x), static_cast<qreal>(style.textOffset.y + m_accessIconSize + 2 - style.fontSize));
+    m_text->setPos(static_cast<qreal>(style.textOffset.x),
+                   static_cast<qreal>(style.textOffset.y + m_accessIconSize + 2 - static_cast<int>(style.fontSize)));
   }
 }
 
