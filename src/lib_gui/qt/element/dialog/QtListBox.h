@@ -1,10 +1,7 @@
-#ifndef QT_LIST_BOX_H
-#define QT_LIST_BOX_H
+#pragma once
 
 #include <QFrame>
 #include <QListWidget>
-
-#include "FilePath.h"
 
 class QHBoxLayout;
 class QListWidgetItem;
@@ -17,7 +14,7 @@ class QtListWidget : public QListWidget {
   Q_OBJECT
 
 public:
-  QtListWidget(QWidget* parent = nullptr) : QListWidget(parent) {}
+  explicit QtListWidget(QWidget* parent = nullptr) : QListWidget(parent) {}
 
 protected:
   void mouseDoubleClickEvent(QMouseEvent* event) override;
@@ -28,8 +25,8 @@ class QtListBox : public QFrame {
   Q_OBJECT
 
 public:
-  QtListBox(QWidget* parent, const QString& listName);
-  virtual ~QtListBox() = default;
+  QtListBox(QWidget* parent, QString listName);
+  ~QtListBox() override;
 
   void clear();
 
@@ -64,5 +61,3 @@ private:
 
   std::shared_ptr<QtTextEditDialog> m_editDialog;
 };
-
-#endif    // QT_LIST_BOX_H

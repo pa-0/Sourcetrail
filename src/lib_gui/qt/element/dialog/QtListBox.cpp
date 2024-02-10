@@ -1,11 +1,14 @@
 #include "QtListBox.h"
 
+#include <utility>
+
 #include <QBoxLayout>
 #include <QLabel>
 #include <QScrollBar>
+#include <QWheelEvent>
 
 #include "QtIconButton.h"
-#include "QtStringListBoxItem.h"
+#include "QtListBoxItem.h"
 #include "QtTextEditDialog.h"
 #include "ResourcePaths.h"
 #include "utilityQt.h"
@@ -27,13 +30,13 @@ void QtListWidget::wheelEvent(QWheelEvent* event) {
   }
 }
 
-QtListBox::QtListBox(QWidget* parent, const QString& listName) : QFrame(parent), m_listName(listName) {
+QtListBox::QtListBox(QWidget* parent, QString listName)
+    : QFrame(parent), m_list(new QtListWidget(this)), m_innerBarLayout(new QHBoxLayout), m_listName(std::move(listName)) {
   QBoxLayout* layout = new QVBoxLayout();
   layout->setSpacing(0);
   layout->setContentsMargins(0, 6, 0, 0);
   layout->setAlignment(Qt::AlignTop);
 
-  m_list = new QtListWidget(this);
   m_list->setObjectName(QStringLiteral("list"));
   m_list->setAttribute(Qt::WA_MacShowFocusRect, 0);
   connect(m_list, &QListWidget::doubleClicked, this, &QtListBox::doubleClicked);
@@ -41,10 +44,10 @@ QtListBox::QtListBox(QWidget* parent, const QString& listName) : QFrame(parent),
   setStyleSheet(utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/listbox.css")).c_str());
   layout->addWidget(m_list, 5);
 
-  QWidget* buttonContainer = new QWidget(this);
+  auto* buttonContainer = new QWidget(this);    // NOLINT(cppcoreguidelines-owning-memory)
   buttonContainer->setObjectName(QStringLiteral("bar"));
 
-  QHBoxLayout* barLayout = new QHBoxLayout();
+  auto* barLayout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   barLayout->setContentsMargins(8, 4, 8, 2);
   barLayout->setSpacing(0);
 
@@ -64,7 +67,6 @@ QtListBox::QtListBox(QWidget* parent, const QString& listName) : QFrame(parent),
 
   barLayout->addStretch();
 
-  m_innerBarLayout = new QHBoxLayout();
   barLayout->addLayout(m_innerBarLayout);
 
   QPushButton* editButton = new QtIconButton(
@@ -86,12 +88,14 @@ QtListBox::QtListBox(QWidget* parent, const QString& listName) : QFrame(parent),
   setMaximumHeight(160);
 }
 
+QtListBox::~QtListBox() = default;
+
 void QtListBox::clear() {
   m_list->clear();
 }
 
 void QtListBox::addWidgetToBar(QWidget* widget) {
-  if(m_innerBarLayout) {
+  if(m_innerBarLayout != nullptr) {
     m_innerBarLayout->addWidget(widget);
   }
 }
@@ -111,7 +115,7 @@ void QtListBox::selectItem(QListWidgetItem* item) {
 }
 
 QtListBoxItem* QtListBox::addListBoxItem() {
-  QListWidgetItem* item = new QListWidgetItem(m_list);
+  auto* item = new QListWidgetItem(m_list);    // NOLINT(cppcoreguidelines-owning-memory)
   m_list->addItem(item);
 
   QtListBoxItem* widget = createListBoxItem(item);
@@ -148,7 +152,7 @@ void QtListBox::showEditDialog() {
 
     std::vector<std::wstring> list;
     for(int i = 0; i < m_list->count(); ++i) {
-      QtListBoxItem* item = dynamic_cast<QtListBoxItem*>(m_list->itemWidget(m_list->item(i)));
+      auto* item = dynamic_cast<QtListBoxItem*>(m_list->itemWidget(m_list->item(i)));
       if(!item->getReadOnly()) {
         list.push_back(item->getText().toStdWString());
       }
@@ -174,8 +178,7 @@ void QtListBox::canceledEditDialog() {
 void QtListBox::savedEditDialog() {
   std::vector<std::wstring> readOnlyLines;
   for(int i = 0; i < m_list->count(); ++i) {
-    QtListBoxItem* item = dynamic_cast<QtListBoxItem*>(m_list->itemWidget(m_list->item(i)));
-    if(item->getReadOnly()) {
+    if(auto* item = dynamic_cast<QtListBoxItem*>(m_list->itemWidget(m_list->item(i))); item != nullptr && item->getReadOnly()) {
       readOnlyLines.push_back(item->getText().toStdWString());
     }
   }
@@ -185,7 +188,7 @@ void QtListBox::savedEditDialog() {
     lines[i] = utility::trim(lines[i]);
 
     if(lines[i].empty()) {
-      lines.erase(lines.begin() + i);
+      lines.erase(lines.begin() + static_cast<long>(i));
       i--;
     }
   }
