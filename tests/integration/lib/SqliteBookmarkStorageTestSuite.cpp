@@ -22,7 +22,7 @@ TEST(SqliteBookmarkStorage, addBookmarks) {
 
   FileSystem::remove(databasePath);
 
-  EXPECT_TRUE(result == bookmarkCount);
+  EXPECT_EQ(result, bookmarkCount);
 }
 
 TEST(SqliteBookmarkStorage, addBookmarkedNode) {
@@ -47,7 +47,7 @@ TEST(SqliteBookmarkStorage, addBookmarkedNode) {
 
   FileSystem::remove(databasePath);
 
-  EXPECT_TRUE(result == bookmarkCount);
+  EXPECT_EQ(result, bookmarkCount);
 }
 
 TEST(SqliteBookmarkStorage, removeBookmarkAlsoRemovesBookmarkedNode) {
@@ -70,7 +70,8 @@ TEST(SqliteBookmarkStorage, removeBookmarkAlsoRemovesBookmarkedNode) {
 
   FileSystem::remove(databasePath);
 
-  EXPECT_TRUE(result == 0);
+  EXPECT_EQ(0, result);
+  ;
 }
 
 TEST(SqliteBookmarkStorage, editNodeBookmark) {
@@ -97,6 +98,6 @@ TEST(SqliteBookmarkStorage, editNodeBookmark) {
 
   FileSystem::remove(databasePath);
 
-  EXPECT_TRUE(updatedName == storageBookmark.name);
-  EXPECT_TRUE(updatedComment == storageBookmark.comment);
+  EXPECT_EQ(updatedName, storageBookmark.name);
+  EXPECT_EQ(updatedComment, storageBookmark.comment);
 }
