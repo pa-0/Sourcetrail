@@ -4,7 +4,6 @@
 
 #include <tinyxml.h>
 
-#include "FilePath.h"
 #include "TextAccess.h"
 #include "logging.h"
 #include "utility.h"
@@ -44,18 +43,16 @@ void ConfigManager::removeValues(const std::string& key) {
 }
 
 bool ConfigManager::isValueDefined(const std::string& key) const {
-  std::multimap<std::string, std::string>::const_iterator it = m_values.find(key);
-
-  return (it != m_values.end());
+  return (m_values.find(key) != m_values.end());
 }
 
 std::vector<std::string> ConfigManager::getSublevelKeys(const std::string& key) const {
   std::set<std::string> keys;
-  for(std::multimap<std::string, std::string>::const_iterator it = m_values.begin(); it != m_values.end(); it++) {
-    if(utility::isPrefix(key, it->first)) {
-      size_t startPos = it->first.find("/", key.size());
+  for(const auto& m_value : m_values) {
+    if(utility::isPrefix(key, m_value.first)) {
+      size_t startPos = m_value.first.find("/", key.size());
       if(startPos == key.size()) {
-        std::string sublevelKey = it->first.substr(0, it->first.find("/", startPos + 1));
+        std::string sublevelKey = m_value.first.substr(0, m_value.first.find("/", startPos + 1));
         keys.insert(sublevelKey);
       }
     }
@@ -147,7 +144,7 @@ void ConfigManager::parseSubtree(TiXmlNode* currentNode, const std::string& curr
     std::string key = currentPath.substr(0, currentPath.size() - 1);
     m_values.insert(std::pair<std::string, std::string>(key, currentNode->ToText()->Value()));
   } else {
-    for(TiXmlNode* childNode = currentNode->FirstChild(); childNode; childNode = childNode->NextSibling()) {
+    for(TiXmlNode* childNode = currentNode->FirstChild(); childNode != nullptr; childNode = childNode->NextSibling()) {
       parseSubtree(childNode, currentPath + std::string(currentNode->Value()) + "/");
     }
   }

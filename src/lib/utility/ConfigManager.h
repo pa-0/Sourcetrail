@@ -11,7 +11,6 @@
 
 class TextAccess;
 class TiXmlNode;
-class FilePath;
 
 class ConfigManager final {
 public:
@@ -127,7 +126,7 @@ template <typename T>
 std::optional<std::vector<T>> ConfigManager::getValues(const std::string& key) const {
   if(const auto& [first, last] = m_values.equal_range(key); first != last) {
     std::vector<T> result;
-    result.reserve(std::distance(first, last));
+    result.reserve(static_cast<size_t>(std::distance(first, last)));
     for(auto cit = first; cit != last; ++cit) {
       result.push_back(fromString<T>(cit->second));
     }
@@ -150,9 +149,7 @@ void ConfigManager::setValue(const std::string& key, const T& value) {
 
 template <typename T>
 void ConfigManager::setValues(const std::string& key, const std::vector<T>& values) {
-  auto it = m_values.find(key);
-
-  if(it != m_values.end()) {
+  if(auto iterator = m_values.find(key); iterator != m_values.end()) {
     m_values.erase(key);
   }
   for(const T& value : values) {
