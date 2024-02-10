@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 #include "FilePath.h"
 #include "utility.h"
@@ -29,21 +30,21 @@ void QtSelectPathsDialog::setPathsList(const std::vector<FilePath>& paths,
                                        const FilePath& rootPathForRelativePaths) {
   std::set<FilePath> checked(checkedPaths.begin(), checkedPaths.end());
 
-  for(FilePath s : utility::unique(utility::concat(paths, checkedPaths))) {
-    auto* item = new QListWidgetItem(QString::fromStdWString(s.wstr()), m_list);
+  for(FilePath filePath : utility::unique(utility::concat(paths, checkedPaths))) {
+    auto* item = new QListWidgetItem(QString::fromStdWString(filePath.wstr()), m_list);
     item->setFlags(item->flags() | Qt::ItemIsUserCheckable);    // set checkable flag
 
-    if(checked.find(s) == checked.end()) {
+    if(checked.find(filePath) == checked.end()) {
       item->setCheckState(Qt::Unchecked);    // AND initialize check state
     } else {
       item->setCheckState(Qt::Checked);
     }
 
-    if(!s.isAbsolute()) {
-      s = rootPathForRelativePaths.getConcatenated(s);
+    if(!filePath.isAbsolute()) {
+      filePath = rootPathForRelativePaths.getConcatenated(filePath);
     }
 
-    if(!s.exists()) {
+    if(!filePath.exists()) {
       item->setForeground(Qt::red);
       item->setToolTip(QStringLiteral("Path does not exist"));
       item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
@@ -61,22 +62,22 @@ void QtSelectPathsDialog::checkSelected(bool checked) {
 }
 
 void QtSelectPathsDialog::populateWindow(QWidget* widget) {
-  auto* layout = new QVBoxLayout();
+  auto* layout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setContentsMargins(0, 0, 0, 0);
 
-  auto* description = new QLabel(m_description);
+  auto* description = new QLabel(m_description);    // NOLINT(cppcoreguidelines-owning-memory)
   description->setObjectName(QStringLiteral("description"));
   description->setWordWrap(true);
   layout->addWidget(description);
 
-  m_list = new QListWidget();
+  m_list = new QListWidget;    // NOLINT(cppcoreguidelines-owning-memory)
   m_list->setObjectName(QStringLiteral("pathList"));
   m_list->setEditTriggers(QAbstractItemView::NoEditTriggers);
   m_list->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  m_list->setAttribute(Qt::WA_MacShowFocusRect, 0);
+  m_list->setAttribute(Qt::WA_MacShowFocusRect, false);
   layout->addWidget(m_list);
 
-  auto* buttonLayout = new QHBoxLayout();
+  auto* buttonLayout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   buttonLayout->setContentsMargins(0, 0, 0, 0);
 
   auto* checkAllButton = new QPushButton(QStringLiteral("check all"));
