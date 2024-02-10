@@ -1,5 +1,5 @@
 #include "QtGraphicsView.h"
-// Qt5
+
 #include <QApplication>
 #include <QClipboard>
 #include <QDir>
@@ -9,7 +9,7 @@
 #include <QScrollBar>
 #include <QSvgGenerator>
 #include <QTimer>
-// internal
+
 #include "ApplicationSettings.h"
 #include "GraphFocusHandler.h"
 #include "MessageActivateLegend.h"
@@ -36,10 +36,7 @@
 QtGraphicsView::QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent)
     : QGraphicsView(parent)
     , m_focusHandler(focusHandler)
-    , m_zoomFactor(ApplicationSettings::getInstance()->getGraphZoomLevel())
-    , m_appZoomFactor(1.0f)
-    , m_zoomInButtonSpeed(20.0f)
-    , m_zoomOutButtonSpeed(-20.0f) {
+    , m_zoomFactor(ApplicationSettings::getInstance()->getGraphZoomLevel()) {
   QString modifierName = utility::getOsType() == OS_MAC ? QStringLiteral("Cmd") : QStringLiteral("Ctrl");
 
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
@@ -171,7 +168,7 @@ QtGraphNode* QtGraphicsView::getNodeAtCursorPosition() const {
 
   QPointF point = mapToScene(mapFromGlobal(QCursor::pos()));
   QGraphicsItem* item = scene()->itemAt(point, QTransform());
-  if(item) {
+  if(item != nullptr) {
     node = dynamic_cast<QtGraphNode*>(item->parentItem());
   }
 
@@ -183,7 +180,7 @@ QtGraphEdge* QtGraphicsView::getEdgeAtCursorPosition() const {
 
   QPointF point = mapToScene(mapFromGlobal(QCursor::pos()));
   QGraphicsItem* item = scene()->itemAt(point, QTransform());
-  if(item) {
+  if(item != nullptr) {
     edge = dynamic_cast<QtGraphEdge*>(item->parentItem());
   }
 
@@ -205,16 +202,16 @@ void QtGraphicsView::ensureVisibleAnimated(const QRectF& rect, int xmargin, int 
     horizontalScrollBar()->setValue(xval);
     verticalScrollBar()->setValue(yval);
 
-    QParallelAnimationGroup* move = new QParallelAnimationGroup();
+    auto* move = new QParallelAnimationGroup;
 
-    QPropertyAnimation* xanim = new QPropertyAnimation(horizontalScrollBar(), "value");
+    auto* xanim = new QPropertyAnimation(horizontalScrollBar(), "value");
     xanim->setDuration(150);
     xanim->setStartValue(xval);
     xanim->setEndValue(xval2);
     xanim->setEasingCurve(QEasingCurve::InOutQuad);
     move->addAnimation(xanim);
 
-    QPropertyAnimation* yanim = new QPropertyAnimation(verticalScrollBar(), "value");
+    auto* yanim = new QPropertyAnimation(verticalScrollBar(), "value");
     yanim->setDuration(150);
     yanim->setStartValue(yval);
     yanim->setEndValue(yval2);
@@ -230,13 +227,13 @@ void QtGraphicsView::ensureVisibleAnimated(const QRectF& rect, int xmargin, int 
 }
 
 void QtGraphicsView::updateZoom(float delta) {
-  float factor = 1.0f + 0.001f * delta;
+  float factor = 1.0F + 0.001F * delta;
 
-  if(factor <= 0.0f) {
-    factor = 0.000001f;
+  if(factor <= 0.0F) {
+    factor = 0.000001F;
   }
 
-  double newZoom = static_cast<double>(m_zoomFactor * factor);
+  const auto newZoom = static_cast<double>(m_zoomFactor * factor);
   setZoomFactor(static_cast<float>(qBound(0.1, newZoom, 100.0)));
 }
 
@@ -255,7 +252,7 @@ void QtGraphicsView::resizeEvent(QResizeEvent* pEvent) {
 }
 
 void QtGraphicsView::mousePressEvent(QMouseEvent* event) {
-  if(event->button() == Qt::LeftButton && !itemAt(event->pos())) {
+  if(event->button() == Qt::LeftButton && (itemAt(event->pos()) == nullptr)) {
     m_last = event->pos();
   }
 
@@ -268,7 +265,7 @@ void QtGraphicsView::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void QtGraphicsView::mouseReleaseEvent(QMouseEvent* event) {
-  if(event->button() == Qt::LeftButton && !itemAt(event->pos()) && event->pos() == m_last) {
+  if(event->button() == Qt::LeftButton && (itemAt(event->pos()) == nullptr) && event->pos() == m_last) {
     emit emptySpaceClicked();
   }
 
@@ -282,7 +279,7 @@ void QtGraphicsView::wheelEvent(QWheelEvent* event) {
   bool ctrlPressed = event->modifiers() == Qt::ControlModifier;
 
   if(zoomDefault != (shiftPressed | ctrlPressed)) {
-    if(event->angleDelta().y() != 0.0f) {
+    if(event->angleDelta().y() != 0) {
       updateZoom(static_cast<float>(event->angleDelta().y()));
     }
   } else {
@@ -301,26 +298,26 @@ void QtGraphicsView::contextMenuEvent(QContextMenuEvent* event) {
   FilePath clipboardFilePath;
 
   QtGraphNode* node = getNodeAtCursorPosition();
-  if(node) {
-    while(node) {
-      if(!m_hideNodeId) {
+  if(node != nullptr) {
+    while(node != nullptr) {
+      if(m_hideNodeId == 0U) {
         m_hideNodeId = node->getTokenId();
       }
 
-      if(!m_clipboardNodeName.size()) {
-        QtGraphNodeData* dataNode = dynamic_cast<QtGraphNodeData*>(node);
-        if(dataNode) {
+      if(m_clipboardNodeName.empty()) {
+        auto* dataNode = dynamic_cast<QtGraphNodeData*>(node);
+        if(dataNode != nullptr) {
           m_clipboardNodeName = dataNode->getName();
           m_openInTabNodeId = dataNode->getTokenId();
           m_bookmarkNodeId = dataNode->getTokenId();
           clipboardFilePath = dataNode->getFilePath();
-        } else if(dynamic_cast<QtGraphNodeBundle*>(node)) {
+        } else if(dynamic_cast<QtGraphNodeBundle*>(node) != nullptr) {
           m_clipboardNodeName = node->getName();
         }
       }
 
-      if(!m_collapseNodeId && !m_expandNodeId) {
-        for(auto subNode : node->getSubNodes()) {
+      if((m_collapseNodeId == 0U) && (m_expandNodeId == 0U)) {
+        for(auto *subNode : node->getSubNodes()) {
           if(subNode->isExpandToggleNode()) {
             if(dynamic_cast<QtGraphNodeExpandToggle*>(subNode)->isExpanded()) {
               m_collapseNodeId = node->getTokenId();
@@ -335,7 +332,7 @@ void QtGraphicsView::contextMenuEvent(QContextMenuEvent* event) {
     }
   } else {
     QtGraphEdge* edge = getEdgeAtCursorPosition();
-    if(edge) {
+    if(edge != nullptr) {
       m_hideEdgeId = edge->getTokenId();
     }
   }
@@ -361,7 +358,7 @@ void QtGraphicsView::contextMenuEvent(QContextMenuEvent* event) {
   menu.addAction(m_showDefinitionAction);
   menu.addAction(m_showInIDEAction);
 
-  if(m_collapseNodeId) {
+  if(m_collapseNodeId != 0U) {
     menu.addAction(m_collapseAction);
   } else {
     menu.addAction(m_expandAction);
@@ -468,7 +465,7 @@ void QtGraphicsView::keyPressEvent(QKeyEvent* event) {
     break;
 
   case Qt::Key_0:
-    setZoomFactor(1.0f);
+    setZoomFactor(1.0F);
     updateTransform();
     break;
   case Qt::Key_Shift:

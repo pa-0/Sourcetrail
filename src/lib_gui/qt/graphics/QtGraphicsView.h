@@ -1,9 +1,8 @@
 #pragma once
-// STL
 #include <memory>
-// Qt
+
 #include <QGraphicsView>
-// internal
+
 #include "MessageListener.h"
 #include "MessageSaveAsImage.h"
 #include "types.h"
@@ -24,21 +23,21 @@ class QtGraphicsView
 public:
   QtGraphicsView(GraphFocusHandler* focusHandler, QWidget* parent);
 
-  float getZoomFactor() const;
+  [[nodiscard]] float getZoomFactor() const;
 
   void setAppZoomFactor(float appZoomFactor);
 
   void setSceneRect(const QRectF& rect);
 
-  QtGraphNode* getNodeAtCursorPosition() const;
+  [[nodiscard]] QtGraphNode* getNodeAtCursorPosition() const;
 
-  QtGraphEdge* getEdgeAtCursorPosition() const;
+  [[nodiscard]] QtGraphEdge* getEdgeAtCursorPosition() const;
 
   void ensureVisibleAnimated(const QRectF& rect, int xmargin = 50, int ymargin = 50);
 
   void updateZoom(float delta);
 
-  Id getSchedulerId() const override {
+  [[nodiscard]] Id getSchedulerId() const override {
     return m_tabId;
   }
 
@@ -108,7 +107,7 @@ private slots:
   void legendClicked() const;
 
 private:
-  bool moves() const;
+  [[nodiscard]] bool moves() const;
 
   void setZoomFactor(float zoomFactor);
   void updateTransform();
@@ -120,7 +119,7 @@ private:
   QPoint m_last;
 
   float m_zoomFactor;
-  float m_appZoomFactor;
+  float m_appZoomFactor = 1.0F;
 
   bool m_up = false;
   bool m_down = false;
@@ -164,8 +163,8 @@ private:
 
   QtSelfRefreshIconButton* m_pLegendButton;
 
-  float m_zoomInButtonSpeed;
-  float m_zoomOutButtonSpeed;
+  float m_zoomInButtonSpeed = 20.0F;
+  float m_zoomOutButtonSpeed = -20.0F;
 
   QImage m_imageCached;
   Id m_tabId;
