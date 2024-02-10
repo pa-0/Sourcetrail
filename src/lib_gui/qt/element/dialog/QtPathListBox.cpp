@@ -10,7 +10,7 @@
 
 QtPathListBox::QtPathListBox(QWidget* parent, const QString& listName, SelectionPolicyType selectionPolicy)
     : QtListBox(parent, listName), m_selectionPolicy(selectionPolicy) {
-  QLabel* dropInfoText = new QLabel(QStringLiteral("Drop Files & Folders"));
+  auto* dropInfoText = new QLabel(QStringLiteral("Drop Files & Folders"));
   dropInfoText->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   dropInfoText->setObjectName(QStringLiteral("dropInfo"));
   dropInfoText->setAlignment(Qt::AlignRight);
@@ -33,8 +33,8 @@ void QtPathListBox::setRelativeRootDirectory(const FilePath& dir) {
 std::vector<FilePath> QtPathListBox::getPathsAsDisplayed() const {
   std::vector<FilePath> paths;
   for(int i = 0; i < m_list->count(); ++i) {
-    QtListBoxItem* widget = dynamic_cast<QtListBoxItem*>(m_list->itemWidget(m_list->item(i)));
-    paths.push_back(FilePath(widget->getText().toStdWString()));
+    auto* widget = dynamic_cast<QtListBoxItem*>(m_list->itemWidget(m_list->item(i)));
+    paths.emplace_back(widget->getText().toStdWString());
   }
   return paths;
 }

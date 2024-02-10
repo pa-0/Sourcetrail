@@ -1,6 +1,6 @@
-#ifndef QT_PATH_LIST_BOX_H
-#define QT_PATH_LIST_BOX_H
+#pragma once
 
+#include "FilePath.h"
 #include "QtListBox.h"
 
 class QtPathListBox : public QtListBox {
@@ -32,10 +32,8 @@ protected:
   void dragEnterEvent(QDragEnterEvent* event) override;
 
 private:
-  virtual QtListBoxItem* createListBoxItem(QListWidgetItem* item) override;
+  QtListBoxItem* createListBoxItem(QListWidgetItem* item) override;
 
   const SelectionPolicyType m_selectionPolicy;
   FilePath m_relativeRootDirectory;
 };
-
-#endif    // QT_PATH_LIST_BOX_H
