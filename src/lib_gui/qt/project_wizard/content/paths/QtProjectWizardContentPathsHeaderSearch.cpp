@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include <QMessageBox>
+#include <QGridLayout>
 
 #include "Application.h"
 #include "ApplicationSettings.h"

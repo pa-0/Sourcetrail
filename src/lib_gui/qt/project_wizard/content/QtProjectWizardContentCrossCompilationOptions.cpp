@@ -3,6 +3,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
+#include <QGridLayout>
 
 #include "SourceGroupSettingsWithCxxCrossCompilationOptions.h"
 #include "logging.h"

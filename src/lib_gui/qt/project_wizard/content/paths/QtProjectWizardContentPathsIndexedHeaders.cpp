@@ -1,6 +1,7 @@
 #include "QtProjectWizardContentPathsIndexedHeaders.h"
 
 #include <QMessageBox>
+#include <QGridLayout>
 
 #include "CodeblocksProject.h"
 #include "CompilationDatabase.h"

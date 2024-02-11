@@ -2,6 +2,7 @@
 
 #include <QComboBox>
 #include <QLabel>
+#include <QGridLayout>
 
 #include "SourceGroupSettingsWithCStandard.h"
 
