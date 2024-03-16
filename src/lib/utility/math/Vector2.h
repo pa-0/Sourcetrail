@@ -1,8 +1,8 @@
 #pragma once
-// internal
+#include <cstdint>
+
 #include "Property.h"
 #include "VectorBase.h"
-#include "logging.h"
 
 template <class T>
 class Vector2 : public VectorBase<T, 2> {
@@ -61,7 +61,7 @@ T Vector2<T>::getValue(const uint32_t index) const {
   try {
     return VectorBase<T, 2>::getValue(index);
   } catch(std::exception& exception) {
-    LOG_ERROR(exception.what());
+    // LOG_ERROR(exception.what());
     return 0;
   }
 }
@@ -71,7 +71,7 @@ void Vector2<T>::setValue(const uint32_t index, const T& value) {
   try {
     VectorBase<T, 2>::setValue(index, value);
   } catch(std::exception& exception) {
-    LOG_ERROR(exception.what());
+    // LOG_ERROR(exception.what());
   }
 }
 
@@ -80,7 +80,7 @@ T Vector2<T>::operator[](const uint32_t index) {
   try {
     return VectorBase<T, 2>::getValue(index);
   } catch(std::exception& exception) {
-    LOG_ERROR(exception.what());
+    // LOG_ERROR(exception.what());
     return 0;
   }
 }

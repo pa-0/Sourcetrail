@@ -32,8 +32,11 @@ void InterprocessIntermediateStorageManager::pushIntermediateStorage(const std::
   if(freeMemory < requiredSize) {
     const size_t requiredGrowth = requiredSize - freeMemory;
 
-    LOG_INFO_STREAM(<< "grow memory - est: " << requiredSize << " size: " << access.getMemorySize()
-                    << " free: " << access.getFreeMemorySize() << " alloc: " << requiredGrowth);
+    LOG_INFO(fmt::format("grow memory - est: {} size: {} free: {} alloc: {}",
+                         requiredSize,
+                         access.getMemorySize(),
+                         access.getFreeMemorySize(),
+                         requiredGrowth));
 
     access.growMemory(requiredGrowth);
 
@@ -70,7 +73,7 @@ void InterprocessIntermediateStorageManager::pushIntermediateStorage(const std::
 
     LOG_INFO("shrinking shared memory");
     access.shrinkToFitMemory();
-    LOG_INFO_STREAM(<< "shrunk memory - size: " << access.getMemorySize() << " free: " << access.getFreeMemorySize());
+    LOG_INFO(fmt::format("shrunk memory - size: {} free: {}", access.getMemorySize(), access.getFreeMemorySize()));
   }
 
   LOG_INFO(access.logString());

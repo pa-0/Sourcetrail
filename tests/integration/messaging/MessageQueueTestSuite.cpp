@@ -8,8 +8,6 @@
 #define private public
 #include "MessageQueue.h"
 #undef private
-#include "ConsoleLogger.h"
-#include "LogManager.h"
 #include "Message.h"
 #include "MessageFilter.h"
 #include "MessageListener.h"
@@ -275,14 +273,6 @@ TEST_F(MessageQueueRegistration, registerGoodCase) {
 }
 
 struct MessageQueueProcess : testing::Test {
-  static void SetUpTestSuite() {
-    auto* logManager = LogManager::getInstance().get();
-    auto consoleLogger = std::make_shared<ConsoleLogger>();
-    consoleLogger->setLogLevel(Logger::LogLevel::LOG_ALL);
-    logManager->addLogger(consoleLogger);
-    logManager->setLoggingEnabled(true);
-  }
-
   void SetUp() override {
     messageQueue = MessageQueue::getInstance();
     messageQueue->mMessageBuffer.clear();
@@ -293,11 +283,6 @@ struct MessageQueueProcess : testing::Test {
     messageQueue->setSendMessagesAsTasks(false);
     messageQueue->mFilters.clear();
     messageQueue->mMessageBuffer.clear();
-  }
-
-  static void TearDownTestSuite() {
-    auto* logManager = LogManager::getInstance().get();
-    logManager->clearLoggers();
   }
 
   MessageQueue::Ptr messageQueue;
@@ -336,24 +321,11 @@ TEST_F(MessageQueueProcess, goodCaseAsTask) {
 }
 
 struct MessageQueueSendMessage : testing::Test {
-  static void SetUpTestSuite() {
-    auto* logManager = LogManager::getInstance().get();
-    auto consoleLogger = std::make_shared<ConsoleLogger>();
-    consoleLogger->setLogLevel(Logger::LogLevel::LOG_ALL);
-    logManager->addLogger(consoleLogger);
-    logManager->setLoggingEnabled(true);
-  }
-
   void SetUp() override {
     messageQueue = MessageQueue::getInstance();
   }
 
   void TearDown() override {}
-
-  static void TearDownTestSuite() {
-    auto* logManager = LogManager::getInstance().get();
-    logManager->clearLoggers();
-  }
 
   MessageQueue::Ptr messageQueue;
 };
@@ -370,24 +342,11 @@ TEST_F(MessageQueueSendMessage, goodCase) {
 }
 
 struct MessageQueueFilter : testing::Test {
-  static void SetUpTestSuite() {
-    auto* logManager = LogManager::getInstance().get();
-    auto consoleLogger = std::make_shared<ConsoleLogger>();
-    consoleLogger->setLogLevel(Logger::LogLevel::LOG_ALL);
-    logManager->addLogger(consoleLogger);
-    logManager->setLoggingEnabled(true);
-  }
-
   void SetUp() override {
     messageQueue = MessageQueue::getInstance();
   }
 
   void TearDown() override {}
-
-  static void TearDownTestSuite() {
-    auto* logManager = LogManager::getInstance().get();
-    logManager->clearLoggers();
-  }
 
   MessageQueue::Ptr messageQueue;
 };

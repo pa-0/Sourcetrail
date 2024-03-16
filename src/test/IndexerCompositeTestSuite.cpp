@@ -4,9 +4,7 @@
 #include "IndexerCommand.h"
 #include "IndexerComposite.h"
 #include "IntermediateStorage.h"
-#include "LogManager.h"
 #include "MockedIndexer.hpp"
-#include "MockedLogger.hpp"
 
 using namespace testing;
 
@@ -16,15 +14,6 @@ struct MockedIndexerCommand final : public IndexerCommand {
 };
 
 struct IndexerCompositeFix : testing::Test {
-  void SetUp() override {
-    mLogManager->setLoggingEnabled(true);
-
-    mMockedLogger = std::make_shared<MockedLogger>();
-    mMockedLogger->setLogLevel(Logger::LogLevel::LOG_ALL);
-    mLogManager->addLogger(mMockedLogger);
-  }
-  LogManager* mLogManager = LogManager::getInstance().get();
-  std::shared_ptr<MockedLogger> mMockedLogger;
 };
 
 TEST(IndexerComposite, getSupportedIndexerCommandType) {
@@ -34,7 +23,6 @@ TEST(IndexerComposite, getSupportedIndexerCommandType) {
 #if BUILD_CXX_LANGUAGE_PACKAGE
 TEST_F(IndexerCompositeFix, missingIndexer) {
   IndexerComposite indexerComposite;
-  EXPECT_CALL(*mMockedLogger, logError(_)).WillOnce(Return());
 
   auto mockedIndexerCommand = std::make_shared<MockedIndexerCommand>();
   EXPECT_CALL(*mockedIndexerCommand, getIndexerCommandType).WillOnce(Return(INDEXER_COMMAND_CXX)).WillOnce(Return(INDEXER_COMMAND_CXX));

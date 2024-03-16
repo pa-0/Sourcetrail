@@ -58,8 +58,8 @@ set(SOURCETRAIL_USE_LIBCPP
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_STANDARD 17)
 
 include(cmake/add_files.cmake)
 include(cmake/version_setup.cmake)
@@ -147,8 +147,9 @@ endif()
 
 # Settings ---------------------------------------------------------------------
 find_package(fmt CONFIG REQUIRED)
-find_package(SQLite3 CONFIG REQUIRED)
 find_package(range-v3 CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(SQLite3 CONFIG REQUIRED)
 find_package(tinyxml CONFIG REQUIRED)
 # Boost ------------------------------------------------------------------------
 set(Boost_USE_MULTITHREAD ON)

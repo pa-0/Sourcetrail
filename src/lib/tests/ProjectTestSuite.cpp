@@ -1,17 +1,14 @@
-#include <chrono>
 #include <memory>
 #include <thread>
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "ConsoleLogger.h"
 #include "FilePath.h"
 #include "MessageListener.h"
 #include "MessageStatus.h"
 #include "Project.h"
 #include "mocks/MockedDialogView.hpp"
-#include "mocks/MockedLogger.hpp"
 #include "mocks/MockedProjectSettings.hpp"
 #include "mocks/MockedStorageCache.hpp"
 
@@ -25,14 +22,7 @@ struct MockedMessageStatus : MessageListener<MessageStatus> {
 };
 
 struct ProjectFix : Test {
-  void setupLogger() {
-    auto* logManager = LogManager::getInstance().get();
-    logManager->setLoggingEnabled(true);
-
-    mLogger = std::make_shared<StrictMock<MockedLogger>>();
-    mLogger->setLogLevel(Logger::LogLevel::LOG_ALL);
-    logManager->addLogger(mLogger);
-  }
+  void setupLogger() {}
 
   void SetUp() override {
     setupLogger();
@@ -47,10 +37,8 @@ struct ProjectFix : Test {
 
   void TearDown() override {
     MessageQueue::getInstance()->stopMessageLoop();
-    LogManager::getInstance()->removeLogger(mLogger);
   }
 
-  std::shared_ptr<StrictMock<MockedLogger>> mLogger;
   std::shared_ptr<StrictMock<MockedProjectSettings>> mSettings;
   std::unique_ptr<StrictMock<MockedStorageCache>> mStorageCache;
   std::unique_ptr<Project> mProject;
@@ -59,7 +47,6 @@ struct ProjectFix : Test {
 };
 
 TEST_F(ProjectFix, loadWhileIndexing) {
-  EXPECT_CALL(*mLogger, logInfo(_)).WillOnce(Return());
   EXPECT_CALL(mStatus, handleMessage(_)).WillOnce(Return());
 
   mProject->m_refreshStage = Project::RefreshStageType::INDEXING;
@@ -80,7 +67,6 @@ TEST_F(ProjectFix, loadFailedToReloadSettings) {
 TEST_F(ProjectFix, loadGoodCase) {
   EXPECT_CALL(*mSettings, load(_, _)).WillOnce(Return(true));
   EXPECT_CALL(*mStorageCache, setUseErrorCache(_)).WillOnce(Return());
-  EXPECT_CALL(*mLogger, logInfo(_)).Times(2);
 
   EXPECT_CALL(mStatus, handleMessage(_)).WillOnce(Return());
 

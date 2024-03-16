@@ -26,7 +26,7 @@ NodeType Node::getType() const {
 
 void Node::setType(NodeType type) {
   if(!isType(type.getKind() | NODE_SYMBOL)) {
-    LOG_WARNING(L"Cannot change NodeType after it was already set from " + getReadableTypeString() + L" to " +
+    LOG_WARNING_W(L"Cannot change NodeType after it was already set from " + getReadableTypeString() + L" to " +
                 type.getReadableTypeWString());
     return;
   }

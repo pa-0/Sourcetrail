@@ -4,10 +4,8 @@
 #include "ColorScheme.h"
 #include "CppSQLite3.h"
 #include "DialogView.h"
-#include "FileLogger.h"
 #include "GraphViewStyle.h"
 #include "IDECommunicationController.h"
-#include "LogManager.h"
 #include "MainView.h"
 #include "MessageFilterErrorCountUpdate.h"
 #include "MessageFilterFocusInOut.h"
@@ -96,6 +94,8 @@ void Application::loadSettings() {
   std::shared_ptr<ApplicationSettings> settings = ApplicationSettings::getInstance();
   settings->load(UserPaths::getAppSettingsFilePath());
 
+// FIXME
+#if 0
   LogManager::getInstance()->setLoggingEnabled(settings->getLoggingEnabled());
   Logger* logger = LogManager::getInstance()->getLoggerByType("FileLogger");
   if(logger) {
@@ -103,6 +103,7 @@ void Application::loadSettings() {
     fileLogger->setLogDirectory(settings->getLogDirectoryPath());
     fileLogger->setFileName(FileLogger::generateDatedFileName(L"log"));
   }
+#endif
 
   loadStyle(settings->getColorSchemePath());
 }
@@ -242,7 +243,7 @@ void Application::handleMessage(MessageLoadProject* pMessage) {
       if(m_pProject) {
         m_pProject->load(getDialogView(DialogView::UseCase::GENERAL));
       } else {
-        LOG_ERROR_STREAM(<< "Failed to load project.");
+        LOG_ERROR("Failed to load project.");
         MessageStatus(L"Failed to load project: " + projectSettingsFilePath.wstr(), true).dispatch();
       }
 
@@ -250,17 +251,17 @@ void Application::handleMessage(MessageLoadProject* pMessage) {
     } catch(std::exception& e) {
       const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() + L"\" with exception: " +
           utility::decodeFromUtf8(e.what());
-      LOG_ERROR(message);
+      LOG_ERROR_W(message);
       MessageStatus(message, true).dispatch();
     } catch(CppSQLite3Exception& e) {
       const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() +
           L"\" with sqlite exception: " + utility::decodeFromUtf8(e.errorMessage());
-      LOG_ERROR(message);
+      LOG_ERROR_W(message);
       MessageStatus(message, true).dispatch();
     } catch(...) {
       const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() +
           L"\" with unknown exception.";
-      LOG_ERROR(message);
+      LOG_ERROR_W(message);
       MessageStatus(message, true).dispatch();
     }
 

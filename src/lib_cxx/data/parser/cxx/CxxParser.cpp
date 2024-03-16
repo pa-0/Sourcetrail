@@ -155,15 +155,13 @@ void CxxParser::runTool(clang::tooling::CompilationDatabase* pCompilationDatabas
   tool.setDiagnosticConsumer(pDiagnostics.get());
 
   ClangInvocationInfo info;
-  if(LogManager::getInstance()->getLoggingEnabled()) {
-    info = ClangInvocationInfo::getClangInvocationString(pCompilationDatabase);
-    LOG_INFO("Clang Invocation: " +
-             info.invocation.substr(
-                 0, ApplicationSettings::getInstance()->getVerboseIndexerLoggingEnabled() ? std::string::npos : 20000));
+  info = ClangInvocationInfo::getClangInvocationString(pCompilationDatabase);
+  LOG_INFO("Clang Invocation: " +
+            info.invocation.substr(
+                0, ApplicationSettings::getInstance()->getVerboseIndexerLoggingEnabled() ? std::string::npos : 20000));
 
-    if(!info.errors.empty()) {
-      LOG_INFO("Clang Invocation errors: " + info.errors);
-    }
+  if(!info.errors.empty()) {
+    LOG_INFO("Clang Invocation errors: " + info.errors);
   }
 
   auto* pAction = new ASTAction(m_client, pCanonicalFilePathCache, m_indexerStateInfo);

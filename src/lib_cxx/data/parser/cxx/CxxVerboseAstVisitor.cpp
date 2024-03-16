@@ -34,10 +34,10 @@ bool CxxVerboseAstVisitor::TraverseDecl(clang::Decl* d) {
     FilePath currentFilePath = getCanonicalFilePathCache()->getCanonicalFilePath(sm.getFileID(d->getSourceRange().getBegin()), sm);
     if(m_currentFilePath != currentFilePath) {
       m_currentFilePath = currentFilePath;
-      LOG_INFO_BARE(L"Indexer - Traversing \"" + currentFilePath.wstr() + L"\"");
+      LOG_INFO_W(fmt::format(L"Indexer - Traversing \"{}\"", currentFilePath.wstr()));
     }
 
-    LOG_INFO_STREAM_BARE(<< "Indexer - " << stream.str());
+    LOG_INFO(fmt::format("Indexer - {}", stream.str()));
 
     {
       ScopedSwitcher<unsigned int> switcher(m_indentation, m_indentation + 1);
@@ -50,8 +50,13 @@ bool CxxVerboseAstVisitor::TraverseDecl(clang::Decl* d) {
 bool CxxVerboseAstVisitor::TraverseStmt(clang::Stmt* stmt) {
   if(stmt) {
     ParseLocation loc = getParseLocation(stmt->getSourceRange());
-    LOG_INFO_STREAM_BARE(<< "Indexer - " << getIndentString() << stmt->getStmtClassName() << " <" << loc.startLineNumber << ":"
-                         << loc.startColumnNumber << ", " << loc.endLineNumber << ":" << loc.endColumnNumber << ">");
+    LOG_INFO(fmt::format("Indexer - {}{} <{}:{}, {}:{}>",
+                         getIndentString(),
+                         stmt->getStmtClassName(),
+                         loc.startLineNumber,
+                         loc.startColumnNumber,
+                         loc.endLineNumber,
+                         loc.endColumnNumber));
     {
       ScopedSwitcher<unsigned int> switcher(m_indentation, m_indentation + 1);
       return base::TraverseStmt(stmt);
@@ -63,8 +68,12 @@ bool CxxVerboseAstVisitor::TraverseStmt(clang::Stmt* stmt) {
 bool CxxVerboseAstVisitor::TraverseTypeLoc(clang::TypeLoc tl) {
   if(!tl.isNull()) {
     ParseLocation loc = getParseLocation(tl.getSourceRange());
-    LOG_INFO_STREAM_BARE(<< "Indexer - " << getIndentString() << typeLocClassToString(tl) << "TypeLoc <" << loc.startLineNumber
-                         << ":" << loc.startColumnNumber << ", " << loc.endLineNumber << ":" << loc.endColumnNumber << ">");
+    LOG_INFO(fmt::format(fmt::runtime("Indexer - {}{}TypeLoc <{}:{}, {}:{}>"),
+                         getIndentString(),
+                         typeLocClassToString(tl),
+                         loc.startColumnNumber,
+                         loc.endLineNumber,
+                         loc.endColumnNumber));
     {
       ScopedSwitcher<unsigned int> switcher(m_indentation, m_indentation + 1);
       return base::TraverseTypeLoc(tl);

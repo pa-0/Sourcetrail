@@ -1,7 +1,8 @@
 #include "Tab.h"
-// internal
+
 #include "CodeView.h"
 #include "GraphView.h"
+#include "logging.h"
 
 Tab::Tab(Id tabId, const ViewFactory* viewFactory, StorageAccess* storageAccess, ScreenSearchSender* screenSearchSender)
     : m_tabId(tabId)

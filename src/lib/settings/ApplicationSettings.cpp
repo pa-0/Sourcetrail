@@ -5,7 +5,6 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 
-#include "Logger.h"
 #include "ResourcePaths.h"
 #include "SettingsMigrationLambda.h"
 #include "SettingsMigrationMoveKey.h"
@@ -284,7 +283,9 @@ int ApplicationSettings::getStatusFilter() const {
 }
 
 int ApplicationSettings::getLogFilter() const {
-  return getValue<int>("application/log_filter", Logger::LOG_WARNINGS | Logger::LOG_ERRORS);
+  // FIXME
+  return false;
+  // return getValue<int>("application/log_filter", Logger::LOG_WARNINGS | Logger::LOG_ERRORS);
 }
 
 int ApplicationSettings::getIndexerThreadCount() const {

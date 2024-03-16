@@ -121,7 +121,7 @@ std::vector<std::string> TextAccess::readFile(const FilePath& filePath) {
     srcFile.open(filePath.str(), std::ios::binary | std::ios::in);
 
     if(srcFile.fail()) {
-      LOG_ERROR(L"Could not open file " + filePath.wstr());
+      LOG_ERROR_W(L"Could not open file " + filePath.wstr());
       return result;
     }
 
@@ -132,11 +132,11 @@ std::vector<std::string> TextAccess::readFile(const FilePath& filePath) {
     }
 
     srcFile.close();
-  } catch(std::exception& e) {
-    LOG_ERROR_STREAM(<< "Exception thrown while reading file \"" << filePath.str() << "\": " << e.what());
+  } catch(std::exception& exception) {
+    LOG_ERROR(fmt::format("Exception thrown while reading file \"{}\": ", filePath.str(), exception.what()));
     result.clear();
   } catch(...) {
-    LOG_ERROR_STREAM(<< "Unknown exception thrown while reading file \"" << filePath.str() << "\"");
+    LOG_ERROR(fmt::format("Unknown exception thrown while reading file \"{}\"", filePath.str()));
     result.clear();
   }
 
@@ -174,10 +174,10 @@ TextAccess::TextAccess() = default;
 
 bool TextAccess::checkIndexInRange(const uint32_t index) const {
   if(index < 1) {
-    LOG_WARNING_STREAM(<< "Line numbers start with one, is " << index);
+    LOG_WARNING(fmt::format("Line numbers start with one, is ", index));
     return false;
   } else if(index > m_lines.size()) {
-    LOG_WARNING_STREAM(<< "Tried to access index " << index << ". Maximum index is " << m_lines.size());
+    LOG_WARNING(fmt::format("Tried to access index {}. Maximum index is {}", index, m_lines.size()));
     return false;
   }
 
@@ -188,7 +188,7 @@ bool TextAccess::checkIndexIntervalInRange(const uint32_t firstIndex, const uint
   if(!checkIndexInRange(firstIndex) || !checkIndexInRange(lastIndex)) {
     return false;
   } else if(firstIndex > lastIndex) {
-    LOG_WARNING_STREAM(<< "Index 'firstLine' has to be lower or equal index 'lastLine', is " << firstIndex << " > " << lastIndex);
+    LOG_WARNING(fmt::format("Index 'firstLine' has to be lower or equal index 'lastLine', is {} > {}", firstIndex, lastIndex));
     return false;
   }
 

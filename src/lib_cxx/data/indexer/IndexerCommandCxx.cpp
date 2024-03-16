@@ -19,9 +19,8 @@ std::vector<FilePath> IndexerCommandCxx::getSourceFilesFromCDB(const FilePath& c
   std::shared_ptr<clang::tooling::JSONCompilationDatabase> cdb = utility::loadCDB(cdbPath, &error);
 
   if(!error.empty()) {
-    const std::wstring message = L"Loading Clang compilation database failed with error: \"" + utility::decodeFromUtf8(error) +
-        L"\"";
-    LOG_ERROR(message);
+    const auto message = fmt::format(L"Loading Clang compilation database failed with error: \"{}\"", utility::decodeFromUtf8(error));
+    LOG_ERROR_W(message);
     MessageStatus(message, true).dispatch();
   }
 

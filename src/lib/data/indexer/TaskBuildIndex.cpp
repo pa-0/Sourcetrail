@@ -1,9 +1,10 @@
 #include "TaskBuildIndex.h"
 
+#include <spdlog/spdlog.h>
+
 #include "AppPath.h"
 #include "Blackboard.h"
 #include "DialogView.h"
-#include "FileLogger.h"
 #include "InterprocessIndexer.h"
 #include "MessageIndexingStatus.h"
 #include "MessageStatus.h"
@@ -35,11 +36,12 @@ void TaskBuildIndex::doEnter(std::shared_ptr<Blackboard> blackboard) {
   m_indexingFileCount = 0;
   updateIndexingDialog(blackboard, std::vector<FilePath>());
 
+  // FIXME(Hussein): Multiprocess needs the file to log
   std::wstring logFilePath;
-  Logger* logger = LogManager::getInstance()->getLoggerByType("FileLogger");
-  if(logger) {
-    logFilePath = dynamic_cast<FileLogger*>(logger)->getLogFilePath().wstr();
-  }
+  // Logger* logger = LogManager::getInstance()->getLoggerByType("FileLogger");
+  // if(logger) {
+  //   logFilePath = dynamic_cast<FileLogger*>(logger)->getLogFilePath().wstr();
+  // }
 
   // start indexer processes
   for(unsigned int i = 0; i < m_processCount; i++) {
@@ -78,10 +80,10 @@ Task::TaskState TaskBuildIndex::doUpdate(std::shared_ptr<Blackboard> blackboard)
   }
 
   if(m_indexerCommandQueueStopped && runningThreadCount == 0) {
-    LOG_INFO_STREAM(<< "command queue stopped and no running threads. done.");
+    LOG_INFO("command queue stopped and no running threads. done.");
     return STATE_SUCCESS;
   } else if(m_interrupted) {
-    LOG_INFO_STREAM(<< "interrupted indexing.");
+    LOG_INFO("interrupted indexing.");
     blackboard->set("interrupted_indexing", true);
     return STATE_SUCCESS;
   }
@@ -124,7 +126,7 @@ void TaskBuildIndex::doExit(std::shared_ptr<Blackboard> blackboard) {
           true,
           path,
           ParseLocation(fileId, 1, 1));
-      LOG_INFO(L"crashed translation unit: " + path.wstr());
+      LOG_INFO_W(L"crashed translation unit: " + path.wstr());
     }
     m_storageProvider->insert(storage);
   }
@@ -152,7 +154,7 @@ void TaskBuildIndex::runIndexerProcess(int processId, const std::wstring& logFil
   const FilePath indexerProcessPath = AppPath::getCxxIndexerFilePath();
   if(!indexerProcessPath.exists()) {
     m_interrupted = true;
-    LOG_ERROR(L"Cannot start indexer process because executable is missing at \"" + indexerProcessPath.wstr() + L"\"");
+    LOG_ERROR_W(L"Cannot start indexer process because executable is missing at \"" + indexerProcessPath.wstr() + L"\"");
     return;
   }
 
@@ -170,7 +172,7 @@ void TaskBuildIndex::runIndexerProcess(int processId, const std::wstring& logFil
   while((!m_indexerCommandQueueStopped || result != 0) && !m_interrupted) {
     result = utility::executeProcess(indexerProcessPath.wstr(), commandArguments, FilePath(), false, -1).exitCode;
 
-    LOG_INFO_STREAM(<< "Indexer process " << processId << " returned with " + std::to_string(result));
+    LOG_INFO(fmt::format("Indexer process {} returned with {}", processId, std::to_string(result)));
   }
 
   {
@@ -201,7 +203,7 @@ bool TaskBuildIndex::fetchIntermediateStorages(std::shared_ptr<Blackboard> black
 
   int providerStorageCount = m_storageProvider->getStorageCount();
   if(providerStorageCount > 10) {
-    LOG_INFO_STREAM(<< "waiting, too many storages queued: " << providerStorageCount);
+    LOG_INFO(fmt::format("waiting, too many storages queued: {}", providerStorageCount));
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -223,7 +225,7 @@ bool TaskBuildIndex::fetchIntermediateStorages(std::shared_ptr<Blackboard> black
       break;
     }
 
-    LOG_INFO_STREAM(<< storageManager->getProcessId() << " - storage count: " << storageCount);
+    LOG_INFO(fmt::format("{} - storage count: {}", storageManager->getProcessId(), storageCount));
     m_storageProvider->insert(storageManager->popIntermediateStorage());
     poppedStorageCount++;
   } while(TimeStamp::now().deltaMS(t) < 500);    // don't process all storages at once to allow for status updates in-between

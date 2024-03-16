@@ -186,7 +186,7 @@ FilePath& FilePath::makeCanonical() {
   try {
     canonicalPath = boost::filesystem::canonical(getPath());
   } catch(boost::filesystem::filesystem_error e) {
-    LOG_ERROR_STREAM(<< e.what());
+    LOG_ERROR(e.what());
     return *this;
   }
 #endif
@@ -217,7 +217,7 @@ std::vector<FilePath> FilePath::expandEnvironmentVariables() const {
 #  pragma warning(pop)
 #endif
     if(s == nullptr) {
-      LOG_ERROR_STREAM(<< match[1].str() << " is not an environment variable in: " << text);
+      LOG_ERROR(match[1].str() + " is not an environment variable in: " + text);
       return paths;
     }
     text.replace(static_cast<size_t>(match.position(0)), static_cast<size_t>(match.length(0)), s);

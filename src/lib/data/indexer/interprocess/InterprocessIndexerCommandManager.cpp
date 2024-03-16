@@ -24,9 +24,8 @@ void InterprocessIndexerCommandManager::pushIndexerCommands(const std::vector<st
 
   SharedMemory::ScopedAccess access(&m_sharedMemory);
   while(access.getFreeMemorySize() < size) {
-    size_t currentSize = access.getMemorySize();
-    LOG_INFO_STREAM(<< "grow memory - est: " << size << " size: " << currentSize << " free: " << access.getFreeMemorySize()
-                    << " alloc: " << (currentSize));
+    const size_t currentSize = access.getMemorySize();
+    LOG_INFO(fmt::format("grow memory - est: {} size: {} free: {} alloc: {}", size, currentSize, access.getFreeMemorySize(), currentSize));
 
     access.growMemory(currentSize);
 

@@ -135,7 +135,7 @@ std::vector<std::wstring> SourceGroupCxxEmpty::getBaseCompilerFlags() const {
     targetFlag = settingsCppEmpty->getTargetFlag();
     languageStandard = settingsCppEmpty->getCppStandard();
   } else {
-    LOG_ERROR(L"Source group doesn't specify language standard. Falling back to \"" + languageStandard + L"\".");
+    LOG_ERROR_W(L"Source group doesn't specify language standard. Falling back to \"" + languageStandard + L"\".");
   }
 
   if(!targetFlag.empty()) {
@@ -156,7 +156,7 @@ std::vector<std::wstring> SourceGroupCxxEmpty::getBaseCompilerFlags() const {
       m_settings.get());
 
   if(!settingsCxx) {
-    LOG_ERROR(L"Source group doesn't specify cxx headers and flags.");
+    LOG_ERROR_W(L"Source group doesn't specify cxx headers and flags.");
     return compilerFlags;
   }
 

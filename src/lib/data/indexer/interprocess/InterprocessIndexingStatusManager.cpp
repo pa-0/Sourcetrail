@@ -29,7 +29,7 @@ void InterprocessIndexingStatusManager::startIndexingSourceFile(const FilePath& 
 
   SharedMemory::Map<Id, SharedMemory::String>* currentFilesPtr =
       access.accessValueWithAllocator<SharedMemory::Map<Id, SharedMemory::String>>(s_currentFilesKeyName);
-  if(currentFilesPtr) {
+  if(currentFilesPtr != nullptr) {
     SharedMemory::Map<Id, SharedMemory::String>::iterator it = currentFilesPtr->find(getProcessId());
     if(it != currentFilesPtr->end()) {
       const size_t overestimationMultiplier = 3;
@@ -39,14 +39,17 @@ void InterprocessIndexingStatusManager::startIndexingSourceFile(const FilePath& 
       estimatedSize *= overestimationMultiplier;
 
       while(access.getFreeMemorySize() < estimatedSize) {
-        LOG_INFO_STREAM(<< "grow memory - est: " << estimatedSize << " size: " << access.getMemorySize()
-                        << " free: " << access.getFreeMemorySize() << " alloc: " << (access.getMemorySize()));
+        LOG_INFO(fmt::format("grow memory - est: {} size: {} free: {} alloc: {}",
+                             estimatedSize,
+                             access.getMemorySize(),
+                             access.getFreeMemorySize(),
+                             access.getMemorySize()));
         access.growMemory(access.getMemorySize());
 
         LOG_INFO("growing memory succeeded");
 
         currentFilesPtr = access.accessValueWithAllocator<SharedMemory::Map<Id, SharedMemory::String>>(s_currentFilesKeyName);
-        if(!currentFilesPtr) {
+        if(currentFilesPtr == nullptr) {
           return;
         }
       }

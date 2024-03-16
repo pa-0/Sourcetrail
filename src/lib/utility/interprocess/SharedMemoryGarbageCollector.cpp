@@ -21,13 +21,12 @@ SharedMemoryGarbageCollector* SharedMemoryGarbageCollector::createInstance() {
       s_instance = std::shared_ptr<SharedMemoryGarbageCollector>(new SharedMemoryGarbageCollector());
 
       if(!s_instance->m_memory.checkSharedMutex()) {
-        LOG_ERROR_STREAM(<< "Shared memory mutex check failed. Shared memory garbage collection "
-                            "disabled.");
+        LOG_ERROR("Shared memory mutex check failed. Shared memory garbage collection disabled.");
         s_instance.reset();
       }
     }
   } catch(boost::interprocess::interprocess_exception& e) {
-    LOG_ERROR_STREAM(<< "boost exception thrown at shared memory garbage collector: " << e.what());
+    LOG_ERROR(fmt::format("boost exception thrown at shared memory garbage collector: {}", e.what()));
   }
 
   return s_instance.get();
@@ -43,7 +42,7 @@ SharedMemoryGarbageCollector::SharedMemoryGarbageCollector()
 SharedMemoryGarbageCollector::~SharedMemoryGarbageCollector() {}
 
 void SharedMemoryGarbageCollector::run(const std::string& uuid) {
-  LOG_INFO_STREAM(<< "start shared memory garbage collection");
+  LOG_INFO("start shared memory garbage collection");
 
   m_uuid = uuid;
 
@@ -59,7 +58,7 @@ void SharedMemoryGarbageCollector::run(const std::string& uuid) {
 }
 
 void SharedMemoryGarbageCollector::stop() {
-  LOG_INFO_STREAM(<< "stop shared memory garbage collection");
+  LOG_INFO("stop shared memory garbage collection");
 
   m_loopIsRunning = false;
 
@@ -101,12 +100,12 @@ void SharedMemoryGarbageCollector::stop() {
     TimeStamp timestamp = TimeStamp(std::string(it->second.c_str()));
     if(now.deltaS(timestamp) <= s_deleteThresholdSeconds) {
       otherRunningInstances = true;
-      LOG_INFO_STREAM(<< "currently running instance: " << it->first.c_str());
+      LOG_INFO(fmt::format("currently running instance: {}", it->first.c_str()));
     }
   }
 
   if(!otherRunningInstances) {
-    LOG_INFO_STREAM(<< "delete garbage collector memory: " << getMemoryName());
+    LOG_INFO(fmt::format("delete garbage collector memory: {}",getMemoryName()));
     SharedMemory::deleteSharedMemory(getMemoryName());
   }
 }
@@ -209,7 +208,7 @@ void SharedMemoryGarbageCollector::update() {
     for(SharedMemory::Map<SharedMemory::String, SharedMemory::String>::iterator it = timeStamps->begin(); it != timeStamps->end();) {
       TimeStamp timestamp = TimeStamp(std::string(it->second.c_str()));
       if(now.deltaS(timestamp) > s_deleteThresholdSeconds) {
-        LOG_INFO_STREAM(<< "collect garbage: " << it->first.c_str());
+        LOG_INFO(fmt::format("collect garbage: {}", it->first.c_str()));
         SharedMemory::deleteSharedMemory(it->first.c_str());
         timeStamps->erase(it++);
       } else {

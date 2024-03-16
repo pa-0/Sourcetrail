@@ -10,7 +10,6 @@ set(test_lib_names
     GraphTestSuite
     HierarchyCacheTestSuite
     IndexerCompositeTestSuite
-    LogManagerTestSuite
     LowMemoryStringMapTestSuite
     MatrixBaseTestSuite
     MatrixDynamicBaseTestSuite

@@ -1,5 +1,7 @@
 #include "TabsController.h"
 
+#include <thread>
+
 #include "Application.h"
 #include "MessageFind.h"
 #include "MessageIndexingFinished.h"

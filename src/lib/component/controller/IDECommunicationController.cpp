@@ -25,7 +25,7 @@ void IDECommunicationController::handleIncomingMessage(const std::wstring& messa
   NetworkProtocolHelper::MESSAGE_TYPE type = NetworkProtocolHelper::getMessageType(message);
 
   if(type == NetworkProtocolHelper::MESSAGE_TYPE::UNKNOWN) {
-    LOG_ERROR_STREAM(<< "Invalid message type");
+    LOG_ERROR("Invalid message type");
   } else if(type == NetworkProtocolHelper::MESSAGE_TYPE::SET_ACTIVE_TOKEN) {
     handleSetActiveTokenMessage(NetworkProtocolHelper::parseSetActiveTokenMessage(message));
   } else if(type == NetworkProtocolHelper::MESSAGE_TYPE::CREATE_CDB_MESSAGE) {
@@ -101,14 +101,14 @@ void IDECommunicationController::handleSetActiveTokenMessage(const NetworkProtoc
 }
 
 void IDECommunicationController::handleCreateProjectMessage(const NetworkProtocolHelper::CreateProjectMessage& /*message*/) {
-  LOG_ERROR_STREAM(<< "Network Protocol CreateProjectMessage not supported anymore.");
+  LOG_ERROR("Network Protocol CreateProjectMessage not supported anymore.");
 }
 
 void IDECommunicationController::handleCreateCDBProjectMessage(const NetworkProtocolHelper::CreateCDBProjectMessage& message) {
   if(message.valid) {
     MessageProjectNew(message.cdbFileLocation).dispatch();
   } else {
-    LOG_ERROR_STREAM(<< "Unable to parse provided CDB, invalid data received");
+    LOG_ERROR("Unable to parse provided CDB, invalid data received");
   }
 }
 
@@ -121,7 +121,7 @@ void IDECommunicationController::handlePing(const NetworkProtocolHelper::PingMes
       msg.ideName = L"unknown IDE";
     }
 
-    LOG_INFO(msg.ideName + L" instance detected via plugin port");
+    LOG_INFO_W(fmt::format(L"{} instance detected via plugin port", msg.ideName));
     msg.dispatch();
   } else {
     LOG_ERROR("Can't handle ping, message is invalid");

@@ -11,18 +11,18 @@ std::string SqliteDatabaseIndex::getName() const {
 
 void SqliteDatabaseIndex::createOnDatabase(CppSQLite3DB& database) {
   try {
-    LOG_INFO_STREAM(<< "Creating database index \"" << m_indexName << "\"");
+    LOG_INFO(fmt::format("Creating database index \"{}\"", m_indexName));
     database.execDML(("CREATE INDEX IF NOT EXISTS " + m_indexName + " ON " + m_indexTarget + ";").c_str());
   } catch(CppSQLite3Exception e) {
-    LOG_ERROR(std::to_string(e.errorCode()) + ": " + e.errorMessage());
+    LOG_ERROR(fmt::format("{}: {}", e.errorCode(), e.errorMessage()));
   }
 }
 
 void SqliteDatabaseIndex::removeFromDatabase(CppSQLite3DB& database) {
   try {
-    LOG_INFO_STREAM(<< "Removing database index \"" << m_indexName << "\"");
+    LOG_INFO(fmt::format("Removing database index \"{}\"", m_indexName));
     database.execDML(("DROP INDEX IF EXISTS main." + m_indexName + ";").c_str());
   } catch(CppSQLite3Exception e) {
-    LOG_ERROR(std::to_string(e.errorCode()) + ": " + e.errorMessage());
+    LOG_ERROR(fmt::format("{}: {}", e.errorCode(), e.errorMessage()));
   }
 }

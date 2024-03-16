@@ -2,22 +2,20 @@
 #include <csignal>
 #include <cstdlib>
 #include <iostream>
-// fmt
+
 #include <fmt/format.h>
-//
-#include "includes.h"
-#include "language_packages.h"
-// internal
+
+#include <spdlog/common.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
+
 #include "Application.h"
 #include "ApplicationSettings.h"
 #include "ApplicationSettingsPrefiller.h"
 #include "CommandLineParser.h"
-#include "ConsoleLogger.h"
-#include "FileLogger.h"
 #include "FilePath.h"
 #include "LanguagePackageManager.h"
-#include "LogManager.h"
-#include "Logger.h"
 #include "MessageIndexingInterrupted.h"
 #include "MessageLoadProject.h"
 #include "MessageStatus.h"
@@ -30,6 +28,8 @@
 #include "SourceGroupFactory.h"
 #include "SourceGroupFactoryModuleCustom.h"
 #include "Version.h"
+#include "includes.h"
+#include "language_packages.h"
 #include "logging.h"
 #include "productVersion.h"
 #include "utilityApp.h"
@@ -42,32 +42,29 @@
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
 void signalHandler(int /*signum*/) {
-  std::cout << "interrupt indexing" << std::endl;
+  std::cout << "interrupt indexing\n";
   MessageIndexingInterrupted().dispatch();
 }
 
 void setupLogging() {
-  auto* logManager = LogManager::getInstance().get();
+  std::vector<spdlog::sink_ptr> sinkList;
 
-  if(qEnvironmentVariableIsEmpty("ST_DISABLE_LOG_CONSOLE")) {
-    auto consoleLogger = std::make_shared<ConsoleLogger>();
-    auto defaultLogLevel = Logger::LogLevel::LOG_INFOS;
-    if(auto logLevel = qgetenv("ST_CONSOLE_LOG_LEVEL"); !logLevel.isEmpty()) {
-      defaultLogLevel = Logger::convertStringToLogLevel(logLevel.toStdString());
+  try {
+    if(qEnvironmentVariableIsEmpty("ST_DISABLE_LOG_CONSOLE")) {
+      auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+      consoleSink->set_level(spdlog::level::trace);
+      sinkList.emplace_back(std::move(consoleSink));
     }
-    consoleLogger->setLogLevel(defaultLogLevel);
-    logManager->addLogger(consoleLogger);
-  }
 
-  if(auto logFileEnv = qgetenv("ST_LOG_FILE"); !logFileEnv.isEmpty()) {
-    auto fileLogger = std::make_shared<FileLogger>();
-    fileLogger->setLogFilePath(FilePath {logFileEnv.toStdString()});
-    auto defaultLogLevel = Logger::LogLevel::LOG_INFOS;
-    if(auto logLevel = qgetenv("ST_FILE_LOG_LEVEL"); !logLevel.isEmpty()) {
-      defaultLogLevel = Logger::convertStringToLogLevel(logLevel.toStdString());
+    if(auto logFileEnv = qgetenv("ST_LOG_FILE"); !logFileEnv.isEmpty()) {
+      auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFileEnv.toStdString(), true);
+      fileSink->set_level(spdlog::level::trace);
+      sinkList.emplace_back(std::move(fileSink));
     }
-    fileLogger->setLogLevel(defaultLogLevel);
-    logManager->addLogger(fileLogger);
+
+    spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", sinkList.begin(), sinkList.end()));
+  } catch(const spdlog::spdlog_ex& ex) {
+    fmt::print(stderr, "{}\n", ex.what());
   }
 }
 

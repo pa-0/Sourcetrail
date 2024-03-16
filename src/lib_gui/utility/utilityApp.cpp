@@ -121,7 +121,7 @@ ProcessOutput executeProcess(const std::wstring& command,
             const bool isEndOfLine = (logBuffer.back() == '\n');
             const std::vector<std::string> lines = splitToVector(logBuffer, "\n");
             for(size_t i = 0; i < lines.size() - (isEndOfLine ? 0 : 1); i++) {
-              LOG_INFO_BARE("Process output: " + lines[i]);
+              LOG_INFO(fmt::format("Process output: {}", lines[i]));
             }
             if(isEndOfLine) {
               logBuffer.clear();
@@ -162,7 +162,7 @@ ProcessOutput executeProcess(const std::wstring& command,
 
     if(logProcessOutput) {
       for(const std::string& line : splitToVector(logBuffer, "\n")) {
-        LOG_INFO_BARE("Process output: " + line);
+        LOG_INFO(fmt::format("Process output: {}", line));
       }
     }
 
@@ -171,7 +171,7 @@ ProcessOutput executeProcess(const std::wstring& command,
     ProcessOutput ret;
     ret.error = decodeFromUtf8(e.code().message());
     ret.exitCode = e.code().value();
-    LOG_ERROR_BARE(L"Process error: " + ret.error);
+    LOG_ERROR_W(fmt::format(L"Process error: {}", ret.error));
 
     return ret;
   }

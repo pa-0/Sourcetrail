@@ -96,7 +96,7 @@ void BookmarkController::editBookmark(Id bookmarkId,
                                       const std::wstring& name,
                                       const std::wstring& comment,
                                       const std::wstring& category) {
-  LOG_INFO_STREAM(<< "Attempting to update Bookmark " << bookmarkId);
+  LOG_INFO(fmt::format("Attempting to update Bookmark {}", bookmarkId));
 
   m_storageAccess->updateBookmark(bookmarkId, name, comment, category.size() ? category : s_defaultCategoryName);
 
@@ -106,7 +106,7 @@ void BookmarkController::editBookmark(Id bookmarkId,
 }
 
 void BookmarkController::deleteBookmark(Id bookmarkId) {
-  LOG_INFO_STREAM(<< "Attempting to delete Bookmark " << bookmarkId);
+  LOG_INFO(fmt::format("Attempting to delete Bookmark {}", bookmarkId));
 
   m_storageAccess->removeBookmark(bookmarkId);
 
@@ -133,7 +133,7 @@ void BookmarkController::deleteBookmarkCategory(Id categoryId) {
 
 void BookmarkController::deleteBookmarkForActiveTokens() {
   if(std::shared_ptr<Bookmark> bookmark = getBookmarkForActiveToken(TabId::currentTab())) {
-    LOG_INFO(L"Deleting bookmark " + bookmark->getName());
+    LOG_INFO_W(L"Deleting bookmark " + bookmark->getName());
 
     m_storageAccess->removeBookmark(bookmark->getId());
 
@@ -368,7 +368,8 @@ std::vector<std::shared_ptr<EdgeBookmark>> BookmarkController::getAllEdgeBookmar
 
 std::vector<std::shared_ptr<Bookmark>> BookmarkController::getBookmarks(Bookmark::BookmarkFilter filter,
                                                                         Bookmark::BookmarkOrder order) const {
-  LOG_INFO_STREAM(<< "Retrieving bookmarks with filter \"" << filter << "\" and order \"" << order << "\"");
+  LOG_INFO(
+      fmt::format("Retrieving bookmarks with filter \"{}\" and order \"{}\"", static_cast<int>(filter), static_cast<int>(order)));
 
   std::vector<std::shared_ptr<Bookmark>> bookmarks = getAllBookmarks();
   bookmarks = getFilteredBookmarks(bookmarks, filter);

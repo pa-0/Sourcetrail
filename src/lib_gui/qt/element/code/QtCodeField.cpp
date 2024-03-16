@@ -20,6 +20,7 @@
 #include "TextCodec.h"
 #include "tracing.h"
 #include "utility.h"
+#include "logging.h"
 
 std::vector<QtCodeField::AnnotationColor> QtCodeField::s_annotationColors;
 std::string QtCodeField::s_focusColor;
@@ -62,8 +63,7 @@ QtCodeField::QtCodeField(size_t startLineNumber,
     QString convertedDisplayCode = QString::fromStdWString(codec.decode(displayCode));
     setPlainText(convertedDisplayCode);
     if(displayCode.size() != size_t(convertedDisplayCode.length())) {
-      LOG_INFO("Converting displayed code to " + codec.getName() +
-               " resulted in offset of source locations. Correcting this now.");
+      LOG_INFO(fmt::format("Converting displayed code to {} resulted in offset of source locations. Correcting this now.", codec.getName()));
       createMultibyteCharacterLocationCache(convertedDisplayCode);
     }
   } else {

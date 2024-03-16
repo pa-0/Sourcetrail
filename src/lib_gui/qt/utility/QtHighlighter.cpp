@@ -87,10 +87,10 @@ void QtHighlighter::loadHighlightingRules() {
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(QString::fromStdString(textAccess->getText()).toUtf8(), &error);
     if(doc.isNull() || !doc.isArray()) {
-      LOG_ERROR_STREAM(<< "Highlighting rules in \"" << path.str()
-                       << "\" couldn't be parsed as JSON: "
-                          "offset "
-                       << error.offset << " - " << error.errorString().toStdString());
+      LOG_ERROR(fmt::format("Highlighting rules in \"{}\" couldn't be parsed as JSON: offset {} - {}",
+                            path.str(),
+                            error.offset,
+                            error.errorString().toStdString()));
       continue;
     }
 

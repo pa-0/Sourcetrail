@@ -11,8 +11,10 @@
 #include <QTextCodec>
 #include <QTimer>
 
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/spdlog.h>
+
 #include "ApplicationSettings.h"
-#include "FileLogger.h"
 #include "FileSystem.h"
 #include "MessageSwitchColorScheme.h"
 #include "ResourcePaths.h"
@@ -364,6 +366,8 @@ void QtProjectWizardContentPreferences::save() {
 
   appSettings->setControlsGraphZoomOnMouseWheel(m_graphZooming->isChecked());
 
+// FIXME(Hussein): Set the logging path using prefernces
+#if 0
   appSettings->setLoggingEnabled(m_loggingEnabled->isChecked());
   appSettings->setVerboseIndexerLoggingEnabled(m_verboseIndexerLoggingEnabled->isChecked());
   if((m_logPath != nullptr) && m_logPath->getText().toStdWString() != appSettings->getLogDirectoryPath().wstr()) {
@@ -375,6 +379,7 @@ void QtProjectWizardContentPreferences::save() {
       fileLogger->setFileName(FileLogger::generateDatedFileName(L"log"));
     }
   }
+#endif
 
   int sourcetrailPort = m_sourcetrailPort->text().toInt();
   if(sourcetrailPort != 0) {
