@@ -20,12 +20,6 @@ target_sources(
           ${CMAKE_SOURCE_DIR}/src/lib/utility/utility.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/utilityUuid.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/Version.cpp
-          ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/ConsoleLogger.cpp
-          ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/FileLogger.cpp
-          ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/Logger.cpp
-          ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/LogManager.cpp
-          ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/LogManagerImplementation.cpp
-          ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/LogMessage.cpp
           ${CMAKE_SOURCE_DIR}/src/lib/utility/text/TextAccess.cpp)
 
 target_include_directories(
@@ -40,7 +34,7 @@ target_link_libraries(Sourcetrail_core PUBLIC Boost::date_time Boost::system Boo
 
 target_link_libraries(
   Sourcetrail_core
-  PUBLIC fmt::fmt range-v3::range-v3 Sourcetrail::lib_utility
+  PUBLIC fmt::fmt range-v3::range-v3 Sourcetrail::lib_utility spdlog::spdlog
   PRIVATE Boost::filesystem
           Sourcetrail::lib_utility
           tinyxml::tinyxml
@@ -48,7 +42,8 @@ target_link_libraries(
 
 # $<$<PLATFORM_ID:Windows>:bcrypt>
 target_compile_definitions(Sourcetrail_core PUBLIC $<$<PLATFORM_ID:Windows>:D_WINDOWS> $<$<PLATFORM_ID:Linux>:D_LINUX>
-                                                   $<$<PLATFORM_ID:Darwin>:D_Darwin>)
+                                                   $<$<PLATFORM_ID:Darwin>:D_Darwin>
+                                                   $<$<PLATFORM_ID:Windows>:SPDLOG_WCHAR_TO_UTF8_SUPPORT>)
 
 myproject_set_project_warnings(
   Sourcetrail_core

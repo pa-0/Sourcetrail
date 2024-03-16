@@ -6,7 +6,6 @@ set(gtest_lib_names
     FilePathFilterTestSuite
     FilePathTestSuite
     FileSystemTestSuite
-    LoggerTestSuite
     TextAccessTestSuite
     VersionTestSuite
     ScopedFunctorTestSuite
