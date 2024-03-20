@@ -1,18 +1,16 @@
-#ifndef QT_BOOKMARK_VIEW_H
-#define QT_BOOKMARK_VIEW_H
-
-#include "BookmarkController.h"
+#pragma once
 #include "BookmarkView.h"
 #include "ControllerProxy.h"
 #include "QtThreadedFunctor.h"
 
 class QFrame;
 class QtBookmarkBrowser;
+class BookmarkController;
 
 class QtBookmarkView : public BookmarkView {
 public:
-  QtBookmarkView(ViewLayout* viewLayout);
-  ~QtBookmarkView() = default;
+  explicit QtBookmarkView(ViewLayout* viewLayout);
+  ~QtBookmarkView() override;
 
   // View implementation
   void createWidgetWrapper() override;
@@ -25,13 +23,11 @@ public:
   void displayBookmarkEditor(std::shared_ptr<Bookmark> bookmark, const std::vector<BookmarkCategory>& categories) override;
 
   void displayBookmarks(const std::vector<std::shared_ptr<Bookmark>>& bookmarks) override;
-  bool bookmarkBrowserIsVisible() const override;
+  [[nodiscard]] bool bookmarkBrowserIsVisible() const override;
 
 private:
   ControllerProxy<BookmarkController> m_controllerProxy;
   QtThreadedLambdaFunctor m_onQtThread;
 
-  QtBookmarkBrowser* m_bookmarkBrowser;
+  QtBookmarkBrowser* m_bookmarkBrowser = nullptr;
 };
-
-#endif    // QT_BOOKMARK_VIEW_H
