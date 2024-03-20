@@ -169,10 +169,6 @@ void Application::updateHistoryMenu(std::shared_ptr<MessageBase> message) {
   m_mainView->updateHistoryMenu(message);
 }
 
-void Application::updateBookmarks(const std::vector<std::shared_ptr<Bookmark>>& bookmarks) {
-  m_mainView->updateBookmarksMenu(bookmarks);
-}
-
 void Application::handleMessage(MessageActivateWindow* /*pMessage*/) {
   if(m_hasGUI) {
     m_mainView->activateWindow();
@@ -298,6 +294,15 @@ void Application::handleMessage(MessageSwitchColorScheme* pMessage) {
 
   loadStyle(pMessage->colorSchemePath);
   MessageRefreshUI().noStyleReload().dispatch();
+}
+
+void Application::handleMessage(MessageBookmarkUpdate* message) {
+  assert(message != nullptr);
+  if(!m_mainView) {
+    LOG_WARNING("MainView isn't initialized");
+    return;
+  }
+  m_mainView->updateBookmarksMenu(message->mBookmarks);
 }
 
 void Application::startMessagingAndScheduling() {

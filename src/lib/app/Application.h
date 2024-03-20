@@ -6,6 +6,7 @@
 #include "Project.h"
 // messages
 #include "MessageActivateWindow.h"
+#include "MessageBookmarkUpdate.hpp"
 #include "MessageCloseProject.h"
 #include "MessageIndexingFinished.h"
 #include "MessageListener.h"
@@ -30,7 +31,8 @@ class Application
     , public MessageListener<MessageLoadProject>
     , public MessageListener<MessageRefresh>
     , public MessageListener<MessageRefreshUI>
-    , public MessageListener<MessageSwitchColorScheme> {
+    , public MessageListener<MessageSwitchColorScheme>
+    , public MessageListener<MessageBookmarkUpdate>{
 public:
   static void createInstance(const Version& version, ViewFactory* viewFactory, NetworkFactory* networkFactory);
   static std::shared_ptr<Application> getInstance();
@@ -63,7 +65,6 @@ public:
   std::shared_ptr<DialogView> getDialogView(DialogView::UseCase useCase);
 
   void updateHistoryMenu(std::shared_ptr<MessageBase> message);
-  void updateBookmarks(const std::vector<std::shared_ptr<Bookmark>>& bookmarks);
 
 private:
   static std::shared_ptr<Application> s_instance;    // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
@@ -87,6 +88,7 @@ private:
   void handleMessage(MessageRefreshUI* pMessage) override;
   void handleMessage(MessageSwitchColorScheme* pMessage) override;
   /**  @} */
+  void handleMessage(MessageBookmarkUpdate* message) override;
 
   void startMessagingAndScheduling();
 

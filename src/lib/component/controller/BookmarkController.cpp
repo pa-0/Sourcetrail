@@ -532,5 +532,5 @@ void BookmarkController::update() {
     bookmarks.resize(maxBookmarkMenuCount);
   }
 
-  Application::getInstance()->updateBookmarks(bookmarks);
+  MessageBookmarkUpdate(std::move(bookmarks)).dispatchImmediately();
 }
