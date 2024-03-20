@@ -14,7 +14,7 @@
 QtWindow::QtWindow(bool isSubWindow, QWidget* parent) : QtWindowBase(isSubWindow, parent) {}
 
 void QtWindow::setup() {
-  setStyleSheet(utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/window.css")).c_str());
+  setStyleSheet(utility::getStyleSheet("://window/window.css"));
 
   auto* layout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)
   layout->setContentsMargins(10, 10, 10, 10);

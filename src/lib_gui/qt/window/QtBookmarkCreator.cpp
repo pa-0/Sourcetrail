@@ -8,7 +8,6 @@
 
 #include "BookmarkCategory.h"
 #include "MessageStatus.h"
-#include "ResourcePaths.h"
 #include "utilityQt.h"
 
 QtBookmarkCreator::QtBookmarkCreator(ControllerProxy<BookmarkController>* controllerProxy, QWidget* parent, Id bookmarkId)
@@ -90,10 +89,7 @@ void QtBookmarkCreator::setupBookmarkCreator() {
 }
 
 void QtBookmarkCreator::refreshStyle() {
-  setStyleSheet((utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/window.css")) +
-                 utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"bookmark_view/"
-                                                                                         L"bookmark_view.css")))
-                    .c_str());
+  setStyleSheet(utility::getStyleSheet("://window/window.css") + utility::getStyleSheet("://bookmark_view/bookmark_view.css"));
 }
 
 void QtBookmarkCreator::setDisplayName(const std::wstring& name) {
