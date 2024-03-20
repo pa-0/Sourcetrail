@@ -1,6 +1,4 @@
-#ifndef BOOKMARK_VIEW_H
-#define BOOKMARK_VIEW_H
-
+#pragma once
 #include "Bookmark.h"
 #include "View.h"
 
@@ -8,10 +6,10 @@ class BookmarkController;
 
 class BookmarkView : public View {
 public:
-  BookmarkView(ViewLayout* viewLayout);
-  virtual ~BookmarkView() = default;
+  explicit BookmarkView(ViewLayout* viewLayout);
+  ~BookmarkView() override;
 
-  virtual std::string getName() const;
+  [[nodiscard]] std::string getName() const override;
 
   virtual void displayBookmarks(const std::vector<std::shared_ptr<Bookmark>>& bookmarks) = 0;
   virtual void displayBookmarkEditor(std::shared_ptr<Bookmark> bookmark, const std::vector<BookmarkCategory>& categories) = 0;
@@ -19,10 +17,8 @@ public:
                                       const std::vector<BookmarkCategory>& categories,
                                       Id nodeId) = 0;
 
-  virtual bool bookmarkBrowserIsVisible() const = 0;
+  [[nodiscard]] virtual bool bookmarkBrowserIsVisible() const = 0;
 
 private:
   BookmarkController* getController();
 };
-
-#endif    // BOOKMARK_VIEW_H

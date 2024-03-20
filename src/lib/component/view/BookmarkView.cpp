@@ -4,6 +4,8 @@
 
 BookmarkView::BookmarkView(ViewLayout* viewLayout) : View(viewLayout) {}
 
+BookmarkView::~BookmarkView() = default;
+
 std::string BookmarkView::getName() const {
   return "BookmarkView";
 }
