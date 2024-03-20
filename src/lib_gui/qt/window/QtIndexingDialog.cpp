@@ -45,7 +45,7 @@ QWidget* QtIndexingDialog::createErrorWidget(QBoxLayout* layout) {
       QPixmap(QString::fromStdWString(ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/error.png").wstr())));
   errorLayout->addWidget(errorCount);
 
-  auto* helpButton = new QtHelpButton(QtHelpButtonInfo(createErrorHelpButtonInfo()));    // NOLINT(cppcoreguidelines-owning-memory)
+  auto* helpButton = new QtHelpButton(createErrorHelpButtonInfo());    // NOLINT(cppcoreguidelines-owning-memory)
   helpButton->setColor(Qt::white);
   errorLayout->addWidget(helpButton);
 
@@ -77,10 +77,7 @@ QtIndexingDialog::QtIndexingDialog(bool isSubWindow, QWidget* parent)
                                          "border: none;"
                                          "}"));
 
-  setStyleSheet((utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/window.css")) +
-                 utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"indexing_dialog/"
-                                                                                         L"indexing_dialog.css")))
-                    .c_str());
+  setStyleSheet(utility::getStyleSheet("://window/window.css") + utility::getStyleSheet(":indexing_dialog/indexing_dialog.css"));
 
   m_layout->setContentsMargins(20, 20, 20, 0);
   m_layout->setSpacing(3);

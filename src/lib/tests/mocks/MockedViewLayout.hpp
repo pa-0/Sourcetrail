@@ -3,7 +3,7 @@
 
 #include "ViewLayout.h"
 
-struct MockedViewLayout final : ViewLayout {
+struct MockedViewLayout : ViewLayout {
   MOCK_METHOD(void, addView, (View*), (override));
 
   MOCK_METHOD(void, overrideView, (View*), (override));

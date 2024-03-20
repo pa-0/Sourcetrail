@@ -23,7 +23,7 @@ public:
   //}
 };
 
-ParseLocation validLocation(Id locationId = 0) {
+[[maybe_unused]] ParseLocation validLocation(Id locationId = 0) {
   return ParseLocation(1, 1, locationId, 1, locationId);
 }
 
@@ -35,7 +35,7 @@ NameHierarchy createNameHierarchy(std::wstring s) {
   return nameHierarchy;
 }
 
-NameHierarchy createFunctionNameHierarchy(std::wstring ret, std::wstring name, std::wstring parameters) {
+[[maybe_unused]] NameHierarchy createFunctionNameHierarchy(std::wstring ret, std::wstring name, std::wstring parameters) {
   NameHierarchy nameHierarchy = createNameHierarchy(name);
   std::wstring lastName = nameHierarchy.back().getName();
   nameHierarchy.pop();

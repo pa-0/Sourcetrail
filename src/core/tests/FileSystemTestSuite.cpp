@@ -10,17 +10,17 @@
 #include "utility.h"
 
 namespace {
-bool isInFiles(const std::set<FilePath>& files, const FilePath& filename) {
+[[maybe_unused]] bool isInFiles(const std::set<FilePath>& files, const FilePath& filename) {
   return std::end(files) != files.find(filename);
 }
 
-bool isInFileInfos(const std::vector<FileInfo>& infos, const std::wstring& filename) {
+[[maybe_unused]] bool isInFileInfos(const std::vector<FileInfo>& infos, const std::wstring& filename) {
   return std::any_of(std::cbegin(infos), std::cend(infos), [wFileName = FilePath(filename).getCanonical().wstr()](const auto& info) {
     return info.path.getAbsolute().wstr() == wFileName;
   });
 }
 
-bool isInFileInfos(const std::vector<FileInfo>& infos, const std::wstring& filename, const std::wstring& filename2) {
+[[maybe_unused]] bool isInFileInfos(const std::vector<FileInfo>& infos, const std::wstring& filename, const std::wstring& filename2) {
   return std::any_of(std::cbegin(infos),
                      std::cend(infos),
                      [wFileName = FilePath(filename).getCanonical().wstr(),
@@ -63,6 +63,7 @@ TEST(FileSystem, findAllSourceFiles) {
 }
 
 // TODO(Hussein): Fix next test
+#define DISABLED 0
 #if DISABLED
 TEST(FileSystem, findFileInfos) {
 #  ifndef _WIN32
