@@ -1,30 +1,27 @@
 #include "EdgeBookmark.h"
 
-EdgeBookmark::EdgeBookmark(const Id id,
-                           const std::wstring& name,
-                           const std::wstring& comment,
-                           const TimeStamp& timeStamp,
-                           const BookmarkCategory& category)
+EdgeBookmark::EdgeBookmark(
+    Id id, const std::wstring& name, const std::wstring& comment, const TimeStamp& timeStamp, const BookmarkCategory& category)
     : Bookmark(id, name, comment, timeStamp, category) {}
 
-EdgeBookmark::~EdgeBookmark() {}
+EdgeBookmark::~EdgeBookmark() = default;
 
-void EdgeBookmark::addEdgeId(const Id edgeId) {
-  m_edgeIds.push_back(edgeId);
+void EdgeBookmark::addEdgeId(Id edgeId) {
+  mEdgeIds.push_back(edgeId);
 }
 
 void EdgeBookmark::setEdgeIds(const std::vector<Id>& edgesIds) {
-  m_edgeIds = edgesIds;
+  mEdgeIds = edgesIds;
 }
 
 std::vector<Id> EdgeBookmark::getEdgeIds() const {
-  return m_edgeIds;
+  return mEdgeIds;
 }
 
-void EdgeBookmark::setActiveNodeId(const Id activeNodeId) {
-  m_activeNodeId = activeNodeId;
+void EdgeBookmark::setActiveNodeId(Id activeNodeId) {
+  mActiveNodeId = activeNodeId;
 }
 
 Id EdgeBookmark::getActiveNodeId() const {
-  return m_activeNodeId;
+  return mActiveNodeId;
 }

@@ -1,27 +1,24 @@
-#ifndef EDGE_BOOKMARK_H
-#define EDGE_BOOKMARK_H
-
+#pragma once
 #include "Bookmark.h"
 
-class EdgeBookmark : public Bookmark {
+class EdgeBookmark final : public Bookmark {
 public:
-  EdgeBookmark(const Id id,
+  EdgeBookmark(Id id,
                const std::wstring& name,
                const std::wstring& comment,
                const TimeStamp& timeStamp,
                const BookmarkCategory& category);
-  virtual ~EdgeBookmark();
 
-  void addEdgeId(const Id edgeId);
+  ~EdgeBookmark() override;
+
+  void addEdgeId(Id edgeId);
   void setEdgeIds(const std::vector<Id>& edgesIds);
-  std::vector<Id> getEdgeIds() const;
+  [[nodiscard]] std::vector<Id> getEdgeIds() const;
 
-  void setActiveNodeId(const Id activeNodeId);
-  Id getActiveNodeId() const;
+  void setActiveNodeId(Id activeNodeId);
+  [[nodiscard]] Id getActiveNodeId() const;
 
 private:
-  std::vector<Id> m_edgeIds;
-  Id m_activeNodeId;
+  std::vector<Id> mEdgeIds;
+  Id mActiveNodeId;
 };
-
-#endif    // EDGE_BOOKMARK_H
