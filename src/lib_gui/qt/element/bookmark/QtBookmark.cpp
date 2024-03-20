@@ -1,11 +1,16 @@
 #include "QtBookmark.h"
 
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QPushButton>
 #include <QTimer>
+#include <QTreeWidget>
 #include <QVBoxLayout>
 
+#include "Bookmark.h"
+#include "BookmarkController.h"
 #include "ResourcePaths.h"
 #include "utilityQt.h"
 
@@ -17,10 +22,8 @@ QtBookmark::QtBookmark(ControllerProxy<BookmarkController>* controllerProxy)
     , m_toggleCommentButton(new QPushButton)
     , m_comment(new QLabel(QLatin1String("")))
     , m_dateLabel(new QLabel)
-    , m_treeWidgetItem(nullptr)
-    , m_arrowImageName(L"arrow_line_down.png")
-    , m_hovered(false)
-    , m_ignoreNextResize(false) {
+    , m_arrowImageName(L"arrow_line_down.png") {
+  assert(controllerProxy != nullptr);
   setObjectName(QStringLiteral("bookmark"));
 
   auto* layout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory)

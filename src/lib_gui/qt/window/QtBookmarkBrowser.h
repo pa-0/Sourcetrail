@@ -1,6 +1,4 @@
-#ifndef QT_BOOKMARK_BROWSER_H
-#define QT_BOOKMARK_BROWSER_H
-
+#pragma once
 #include <QComboBox>
 #include <QListWidget>
 #include <QTreeWidget>
@@ -16,37 +14,34 @@ class QtBookmarkBrowser : public QtWindow {
   Q_OBJECT
 
 public:
-  QtBookmarkBrowser(ControllerProxy<BookmarkController>* controllerProxy, QWidget* parent = nullptr);
-  ~QtBookmarkBrowser();
+  explicit QtBookmarkBrowser(ControllerProxy<BookmarkController>* controllerProxy, QWidget* parent = nullptr);
+  ~QtBookmarkBrowser() override;
 
   void setupBookmarkBrowser();
   void setBookmarks(const std::vector<std::shared_ptr<Bookmark>>& bookmarks);
 
 protected:
-  virtual void resizeEvent(QResizeEvent* event) override;
-
-  virtual void handleClose() override;
-  virtual void handleNext() override;
+  void resizeEvent(QResizeEvent* event) override;
+  void handleClose() override;
+  void handleNext() override;
 
 private slots:
   void filterOrOrderChanged(int index);
   void treeItemClicked(QTreeWidgetItem* item, int column);
 
 private:
-  Bookmark::BookmarkFilter getSelectedFilter();
-  Bookmark::BookmarkOrder getSelectedOrder();
+  Bookmark::Filter getSelectedFilter();
+  Bookmark::Order getSelectedOrder();
 
   QTreeWidgetItem* findOrCreateTreeCategory(const BookmarkCategory& category);
 
-  ControllerProxy<BookmarkController>* m_controllerProxy;
+  ControllerProxy<BookmarkController>* mControllerProxy;
 
-  QTreeWidget* m_bookmarkTree;
+  QTreeWidget* mBookmarkTree = nullptr;
 
-  QComboBox* m_filterComboBox;
-  QComboBox* m_orderComboBox;
-  std::vector<std::string> m_orderNames;
+  QComboBox* mFilterComboBox = nullptr;
+  QComboBox* mOrderComboBox = nullptr;
+  std::vector<std::string> mOrderNames;
 
-  QWidget* m_headerBackground;
+  QWidget* mHeaderBackground = nullptr;
 };
-
-#endif    // QT_BOOKMARK_BROWSER_H

@@ -8,33 +8,31 @@
 
 #include "QtBookmark.h"
 #include "QtBookmarkCategory.h"
-#include "ResourcePaths.h"
 #include "utilityQt.h"
 
 QtBookmarkBrowser::QtBookmarkBrowser(ControllerProxy<BookmarkController>* controllerProxy, QWidget* parent)
-    : QtWindow(false, parent), m_controllerProxy(controllerProxy) {}
+    : QtWindow(false, parent), mControllerProxy(controllerProxy) {
+  assert(controllerProxy != nullptr);
+}
 
-QtBookmarkBrowser::~QtBookmarkBrowser() {}
+QtBookmarkBrowser::~QtBookmarkBrowser() = default;
 
 void QtBookmarkBrowser::setupBookmarkBrowser() {
-  setStyleSheet((utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"window/window.css")) +
-                 utility::getStyleSheet(ResourcePaths::getGuiDirectoryPath().concatenate(L"bookmark_view/"
-                                                                                         L"bookmark_view.css")))
-                    .c_str());
+  setStyleSheet(utility::getStyleSheet("://window/window.css") + utility::getStyleSheet("://bookmark_view/bookmark_view.css"));
 
-  m_headerBackground = new QWidget(m_window);
-  m_headerBackground->setObjectName(QStringLiteral("header_background"));
-  m_headerBackground->setGeometry(0, 0, 0, 0);
-  m_headerBackground->lower();
+  mHeaderBackground = new QWidget(m_window);    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
+  mHeaderBackground->setObjectName(QStringLiteral("header_background"));
+  mHeaderBackground->setGeometry(0, 0, 0, 0);
+  mHeaderBackground->lower();
 
-  QHBoxLayout* layout = new QHBoxLayout();
+  auto* layout = new QHBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
   layout->setSpacing(0);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setAlignment(Qt::AlignTop);
   setLayout(layout);
 
   {
-    QVBoxLayout* headerLayout = new QVBoxLayout();
+    auto* headerLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
     headerLayout->setSpacing(0);
     headerLayout->setContentsMargins(25, 35, 25, 35);
     headerLayout->setAlignment(Qt::AlignTop);
@@ -42,66 +40,66 @@ void QtBookmarkBrowser::setupBookmarkBrowser() {
 
     headerLayout->addStrut(150);
 
-    QLabel* title = new QLabel(QStringLiteral("Bookmarks"));
+    auto* title = new QLabel(QStringLiteral("Bookmarks"));    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
     title->setObjectName(QStringLiteral("title"));
     headerLayout->addWidget(title);
 
     headerLayout->addSpacing(40);
 
-    QLabel* filterLabel = new QLabel(QStringLiteral("Show:"));
+    auto* filterLabel = new QLabel(QStringLiteral("Show:"));    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
     filterLabel->setObjectName(QStringLiteral("filter_label"));
     headerLayout->addWidget(filterLabel);
 
-    m_filterComboBox = new QComboBox();
-    m_filterComboBox->addItem(QStringLiteral("All"));
-    m_filterComboBox->addItem(QStringLiteral("Nodes"));
-    m_filterComboBox->addItem(QStringLiteral("Edges"));
-    m_filterComboBox->setObjectName(QStringLiteral("filter_box"));
-    headerLayout->addWidget(m_filterComboBox);
+    mFilterComboBox = new QComboBox();    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
+    mFilterComboBox->addItem(QStringLiteral("All"));
+    mFilterComboBox->addItem(QStringLiteral("Nodes"));
+    mFilterComboBox->addItem(QStringLiteral("Edges"));
+    mFilterComboBox->setObjectName(QStringLiteral("filter_box"));
+    headerLayout->addWidget(mFilterComboBox);
 
-    connect(m_filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &QtBookmarkBrowser::filterOrOrderChanged);
+    connect(mFilterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &QtBookmarkBrowser::filterOrOrderChanged);
 
     headerLayout->addSpacing(40);
 
-    QLabel* orderLabel = new QLabel(QStringLiteral("Sort by:"));
+    auto* orderLabel = new QLabel(QStringLiteral("Sort by:"));    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
     orderLabel->setObjectName(QStringLiteral("order_label"));
     headerLayout->addWidget(orderLabel);
 
-    m_orderNames.push_back("Name asc.");
-    m_orderNames.push_back("Name des.");
-    m_orderNames.push_back("Date asc.");
-    m_orderNames.push_back("Date des.");
+    mOrderNames.emplace_back("Name asc.");
+    mOrderNames.emplace_back("Name des.");
+    mOrderNames.emplace_back("Date asc.");
+    mOrderNames.emplace_back("Date des.");
 
-    m_orderComboBox = new QComboBox(this);
-    m_orderComboBox->addItem(m_orderNames[0].c_str());
-    m_orderComboBox->addItem(m_orderNames[1].c_str());
-    m_orderComboBox->addItem(m_orderNames[2].c_str());
-    m_orderComboBox->addItem(m_orderNames[3].c_str());
-    m_orderComboBox->setCurrentIndex(3);
-    m_orderComboBox->setObjectName(QStringLiteral("order_box"));
-    headerLayout->addWidget(m_orderComboBox);
+    mOrderComboBox = new QComboBox(this);    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
+    mOrderComboBox->addItem(mOrderNames[0].c_str());
+    mOrderComboBox->addItem(mOrderNames[1].c_str());
+    mOrderComboBox->addItem(mOrderNames[2].c_str());
+    mOrderComboBox->addItem(mOrderNames[3].c_str());
+    mOrderComboBox->setCurrentIndex(3);
+    mOrderComboBox->setObjectName(QStringLiteral("order_box"));
+    headerLayout->addWidget(mOrderComboBox);
 
-    connect(m_orderComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &QtBookmarkBrowser::filterOrOrderChanged);
+    connect(mOrderComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &QtBookmarkBrowser::filterOrOrderChanged);
   }
 
   {
-    QVBoxLayout* bodyLayout = new QVBoxLayout();
+    auto* bodyLayout = new QVBoxLayout;    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
     bodyLayout->setSpacing(0);
     bodyLayout->setContentsMargins(0, 10, 0, 10);
     bodyLayout->setAlignment(Qt::AlignLeft);
     layout->addLayout(bodyLayout);
 
-    m_bookmarkTree = new QTreeWidget();
-    m_bookmarkTree->setObjectName(QStringLiteral("bookmark_tree"));
-    m_bookmarkTree->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    m_bookmarkTree->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
-    m_bookmarkTree->header()->close();
-    m_bookmarkTree->setIndentation(0);
-    m_bookmarkTree->setHeaderLabel(QStringLiteral("Bookmarks"));
+    mBookmarkTree = new QTreeWidget;    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
+    mBookmarkTree->setObjectName(QStringLiteral("bookmark_tree"));
+    mBookmarkTree->setAttribute(Qt::WA_MacShowFocusRect, false);
+    mBookmarkTree->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
+    mBookmarkTree->header()->close();
+    mBookmarkTree->setIndentation(0);
+    mBookmarkTree->setHeaderLabel(QStringLiteral("Bookmarks"));
 
-    connect(m_bookmarkTree, &QTreeWidget::itemClicked, this, &QtBookmarkBrowser::treeItemClicked);
+    connect(mBookmarkTree, &QTreeWidget::itemClicked, this, &QtBookmarkBrowser::treeItemClicked);
 
-    bodyLayout->addWidget(m_bookmarkTree);
+    bodyLayout->addWidget(mBookmarkTree);
 
     bodyLayout->addSpacing(15);
 
@@ -116,36 +114,36 @@ void QtBookmarkBrowser::setupBookmarkBrowser() {
 
 void QtBookmarkBrowser::setBookmarks(const std::vector<std::shared_ptr<Bookmark>>& bookmarks) {
   std::map<QString, bool> wasCategoryExpanded;
-  for(int i = 0; i < m_bookmarkTree->topLevelItemCount(); i++) {
-    QTreeWidgetItem* item = m_bookmarkTree->topLevelItem(i);
+  for(int i = 0; i < mBookmarkTree->topLevelItemCount(); i++) {
+    QTreeWidgetItem* item = mBookmarkTree->topLevelItem(i);
     wasCategoryExpanded.emplace(item->whatsThis(0), item->isExpanded());
   }
 
-  m_bookmarkTree->clear();
+  mBookmarkTree->clear();
 
   std::map<std::wstring, BookmarkCategory> categoryNamesOrdered;
   for(const std::shared_ptr<Bookmark>& bookmark : bookmarks) {
     categoryNamesOrdered.emplace(bookmark->getCategory().getName(), bookmark->getCategory());
   }
 
-  for(const auto& p : categoryNamesOrdered) {
-    findOrCreateTreeCategory(p.second);
+  for(const auto& [categoryName, type] : categoryNamesOrdered) {
+    findOrCreateTreeCategory(type);
   }
 
   for(const std::shared_ptr<Bookmark>& bookmark : bookmarks) {
-    QtBookmark* qtBookmark = new QtBookmark(m_controllerProxy);
+    auto* qtBookmark = new QtBookmark(mControllerProxy);    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
     qtBookmark->setBookmark(bookmark);
 
     QTreeWidgetItem* categoryItem = findOrCreateTreeCategory(bookmark->getCategory());
-    QTreeWidgetItem* treeWidgetItem = new QTreeWidgetItem(categoryItem);
-    m_bookmarkTree->setItemWidget(treeWidgetItem, 0, qtBookmark);
+    auto* treeWidgetItem = new QTreeWidgetItem(categoryItem);    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
+    mBookmarkTree->setItemWidget(treeWidgetItem, 0, qtBookmark);
     categoryItem->addChild(treeWidgetItem);
     qtBookmark->setTreeWidgetItem(categoryItem);
 
     bool wasExpanded = true;
-    auto it = wasCategoryExpanded.find(categoryItem->whatsThis(0));
-    if(it != wasCategoryExpanded.end()) {
-      wasExpanded = it->second;
+    auto iterator = wasCategoryExpanded.find(categoryItem->whatsThis(0));
+    if(iterator != wasCategoryExpanded.end()) {
+      wasExpanded = iterator->second;
     }
 
     categoryItem->setExpanded(!wasExpanded);
@@ -156,7 +154,7 @@ void QtBookmarkBrowser::setBookmarks(const std::vector<std::shared_ptr<Bookmark>
 void QtBookmarkBrowser::resizeEvent(QResizeEvent* event) {
   QtWindow::resizeEvent(event);
 
-  m_headerBackground->setGeometry(0, 0, 200, m_window->size().height());
+  mHeaderBackground->setGeometry(0, 0, 200, m_window->size().height());
 }
 
 void QtBookmarkBrowser::handleClose() {
@@ -168,64 +166,65 @@ void QtBookmarkBrowser::handleNext() {
 }
 
 void QtBookmarkBrowser::filterOrOrderChanged(int /*index*/) {
-  Bookmark::BookmarkFilter filter = getSelectedFilter();
-  Bookmark::BookmarkOrder order = getSelectedOrder();
+  const Bookmark::Filter filter = getSelectedFilter();
+  const Bookmark::Order order = getSelectedOrder();
 
-  m_controllerProxy->executeAsTaskWithArgs(&BookmarkController::displayBookmarksFor, filter, order);
+  mControllerProxy->executeAsTaskWithArgs(&BookmarkController::displayBookmarksFor, filter, order);
 }
 
 void QtBookmarkBrowser::treeItemClicked(QTreeWidgetItem* item, int /*column*/) {
-  QtBookmarkCategory* category = dynamic_cast<QtBookmarkCategory*>(m_bookmarkTree->itemWidget(item, 0));
+  auto* category = dynamic_cast<QtBookmarkCategory*>(mBookmarkTree->itemWidget(item, 0));
   if(category != nullptr) {
     category->expandClicked();
     return;
   }
 
-  QtBookmark* bookmark = dynamic_cast<QtBookmark*>(m_bookmarkTree->itemWidget(item, 0));
+  auto* bookmark = dynamic_cast<QtBookmark*>(mBookmarkTree->itemWidget(item, 0));
   if(bookmark != nullptr) {
     bookmark->commentToggled();
     return;
   }
 }
 
-Bookmark::BookmarkFilter QtBookmarkBrowser::getSelectedFilter() {
-  std::string text = m_filterComboBox->currentText().toStdString();
+Bookmark::Filter QtBookmarkBrowser::getSelectedFilter() {
+  std::string text = mFilterComboBox->currentText().toStdString();
 
   if(text == "Nodes") {
-    return Bookmark::FILTER_NODES;
+    return Bookmark::Filter::Nodes;
   } else if(text == "Edges") {
-    return Bookmark::FILTER_EDGES;
+    return Bookmark::Filter::Edges;
   }
 
-  return Bookmark::FILTER_ALL;
+  return Bookmark::Filter::All;
 }
 
-Bookmark::BookmarkOrder QtBookmarkBrowser::getSelectedOrder() {
-  std::string orderString = m_orderComboBox->currentText().toStdString();
+Bookmark::Order QtBookmarkBrowser::getSelectedOrder() {
+  std::string orderString = mOrderComboBox->currentText().toStdString();
 
-  if(orderString == m_orderNames[0]) {
-    return Bookmark::ORDER_NAME_ASCENDING;
-  } else if(orderString == m_orderNames[1]) {
-    return Bookmark::ORDER_NAME_DESCENDING;
-  } else if(orderString == m_orderNames[2]) {
-    return Bookmark::ORDER_DATE_ASCENDING;
-  } else if(orderString == m_orderNames[3]) {
-    return Bookmark::ORDER_DATE_DESCENDING;
+  if(orderString == mOrderNames[0]) {
+    return Bookmark::Order::NameAscending;
+  } else if(orderString == mOrderNames[1]) {
+    return Bookmark::Order::NameDescending;
+  } else if(orderString == mOrderNames[2]) {
+    return Bookmark::Order::DateAscending;
+  } else if(orderString == mOrderNames[3]) {
+    return Bookmark::Order::DateDescending;
   } else {
-    return Bookmark::ORDER_NONE;
+    return Bookmark::Order::None;
   }
 }
 
 QTreeWidgetItem* QtBookmarkBrowser::findOrCreateTreeCategory(const BookmarkCategory& category) {
-  for(int i = 0; i < m_bookmarkTree->topLevelItemCount(); i++) {
-    QTreeWidgetItem* item = m_bookmarkTree->topLevelItem(i);
+  for(int i = 0; i < mBookmarkTree->topLevelItemCount(); i++) {
+    QTreeWidgetItem* item = mBookmarkTree->topLevelItem(i);
 
     if(item->whatsThis(0).toStdWString() == category.getName()) {
       return item;
     }
   }
 
-  QtBookmarkCategory* categoryItem = new QtBookmarkCategory(m_controllerProxy);
+  // NOLINTNEXTLINE(cppcoreguidelines-owning-memory): Qt handles the memory
+  auto* categoryItem = new QtBookmarkCategory(mControllerProxy);
   if(category.getName().length() > 0) {
     categoryItem->setName(category.getName());
   } else {
@@ -233,13 +232,13 @@ QTreeWidgetItem* QtBookmarkBrowser::findOrCreateTreeCategory(const BookmarkCateg
   }
   categoryItem->setId(category.getId());
 
-  QTreeWidgetItem* newItem = new QTreeWidgetItem(m_bookmarkTree);
+  auto* newItem = new QTreeWidgetItem(mBookmarkTree);    // NOLINT(cppcoreguidelines-owning-memory): Qt handles the memory
   newItem->setWhatsThis(0, QString::fromStdWString(category.getName()));
 
   categoryItem->setTreeWidgetItem(newItem);
 
-  m_bookmarkTree->setItemWidget(newItem, 0, categoryItem);
-  m_bookmarkTree->addTopLevelItem(newItem);
+  mBookmarkTree->setItemWidget(newItem, 0, categoryItem);
+  mBookmarkTree->addTopLevelItem(newItem);
 
   return newItem;
 }

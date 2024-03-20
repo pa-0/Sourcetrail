@@ -1,15 +1,14 @@
 #pragma once
-
 #include <QFrame>
-#include <QLabel>
-#include <QPushButton>
-#include <QTreeWidget>
 
-#include "Bookmark.h"
-#include "BookmarkController.h"
 #include "ControllerProxy.h"
 
+class QLabel;
+class QPushButton;
+class QTreeWidgetItem;
+
 class Bookmark;
+class BookmarkController;
 
 class QtBookmark : public QFrame {
   Q_OBJECT
@@ -45,25 +44,25 @@ private:
 
   [[nodiscard]] std::string getDateString() const;
 
-  ControllerProxy<BookmarkController>* m_controllerProxy;
+  ControllerProxy<BookmarkController>* m_controllerProxy = nullptr;
 
-  QPushButton* m_activateButton;
-  QPushButton* m_editButton;
-  QPushButton* m_deleteButton;
-  QPushButton* m_toggleCommentButton;
+  QPushButton* m_activateButton = nullptr;
+  QPushButton* m_editButton = nullptr;
+  QPushButton* m_deleteButton = nullptr;
+  QPushButton* m_toggleCommentButton = nullptr;
 
-  QLabel* m_comment;
-  QLabel* m_dateLabel;
+  QLabel* m_comment = nullptr;
+  QLabel* m_dateLabel = nullptr;
 
   std::shared_ptr<Bookmark> m_bookmark;
 
   // pointer to the bookmark category item in the treeView, allows to refresh tree view when a
   // node changes in size (e.g. toggle comment). Not a nice solution to the problem, but couldn't
   // find anything better yet. (sizeHintChanged signal can't be emitted here...)
-  QTreeWidgetItem* m_treeWidgetItem;
+  QTreeWidgetItem* m_treeWidgetItem = nullptr;
 
   std::wstring m_arrowImageName;
-  bool m_hovered;
+  bool m_hovered = false;
 
-  bool m_ignoreNextResize;
+  bool m_ignoreNextResize = false;
 };

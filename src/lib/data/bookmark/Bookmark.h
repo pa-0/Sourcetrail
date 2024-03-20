@@ -1,6 +1,4 @@
-#ifndef BOOKMARK_H
-#define BOOKMARK_H
-
+#pragma once
 #include <string>
 #include <vector>
 
@@ -10,11 +8,11 @@
 
 class Bookmark {
 public:
-  enum BookmarkFilter { FILTER_UNKNOWN = 0, FILTER_ALL, FILTER_NODES, FILTER_EDGES };
+  enum class Filter : uint8_t { Unknown = 0, All, Nodes, Edges };
 
-  enum BookmarkOrder { ORDER_NONE = 0, ORDER_DATE_ASCENDING, ORDER_DATE_DESCENDING, ORDER_NAME_ASCENDING, ORDER_NAME_DESCENDING };
+  enum class Order : uint8_t { None = 0, DateAscending, DateDescending, NameAscending, NameDescending };
 
-  Bookmark(const Id id,
+  Bookmark(Id id,
            const std::wstring& name,
            const std::wstring& comment,
            const TimeStamp& timeStamp,
@@ -37,15 +35,13 @@ public:
   void setCategory(const BookmarkCategory& category);
 
   bool isValid() const;
-  void setIsValid(const bool isValid = true);
+  void setIsValid(bool isValid = true);
 
 private:
-  Id m_id;
-  std::wstring m_name;
-  std::wstring m_comment;
-  TimeStamp m_timeStamp;
-  BookmarkCategory m_category;
-  bool m_isValid;
+  Id mId;
+  std::wstring mName;
+  std::wstring mComment;
+  TimeStamp mTimeStamp;
+  BookmarkCategory mCategory;
+  bool mIsValid = false;
 };
-
-#endif    // BOOKMARK_H

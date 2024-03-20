@@ -1,58 +1,58 @@
 #include "Bookmark.h"
 
-Bookmark::Bookmark(const Id id,
+Bookmark::Bookmark(Id id,
                    const std::wstring& name,
                    const std::wstring& comment,
                    const TimeStamp& timeStamp,
                    const BookmarkCategory& category)
-    : m_id(id), m_name(name), m_comment(comment), m_timeStamp(timeStamp), m_category(category), m_isValid(false) {}
+    : mId(id), mName(name), mComment(comment), mTimeStamp(timeStamp), mCategory(category) {}
 
-Bookmark::~Bookmark() {}
+Bookmark::~Bookmark() = default;
 
 Id Bookmark::getId() const {
-  return m_id;
+  return mId;
 }
 
 void Bookmark::setId(const Id id) {
-  m_id = id;
+  mId = id;
 }
 
 std::wstring Bookmark::getName() const {
-  return m_name;
+  return mName;
 }
 
 void Bookmark::setName(const std::wstring& name) {
-  m_name = name;
+  mName = name;
 }
 
 std::wstring Bookmark::getComment() const {
-  return m_comment;
+  return mComment;
 }
 
 void Bookmark::setComment(const std::wstring& comment) {
-  m_comment = comment;
+  mComment = comment;
 }
 
 TimeStamp Bookmark::getTimeStamp() const {
-  return m_timeStamp;
+  return mTimeStamp;
 }
 
 void Bookmark::setTimeStamp(const TimeStamp& timeStamp) {
-  m_timeStamp = timeStamp;
+  mTimeStamp = timeStamp;
 }
 
 BookmarkCategory Bookmark::getCategory() const {
-  return m_category;
+  return mCategory;
 }
 
 void Bookmark::setCategory(const BookmarkCategory& category) {
-  m_category = category;
+  mCategory = category;
 }
 
 bool Bookmark::isValid() const {
-  return m_isValid;
+  return mIsValid;
 }
 
-void Bookmark::setIsValid(const bool isValid) {
-  m_isValid = isValid;
+void Bookmark::setIsValid(bool isValid) {
+  mIsValid = isValid;
 }
