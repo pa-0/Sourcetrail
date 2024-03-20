@@ -1,10 +1,7 @@
 #pragma once
-// Qt5
 #include <QWidget>
-// internal
+
 #include "ControllerProxy.h"
-#include "ErrorController.h"
-#include "ErrorFilter.h"
 #include "ErrorView.h"
 #include "QtThreadedFunctor.h"
 
@@ -16,6 +13,8 @@ class QStandardItemModel;
 class QtHelpButton;
 class QtSelfRefreshIconButton;
 class QtTable;
+class ErrorController;
+struct ErrorFilter;
 
 class QtErrorView final
     : public QWidget
@@ -37,22 +36,22 @@ public:
   void addErrors(const std::vector<ErrorInfo>& errors, const ErrorCountInfo& errorCount, bool scrollTo) override;
   void setErrorId(Id errorId) override;
 
-  ErrorFilter getErrorFilter() const override;
+  [[nodiscard]] ErrorFilter getErrorFilter() const override;
   void setErrorFilter(const ErrorFilter& filter) override;
 
 private slots:
   void errorFilterChanged(int i = 0);
 
 private:
-  enum class Column : int {
+  enum class Column : uint8_t {
     ID = 0,
-    TYPE = 1,
-    MESSAGE = 2,
-    FILE = 3,
-    LINE = 4,
-    INDEXED = 5,
-    TRANSLATION_UNIT = 6,
-    COLUMN_MAX = TRANSLATION_UNIT
+    Type = 1,
+    Message = 2,
+    File = 3,
+    Line = 4,
+    Indexed = 5,
+    TranslationUnit = 6,
+    ColumnMax = TranslationUnit
   };
 
   void setStyleSheet() const;
@@ -69,18 +68,18 @@ private:
 
   ErrorFilter m_errorFilter;
 
-  QLabel* m_errorLabel;
-  QLabel* m_allLabel;
-  QPushButton* m_allButton;
+  QLabel* m_errorLabel = nullptr;
+  QLabel* m_allLabel = nullptr;
+  QPushButton* m_allButton = nullptr;
 
-  QCheckBox* m_showErrors;
-  QCheckBox* m_showFatals;
-  QCheckBox* m_showNonIndexedErrors;
-  QCheckBox* m_showNonIndexedFatals;
+  QCheckBox* m_showErrors = nullptr;
+  QCheckBox* m_showFatals = nullptr;
+  QCheckBox* m_showNonIndexedErrors = nullptr;
+  QCheckBox* m_showNonIndexedFatals = nullptr;
 
-  QtHelpButton* m_helpButton;
-  QtSelfRefreshIconButton* m_editButton;
+  QtHelpButton* m_helpButton = nullptr;
+  QtSelfRefreshIconButton* m_editButton = nullptr;
 
-  QStandardItemModel* m_model;
-  QtTable* m_table;
+  QStandardItemModel* m_model = nullptr;
+  QtTable* m_table = nullptr;
 };

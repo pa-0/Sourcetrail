@@ -14,6 +14,8 @@
 #include <QStyledItemDelegate>
 // internal
 #include "ColorScheme.h"
+#include "ErrorController.h"
+#include "ErrorFilter.h"
 #include "MessageProjectEdit.h"
 #include "QtHelpButton.h"
 #include "QtSelfRefreshIconButton.h"
@@ -45,13 +47,13 @@ QtErrorView::QtErrorView(ViewLayout* pViewLayout) : ErrorView(pViewLayout), m_co
   m_table->setModel(m_model);
 
   // Setup Table Headers
-  m_model->setColumnCount(static_cast<int>(Column::COLUMN_MAX) + 1);
+  m_model->setColumnCount(static_cast<int>(Column::ColumnMax) + 1);
   m_table->setColumnWidth(static_cast<int>(Column::ID), 40);
-  m_table->setColumnWidth(static_cast<int>(Column::TYPE), 80);
-  m_table->setColumnWidth(static_cast<int>(Column::MESSAGE), 450);
-  m_table->setColumnWidth(static_cast<int>(Column::FILE), 300);
-  m_table->setColumnWidth(static_cast<int>(Column::LINE), 50);
-  m_table->setColumnWidth(static_cast<int>(Column::TRANSLATION_UNIT), 300);
+  m_table->setColumnWidth(static_cast<int>(Column::Type), 80);
+  m_table->setColumnWidth(static_cast<int>(Column::Message), 450);
+  m_table->setColumnWidth(static_cast<int>(Column::File), 300);
+  m_table->setColumnWidth(static_cast<int>(Column::Line), 50);
+  m_table->setColumnWidth(static_cast<int>(Column::TranslationUnit), 300);
 
   m_table->setColumnHidden(static_cast<int>(Column::ID), true);
 
@@ -62,7 +64,7 @@ QtErrorView::QtErrorView(ViewLayout* pViewLayout) : ErrorView(pViewLayout), m_co
 
   connect(m_table, &QTableView::clicked, [=](const QModelIndex& index) {
     if(index.isValid()) {
-      if(m_model->item(index.row(), static_cast<int>(Column::FILE)) == nullptr) {
+      if(m_model->item(index.row(), static_cast<int>(Column::File)) == nullptr) {
         return;
       }
 
@@ -265,29 +267,29 @@ void QtErrorView::addErrorToTable(const ErrorInfo& error) {
   m_model->setItem(rowNumber, static_cast<int>(Column::ID), item);
 
   m_model->setItem(rowNumber,
-                   static_cast<int>(Column::TYPE),
+                   static_cast<int>(Column::Type),
                    new QStandardItem(error.fatal ? QStringLiteral("FATAL") : QStringLiteral("ERROR")));
   if(error.fatal) {
-    m_model->item(rowNumber, static_cast<int>(Column::TYPE))->setForeground(QBrush(Qt::red));
+    m_model->item(rowNumber, static_cast<int>(Column::Type))->setForeground(QBrush(Qt::red));
   }
-  m_model->item(rowNumber, static_cast<int>(Column::TYPE))->setIcon(s_errorIcon);
+  m_model->item(rowNumber, static_cast<int>(Column::Type))->setIcon(s_errorIcon);
 
-  m_model->setItem(rowNumber, static_cast<int>(Column::MESSAGE), new QStandardItem(QString::fromStdWString(error.message)));
+  m_model->setItem(rowNumber, static_cast<int>(Column::Message), new QStandardItem(QString::fromStdWString(error.message)));
 
-  m_model->setItem(rowNumber, static_cast<int>(Column::FILE), new QStandardItem(QString::fromStdWString(error.filePath)));
-  m_model->item(rowNumber, static_cast<int>(Column::FILE))->setToolTip(QString::fromStdWString(error.filePath));
+  m_model->setItem(rowNumber, static_cast<int>(Column::File), new QStandardItem(QString::fromStdWString(error.filePath)));
+  m_model->item(rowNumber, static_cast<int>(Column::File))->setToolTip(QString::fromStdWString(error.filePath));
 
   item = new QStandardItem();
   item->setData(QVariant(qlonglong(error.lineNumber)), Qt::DisplayRole);
-  m_model->setItem(rowNumber, static_cast<int>(Column::LINE), item);
+  m_model->setItem(rowNumber, static_cast<int>(Column::Line), item);
 
   m_model->setItem(rowNumber,
-                   static_cast<int>(Column::INDEXED),
+                   static_cast<int>(Column::Indexed),
                    new QStandardItem(error.indexed ? QStringLiteral("yes") : QStringLiteral("no")));
 
   m_model->setItem(
-      rowNumber, static_cast<int>(Column::TRANSLATION_UNIT), new QStandardItem(QString::fromStdWString(error.translationUnit)));
-  m_model->item(rowNumber, static_cast<int>(Column::TRANSLATION_UNIT))->setToolTip(QString::fromStdWString(error.translationUnit));
+      rowNumber, static_cast<int>(Column::TranslationUnit), new QStandardItem(QString::fromStdWString(error.translationUnit)));
+  m_model->item(rowNumber, static_cast<int>(Column::TranslationUnit))->setToolTip(QString::fromStdWString(error.translationUnit));
 }
 
 QCheckBox* QtErrorView::createFilterCheckbox(const QString& name, bool checked, QBoxLayout* layout) {
