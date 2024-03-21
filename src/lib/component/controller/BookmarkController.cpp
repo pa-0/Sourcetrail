@@ -24,9 +24,9 @@ const std::wstring BookmarkController::sDefaultCategoryName = L"default";
 
 BookmarkController::BookmarkController(StorageAccess* storageAccess)
     : mStorageAccess(storageAccess)
-    , mBookmarkCache(storageAccess)
-    , mFilter(Bookmark::Filter::All)
-    , mOrder(Bookmark::Order::DateDescending) {}
+    , mBookmarkCache(storageAccess) {
+  assert(storageAccess != nullptr);
+}
 
 BookmarkController::~BookmarkController() = default;
 
@@ -36,7 +36,12 @@ void BookmarkController::clear() {
 }
 
 void BookmarkController::displayBookmarks() {
-  getView<BookmarkView>()->displayBookmarks(getBookmarks(mFilter, mOrder));
+  BookmarkView* view = getView<BookmarkView>();
+  if(view == nullptr) {
+    LOG_WARNING("Failed to get view");
+    return;
+  }
+  view->displayBookmarks(getBookmarks(mFilter, mOrder));
 }
 
 void BookmarkController::displayBookmarksFor(Bookmark::Filter filter, Bookmark::Order order) {
@@ -190,16 +195,20 @@ void BookmarkController::activateBookmark(const std::shared_ptr<Bookmark> bookma
 }
 
 void BookmarkController::showBookmarkCreator(Id nodeId) {
-  Id tabId = TabId::currentTab();
+  const Id tabId = TabId::currentTab();
   if(!mActiveNodeIds[tabId].size() && !mActiveEdgeIds[tabId].size() && !nodeId) {
     return;
   }
 
   BookmarkView* view = getView<BookmarkView>();
+  if(view == nullptr) {
+    LOG_WARNING("Failed to get view");
+    return;
+  }
 
   if(nodeId) {
     std::shared_ptr<Bookmark> bookmark = getBookmarkForNodeId(nodeId);
-    if(bookmark != nullptr) {
+    if(bookmark) {
       view->displayBookmarkEditor(bookmark, getAllBookmarkCategories());
     } else {
       view->displayBookmarkCreator(getDisplayNamesForNodeId(nodeId), getAllBookmarkCategories(), nodeId);
@@ -215,7 +224,12 @@ void BookmarkController::showBookmarkCreator(Id nodeId) {
 }
 
 void BookmarkController::showBookmarkEditor(const std::shared_ptr<Bookmark> bookmark) {
-  getView<BookmarkView>()->displayBookmarkEditor(bookmark, getAllBookmarkCategories());
+  BookmarkView* view = getView<BookmarkView>();
+  if(view == nullptr) {
+    LOG_WARNING("Failed to get view");
+    return;
+  }
+  view->displayBookmarkEditor(bookmark, getAllBookmarkCategories());
 }
 
 BookmarkController::BookmarkCache::BookmarkCache(StorageAccess* storageAccess) : m_storageAccess(storageAccess) {}
@@ -489,11 +503,11 @@ void BookmarkController::cleanBookmarkCategories() {
   }
 }
 
-bool BookmarkController::bookmarkDateCompare(const std::shared_ptr<Bookmark> a, const std::shared_ptr<Bookmark> b) {
+bool BookmarkController::bookmarkDateCompare(const std::shared_ptr<Bookmark>& a, const std::shared_ptr<Bookmark>& b) {
   return a->getTimeStamp() < b->getTimeStamp();
 }
 
-bool BookmarkController::bookmarkNameCompare(const std::shared_ptr<Bookmark> a, const std::shared_ptr<Bookmark> b) {
+bool BookmarkController::bookmarkNameCompare(const std::shared_ptr<Bookmark>& a, const std::shared_ptr<Bookmark>& b) {
   std::wstring aName = a->getName();
   std::wstring bName = b->getName();
 

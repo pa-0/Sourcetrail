@@ -85,8 +85,7 @@ private:
   [[nodiscard]] std::vector<std::shared_ptr<Bookmark>> getAllBookmarks() const;
   [[nodiscard]] std::vector<std::shared_ptr<NodeBookmark>> getAllNodeBookmarks() const;
   [[nodiscard]] std::vector<std::shared_ptr<EdgeBookmark>> getAllEdgeBookmarks() const;
-  [[nodiscard]] std::vector<std::shared_ptr<Bookmark>> getBookmarks(Bookmark::Filter filter,
-                                                                    Bookmark::Order order) const;
+  [[nodiscard]] std::vector<std::shared_ptr<Bookmark>> getBookmarks(Bookmark::Filter filter, Bookmark::Order order) const;
 
   [[nodiscard]] std::vector<std::wstring> getActiveNodeDisplayNames() const;
   [[nodiscard]] std::vector<std::wstring> getActiveEdgeDisplayNames() const;
@@ -103,8 +102,8 @@ private:
 
   void cleanBookmarkCategories();
 
-  static bool bookmarkDateCompare(const std::shared_ptr<Bookmark> a, const std::shared_ptr<Bookmark> b);
-  static bool bookmarkNameCompare(const std::shared_ptr<Bookmark> a, const std::shared_ptr<Bookmark> b);
+  static bool bookmarkDateCompare(const std::shared_ptr<Bookmark>& a, const std::shared_ptr<Bookmark>& b);
+  static bool bookmarkNameCompare(const std::shared_ptr<Bookmark>& a, const std::shared_ptr<Bookmark>& b);
 
   void update();
 
@@ -117,6 +116,6 @@ private:
   mutable std::map<Id, std::vector<Id>> mActiveNodeIds;
   mutable std::map<Id, std::vector<Id>> mActiveEdgeIds;
 
-  Bookmark::Filter mFilter;
-  Bookmark::Order mOrder;
+  Bookmark::Filter mFilter = Bookmark::Filter::All;
+  Bookmark::Order mOrder = Bookmark::Order::DateDescending;
 };
