@@ -11,6 +11,7 @@
 #include "mocks/MockedScreenSearchSender.hpp"
 #include "mocks/MockedScreenSearchView.hpp"
 #include "mocks/MockedSearchView.hpp"
+#include "mocks/MockedStorageAccess.hpp"
 #include "mocks/MockedUndoRedoView.hpp"
 #include "mocks/MockedViewFactory.hpp"
 #include "mocks/MockedViewLayout.hpp"
@@ -53,11 +54,14 @@ struct SetupMainFix : Test {
     EXPECT_CALL(factory, createBookmarkView(_)).WillOnce(Return(nullptr));
     EXPECT_CALL(factory, createStatusBarView(_)).WillOnce(Return(nullptr));
     EXPECT_CALL(factory, createCustomTrailView(_)).WillOnce(Return(nullptr));
+
+    manager = std::make_unique<ComponentManager>(&factory, &mockedStorageAccess);
   }
 
   StrictMock<MockedViewFactory> factory;
   MockedViewLayout mockedLayout;
-  std::unique_ptr<ComponentManager> manager = std::make_unique<ComponentManager>(&factory, nullptr);
+  MockedStorageAccess mockedStorageAccess;
+  std::unique_ptr<ComponentManager> manager;
 };
 
 TEST_F(SetupMainFix, goodCase) {
