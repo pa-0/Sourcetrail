@@ -1,20 +1,17 @@
 # ${CMAKE_SOURCE_DIR}/src/lib/CMakeLists.txt
 add_files(
   LIB
-
   app/paths/AppPath.cpp
   app/paths/AppPath.h
   app/paths/ResourcePaths.cpp
   app/paths/ResourcePaths.h
   app/paths/UserPaths.cpp
   app/paths/UserPaths.h
-
   app/Application.cpp
   app/Application.h
   app/LanguagePackage.h
   app/LanguagePackageManager.cpp
   app/LanguagePackageManager.h
-
   component/controller/helper/ActivationListener.cpp
   component/controller/helper/ActivationListener.h
   component/controller/helper/BucketLayouter.cpp
@@ -30,7 +27,6 @@ add_files(
   component/controller/helper/SnippetMerger.h
   component/controller/helper/TrailLayouter.cpp
   component/controller/helper/TrailLayouter.h
-
   component/controller/ActivationController.cpp
   component/controller/ActivationController.h
   component/controller/BookmarkController.cpp
@@ -63,7 +59,6 @@ add_files(
   component/controller/TooltipController.h
   component/controller/UndoRedoController.cpp
   component/controller/UndoRedoController.h
-
   component/view/helper/CodeScrollParams.h
   component/view/helper/CodeSnippetParams.cpp
   component/view/helper/CodeSnippetParams.h
@@ -112,7 +107,6 @@ add_files(
   component/view/ViewLayout.h
   component/view/ViewWidgetWrapper.cpp
   component/view/ViewWidgetWrapper.h
-
   component/Component.cpp
   component/Component.h
   component/ComponentFactory.cpp
@@ -125,7 +119,6 @@ add_files(
   component/Tab.h
   component/TabId.cpp
   component/TabId.h
-
   data/bookmark/Bookmark.cpp
   data/bookmark/Bookmark.h
   data/bookmark/BookmarkCategory.cpp
@@ -134,12 +127,10 @@ add_files(
   data/bookmark/EdgeBookmark.h
   data/bookmark/NodeBookmark.cpp
   data/bookmark/NodeBookmark.h
-
   data/fulltextsearch/FullTextSearchIndex.cpp
   data/fulltextsearch/FullTextSearchIndex.h
   data/fulltextsearch/SuffixArray.cpp
   data/fulltextsearch/SuffixArray.h
-
   data/graph/token_component/TokenComponent.cpp
   data/graph/token_component/TokenComponent.h
   data/graph/token_component/TokenComponentAbstraction.cpp
@@ -156,7 +147,6 @@ add_files(
   data/graph/token_component/TokenComponentIsAmbiguous.h
   data/graph/token_component/TokenComponentStatic.cpp
   data/graph/token_component/TokenComponentStatic.h
-
   data/graph/Edge.cpp
   data/graph/Edge.h
   data/graph/ElementComponentKind.cpp
@@ -167,13 +157,11 @@ add_files(
   data/graph/Node.h
   data/graph/Token.cpp
   data/graph/Token.h
-
   data/indexer/interprocess/shared_types/SharedIndexerCommand.cpp
   data/indexer/interprocess/shared_types/SharedIndexerCommand.h
   data/indexer/interprocess/shared_types/SharedIntermediateStorage.cpp
   data/indexer/interprocess/shared_types/SharedIntermediateStorage.h
   data/indexer/interprocess/shared_types/SharedStorageTypes.h
-
   data/indexer/interprocess/BaseInterprocessDataManager.cpp
   data/indexer/interprocess/BaseInterprocessDataManager.h
   data/indexer/interprocess/InterprocessIndexer.cpp
@@ -184,7 +172,6 @@ add_files(
   data/indexer/interprocess/InterprocessIndexingStatusManager.h
   data/indexer/interprocess/InterprocessIntermediateStorageManager.cpp
   data/indexer/interprocess/InterprocessIntermediateStorageManager.h
-
   data/indexer/CombinedIndexerCommandProvider.cpp
   data/indexer/CombinedIndexerCommandProvider.h
   data/indexer/Indexer.h
@@ -209,7 +196,6 @@ add_files(
   data/indexer/TaskExecuteCustomCommands.h
   data/indexer/TaskFillIndexerCommandQueue.cpp
   data/indexer/TaskFillIndexerCommandQueue.h
-
   data/location/LocationType.cpp
   data/location/LocationType.h
   data/location/SourceLocation.cpp
@@ -218,14 +204,12 @@ add_files(
   data/location/SourceLocationCollection.h
   data/location/SourceLocationFile.cpp
   data/location/SourceLocationFile.h
-
   data/name/NameDelimiterType.cpp
   data/name/NameDelimiterType.h
   data/name/NameElement.cpp
   data/name/NameElement.h
   data/name/NameHierarchy.cpp
   data/name/NameHierarchy.h
-
   data/parser/AccessKind.cpp
   data/parser/AccessKind.h
   data/parser/ParseLocation.cpp
@@ -241,18 +225,15 @@ add_files(
   data/parser/SymbolKind.h
   data/parser/TaskParseWrapper.cpp
   data/parser/TaskParseWrapper.h
-
   data/search/SearchIndex.cpp
   data/search/SearchIndex.h
   data/search/SearchMatch.cpp
   data/search/SearchMatch.h
-
   data/storage/migration/SqliteStorageMigration.cpp
   data/storage/migration/SqliteStorageMigration.h
   data/storage/migration/SqliteStorageMigrationLambda.cpp
   data/storage/migration/SqliteStorageMigrationLambda.h
   data/storage/migration/SqliteStorageMigrator.h
-
   data/storage/sqlite/SqliteBookmarkStorage.cpp
   data/storage/sqlite/SqliteBookmarkStorage.h
   data/storage/sqlite/SqliteDatabaseIndex.cpp
@@ -261,7 +242,6 @@ add_files(
   data/storage/sqlite/SqliteIndexStorage.h
   data/storage/sqlite/SqliteStorage.cpp
   data/storage/sqlite/SqliteStorage.h
-
   data/storage/type/StorageBookmarkCategory.h
   data/storage/type/StorageBookmark.h
   data/storage/type/StorageBookmarkedEdge.h
@@ -276,7 +256,6 @@ add_files(
   data/storage/type/StorageOccurrence.h
   data/storage/type/StorageSourceLocation.h
   data/storage/type/StorageSymbol.h
-
   data/storage/IntermediateStorage.cpp
   data/storage/IntermediateStorage.h
   data/storage/PersistentStorage.cpp
@@ -291,10 +270,8 @@ add_files(
   data/storage/StorageProvider.cpp
   data/storage/StorageProvider.h
   data/storage/StorageStats.h
-
   data/tooltip/TooltipInfo.h
   data/tooltip/TooltipOrigin.h
-
   data/DefinitionKind.cpp
   data/DefinitionKind.h
   data/ErrorCountInfo.h
@@ -318,7 +295,6 @@ add_files(
   data/TaskInjectStorage.h
   data/TaskMergeStorages.cpp
   data/TaskMergeStorages.h
-
   project/Project.cpp
   project/Project.h
   project/RefreshInfo.h
@@ -334,7 +310,6 @@ add_files(
   project/SourceGroupFactoryModule.h
   project/SourceGroupFactoryModuleCustom.cpp
   project/SourceGroupFactoryModuleCustom.h
-
   settings/migration/SettingsMigration.cpp
   settings/migration/SettingsMigration.h
   settings/migration/SettingsMigrationDeleteKey.cpp
@@ -344,7 +319,6 @@ add_files(
   settings/migration/SettingsMigrationMoveKey.cpp
   settings/migration/SettingsMigrationMoveKey.h
   settings/migration/SettingsMigrator.h
-
   settings/source_group/component/SourceGroupSettingsWithCustomCommand.cpp
   settings/source_group/component/SourceGroupSettingsWithCustomCommand.h
   settings/source_group/component/SourceGroupSettingsWithExcludeFilters.cpp
@@ -354,10 +328,8 @@ add_files(
   settings/source_group/component/SourceGroupSettingsWithSourceExtensionsEmpty.h
   settings/source_group/component/SourceGroupSettingsWithSourcePaths.cpp
   settings/source_group/component/SourceGroupSettingsWithSourcePaths.h
-
   settings/source_group/type/SourceGroupSettingsUnloadable.cpp
   settings/source_group/type/SourceGroupSettingsUnloadable.h
-
   settings/source_group/SourceGroupSettings.cpp
   settings/source_group/SourceGroupSettings.h
   settings/source_group/SourceGroupSettingsBase.h
@@ -366,7 +338,6 @@ add_files(
   settings/source_group/SourceGroupStatusType.h
   settings/source_group/SourceGroupType.cpp
   settings/source_group/SourceGroupType.h
-
   settings/ApplicationSettings.cpp
   settings/ApplicationSettings.h
   settings/ApplicationSettingsPrefiller.cpp
@@ -379,7 +350,6 @@ add_files(
   settings/ProjectSettings.h
   settings/Settings.cpp
   settings/Settings.h
-
   utility/commandline/CommandlineHelper.cpp
   utility/commandline/CommandlineHelper.h
   utility/commandline/CommandLineParser.cpp
@@ -390,23 +360,19 @@ add_files(
   utility/commandline/commands/CommandlineCommandConfig.h
   utility/commandline/commands/CommandlineCommandIndex.cpp
   utility/commandline/commands/CommandlineCommandIndex.h
-
   utility/interprocess/SharedMemory.cpp
   utility/interprocess/SharedMemory.h
   utility/interprocess/SharedMemoryGarbageCollector.cpp
   utility/interprocess/SharedMemoryGarbageCollector.h
-
   utility/math/Color.h
   utility/math/MatrixBase.h
   utility/math/MatrixDynamicBase.h
   utility/math/Vector2.h
   utility/math/Vector4.h
   utility/math/VectorBase.h
-
   utility/messaging/filter_types/MessageFilterErrorCountUpdate.h
   utility/messaging/filter_types/MessageFilterFocusInOut.h
   utility/messaging/filter_types/MessageFilterSearchAutocomplete.h
-
   utility/messaging/type/activation/MessageActivateBase.h
   utility/messaging/type/activation/MessageActivateErrors.h
   utility/messaging/type/activation/MessageActivateFullTextSearch.h
@@ -414,14 +380,12 @@ add_files(
   utility/messaging/type/activation/MessageActivateOverview.h
   utility/messaging/type/activation/MessageActivateTokens.h
   utility/messaging/type/activation/MessageActivateTrail.h
-
   utility/messaging/type/bookmark/MessageBookmarkActivate.h
   utility/messaging/type/bookmark/MessageBookmarkBrowse.h
   utility/messaging/type/bookmark/MessageBookmarkButtonState.h
   utility/messaging/type/bookmark/MessageBookmarkCreate.h
   utility/messaging/type/bookmark/MessageBookmarkDelete.h
   utility/messaging/type/bookmark/MessageBookmarkEdit.h
-
   utility/messaging/type/code/MessageActivateFile.h
   utility/messaging/type/code/MessageActivateLocalSymbols.h
   utility/messaging/type/code/MessageActivateSourceLocations.h
@@ -433,22 +397,18 @@ add_files(
   utility/messaging/type/code/MessageScrollToLine.h
   utility/messaging/type/code/MessageShowReference.h
   utility/messaging/type/code/MessageShowScope.h
-
   utility/messaging/type/custom_trail/MessageCustomTrailShow.h
-
   utility/messaging/type/error/MessageErrorCountClear.h
   utility/messaging/type/error/MessageErrorCountUpdate.h
   utility/messaging/type/error/MessageErrorsAll.h
   utility/messaging/type/error/MessageErrorsForFile.h
   utility/messaging/type/error/MessageErrorsHelpMessage.h
   utility/messaging/type/error/MessageShowError.h
-
   utility/messaging/type/focus/MessageFocusChanged.h
   utility/messaging/type/focus/MessageFocusedSearchView.h
   utility/messaging/type/focus/MessageFocusIn.h
   utility/messaging/type/focus/MessageFocusOut.h
   utility/messaging/type/focus/MessageFocusView.h
-
   utility/messaging/type/graph/MessageActivateEdge.h
   utility/messaging/type/graph/MessageActivateNodes.h
   utility/messaging/type/graph/MessageActivateTrailEdge.h
@@ -459,32 +419,26 @@ add_files(
   utility/messaging/type/graph/MessageGraphNodeMove.h
   utility/messaging/type/graph/MessageScrollGraph.h
   utility/messaging/type/graph/MessageSaveAsImage.h
-
   utility/messaging/type/history/MessageHistoryToPosition.h
   utility/messaging/type/history/MessageHistoryRedo.h
   utility/messaging/type/history/MessageHistoryUndo.h
-
   utility/messaging/type/indexing/MessageIndexingFinished.h
   utility/messaging/type/indexing/MessageIndexingInterrupted.h
   utility/messaging/type/indexing/MessageIndexingShowDialog.h
   utility/messaging/type/indexing/MessageIndexingStarted.h
   utility/messaging/type/indexing/MessageIndexingStatus.h
-
   utility/messaging/type/plugin/MessageIDECreateCDB.h
   utility/messaging/type/plugin/MessageMoveIDECursor.h
   utility/messaging/type/plugin/MessagePingReceived.h
   utility/messaging/type/plugin/MessagePluginPortChange.h
-
   utility/messaging/type/search/MessageFind.h
   utility/messaging/type/search/MessageSearch.h
   utility/messaging/type/search/MessageSearchAutocomplete.h
-
   utility/messaging/type/tab/MessageTabClose.h
   utility/messaging/type/tab/MessageTabOpen.h
   utility/messaging/type/tab/MessageTabOpenWith.h
   utility/messaging/type/tab/MessageTabSelect.h
   utility/messaging/type/tab/MessageTabState.h
-
   utility/messaging/type/MessageActivateWindow.h
   utility/messaging/type/MessageClearStatusView.h
   utility/messaging/type/MessageCloseProject.h
@@ -510,24 +464,16 @@ add_files(
   utility/messaging/type/MessageWindowClosed.h
   utility/messaging/type/MessageWindowFocus.h
   utility/messaging/type/MessageZoom.h
-
   utility/migration/Migration.h
-  utility/migration/Migrator.h
-)
+  utility/migration/Migrator.h)
 
 if(WIN32)
-  add_files(
-    LIB
-
-    utility/utilityWindows.cpp
-    utility/utilityWindows.h
-  )
+  add_files(LIB utility/utilityWindows.cpp utility/utilityWindows.h)
 endif()
 
 if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_files(
     LIB
-
     settings/source_group/component/cxx/SourceGroupSettingsWithCppStandard.cpp
     settings/source_group/component/cxx/SourceGroupSettingsWithCppStandard.h
     settings/source_group/component/cxx/SourceGroupSettingsWithCStandard.cpp
@@ -546,11 +492,9 @@ if(BUILD_CXX_LANGUAGE_PACKAGE)
     settings/source_group/component/cxx/SourceGroupSettingsWithIndexedHeaderPaths.h
     settings/source_group/component/cxx/SourceGroupSettingsWithSourceExtensionsC.h
     settings/source_group/component/cxx/SourceGroupSettingsWithSourceExtensionsCpp.h
-
     settings/source_group/type/SourceGroupSettingsCEmpty.h
     settings/source_group/type/SourceGroupSettingsCppEmpty.h
     settings/source_group/type/SourceGroupSettingsCustomCommand.h
     settings/source_group/type/SourceGroupSettingsCxxCdb.h
-    settings/source_group/type/SourceGroupSettingsCxxCodeblocks.h
-  )
+    settings/source_group/type/SourceGroupSettingsCxxCodeblocks.h)
 endif()

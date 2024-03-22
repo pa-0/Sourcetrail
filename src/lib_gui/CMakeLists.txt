@@ -1,16 +1,13 @@
 # ${CMAKE_SOURCE_DIR}/src/lib_gui/CMakeLists.txt
 add_files(
   LIB_GUI
-
   platform_includes/includesLinux.h
   platform_includes/includesMac.h
   platform_includes/includesWindows.h
-
   qt/element/bookmark/QtBookmark.cpp
   qt/element/bookmark/QtBookmark.h
   qt/element/bookmark/QtBookmarkCategory.cpp
   qt/element/bookmark/QtBookmarkCategory.h
-
   qt/element/button/QtHelpButton.cpp
   qt/element/button/QtHelpButton.h
   qt/element/button/QtHoverButton.cpp
@@ -21,10 +18,8 @@ add_files(
   qt/element/button/QtIconStateButton.h
   qt/element/button/QtSelfRefreshIconButton.cpp
   qt/element/button/QtSelfRefreshIconButton.h
-
   qt/element/model/RecentItemModel.hpp
   qt/element/model/RecentItemModel.cpp
-
   qt/element/code/CodeFocusHandler.cpp
   qt/element/code/CodeFocusHandler.h
   qt/element/code/QtCodeArea.cpp
@@ -47,12 +42,10 @@ add_files(
   qt/element/code/QtCodeNavigator.h
   qt/element/code/QtCodeSnippet.cpp
   qt/element/code/QtCodeSnippet.h
-
   qt/element/history/QtHistoryList.cpp
   qt/element/history/QtHistoryList.h
   qt/element/history/QtUndoRedo.cpp
   qt/element/history/QtUndoRedo.h
-
   qt/element/search/QtAutocompletionList.cpp
   qt/element/search/QtAutocompletionList.h
   qt/element/search/QtScreenSearchBox.cpp
@@ -63,7 +56,6 @@ add_files(
   qt/element/search/QtSearchBarButton.h
   qt/element/search/QtSmartSearchBox.cpp
   qt/element/search/QtSmartSearchBox.h
-
   qt/element/dialog/QtLineEdit.cpp
   qt/element/dialog/QtLineEdit.h
   qt/element/dialog/QtListBox.cpp
@@ -84,7 +76,6 @@ add_files(
   qt/element/dialog/QtStringListBoxItem.h
   qt/element/dialog/QtTextEdit.cpp
   qt/element/dialog/QtTextEdit.h
-
   qt/element/QtTooltip.cpp
   qt/element/QtTooltip.h
   qt/element/QtStatusBar.cpp
@@ -93,7 +84,6 @@ add_files(
   qt/element/QtTabBar.h
   qt/element/QtTable.cpp
   qt/element/QtTable.h
-
   qt/graphics/base/QtCountCircleItem.cpp
   qt/graphics/base/QtCountCircleItem.h
   qt/graphics/base/QtLineItemAngled.cpp
@@ -106,14 +96,12 @@ add_files(
   qt/graphics/base/QtLineItemStraight.h
   qt/graphics/base/QtRoundedRectItem.cpp
   qt/graphics/base/QtRoundedRectItem.h
-
   qt/graphics/component/QtGraphNodeComponent.cpp
   qt/graphics/component/QtGraphNodeComponent.h
   qt/graphics/component/QtGraphNodeComponentClickable.cpp
   qt/graphics/component/QtGraphNodeComponentClickable.h
   qt/graphics/component/QtGraphNodeComponentMoveable.cpp
   qt/graphics/component/QtGraphNodeComponentMoveable.h
-
   qt/graphics/graph/QtGraphEdge.cpp
   qt/graphics/graph/QtGraphEdge.h
   qt/graphics/graph/QtGraphNode.cpp
@@ -132,12 +120,10 @@ add_files(
   qt/graphics/graph/QtGraphNodeQualifier.h
   qt/graphics/graph/QtGraphNodeText.cpp
   qt/graphics/graph/QtGraphNodeText.h
-
   qt/graphics/GraphFocusHandler.cpp
   qt/graphics/GraphFocusHandler.h
   qt/graphics/QtGraphicsView.cpp
   qt/graphics/QtGraphicsView.h
-
   qt/network/QtIDECommunicationController.cpp
   qt/network/QtIDECommunicationController.h
   qt/network/QtNetworkFactory.cpp
@@ -146,17 +132,14 @@ add_files(
   qt/network/QtRequest.h
   qt/network/QtTcpWrapper.cpp
   qt/network/QtTcpWrapper.h
-
   qt/project_wizard/content/path/QtProjectWizardContentPath.cpp
   qt/project_wizard/content/path/QtProjectWizardContentPath.h
-
   qt/project_wizard/content/paths/QtProjectWizardContentPaths.cpp
   qt/project_wizard/content/paths/QtProjectWizardContentPaths.h
   qt/project_wizard/content/paths/QtProjectWizardContentPathsExclude.cpp
   qt/project_wizard/content/paths/QtProjectWizardContentPathsExclude.h
   qt/project_wizard/content/paths/QtProjectWizardContentPathsSource.cpp
   qt/project_wizard/content/paths/QtProjectWizardContentPathsSource.h
-
   qt/project_wizard/content/QtProjectWizardContent.cpp
   qt/project_wizard/content/QtProjectWizardContent.h
   qt/project_wizard/content/QtProjectWizardContentCustomCommand.cpp
@@ -178,12 +161,10 @@ add_files(
   qt/project_wizard/content/QtProjectWizardContentSourceGroupInfoText.h
   qt/project_wizard/content/QtProjectWizardContentUnloadable.cpp
   qt/project_wizard/content/QtProjectWizardContentUnloadable.h
-
   qt/project_wizard/QtProjectWizard.cpp
   qt/project_wizard/QtProjectWizard.h
   qt/project_wizard/QtProjectWizardWindow.cpp
   qt/project_wizard/QtProjectWizardWindow.h
-
   qt/utility/compatibilityQt.cpp
   qt/utility/compatibilityQt.h
   qt/utility/QtContextMenu.cpp
@@ -207,7 +188,6 @@ add_files(
   qt/utility/QtWindowsTaskbarButton.h
   qt/utility/utilityQt.cpp
   qt/utility/utilityQt.h
-
   qt/view/QtBookmarkButtonsView.cpp
   qt/view/QtBookmarkButtonsView.h
   qt/view/QtBookmarkView.cpp
@@ -250,7 +230,6 @@ add_files(
   qt/view/QtViewFactory.h
   qt/view/QtViewWidgetWrapper.cpp
   qt/view/QtViewWidgetWrapper.h
-
   qt/window/QtAbout.cpp
   qt/window/QtAbout.h
   qt/window/QtBookmarkBrowser.cpp
@@ -282,7 +261,7 @@ add_files(
   qt/window/QtSelectPathsDialog.cpp
   qt/window/QtSelectPathsDialog.h
   qt/window/QtStartScreen.cpp
-        qt/window/QtStartScreen.hpp
+  qt/window/QtStartScreen.hpp
   qt/window/QtTextEditDialog.cpp
   qt/window/QtTextEditDialog.h
   qt/window/QtUnknownProgressDialog.cpp
@@ -293,27 +272,22 @@ add_files(
   qt/window/QtWindowBase.h
   qt/window/QtWindowStack.cpp
   qt/window/QtWindowStack.h
-
   qt/QtApplication.cpp
   qt/QtApplication.h
   qt/QtCoreApplication.cpp
-  qt/QtCoreApplication.h
-)
+  qt/QtCoreApplication.h)
 
 if(BUILD_CXX_LANGUAGE_PACKAGE)
   add_files(
     LIB_GUI
-
     qt/project_wizard/content/path/ProjectWizardModel.hpp
     qt/project_wizard/content/path/ProjectWizardModel.cpp
-
     qt/project_wizard/content/path/QtProjectWizardContentPathCDB.cpp
     qt/project_wizard/content/path/QtProjectWizardContentPathCDB.h
     qt/project_wizard/content/path/QtProjectWizardContentPathCodeblocksProject.cpp
     qt/project_wizard/content/path/QtProjectWizardContentPathCodeblocksProject.h
     qt/project_wizard/content/path/QtProjectWizardContentPathCxxPch.cpp
     qt/project_wizard/content/path/QtProjectWizardContentPathCxxPch.h
-
     qt/project_wizard/content/paths/QtProjectWizardContentPathsFrameworkSearch.cpp
     qt/project_wizard/content/paths/QtProjectWizardContentPathsFrameworkSearch.h
     qt/project_wizard/content/paths/QtProjectWizardContentPathsFrameworkSearchGlobal.cpp
@@ -324,7 +298,6 @@ if(BUILD_CXX_LANGUAGE_PACKAGE)
     qt/project_wizard/content/paths/QtProjectWizardContentPathsHeaderSearchGlobal.h
     qt/project_wizard/content/paths/QtProjectWizardContentPathsIndexedHeaders.cpp
     qt/project_wizard/content/paths/QtProjectWizardContentPathsIndexedHeaders.h
-
     qt/project_wizard/content/QtProjectWizardContentCppStandard.cpp
     qt/project_wizard/content/QtProjectWizardContentCppStandard.h
     qt/project_wizard/content/QtProjectWizardContentCrossCompilationOptions.cpp
@@ -337,7 +310,6 @@ if(BUILD_CXX_LANGUAGE_PACKAGE)
     qt/project_wizard/content/QtProjectWizardContentFlags.h
     qt/project_wizard/content/QtProjectWizardContentVS.cpp
     qt/project_wizard/content/QtProjectWizardContentVS.h
-
     utility/path_detector/cxx_header/CxxFrameworkPathDetector.cpp
     utility/path_detector/cxx_header/CxxFrameworkPathDetector.h
     utility/path_detector/cxx_header/CxxHeaderPathDetector.cpp
@@ -347,6 +319,5 @@ if(BUILD_CXX_LANGUAGE_PACKAGE)
     utility/path_detector/cxx_header/CxxVs15HeaderPathDetector.cpp
     utility/path_detector/cxx_header/CxxVs15HeaderPathDetector.h
     utility/path_detector/cxx_header/utilityCxxHeaderDetection.cpp
-    utility/path_detector/cxx_header/utilityCxxHeaderDetection.h
-  )
+    utility/path_detector/cxx_header/utilityCxxHeaderDetection.h)
 endif()
