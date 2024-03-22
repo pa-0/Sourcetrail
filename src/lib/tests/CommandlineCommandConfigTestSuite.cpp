@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "ApplicationSettings.h"
+#include "CommandLineParser.h"
 #include "CommandlineCommandConfig.h"
 #include "utilities/CollectOutStream.hpp"
 
@@ -29,10 +30,12 @@ using namespace commandline;
 
 struct CommandlineCommandConfigFix : public Test {
   void SetUp() override {
-    mConfig = std::make_unique<CommandlineCommandConfig>(nullptr);
+    mParesr = std::make_unique<CommandLineParser>("");
+    mConfig = std::make_unique<CommandlineCommandConfig>(mParesr.get());
     mConfig->setup();
   }
 
+  std::unique_ptr<CommandLineParser> mParesr;
   std::unique_ptr<CommandlineCommandConfig> mConfig;
 };
 
