@@ -64,17 +64,17 @@ public:
 
 class TestTaskDispatch : public TestTask {
 public:
-  TestTaskDispatch(int* orderCountPtr, int updateCount, TaskScheduler* scheduler)
-      : TestTask(orderCountPtr, updateCount), scheduler(scheduler) {}
+  TestTaskDispatch(int* orderCountPtr, int updateCount_, TaskScheduler* scheduler)
+      : TestTask(orderCountPtr, updateCount_), mScheduler(scheduler) {}
 
   TaskState doUpdate(std::shared_ptr<Blackboard> blackboard) override {
     subTask = std::make_shared<TestTask>(&orderCount, 1);
-    scheduler->pushTask(subTask);
+    mScheduler->pushTask(subTask);
 
     return TestTask::doUpdate(blackboard);
   }
 
-  TaskScheduler* scheduler;
+  TaskScheduler* mScheduler;
   std::shared_ptr<TestTask> subTask;
 };
 
