@@ -18,15 +18,12 @@ set(BUILD_DOC
 set(ENABLE_UNIT_TEST
     OFF
     CACHE BOOL "Build unit-tests.")
-  set(ENABLE_GUI_TEST
+set(ENABLE_GUI_TEST
     OFF
     CACHE BOOL "Build gui-tests.")
 set(ENABLE_INTEGRATION_TEST
     OFF
     CACHE BOOL "Build integration-tests.")
-set(ENABLE_E2E_TEST
-    OFF
-    CACHE BOOL "Build e2e-tests.")
 set(ENABLE_SANITIZER_ADDRESS
     OFF
     CACHE BOOL "Inject address sanitizer.")
@@ -212,9 +209,7 @@ if(WIN32)
   include(cmake/copy_qt_binaries.cmake)
 endif()
 
-if(ENABLE_UNIT_TEST
-   OR ENABLE_INTEGRATION_TEST
-   OR ENABLE_E2E_TEST)
+if(ENABLE_UNIT_TEST OR ENABLE_INTEGRATION_TEST)
   enable_testing()
   find_package(GTest CONFIG REQUIRED)
   include(GoogleTest)
@@ -345,8 +340,7 @@ add_subdirectory(src/app)
 # Tests ------------------------------------------------------------------------
 if(ENABLE_UNIT_TEST
    OR ENABLE_GUI_TEST
-   OR ENABLE_INTEGRATION_TEST
-   OR ENABLE_E2E_TEST)
+   OR ENABLE_INTEGRATION_TEST)
   if(WIN32)
     copy_qt_binaries("${CMAKE_BINARY_DIR}/test" FALSE)
   endif()
@@ -367,7 +361,7 @@ if(ENABLE_UNIT_TEST
     endif()
   endif()
 
-  if(ENABLE_INTEGRATION_TEST OR ENABLE_E2E_TEST)
+  if(ENABLE_INTEGRATION_TEST)
     add_subdirectory(tests)
   endif()
 endif()

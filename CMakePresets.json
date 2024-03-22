@@ -37,7 +37,6 @@
                 "ENABLE_UNIT_TEST": "ON",
                 "ENABLE_GUI_TEST": "ON",
                 "ENABLE_INTEGRATION_TEST": "ON",
-                "ENABLE_E2E_TEST": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
                 "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Debug/generators/conan_toolchain.cmake"
             }
@@ -106,7 +105,6 @@
                 "ENABLE_UNIT_TEST": "ON",
                 "ENABLE_GUI_TEST": "ON",
                 "ENABLE_INTEGRATION_TEST": "ON",
-                "ENABLE_E2E_TEST": "ON",
                 "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Release/generators/conan_toolchain.cmake"
             }
         },
@@ -124,7 +122,6 @@
                 "ENABLE_UNIT_TEST": "ON",
                 "ENABLE_GUI_TEST": "ON",
                 "ENABLE_INTEGRATION_TEST": "ON",
-                "ENABLE_E2E_TEST": "ON",
                 "CMAKE_TOOLCHAIN_FILE": ".conan/clang/build/Release/generators/conan_toolchain.cmake"
             }
         }
