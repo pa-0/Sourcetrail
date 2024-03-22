@@ -177,7 +177,7 @@ std::string getStyleSheet(const FilePath& path) {
 QString getStyleSheet(const QString& resource) {
   QFile file(resource);
   if(!file.open(QIODevice::ReadOnly)) {
-    LOG_WARNING("");
+    LOG_WARNING(fmt::format("Failed to read {}", resource.toStdString()));
     return {};
   }
   std::string css = file.readAll().toStdString();
