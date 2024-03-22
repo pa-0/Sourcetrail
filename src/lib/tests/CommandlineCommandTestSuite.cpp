@@ -1,49 +1,44 @@
-#include <algorithm>
 #include <string>
-#include <vector>
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "CommandLineParser.h"
 #include "CommandlineCommand.h"
+#include "mocks/MockedCommandlineCommand.hpp"
 #include "utilities/CollectOutStream.hpp"
 
 using namespace testing;
 
-struct MockedCommandlineCommand : public commandline::CommandlineCommand {
-  using Args = std::vector<std::string>;
-  using ReturnStatus = CommandlineCommand::ReturnStatus;
+struct CommandlineCommand : Test {
+  void SetUp() override {
+    parser = std::make_unique<commandline::CommandLineParser>("");
+    const std::string name = "name";
+    const std::string desc = "desc";
+    mockedCommandLine = std::make_unique<StrictMock<MockedCommandlineCommand>>(name, desc, parser.get());
 
-  MockedCommandlineCommand(std::string name, std::string description)
-      : commandline::CommandlineCommand(std::move(name), std::move(description), nullptr) {}
-  MOCK_METHOD(void, setup, (), (override));
-  MOCK_METHOD(ReturnStatus, parse, (Args&), (override));
-  MOCK_METHOD(bool, hasHelp, (), (const, override));
+    EXPECT_THAT(mockedCommandLine->name(), StrEq(name));
+    EXPECT_THAT(mockedCommandLine->description(), StrEq(desc));
+    EXPECT_THAT(mockedCommandLine->description(), StrEq(desc));
+  }
 
-  using commandline::CommandlineCommand::m_positional;
+  std::unique_ptr<commandline::CommandLineParser> parser;
+  std::unique_ptr<StrictMock<MockedCommandlineCommand>> mockedCommandLine;
 };
 
-// NOLINTNEXTLINE
-TEST(CommandlineCommand, goodCase) {
-  const std::string name = "name";
-  const std::string desc = "desc";
-  MockedCommandlineCommand mockedCommandLine(name, desc);
-
-
-  EXPECT_THAT(mockedCommandLine.name(), StrEq(name));
-  EXPECT_THAT(mockedCommandLine.description(), StrEq(desc));
-  EXPECT_THAT(mockedCommandLine.description(), StrEq(desc));
-
+TEST_F(CommandlineCommand, emptyHelp) {
   CollectOutStream collectStreamBefore(std::cout);
-  mockedCommandLine.printHelp();
+  mockedCommandLine->printHelp();
   collectStreamBefore.close();
   constexpr std::string_view HelpMessageBefore = "Usage:\n\n  Sourcetrail name [option...]\n\ndesc\n\n\n";
   EXPECT_THAT(collectStreamBefore.str(), StrEq(HelpMessageBefore));
+}
 
-  mockedCommandLine.m_positional.add("pos", 1);
+TEST_F(CommandlineCommand, AddPosToHelp) {
+  mockedCommandLine->m_positional.add("pos", 1);
 
   CollectOutStream collectStream(std::cout);
-  mockedCommandLine.printHelp();
+  mockedCommandLine->printHelp();
   collectStream.close();
   constexpr std::string_view HelpMessage =
       "Usage:\n\n  Sourcetrail name [option...]\n\ndesc\n\n\nPositional Arguments: \n  1: pos\n";

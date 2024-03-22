@@ -1,8 +1,5 @@
-#include <algorithm>
-#include <array>
 #include <filesystem>
 #include <memory>
-#include <random>
 #include <string>
 #include <vector>
 
@@ -16,6 +13,15 @@
 
 using namespace ::testing;
 using namespace std::string_literals;
+
+struct CommandLineParserFix : Test {
+  void SetUp() override {
+    parser = std::make_unique<commandline::CommandLineParser>("0.1.0");
+  }
+  std::unique_ptr<commandline::CommandLineParser> parser;
+};
+
+TEST_F(CommandLineParserFix, goodCase) {}
 
 // NOLINTNEXTLINE
 TEST(CommandLineParser, refreshModes) {
@@ -201,10 +207,9 @@ TEST(CommandLineParserConfig, initStateNoRegisitedCommands) {
   EXPECT_FALSE(parser.getShallowIndexingRequested());
 }
 
-/*
 // NOLINTNEXTLINE
 TEST(CommandLineParserConfig, initStateRegisitedCommands) {
-  std::vector<std::string> args{"config --help"};
+  std::vector<std::string> args {"config --help"};
   commandline::CommandLineParser parser({});
   parser.preparse(args);
   EXPECT_FALSE(parser.runWithoutGUI());
@@ -213,4 +218,3 @@ TEST(CommandLineParserConfig, initStateRegisitedCommands) {
   EXPECT_EQ(RefreshMode::REFRESH_NONE, parser.getShallowIndexingRequested());
   EXPECT_FALSE(parser.getShallowIndexingRequested());
 }
-*/
