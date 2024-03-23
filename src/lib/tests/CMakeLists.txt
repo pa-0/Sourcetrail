@@ -39,7 +39,9 @@ foreach(test_name IN LISTS test_lib_names)
            GTest::gmock
            GTest::gtest
            GTest::gtest_main
-           Sourcetrail::lib)
+           Sourcetrail::lib
+           $<$<BOOL:${ENABLE_SANITIZER_ADDRESS}>:sanitizer::address>
+           $<$<BOOL:${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR}>:sanitizer::undefined>)
 
   set_target_properties(${test_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 

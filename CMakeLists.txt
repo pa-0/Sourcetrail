@@ -65,6 +65,13 @@ include(cmake/version_setup.cmake)
 include(cmake/licenses.cmake)
 include(cmake/create_symlink.cmake)
 
+if(ENABLE_SANITIZER_ADDRESS
+   OR ENABLE_SANITIZER_UNDEFINED_BEHAVIOR
+   OR ENABLE_SANITIZER_THREAD
+   OR ENABLE_SANITIZER_MEMORY)
+  include(cmake/sanitizers.cmake)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
   add_compile_options(-fcolor-diagnostics)
   if(SOURCETRAIL_USE_LIBCPP)

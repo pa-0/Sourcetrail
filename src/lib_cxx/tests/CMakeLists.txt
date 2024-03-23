@@ -13,7 +13,9 @@ foreach(test_name IN LISTS test_cxx_names)
            GTest::gtest
            GTest::gtest_main
            Sourcetrail::lib
-           Sourcetrail::lib_cxx)
+           Sourcetrail::lib_cxx
+           $<$<BOOL:${ENABLE_SANITIZER_ADDRESS}>:sanitizer::address>
+           $<$<BOOL:${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR}>:sanitizer::undefined>)
 
   gtest_discover_tests(
     ${test_name}

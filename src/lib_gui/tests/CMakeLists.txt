@@ -12,7 +12,9 @@ foreach(test_name IN LISTS test_names)
            GTest::gtest_main
            Sourcetrail::lib
            Sourcetrail::lib_gui
-           $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>)
+           $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
+           $<$<BOOL:${ENABLE_SANITIZER_ADDRESS}>:sanitizer::address>
+           $<$<BOOL:${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR}>:sanitizer::undefined>)
 
   set_target_properties(${test_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/")
 
