@@ -160,7 +160,6 @@ find_package(
   Boost 1.74
   COMPONENTS date_time
              filesystem
-             locale
              program_options
              system
   REQUIRED)
@@ -251,7 +250,6 @@ target_link_libraries(
           Boost::filesystem
           Boost::program_options
           Boost::system
-          Boost::locale
           SQLite::SQLite3
           tinyxml::tinyxml
           $<$<PLATFORM_ID:Windows>:bcrypt>)

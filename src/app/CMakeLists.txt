@@ -35,7 +35,6 @@ target_link_libraries(
          Sourcetrail::lib
          Sourcetrail::lib_gui
          $<$<BOOL:${BUILD_CXX_LANGUAGE_PACKAGE}>:Sourcetrail::lib_cxx>
-         Boost::locale
          Qt5::Widgets
          Qt5::Network)
 
