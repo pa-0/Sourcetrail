@@ -77,8 +77,10 @@ jobs:
       - name: Test
         run: ctest -Q --test-dir ${{github.workspace}}/build --output-junit ${{github.workspace}}/build/report.xml
 
-      - name: Publish Test Report
+      - name: Publish Test Report for ${{ matrix.config.name }}
         uses: mikepenz/action-junit-report@v4
         if: success() || failure() # always run even if the previous step fails
         with:
           report_paths: ${{github.workspace}}/build/report.xml
+          include_passed: true
+          detailed_summary: true
