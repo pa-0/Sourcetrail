@@ -40,7 +40,7 @@ target_link_libraries(
          spdlog::spdlog
   PRIVATE Boost::filesystem
           Sourcetrail::lib_utility
-          tinyxml::tinyxml
+          unofficial-tinyxml::unofficial-tinyxml
           fmt::fmt)
 
 # $<$<PLATFORM_ID:Windows>:bcrypt>

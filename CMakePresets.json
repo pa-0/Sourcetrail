@@ -7,54 +7,10 @@
     },
     "configurePresets": [
         {
-            "name": "gnu_release",
-            "displayName": "GNU Release",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/../build/Release/GNU",
+            "name": "vcpkg",
+            "hidden": true,
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_BUILD_TYPE": "Release",
-                "USE_ALTERNATE_LINKER": "mold",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Release/generators/conan_toolchain.cmake",
-                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
-            }
-        },
-        {
-            "name": "coverage",
-            "displayName": "Coverage",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/../build/Coverage/GNU",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_BUILD_TYPE": "Debug",
-                "USE_ALTERNATE_LINKER": "mold",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "ENABLE_COVERAGE": "ON",
-                "ENABLE_UNIT_TEST": "ON",
-                "ENABLE_GUI_TEST": "ON",
-                "ENABLE_INTEGRATION_TEST": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Debug/generators/conan_toolchain.cmake"
-            }
-        },
-        {
-            "name": "clang_release",
-            "displayName": "CLang Release",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/../build/Release/CLang",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang",
-                "CMAKE_CXX_COMPILER": "clang++",
-                "CMAKE_BUILD_TYPE": "Release",
-                "USE_ALTERNATE_LINKER": "mold",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "ON",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/clang/build/Release/generators/conan_toolchain.cmake",
-                "Clang_DIR": "$env{CLANG_DIR}/lib/cmake/clang/"
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
             }
         },
         {
@@ -70,60 +26,11 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
-                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
-                "Boost_DIR": "C:/local/boost_1_81_0/lib64-msvc-14.3/cmake/Boost-1.81.0"
-            }
-        },
-        {
-            "name": "vc_debug",
-            "displayName": "VC++ Debug",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/../build/Debug/",
-            "architecture": {
-                "value": "x64",
-                "strategy": "external"
+                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5"
             },
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
-                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
-                "Boost_DIR": "C:/local/boost_1_81_0/lib64-msvc-14.3/cmake/Boost-1.81.0"
-            }
-        },
-        {
-            "name": "ci_gnu_release",
-            "displayName": "CI GNU Release",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc-12",
-                "CMAKE_CXX_COMPILER": "g++-12",
-                "CMAKE_BUILD_TYPE": "Release",
-                "USE_ALTERNATE_LINKER": "mold",
-                "ENABLE_COVERAGE": "ON",
-                "ENABLE_UNIT_TEST": "ON",
-                "ENABLE_GUI_TEST": "ON",
-                "ENABLE_INTEGRATION_TEST": "ON",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/gcc/build/Release/generators/conan_toolchain.cmake"
-            }
-        },
-        {
-            "name": "ci_clang_release",
-            "displayName": "CI Clang Release",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang-15",
-                "CMAKE_CXX_COMPILER": "clang++-15",
-                "CMAKE_BUILD_TYPE": "Release",
-                "USE_ALTERNATE_LINKER": "mold",
-                "ENABLE_COVERAGE": "ON",
-                "ENABLE_UNIT_TEST": "ON",
-                "ENABLE_GUI_TEST": "ON",
-                "ENABLE_INTEGRATION_TEST": "ON",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/clang/build/Release/generators/conan_toolchain.cmake"
-            }
+            "inherits": [
+                "vcpkg"
+            ]
         }
     ]
 }
