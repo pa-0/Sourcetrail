@@ -57,10 +57,16 @@ jobs:
         run: git fetch --tags origin
 
       - name: Install dependencies
-        run: sudo apt install -y gcc-12 g++-12 clang-15 libboost-all-dev ninja-build qtbase5-dev libqt5svg5-dev python3-pip grep
+        run: sudo apt install -y gcc-12 g++-12 clang-15 ninja-build qtbase5-dev libqt5svg5-dev python3-pip grep
 
       - name: Install conan
         run: sudo pip install conan
+
+      - name: Cache Conan packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.conan2
+          key: conan-${{ runner.os }}-${{ matrix.config.tag }}-${{ hashFiles('**/conanfile.txt') }}
 
       - name: Install conan dependencies
         run: conan install . -s build_type=Release -of .conan/${{ matrix.config.cc }} --build=missing -pr:a .conan/${{ matrix.config.cc }}/profile
