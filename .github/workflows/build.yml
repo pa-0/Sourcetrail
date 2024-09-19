@@ -112,10 +112,18 @@ jobs:
         run: conan install . --build missing -s build_type=Release -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator=Ninja -of .conan/msvc/
         shell: bash
 
-      - name: Configure CMake
+      - name: Configure CMake (Ubuntu)
+        if: runner.os == 'Linux'
+        run: cmake --preset="ci_${{ matrix.config.tag }}_release"
+
+      - name: Configure CMake (Ubuntu)
+        if: runner.os == 'Windows'
         env:
           CMAKE_PREFIX_PATH: ${{ env.Qt5_Dir }}
-        run: cmake --preset="ci_${{ matrix.config.tag }}_release"
+        run: |
+          call "${{ matrix.config.environment_script }}"
+          cmake --preset="ci_${{ matrix.config.tag }}_release"
+        shell: cmd
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build | tee ${{github.workspace}}/build/build.log
