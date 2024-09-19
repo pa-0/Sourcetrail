@@ -106,19 +106,24 @@
             "name": "vc_release",
             "displayName": "VC++ Release",
             "binaryDir": "${sourceDir}/../build/Release/",
+            "generator": "Ninja",
+            "toolset": {
+                "value": "v143",
+                "strategy": "external"
+            },
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
             },
             "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
-                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
-                "Boost_DIR": "C:/local/boost_1_81_0/lib64-msvc-14.3/cmake/Boost-1.81.0"
+                "CMAKE_TOOLCHAIN_FILE": ".conan/msvc/build/Release/generators/conan_toolchain.cmake",
+                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5"
             },
             "inherits": [
-                "ninja",
                 "window"
             ]
         },
@@ -126,19 +131,24 @@
             "name": "vc_debug",
             "displayName": "VC++ Debug",
             "binaryDir": "${sourceDir}/../build/Debug/",
+            "generator": "Ninja",
+            "toolset": {
+                "value": "v143",
+                "strategy": "external"
+            },
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
             },
             "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
-                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
-                "Boost_DIR": "C:/local/boost_1_81_0/lib64-msvc-14.3/cmake/Boost-1.81.0"
+                "CMAKE_TOOLCHAIN_FILE": ".conan/msvc/build/Release/generators/conan_toolchain.cmake",
+                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5"
             },
             "inherits": [
-                "ninja",
                 "window"
             ]
         },
@@ -175,6 +185,31 @@
                 "ENABLE_INTEGRATION_TEST": "ON",
                 "CMAKE_TOOLCHAIN_FILE": ".conan/clang/build/Release/generators/conan_toolchain.cmake"
             }
+        },
+        {
+            "name": "ci_msvc_release",
+            "displayName": "CI VC++ Release",
+            "binaryDir": "${sourceDir}/build/",
+            "generator": "Ninja",
+            "toolset": {
+                "value": "v143",
+                "strategy": "external"
+            },
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
+                "CMAKE_TOOLCHAIN_FILE": ".conan/msvc/build/Release/generators/conan_toolchain.cmake",
+                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5"
+            },
+            "inherits": [
+                "window"
+            ]
         }
     ]
 }
