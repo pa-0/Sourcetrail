@@ -82,7 +82,7 @@ jobs:
 
       - name: Install conan (Window)
         if: runner.os == 'Windows'
-        run: python -m pip install conan
+        run: python -m pip install conan && conan profile detect
         shell: bash
 
       - name: Cache Conan packages
