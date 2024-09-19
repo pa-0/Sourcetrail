@@ -10,4 +10,6 @@ os=Linux
 CC=clang
 CXX=clang++
 LD=mold
-
+[options]
+fmt*:wchar=False
+spdlog*:wchar_support=False
