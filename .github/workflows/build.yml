@@ -81,7 +81,7 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           aqtversion: '==3.1.*'
-          dir: '${{github.workspace}}/qt/'
+          dir: '${{github.workspace}}/Qt/'
           version: '5.15.2'
           host: 'windows'
           target: 'desktop'
@@ -116,10 +116,8 @@ jobs:
         if: runner.os == 'Linux'
         run: cmake --preset="ci_${{ matrix.config.tag }}_release"
 
-      - name: Configure CMake (Ubuntu)
+      - name: Configure CMake (Windows)
         if: runner.os == 'Windows'
-        env:
-          CMAKE_PREFIX_PATH: ${{ env.Qt5_Dir }}
         run: |
           call "${{ matrix.config.environment_script }}"
           cmake --preset="ci_${{ matrix.config.tag }}_release"

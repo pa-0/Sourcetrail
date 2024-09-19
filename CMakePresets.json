@@ -204,7 +204,8 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
-                "CMAKE_TOOLCHAIN_FILE": ".conan/msvc/build/Release/generators/conan_toolchain.cmake"
+                "CMAKE_TOOLCHAIN_FILE": ".conan/msvc/build/Release/generators/conan_toolchain.cmake",
+                "CMAKE_PREFIX_PATH": "${sourceDir}/Qt/5.15.2/msvc2019_64"
             },
             "inherits": [
                 "window"
