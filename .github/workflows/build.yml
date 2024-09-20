@@ -100,10 +100,18 @@ jobs:
         run: python -m pip install conan && conan profile detect
         shell: bash
 
-      - name: Cache Conan packages
+      - name: Cache Conan packages (Ubuntu)
+        if: runner.os == 'Linux'
         uses: actions/cache@v2
         with:
           path: ~/.conan2
+          key: conan-${{ runner.os }}-${{ matrix.config.tag }}-${{ hashFiles('**/conanfile.txt') }}
+
+      - name: Cache Conan packages (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v2
+        with:
+          path: "C:\\Users\\runneradmin\\.conan2\\"
           key: conan-${{ runner.os }}-${{ matrix.config.tag }}-${{ hashFiles('**/conanfile.txt') }}
 
       - name: Install conan dependencies (Ubuntu)
@@ -128,11 +136,27 @@ jobs:
           cmake --preset="ci_${{ matrix.config.tag }}_release"
         shell: cmd
 
-      - name: Build
+      - name: Build (Ubuntu)
+        if: runner.os == 'Linux'
         run: cmake --build ${{github.workspace}}/build | tee ${{github.workspace}}/build/build.log
 
-      - name: Count warnings
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          call "${{ matrix.config.environment_script }}"
+          cmake --build ${{github.workspace}}/build | tee ${{github.workspace}}/build/build.log
+        shell: cmd
+
+      - name: Count warnings (Ubuntu)
+        if: runner.os == 'Linux'
         run: grep -c "warning:" ${{github.workspace}}/build/build.log
+
+      - name: Count warnings (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          $Matches = Select-String -Path ${{github.workspace}}/build/build.log -Pattern 'warning'
+          echo $Matches.Matches.Count
+        shell: pwsh
 
       - name: Test
         run: ctest -Q --test-dir ${{github.workspace}}/build --output-junit ${{github.workspace}}/build/report.xml

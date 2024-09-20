@@ -121,7 +121,8 @@
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
                 "CMAKE_TOOLCHAIN_FILE": ".conan/msvc/build/Release/generators/conan_toolchain.cmake",
-                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5"
+                "Qt5_DIR": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
+                "ENABLE_UNIT_TEST": "ON"
             },
             "inherits": [
                 "window"
@@ -172,7 +173,6 @@
         {
             "name": "ci_clang_release",
             "displayName": "CI Clang Release",
-            "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
