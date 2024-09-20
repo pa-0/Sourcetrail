@@ -82,11 +82,14 @@ jobs:
         with:
           aqtversion: '==3.1.*'
           dir: '${{github.workspace}}/Qt/'
+          install-deps: 'true'
           version: '5.15.2'
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2019_64'
-          archives: 'qtwinextras qtsvg qtbase'
+          archives: 'qtwinextras qtsvg qtbase icu'
+          cache: 'true'
+          cache-key-prefix: 'install-qt-action'
 
       - name: Install conan (Ubuntu)
         if: runner.os == 'Linux'
@@ -118,6 +121,8 @@ jobs:
 
       - name: Configure CMake (Windows)
         if: runner.os == 'Windows'
+        env:
+          CMAKE_PREFIX_PATH: ${{env.Qt5_DIR}}
         run: |
           call "${{ matrix.config.environment_script }}"
           cmake --preset="ci_${{ matrix.config.tag }}_release"
