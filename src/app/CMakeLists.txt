@@ -61,6 +61,6 @@ if(NOT EXISTS ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico)
 endif()
 file(COPY ${CMAKE_SOURCE_DIR}/bin/app/data/gui/icon/sourcetrail.ico DESTINATION ${CMAKE_BINARY_DIR})
 
-if(WIN32)
+if(WIN32 AND NOT ${SR_IS_CI})
   copy_qt_binaries("${CMAKE_BINARY_DIR}/app/" TRUE)
 endif()

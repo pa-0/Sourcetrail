@@ -172,6 +172,7 @@
         {
             "name": "ci_clang_release",
             "displayName": "CI Clang Release",
+            "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
@@ -205,7 +206,7 @@
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_CXX_LANGUAGE_PACKAGE": "OFF",
                 "CMAKE_TOOLCHAIN_FILE": ".conan/msvc/build/Release/generators/conan_toolchain.cmake",
-                "CMAKE_PREFIX_PATH": "${sourceDir}/Qt/5.15.2/msvc2019_64"
+                "SR_IS_CI": "ON"
             },
             "inherits": [
                 "window"
