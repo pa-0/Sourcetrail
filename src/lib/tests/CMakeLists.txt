@@ -53,6 +53,10 @@ foreach(test_name IN LISTS test_lib_names)
     TEST_PREFIX "unittests.")
 endforeach()
 
+if(WIN32)
+  target_compile_options(ComponentManagerTestSuite PRIVATE "/bigobj")
+endif()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   target_compile_options(CommandlineHelperTestSuite PRIVATE -Wno-write-strings)
 endif()
