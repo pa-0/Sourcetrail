@@ -94,8 +94,8 @@ StorageBookmarkedEdge SqliteBookmarkStorage::addBookmarkedEdge(const StorageBook
   executeStatement("INSERT INTO bookmarked_element(id, bookmark_id) VALUES(NULL, " + std::to_string(data.bookmarkId) + ");");
   const Id lastRowId = static_cast<Id>(m_database.lastRowId());
 
-  std::string const statement = fmt::format(
-      "INSERT INTO bookmarked_edge(lastRowId, serialized_source_node_name, serialized_target_node_name, "
+  std::string statement =
+      "INSERT INTO bookmarked_edge(id, serialized_source_node_name, serialized_target_node_name, "
       "edge_type, source_node_active) "
       "VALUES (" +
       std::to_string(lastRowId) + ", ?, ?, " + std::to_string(data.edgeType) + ", " + std::to_string(data.sourceNodeActive) + ");";
@@ -239,8 +239,8 @@ std::vector<StorageBookmarkCategory> SqliteBookmarkStorage::doGetAll<StorageBook
 }
 
 template <>
-std::vector<StorageBookmark> SqliteBookmarkStorage::doGetAll<StorageBookmark>(const std::string& query) const {
-  CppSQLite3Query q = executeQuery("SELECT id, name, comment, timestamp, category_id FROM bookmark " + query + ";");
+std::vector<StorageBookmark> SqliteBookmarkStorage::doGetAll<StorageBookmark>(const std::string& queryString) const {
+  CppSQLite3Query query = executeQuery("SELECT id, name, comment, timestamp, category_id FROM bookmark " + queryString + ";");
 
   std::vector<StorageBookmark> bookmarks;
   while(!query.eof()) {
@@ -250,8 +250,8 @@ std::vector<StorageBookmark> SqliteBookmarkStorage::doGetAll<StorageBookmark>(co
     const std::string timestamp = query.getStringField(3, "");
     const Id categoryId = static_cast<Id>(query.getIntField(4, 0));
 
-    if(id != 0 && !name.empty() && !timestamp.empty()) {
-      bookmarks.emplace_back(id, utility::decodeFromUtf8(name), utility::decodeFromUtf8(comment), timestamp, categoryId);
+    if(bookmarksId != 0 && !name.empty() && !timestamp.empty()) {
+      bookmarks.emplace_back(bookmarksId, utility::decodeFromUtf8(name), utility::decodeFromUtf8(comment), timestamp, categoryId);
     }
 
     query.nextRow();
@@ -260,14 +260,14 @@ std::vector<StorageBookmark> SqliteBookmarkStorage::doGetAll<StorageBookmark>(co
 }
 
 template <>
-std::vector<StorageBookmarkedNode> SqliteBookmarkStorage::doGetAll<StorageBookmarkedNode>(const std::string& query) const {
-  CppSQLite3Query q = executeQuery(
+std::vector<StorageBookmarkedNode> SqliteBookmarkStorage::doGetAll<StorageBookmarkedNode>(const std::string& queryString) const {
+  CppSQLite3Query query = executeQuery(
       "SELECT "
       "bookmarked_node.id, bookmarked_element.bookmark_id, bookmarked_node.serialized_node_name "
       "FROM bookmarked_node "
       "INNER JOIN "
       "bookmarked_element ON bookmarked_node.id = bookmarked_element.id " +
-      query + ";");
+      queryString + ";");
 
   std::vector<StorageBookmarkedNode> bookmarkedNodes;
   while(!query.eof()) {
@@ -275,8 +275,8 @@ std::vector<StorageBookmarkedNode> SqliteBookmarkStorage::doGetAll<StorageBookma
     const Id bookmarkId = static_cast<Id>(query.getIntField(1, 0));
     const std::string serializedNodeName = query.getStringField(2, "");
 
-    if(id != 0 && bookmarkId != 0 && !serializedNodeName.empty()) {
-      bookmarkedNodes.emplace_back(id, bookmarkId, utility::decodeFromUtf8(serializedNodeName));
+    if(nodeId != 0 && bookmarkId != 0 && !serializedNodeName.empty()) {
+      bookmarkedNodes.emplace_back(nodeId, bookmarkId, utility::decodeFromUtf8(serializedNodeName));
     }
 
     query.nextRow();
@@ -285,8 +285,8 @@ std::vector<StorageBookmarkedNode> SqliteBookmarkStorage::doGetAll<StorageBookma
 }
 
 template <>
-std::vector<StorageBookmarkedEdge> SqliteBookmarkStorage::doGetAll<StorageBookmarkedEdge>(const std::string& query) const {
-  CppSQLite3Query queryStr = executeQuery(
+std::vector<StorageBookmarkedEdge> SqliteBookmarkStorage::doGetAll<StorageBookmarkedEdge>(const std::string& queryString) const {
+  CppSQLite3Query query = executeQuery(
       "SELECT "
       "bookmarked_edge.id, bookmarked_element.bookmark_id, "
       "bookmarked_edge.serialized_source_node_name, bookmarked_edge.serialized_target_node_name, "
@@ -297,13 +297,13 @@ std::vector<StorageBookmarkedEdge> SqliteBookmarkStorage::doGetAll<StorageBookma
       queryString + ";");
 
   std::vector<StorageBookmarkedEdge> bookmarkedEdges;
-  while(!queryStr.eof()) {
-    const Id id = queryStr.getIntField(0, 0);
-    const Id bookmarkId = queryStr.getIntField(1, 0);
-    const std::string serializedSourceNodeName = queryStr.getStringField(2, "");
-    const std::string serializedTargetNodeName = queryStr.getStringField(3, "");
-    const int edgeType = queryStr.getIntField(4, -1);
-    const int sourceNodeActive = queryStr.getIntField(5, -1);
+  while(!query.eof()) {
+    const Id id = query.getIntField(0, 0);
+    const Id bookmarkId = query.getIntField(1, 0);
+    const std::string serializedSourceNodeName = query.getStringField(2, "");
+    const std::string serializedTargetNodeName = query.getStringField(3, "");
+    const int edgeType = query.getIntField(4, -1);
+    const int sourceNodeActive = query.getIntField(5, -1);
 
     if(id != 0 && bookmarkId != 0 && !serializedSourceNodeName.empty() && !serializedTargetNodeName.empty() && edgeType != -1 &&
        sourceNodeActive != -1) {
@@ -315,7 +315,7 @@ std::vector<StorageBookmarkedEdge> SqliteBookmarkStorage::doGetAll<StorageBookma
                                    sourceNodeActive);
     }
 
-    queryStr.nextRow();
+    query.nextRow();
   }
   return bookmarkedEdges;
 }

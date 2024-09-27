@@ -1,103 +1,107 @@
+#include <filesystem>
+#include <memory>
+#include <string>
+
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-#include "FileSystem.h"
+#include <system_error>
+
 #include "SqliteBookmarkStorage.h"
+#include "TimeStamp.h"
 
-TEST(SqliteBookmarkStorage, addBookmarks) {
-  FilePath databasePath(L"data/SQLiteTestSuite/bookmarkTest.sqlite");
-  size_t bookmarkCount = 4;
-  int result = -1;
-  {
-    FileSystem::remove(databasePath);
-    SqliteBookmarkStorage storage(databasePath);
-    storage.setup();
-
-    for(size_t i = 0; i < bookmarkCount; i++) {
-      const Id categoryId = storage.addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
-      storage.addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId));
-    }
-
-    result = static_cast<int>(storage.getAllBookmarks().size());
+struct SqliteBookmarkStorageFix : testing::Test {
+  void SetUp() override {
+    mDatabase = std::make_unique<SqliteBookmarkStorage>(FilePath{sDatabasePath.data()});
+    mDatabase->setup();
   }
 
-  FileSystem::remove(databasePath);
+  void TearDown() override {
+    mDatabase.reset();
+    std::error_code errorCode;
+    EXPECT_TRUE(std::filesystem::remove(sDatabasePath, errorCode)) << errorCode.message();
+  }
 
-  EXPECT_EQ(result, bookmarkCount);
+  std::unique_ptr<SqliteBookmarkStorage> mDatabase;
+  static constexpr std::wstring_view sDatabasePath = L"data/SQLiteTestSuite/bookmarkTest.sqlite";
+};
+
+TEST_F(SqliteBookmarkStorageFix, addBookmarks) {
+  // Given: the database is created.
+  ASSERT_THAT(mDatabase, testing::NotNull());
+
+  // When: 4 bookmarks are added.
+  constexpr size_t BookmarkCount = 4;
+  const Id categoryId = mDatabase->addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
+  for(size_t i = 0; i < BookmarkCount; i++) {
+    mDatabase->addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId));
+  }
+
+  // Then: The stored bookmark match the added ones.
+  EXPECT_EQ(mDatabase->getAllBookmarks().size(), BookmarkCount);
 }
 
-TEST(SqliteBookmarkStorage, addBookmarkedNode) {
-  FilePath databasePath(L"data/SQLiteTestSuite/bookmarkTest.sqlite");
-  size_t bookmarkCount = 4;
-  int result = -1;
-  {
-    FileSystem::remove(databasePath);
-    SqliteBookmarkStorage storage(databasePath);
-    storage.setup();
+TEST_F(SqliteBookmarkStorageFix, addBookmarkedNode) {
+  // Given: the database is created.
+  ASSERT_THAT(mDatabase, testing::NotNull());
 
-    const Id categoryId = storage.addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
+  // When: 4 bookmark nodes are added.
+  constexpr size_t BookmarkCount = 4;
+  const Id bookmarkId = [this]() {
+    const Id categoryId = mDatabase->addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
+    return mDatabase->addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId))
+                    .
+                    id;
+  }();
+  for(size_t i = 0; i < BookmarkCount; i++) {
+    mDatabase->addBookmarkedNode(StorageBookmarkedNodeData(bookmarkId, L"test name"));
+  }
+
+  // Then: The stored bookmark match the added ones.
+  EXPECT_EQ(mDatabase->getAllBookmarkedNodes().size(), BookmarkCount);
+}
+
+TEST_F(SqliteBookmarkStorageFix, removeBookmarkAlsoRemovesBookmarkedNode) {
+  // Given: the database is created.
+  ASSERT_THAT(mDatabase, testing::NotNull());
+  // And: A bookmark with node exists
+  const auto bookmarkId = [this]() {
+    const Id categoryId = mDatabase->addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
     const Id bookmarkId =
-        storage.addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId)).id;
+        mDatabase->addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId)).
+                   id;
+    mDatabase->addBookmarkedNode(StorageBookmarkedNodeData(bookmarkId, L"test name"));
+    return bookmarkId;
+  }();
 
-    for(size_t i = 0; i < bookmarkCount; i++) {
-      storage.addBookmarkedNode(StorageBookmarkedNodeData(bookmarkId, L"test name"));
-    }
+  // When: The bookmark is removed
+  mDatabase->removeBookmark(bookmarkId);
 
-    result = static_cast<int>(storage.getAllBookmarkedNodes().size());
-  }
-
-  FileSystem::remove(databasePath);
-
-  EXPECT_EQ(result, bookmarkCount);
+  // Then: No bookmark exists.
+  EXPECT_THAT(mDatabase->getAllBookmarkedNodes(), testing::IsEmpty());
 }
 
-TEST(SqliteBookmarkStorage, removeBookmarkAlsoRemovesBookmarkedNode) {
-  FilePath databasePath(L"data/SQLiteTestSuite/bookmarkTest.sqlite");
-  int result = -1;
-  {
-    FileSystem::remove(databasePath);
-    SqliteBookmarkStorage storage(databasePath);
-    storage.setup();
+TEST_F(SqliteBookmarkStorageFix, editNodeBookmark) {
+  // Given: the database is created.
+  ASSERT_THAT(mDatabase, testing::NotNull());
 
-    const Id categoryId = storage.addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
+  // And: A bookmark exists.
+  const auto [bookmarkId, categoryId] = [this]() {
+    const Id categoryId = mDatabase->addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
     const Id bookmarkId =
-        storage.addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId)).id;
-    storage.addBookmarkedNode(StorageBookmarkedNodeData(bookmarkId, L"test name"));
+        mDatabase->addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId)).
+                   id;
+    mDatabase->addBookmarkedNode(StorageBookmarkedNodeData(bookmarkId, L"test name"));
+    return std::pair{bookmarkId, categoryId};
+  }();
 
-    storage.removeBookmark(bookmarkId);
-
-    result = static_cast<int>(storage.getAllBookmarkedNodes().size());
-  }
-
-  FileSystem::remove(databasePath);
-
-  EXPECT_EQ(0, result);
-  ;
-}
-
-TEST(SqliteBookmarkStorage, editNodeBookmark) {
-  FilePath databasePath(L"data/SQLiteTestSuite/bookmarkTest.sqlite");
-
+  // When: Update the bookmark.
   const std::wstring updatedName = L"updated name";
   const std::wstring updatedComment = L"updated comment";
+  mDatabase->updateBookmark(bookmarkId, updatedName, updatedComment, categoryId);
+  const auto storageBookmark = mDatabase->getAllBookmarks().front();
 
-  StorageBookmark storageBookmark;
-  {
-    FileSystem::remove(databasePath);
-    SqliteBookmarkStorage storage(databasePath);
-    storage.setup();
-
-    const Id categoryId = storage.addBookmarkCategory(StorageBookmarkCategoryData(L"test category")).id;
-    const Id bookmarkId =
-        storage.addBookmark(StorageBookmarkData(L"test bookmark", L"test comment", TimeStamp::now().toString(), categoryId)).id;
-    storage.addBookmarkedNode(StorageBookmarkedNodeData(bookmarkId, L"test name"));
-
-    storage.updateBookmark(bookmarkId, updatedName, updatedComment, categoryId);
-
-    storageBookmark = storage.getAllBookmarks().front();
-  }
-
-  FileSystem::remove(databasePath);
-
+  // Then: The bookmark match the updated values.
   EXPECT_EQ(updatedName, storageBookmark.name);
   EXPECT_EQ(updatedComment, storageBookmark.comment);
 }
