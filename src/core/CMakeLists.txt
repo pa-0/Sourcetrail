@@ -30,18 +30,16 @@ target_include_directories(
          ${CMAKE_SOURCE_DIR}/src/lib/utility/logging/
          ${CMAKE_SOURCE_DIR}/src/lib/utility/text/)
 
-target_link_libraries(Sourcetrail_core PUBLIC Boost::date_time Boost::system Boost::filesystem)
-
 target_link_libraries(
   Sourcetrail_core
   PUBLIC fmt::fmt
+         Boost::date_time
+         Boost::system
+         Boost::filesystem
          range-v3::range-v3
          Sourcetrail::lib_utility
          spdlog::spdlog
-  PRIVATE Boost::filesystem
-          Sourcetrail::lib_utility
-          tinyxml::tinyxml
-          fmt::fmt)
+  PRIVATE tinyxml::tinyxml)
 
 # $<$<PLATFORM_ID:Windows>:bcrypt>
 target_compile_definitions(
