@@ -7,11 +7,13 @@
 #include "StorageBookmarkedNode.h"
 #include "types.h"
 
-class SqliteBookmarkStorage : public SqliteStorage {
+class SqliteBookmarkStorage final : public SqliteStorage {
 public:
   explicit SqliteBookmarkStorage(const FilePath& dbFilePath);
 
-  size_t getStaticVersion() const override;
+  size_t getStaticVersion() const override {
+    return sStorageVersion;
+  }
 
   void migrateIfNecessary();
 
@@ -27,31 +29,28 @@ public:
   std::vector<StorageBookmarkedNode> getAllBookmarkedNodes() const;
   std::vector<StorageBookmarkedEdge> getAllBookmarkedEdges() const;
 
-  void updateBookmark(const Id bookmarkId, const std::wstring& name, const std::wstring& comment, const Id categoryId);
+  void updateBookmark(Id bookmarkId, const std::wstring& name, const std::wstring& comment, Id categoryId);
 
   std::vector<StorageBookmarkCategory> getAllBookmarkCategories() const;
   StorageBookmarkCategory getBookmarkCategoryByName(const std::wstring& name) const;
 
 private:
-  static const size_t s_storageVersion;
+  static constexpr size_t sStorageVersion = 2;
 
-  virtual std::vector<std::pair<int, SqliteDatabaseIndex>> getIndices() const;
+  std::vector<std::pair<int, SqliteDatabaseIndex>> getIndices() const;
   void clearTables() override;
   void setupTables() override;
   void setupPrecompiledStatements() override;
 
-  // void updateBookmarkMetaData(const BookmarkMetaData& metaData);
+  template <typename ResultType>
+  [[nodiscard]] std::vector<ResultType> doGetAll(const std::string& query) const;
 
   template <typename ResultType>
-  std::vector<ResultType> doGetAll(const std::string& query) const;
-
-  template <typename ResultType>
-  ResultType doGetFirst(const std::string& query) const {
-    std::vector<ResultType> results = doGetAll<ResultType>(query + " LIMIT 1");
-    if(!results.empty()) {
-      return results[0];
+  [[nodiscard]] ResultType doGetFirst(const std::string& query) const {
+    if(const auto results = doGetAll<ResultType>(query + " LIMIT 1"); !results.empty()) {
+      return results.front();
     }
-    return ResultType();
+    return {};
   }
 };
 
