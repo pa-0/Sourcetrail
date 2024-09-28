@@ -11,3 +11,8 @@ target_link_libraries(
         Qt5::Core
         fmt::fmt
         Sourcetrail::lib)
+
+set_target_properties(
+    SourcetrailConsole
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app/")

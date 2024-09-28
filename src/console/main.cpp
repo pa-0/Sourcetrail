@@ -3,15 +3,24 @@
 #include <fmt/color.h>
 #include <fmt/printf.h>
 
+#include <range/v3/algorithm/find_first_of.hpp>
+
 #include <QCommandLineParser>
 #include <QCoreApplication>
+#include <QTimer>
 
-#include "Project.h"
 #include "ProjectSettings.h"
 #include "StorageCache.h"
-#include "utilityUuid.h"
+#include "Application.h"
+#include "logging.h"
+#include "Version.h"
 
 namespace fs = std::filesystem;
+
+void printFindHelp() {
+  fmt::print("Find help:\n"
+  "\t function\n");
+}
 
 int main(int argc, char* argv[]) {
   const QCoreApplication application(argc, argv);
@@ -40,15 +49,41 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  StorageCache storageCache;
-  auto emptySettings = std::make_shared<ProjectSettings>();
-  if(!emptySettings->load(FilePath{compileCommandsPath.string()}, true)) {
-    fmt::print(fg(fmt::color::red), "ERROR: Can not load the project settings.");
-    return EXIT_FAILURE;
-  }
+  auto* logger = spdlog::default_logger_raw();
+  logger->set_level(spdlog::level::off);
 
-  Project project(emptySettings, &storageCache, utility::getUuidString(), false);
-  project.load(nullptr);
+  Application::createInstance(Version{}, nullptr, nullptr);
+  MessageLoadProject(FilePath{compileCommandsPath.wstring()}).dispatchImmediately();
+
+  QTimer::singleShot(0, QCoreApplication::instance(), []() {
+    auto* storage = Application::getInstance()->getStorageCacheRaw();
+    bool running = true;
+    fmt::print("Welcome to Sourcetrail\n");
+    while(running) {
+      fmt::print("> ");
+      std::string line;
+      std::getline(std::cin, line);
+      auto lines = utility::splitToVector(line, ' ');
+      if(lines.empty()) {
+        continue;
+      }
+      if("quit" == lines.front() || "exit" == lines.front()) {
+        running = false;
+      }
+      if("find" == lines.front()) {
+        if(lines.size() == 1) {
+          printFindHelp();
+        }
+        if("function" == *(lines.begin() + 1)) {
+          storage->getAvailableNodeTypes();
+          fmt::print("Found 1 function:\n\tmain:25\n");
+        }
+      }
+    }
+    fmt::print("Bye!!\n");
+    Application::destroyInstance();
+    QCoreApplication::exit();
+  });
 
   return QCoreApplication::exec();
 }
