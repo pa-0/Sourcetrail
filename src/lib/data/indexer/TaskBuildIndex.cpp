@@ -2,12 +2,12 @@
 
 #include <spdlog/spdlog.h>
 
+#include "../../../scheduling/Blackboard.h"
 #include "AppPath.h"
-#include "Blackboard.h"
 #include "DialogView.h"
 #include "InterprocessIndexer.h"
-#include "MessageIndexingStatus.h"
-#include "MessageStatus.h"
+#include "type/indexing/MessageIndexingStatus.h"
+#include "type/MessageStatus.h"
 #include "ParserClientImpl.h"
 #include "StorageProvider.h"
 #include "TimeStamp.h"

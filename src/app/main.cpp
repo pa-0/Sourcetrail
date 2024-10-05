@@ -15,10 +15,11 @@
 #include "ApplicationSettingsPrefiller.h"
 #include "CommandLineParser.h"
 #include "FilePath.h"
+#include "IApplicationSettings.hpp"
 #include "LanguagePackageManager.h"
-#include "MessageIndexingInterrupted.h"
-#include "MessageLoadProject.h"
-#include "MessageStatus.h"
+#include "type/indexing/MessageIndexingInterrupted.h"
+#include "type/MessageLoadProject.h"
+#include "type/MessageStatus.h"
 #include "QtApplication.h"
 #include "QtCoreApplication.h"
 #include "QtNetworkFactory.h"
@@ -28,6 +29,7 @@
 #include "SourceGroupFactory.h"
 #include "SourceGroupFactoryModuleCustom.h"
 #include "Version.h"
+#include "impls/Factory.hpp"
 #include "includes.h"
 #include "language_packages.h"
 #include "logging.h"
@@ -57,7 +59,11 @@ void setupLogging() {
     }
 
     if(auto logFileEnv = qgetenv("ST_LOG_FILE"); !logFileEnv.isEmpty()) {
+#ifdef D_WINDOWS
+      auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(utility::decodeFromUtf8(logFileEnv.toStdString()), true);
+#else
       auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFileEnv.toStdString(), true);
+#endif
       fileSink->set_level(spdlog::level::trace);
       sinkList.emplace_back(std::move(fileSink));
     }
@@ -98,10 +104,11 @@ int runConsole(int argc, char** argv, const Version& version, commandline::Comma
 
   setupLogging();
 
-  Application::createInstance(version, nullptr, nullptr);
+  auto factory = std::make_shared<lib::Factory>();
+  Application::createInstance(version, factory, nullptr, nullptr);
   [[maybe_unused]] ScopedFunctor scopedFunctor([]() { Application::destroyInstance(); });
 
-  ApplicationSettingsPrefiller::prefillPaths(ApplicationSettings::getInstance().get());
+  ApplicationSettingsPrefiller::prefillPaths(IApplicationSettings::getInstanceRaw());
   addLanguagePackages();
 
   // TODO(Hussein): Replace with Boost or Qt
@@ -147,15 +154,19 @@ int runGui(int argc, char** argv, const Version& version, commandline::CommandLi
 
   setupLogging();
 
-  qtApp.setAttribute(Qt::AA_UseHighDpiPixmaps);
+  QtApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
   QtViewFactory viewFactory;
   QtNetworkFactory networkFactory;
 
-  Application::createInstance(version, &viewFactory, &networkFactory);
+  auto factory = std::make_shared<lib::Factory>();
+  Application::createInstance(version, factory, &viewFactory, &networkFactory);
   [[maybe_unused]] ScopedFunctor destroyApplication([]() { Application::destroyInstance(); });
 
-  ApplicationSettingsPrefiller::prefillPaths(ApplicationSettings::getInstance().get());
+  const auto message = fmt::format("Starting Sourcetrail {}bit, version {}", utility::getAppArchTypeString(), version.toString());
+  MessageStatus(utility::decodeFromUtf8(message)).dispatch();
+
+  ApplicationSettingsPrefiller::prefillPaths(IApplicationSettings::getInstanceRaw());
   addLanguagePackages();
 
   // NOTE(Hussein): Extract to function
@@ -183,9 +194,6 @@ int main(int argc, char* argv[]) {
   const Version version(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
   QApplication::setApplicationVersion(version.toString().c_str());
 
-  const auto message = fmt::format("Starting Sourcetrail {}bit, version {}", utility::getAppArchTypeString(), version.toString());
-  MessageStatus(utility::decodeFromUtf8(message)).dispatch();
-
   commandline::CommandLineParser commandLineParser(version.toString());
   std::vector<std::string> args;
   if(argc > 1) {
@@ -200,6 +208,7 @@ int main(int argc, char* argv[]) {
 
   setupPlatform(argc, argv);
 
+  IApplicationSettings::setInstance(std::make_shared<ApplicationSettings>());
   if(commandLineParser.runWithoutGUI()) {
     return runConsole(argc, argv, version, commandLineParser);
   }

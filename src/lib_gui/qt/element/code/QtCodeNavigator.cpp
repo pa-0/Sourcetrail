@@ -9,15 +9,14 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include "ApplicationSettings.h"
 #include "CodeFocusHandler.h"
-#include "MessageCodeReference.h"
-#include "MessageFocusView.h"
-#include "MessageHistoryRedo.h"
-#include "MessageHistoryUndo.h"
-#include "MessageScrollCode.h"
-#include "MessageTabOpenWith.h"
-#include "MessageToNextCodeReference.h"
+#include "type/code/MessageCodeReference.h"
+#include "type/focus/MessageFocusView.h"
+#include "type/history/MessageHistoryRedo.h"
+#include "type/history/MessageHistoryUndo.h"
+#include "type/code/MessageScrollCode.h"
+#include "type/tab/MessageTabOpenWith.h"
+#include "type/code/MessageToNextCodeReference.h"
 #include "QtCodeArea.h"
 #include "QtCodeFile.h"
 #include "QtCodeSnippet.h"
@@ -27,6 +26,7 @@
 #include "SourceLocationCollection.h"
 #include "SourceLocationFile.h"
 #include "TabId.h"
+#include "IApplicationSettings.hpp"
 #include "logging.h"
 #include "utility.h"
 #include "utilityQt.h"
@@ -165,7 +165,7 @@ QtCodeNavigator::QtCodeNavigator(QWidget* parent)
   m_single = new QtCodeFileSingle(this);
   layout->addWidget(m_single);
 
-  setMode(ApplicationSettings::getInstance()->getCodeViewModeSingle() ? MODE_SINGLE : MODE_LIST);
+  setMode(IApplicationSettings::getInstanceRaw()->getCodeViewModeSingle() ? MODE_SINGLE : MODE_LIST);
   updateFiles();
 
   QApplication* app = dynamic_cast<QApplication*>(QCoreApplication::instance());
@@ -450,8 +450,8 @@ void QtCodeNavigator::updateFiles() {
       return;
     }
 
-    ApplicationSettings::getInstance()->setCodeViewModeSingle(m_mode == MODE_SINGLE);
-    ApplicationSettings::getInstance()->save();
+    IApplicationSettings::getInstanceRaw()->setCodeViewModeSingle(m_mode == MODE_SINGLE);
+    IApplicationSettings::getInstanceRaw()->save();
 
     m_oldMode = m_mode;
   }

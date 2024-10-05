@@ -2,18 +2,26 @@
 
 #include <utility>
 
-#include "ApplicationSettings.h"
+#include "../../scheduling/TaskDecoratorRepeat.h"
+#include "../../scheduling/TaskFindKeyOnBlackboard.h"
+#include "../../scheduling/TaskGroupParallel.h"
+#include "../../scheduling/TaskGroupSelector.h"
+#include "../../scheduling/TaskGroupSequence.h"
+#include "../../scheduling/TaskLambda.h"
+#include "../../scheduling/TaskReturnSuccessIf.h"
+#include "../../scheduling/TaskSetValue.h"
 #include "CombinedIndexerCommandProvider.h"
 #include "DialogView.h"
 #include "FilePath.h"
 #include "FileSystem.h"
-#include "MessageErrorCountClear.h"
-#include "MessageIndexingFinished.h"
-#include "MessageIndexingShowDialog.h"
-#include "MessageIndexingStarted.h"
-#include "MessageIndexingStatus.h"
-#include "MessageRefresh.h"
-#include "MessageStatus.h"
+#include "IApplicationSettings.hpp"
+#include "type/error/MessageErrorCountClear.h"
+#include "type/indexing/MessageIndexingFinished.h"
+#include "type/indexing/MessageIndexingShowDialog.h"
+#include "type/indexing/MessageIndexingStarted.h"
+#include "type/indexing/MessageIndexingStatus.h"
+#include "type/MessageRefresh.h"
+#include "type/MessageStatus.h"
 #include "PersistentStorage.h"
 #include "ProjectSettings.h"
 #include "RefreshInfoGenerator.h"
@@ -25,20 +33,12 @@
 #include "TabId.h"
 #include "TaskBuildIndex.h"
 #include "TaskCleanStorage.h"
-#include "TaskDecoratorRepeat.h"
 #include "TaskExecuteCustomCommands.h"
 #include "TaskFillIndexerCommandQueue.h"
-#include "TaskFindKeyOnBlackboard.h"
 #include "TaskFinishParsing.h"
-#include "TaskGroupParallel.h"
-#include "TaskGroupSelector.h"
-#include "TaskGroupSequence.h"
 #include "TaskInjectStorage.h"
-#include "TaskLambda.h"
 #include "TaskMergeStorages.h"
 #include "TaskParseWrapper.h"
-#include "TaskReturnSuccessIf.h"
-#include "TaskSetValue.h"
 #include "TextAccess.h"
 #include "utility.h"
 #include "utilityApp.h"
@@ -86,7 +86,7 @@ bool Project::settingsEqualExceptNameAndLocation(const ProjectSettings& otherSet
 }
 
 void Project::setStateOutdated() {
-  if(m_state == ProjectStateType::LOADED) {
+  if(ProjectStateType::LOADED == m_state) {
     m_state = ProjectStateType::OUTDATED;
   }
 }
@@ -292,8 +292,8 @@ void Project::refresh(std::shared_ptr<DialogView> dialogView, RefreshMode refres
     }
   }
 
-  if(ApplicationSettings::getInstance()->getLoggingEnabled() &&
-     ApplicationSettings::getInstance()->getVerboseIndexerLoggingEnabled() && m_hasGUI) {
+  if(IApplicationSettings::getInstanceRaw()->getLoggingEnabled() &&
+     IApplicationSettings::getInstanceRaw()->getVerboseIndexerLoggingEnabled() && m_hasGUI) {
     if(dialogView->confirm(L"Warning: You are about to index your project with the \"verbose indexer "
                            L"logging\" setting "
                            L"enabled. This will cause a significant slowdown in indexing performance. Do you "
@@ -489,7 +489,7 @@ void Project::buildIndex(RefreshInfo info, std::shared_ptr<DialogView> dialogVie
   taskSequential->addTask(std::make_shared<TaskSetValue<bool>>("interrupted_indexing", false));
   taskSequential->addTask(std::make_shared<TaskSetValue<float>>("index_time", 0.0f));
 
-  int indexerThreadCount = ApplicationSettings::getInstance()->getIndexerThreadCount();
+  int indexerThreadCount = IApplicationSettings::getInstanceRaw()->getIndexerThreadCount();
   if(indexerThreadCount <= 0) {
     indexerThreadCount = utility::getIdealThreadCount();
     if(indexerThreadCount <= 0) {
@@ -525,7 +525,7 @@ void Project::buildIndex(RefreshInfo info, std::shared_ptr<DialogView> dialogVie
     taskParallelIndexing->addTask(std::make_shared<TaskFillIndexerCommandsQueue>(m_appUUID, std::move(indexerCommandProvider), 20));
 
     // add task for indexing
-    bool multiProcess = ApplicationSettings::getInstance()->getMultiProcessIndexingEnabled() && hasCxxSourceGroup();
+    bool multiProcess = IApplicationSettings::getInstanceRaw()->getMultiProcessIndexingEnabled() && hasCxxSourceGroup();
     taskParallelIndexing->addChildTasks(std::make_shared<TaskGroupSequence>()->addChildTasks(
         // block until there are indexer commands to process
         std::make_shared<TaskDecoratorRepeat>(TaskDecoratorRepeat::CONDITION_WHILE_SUCCESS, Task::STATE_SUCCESS, 25)

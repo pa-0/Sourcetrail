@@ -2,10 +2,10 @@
 
 #include "Application.h"
 #include "DialogView.h"
-#include "MessageLoadProject.h"
-#include "MessagePluginPortChange.h"
-#include "MessageRefreshUI.h"
-#include "MessageScrollSpeedChange.h"
+#include "type/MessageLoadProject.h"
+#include "type/plugin/MessagePluginPortChange.h"
+#include "type/MessageRefreshUI.h"
+#include "type/MessageScrollSpeedChange.h"
 #include "QtProjectWizardContentGroup.h"
 #include "QtProjectWizardContentPathsFrameworkSearchGlobal.h"
 #include "QtProjectWizardContentPathsHeaderSearchGlobal.h"
@@ -15,7 +15,7 @@
 
 QtPreferencesWindow::QtPreferencesWindow(QWidget* parent) : QtProjectWizardWindow(parent) {
   // save old application settings so they can be compared later
-  ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
+  IApplicationSettings* appSettings = IApplicationSettings::getInstanceRaw();
   m_appSettings.setHeaderSearchPaths(appSettings->getHeaderSearchPaths());
   m_appSettings.setFrameworkSearchPaths(appSettings->getFrameworkSearchPaths());
   m_appSettings.setScrollSpeed(appSettings->getScrollSpeed());
@@ -61,7 +61,7 @@ void QtPreferencesWindow::handleNext() {
   saveContent();
 
   Application* app = Application::getInstance().get();
-  ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
+  IApplicationSettings* appSettings = IApplicationSettings::getInstanceRaw();
 
   bool needsRestart = m_appSettings.getScreenAutoScaling() != appSettings->getScreenAutoScaling() ||
       m_appSettings.getScreenScaleFactor() != appSettings->getScreenScaleFactor();
@@ -91,7 +91,7 @@ void QtPreferencesWindow::handleNext() {
   app->loadSettings();
 
   if(appSettingsChanged) {
-    std::shared_ptr<const Project> currentProject = Application::getInstance()->getCurrentProject();
+    auto currentProject = Application::getInstance()->getCurrentProject();
     if(currentProject) {
       MessageLoadProject(currentProject->getProjectSettingsFilePath(), true).dispatch();
     }

@@ -9,8 +9,8 @@
 //
 #include "language_packages.h"
 // internal
-#include "MessageLoadProject.h"
-#include "MessageStatus.h"
+#include "type/MessageLoadProject.h"
+#include "type/MessageStatus.h"
 #include "ProjectSettings.h"
 #include "ProjectWizardModel.hpp"
 #include "QtProjectWizardContent.h"
@@ -69,10 +69,11 @@ bool applicationSettingsContainVisualStudioHeaderSearchPaths() {
     }
   }
 
-  std::vector<FilePath> usedExpandedGlobalHeaderSearchPaths = ApplicationSettings::getInstance()->getHeaderSearchPathsExpanded();
-  for(const FilePath& usedExpandedPath : usedExpandedGlobalHeaderSearchPaths) {
-    for(const FilePath& expandedPath : expandedPaths) {
-      if(expandedPath == usedExpandedPath) {
+  auto usedExpandedGlobalHeaderSearchPaths = IApplicationSettings::getInstanceRaw()->getHeaderSearchPathsExpanded();
+  for(const auto& usedExpandedPath : usedExpandedGlobalHeaderSearchPaths) {
+    for(const auto& expandedPath : expandedPaths) {
+      const auto expandedSTLPath = std::filesystem::path{expandedPath.getCanonical().wstr()};
+      if(expandedSTLPath == usedExpandedPath) {
         return true;
       }
     }
@@ -235,7 +236,7 @@ QtProjectWizard::QtProjectWizard(QWidget* pParent) : QtProjectWizardWindow(pPare
   connect(&m_windowStack, &QtWindowStack::empty, this, &QtProjectWizard::windowStackChanged);
 
   // save old application settings so they can be compared later
-  ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
+  IApplicationSettings* appSettings = IApplicationSettings::getInstanceRaw();
   m_appSettings.setHeaderSearchPaths(appSettings->getHeaderSearchPaths());
   m_appSettings.setFrameworkSearchPaths(appSettings->getFrameworkSearchPaths());
 }
@@ -782,12 +783,12 @@ void QtProjectWizard::createProject() {
 
   bool settingsChanged = false;
   if(m_editing) {
-    std::shared_ptr<const Project> currentProject = Application::getInstance()->getCurrentProject();
+    auto currentProject = Application::getInstance()->getCurrentProject();
     if(currentProject) {
       settingsChanged = !(currentProject->settingsEqualExceptNameAndLocation(*(m_projectSettings.get())));
     }
 
-    settingsChanged |= !(m_appSettings == *ApplicationSettings::getInstance().get());
+    settingsChanged |= !(m_appSettings == *IApplicationSettings::getInstanceRaw());
   } else {
     MessageStatus(L"Created project: " + path.wstr()).dispatch();
   }

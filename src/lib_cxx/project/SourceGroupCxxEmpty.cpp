@@ -1,8 +1,14 @@
 #include "SourceGroupCxxEmpty.h"
 
-#include "ApplicationSettings.h"
+#include <utility>
+
+#include <range/v3/to_container.hpp>
+#include <range/v3/view/transform.hpp>
+
+#include "../../scheduling/TaskLambda.h"
 #include "CxxIndexerCommandProvider.h"
 #include "FileManager.h"
+#include "IApplicationSettings.hpp"
 #include "IndexerCommandCxx.h"
 #include "RefreshInfo.h"
 #include "SourceGroupSettingsCEmpty.h"
@@ -10,12 +16,11 @@
 #include "SourceGroupSettingsWithCStandard.h"
 #include "SourceGroupSettingsWithCppStandard.h"
 #include "SourceGroupSettingsWithCxxPathsAndFlags.h"
-#include "TaskLambda.h"
 #include "logging.h"
 #include "utility.h"
 #include "utilitySourceGroupCxx.h"
 
-SourceGroupCxxEmpty::SourceGroupCxxEmpty(std::shared_ptr<SourceGroupSettings> settings) : m_settings(settings) {}
+SourceGroupCxxEmpty::SourceGroupCxxEmpty(std::shared_ptr<SourceGroupSettings> settings) : m_settings(std::move(settings)) {}
 
 std::set<FilePath> SourceGroupCxxEmpty::filterToContainedFilePaths(const std::set<FilePath>& filePaths) const {
   std::vector<FilePath> indexedPaths;
@@ -120,7 +125,7 @@ std::shared_ptr<const SourceGroupSettings> SourceGroupCxxEmpty::getSourceGroupSe
 std::vector<std::wstring> SourceGroupCxxEmpty::getBaseCompilerFlags() const {
   std::vector<std::wstring> compilerFlags;
 
-  std::shared_ptr<ApplicationSettings> appSettings = ApplicationSettings::getInstance();
+  auto* appSettings = IApplicationSettings::getInstanceRaw();
   std::set<FilePath> indexedPaths;
   std::wstring targetFlag;
   std::wstring languageStandard = SourceGroupSettingsWithCppStandard::getDefaultCppStandardStatic();
@@ -170,17 +175,17 @@ std::vector<std::wstring> SourceGroupCxxEmpty::getBaseCompilerFlags() const {
       }
     }
 
-    utility::append(
-        compilerFlags,
-        IndexerCommandCxx::getCompilerFlagsForSystemHeaderSearchPaths(utility::concat(
-            indexedDirectoryPaths,
-            utility::concat(settingsCxx->getHeaderSearchPathsExpandedAndAbsolute(), appSettings->getHeaderSearchPathsExpanded()))));
+    utility::append(compilerFlags,
+                    IndexerCommandCxx::getCompilerFlagsForSystemHeaderSearchPaths(
+                        utility::concat(indexedDirectoryPaths,
+                                        utility::concat(settingsCxx->getHeaderSearchPathsExpandedAndAbsolute(),
+                                                        utility::toFilePath(appSettings->getHeaderSearchPathsExpanded())))));
   }
   {
-    utility::append(
-        compilerFlags,
-        IndexerCommandCxx::getCompilerFlagsForFrameworkSearchPaths(utility::concat(
-            settingsCxx->getFrameworkSearchPathsExpandedAndAbsolute(), appSettings->getFrameworkSearchPathsExpanded())));
+    utility::append(compilerFlags,
+                    IndexerCommandCxx::getCompilerFlagsForFrameworkSearchPaths(
+                        utility::concat(settingsCxx->getFrameworkSearchPathsExpandedAndAbsolute(),
+                                        utility::toFilePath(appSettings->getFrameworkSearchPathsExpanded()))));
   }
 
   return compilerFlags;

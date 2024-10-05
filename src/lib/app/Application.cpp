@@ -1,38 +1,92 @@
 #include "Application.h"
+
+#include <algorithm>
+#include <filesystem>
+
+#include <spdlog/common.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/spdlog.h>
+
 // internal
-#include "ApplicationSettings.h"
+#include "../../scheduling/ITaskManager.hpp"
 #include "ColorScheme.h"
 #include "CppSQLite3.h"
 #include "DialogView.h"
 #include "GraphViewStyle.h"
+#include "IApplicationSettings.hpp"
 #include "IDECommunicationController.h"
+#include "ISharedMemoryGarbageCollector.hpp"
 #include "MainView.h"
-#include "MessageFilterErrorCountUpdate.h"
-#include "MessageFilterFocusInOut.h"
-#include "MessageFilterSearchAutocomplete.h"
+#include "filter_types/MessageFilterErrorCountUpdate.h"
+#include "filter_types/MessageFilterFocusInOut.h"
+#include "filter_types/MessageFilterSearchAutocomplete.h"
 #include "MessageQueue.h"
-#include "MessageQuitApplication.h"
-#include "MessageStatus.h"
+#include "type/MessageQuitApplication.h"
+#include "type/MessageStatus.h"
 #include "NetworkFactory.h"
 #include "ProjectSettings.h"
-#include "SharedMemoryGarbageCollector.h"
+#include "SharedMemory.h"
 #include "StorageCache.h"
 #include "TabId.h"
-#include "TaskManager.h"
 #include "TaskScheduler.h"
 #include "UserPaths.h"
 #include "Version.h"
 #include "ViewFactory.h"
+#include "impls/Factory.hpp"
 #include "logging.h"
 #include "tracing.h"
 #include "utilityString.h"
 #include "utilityUuid.h"
 
-std::shared_ptr<Application> Application::s_instance;
-std::string Application::s_uuid;
+namespace fs = std::filesystem;
 
-void Application::createInstance(const Version& version, ViewFactory* viewFactory, NetworkFactory* networkFactory) {
-  bool hasGui = (viewFactory != nullptr);
+namespace {
+std::wstring generateDatedFileName(const std::wstring& prefix, const std::wstring& suffix = L"", int offsetDays = 0) {
+  time_t time;
+  std::time(&time);
+
+#ifdef _WIN32
+#  pragma warning(push)
+#  pragma warning(disable : 4996)
+#endif
+  tm t = *std::localtime(&time);
+
+  if(0 != offsetDays) {
+    time = mktime(&t) + offsetDays * 24 * 60 * 60;
+    t = *std::localtime(&time);
+  }
+#ifdef _WIN32
+#  pragma warning(pop)
+#endif
+
+  std::wstringstream filename;
+  if(!prefix.empty()) {
+    filename << prefix << L"_";
+  }
+
+  filename << t.tm_year + 1900 << L"-";
+  filename << (t.tm_mon < 9 ? L"0" : L"") << t.tm_mon + 1 << L"-";
+  filename << (t.tm_mday < 10 ? L"0" : L"") << t.tm_mday << L"_";
+  filename << (t.tm_hour < 10 ? L"0" : L"") << t.tm_hour << L"-";
+  filename << (t.tm_min < 10 ? L"0" : L"") << t.tm_min << L"-";
+  filename << (t.tm_sec < 10 ? L"0" : L"") << t.tm_sec;
+
+  if(!suffix.empty()) {
+    filename << L"_" << suffix;
+  }
+
+  return filename.str();
+}
+}    // namespace
+
+Application::Ptr Application::sInstance;
+std::string Application::sUuid;
+
+void Application::createInstance(const Version& version,
+                                 std::shared_ptr<lib::IFactory> factory,
+                                 ViewFactory* viewFactory,
+                                 NetworkFactory* networkFactory) {
+  const bool hasGui = (nullptr != viewFactory);
 
   Version::setApplicationVersion(version);
 
@@ -40,113 +94,94 @@ void Application::createInstance(const Version& version, ViewFactory* viewFactor
     GraphViewStyle::setImpl(viewFactory->createGraphStyleImpl());
   }
 
-  loadSettings();
-
-  SharedMemoryGarbageCollector* collector = SharedMemoryGarbageCollector::createInstance();
-  if(collector) {
+  // TODO(Hussein): We should create this iff multi-process is used
+  if(auto collector = factory->createSharedMemoryGarbageCollector(); collector) {
+    lib::ISharedMemoryGarbageCollector::setInstance(collector);
     collector->run(Application::getUUID());
   }
 
-  TaskManager::createScheduler(TabId::app());
-  TaskManager::createScheduler(TabId::background());
-  MessageQueue::getInstance();
+  scheduling::ITaskManager::setInstance(factory->createTaskManager());
+  scheduling::ITaskManager::getInstanceRaw()->createScheduler(TabId::app());
+  scheduling::ITaskManager::getInstanceRaw()->createScheduler(TabId::background());
+  IMessageQueue::setInstance(factory->createMessageQueue());
 
-  s_instance = std::shared_ptr<Application>(new Application(hasGui));
+  loadSettings();    // Must be called after creating IMessageQueue
 
-  s_instance->m_storageCache = std::make_shared<StorageCache>();
+  sInstance = std::shared_ptr<Application>(new Application(std::move(factory), hasGui));
+  sInstance->mStorageCache = std::make_shared<StorageCache>();
 
   if(hasGui) {
-    s_instance->m_mainView = viewFactory->createMainView(s_instance->m_storageCache.get());
-    s_instance->m_mainView->setup();
+    sInstance->mMainView = viewFactory->createMainView(sInstance->mStorageCache.get());
+    sInstance->mMainView->setup();
   }
 
-  if(networkFactory != nullptr) {
-    s_instance->m_ideCommunicationController = networkFactory->createIDECommunicationController(s_instance->m_storageCache.get());
-    s_instance->m_ideCommunicationController->startListening();
+  if(nullptr != networkFactory) {
+    sInstance->mIdeCommunicationController = networkFactory->createIDECommunicationController(sInstance->mStorageCache.get());
+    sInstance->mIdeCommunicationController->startListening();
   }
 
-  s_instance->startMessagingAndScheduling();
-}
-
-std::shared_ptr<Application> Application::getInstance() {
-  return s_instance;
+  sInstance->startMessagingAndScheduling();
 }
 
 void Application::destroyInstance() {
-  MessageQueue::getInstance()->stopMessageLoop();
-  TaskManager::destroyScheduler(TabId::background());
-  TaskManager::destroyScheduler(TabId::app());
+  LOG_INFO("destroyInstance");
+  IMessageQueue::getInstance()->stopMessageLoop();
+  scheduling::ITaskManager::getInstanceRaw()->destroyScheduler(TabId::background());
+  scheduling::ITaskManager::getInstanceRaw()->destroyScheduler(TabId::app());
 
-  s_instance.reset();
+  sInstance.reset();
 }
 
 std::string Application::getUUID() {
-  if(!s_uuid.size()) {
-    s_uuid = utility::getUuidString();
+  if(sUuid.empty()) {
+    sUuid = utility::getUuidString();
   }
 
-  return s_uuid;
+  return sUuid;
 }
 
 void Application::loadSettings() {
-  MessageStatus(L"Load settings: " + UserPaths::getAppSettingsFilePath().wstr()).dispatch();
+  MessageStatus(fmt::format(L"Load settings: {}", UserPaths::getAppSettingsFilePath().wstr())).dispatch();
 
-  std::shared_ptr<ApplicationSettings> settings = ApplicationSettings::getInstance();
-  settings->load(UserPaths::getAppSettingsFilePath());
-
-// FIXME
-#if 0
-  LogManager::getInstance()->setLoggingEnabled(settings->getLoggingEnabled());
-  Logger* logger = LogManager::getInstance()->getLoggerByType("FileLogger");
-  if(logger) {
-    const auto fileLogger = dynamic_cast<FileLogger*>(logger);
-    fileLogger->setLogDirectory(settings->getLogDirectoryPath());
-    fileLogger->setFileName(FileLogger::generateDatedFileName(L"log"));
+  auto settings = IApplicationSettings::getInstanceRaw();
+  if(auto settingsPath = UserPaths::getAppSettingsFilePath(); !settings->load(settingsPath)) {
+    LOG_WARNING_W(fmt::format(L"Failed to load ApplicationSettings from the following path \"{}\"", settingsPath.wstr()));
   }
-#endif
+
+  if(settings->getLoggingEnabled()) {
+    namespace fs = std::filesystem;
+    auto loggerPath = fs::path {settings->getLogDirectoryPath().wstring()} / generateDatedFileName(L"log");
+    auto dLogger = spdlog::default_logger_raw();
+    if(nullptr == dLogger) {
+      return;
+    }
+
+    auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(loggerPath, true);
+    fileSink->set_level(spdlog::level::trace);
+    dLogger->sinks().push_back(std::move(fileSink));
+  }
 
   loadStyle(settings->getColorSchemePath());
 }
 
-void Application::loadStyle(const FilePath& colorSchemePath) {
-  ColorScheme::getInstance()->load(colorSchemePath);
+void Application::loadStyle(const fs::path& colorSchemePath) {
+  if(!ColorScheme::getInstance()->load(FilePath {colorSchemePath.wstring()})) {
+    LOG_WARNING_W(fmt::format(L"Failed to load Style from the following path \"{}\"", colorSchemePath.wstring()));
+  }
   GraphViewStyle::loadStyleSettings();
 }
 
-Application::Application(bool withGUI) : m_hasGUI(withGUI) {}
+Application::Application(std::shared_ptr<lib::IFactory> factory, bool withGUI)
+    : mHasGui(withGUI), mFactory {std::move(factory)} {}
 
 Application::~Application() {
-  if(m_hasGUI) {
-    m_mainView->saveLayout();
+  if(mHasGui) {
+    mMainView->saveLayout();
   }
 
-  SharedMemoryGarbageCollector* collector = SharedMemoryGarbageCollector::getInstance();
-  if(collector) {
+  if(auto* collector = lib::ISharedMemoryGarbageCollector::getInstanceRaw(); collector) {
     collector->stop();
   }
-}
-
-std::shared_ptr<const Project> Application::getCurrentProject() const {
-  return m_pProject;
-}
-
-FilePath Application::getCurrentProjectPath() const {
-  if(m_pProject) {
-    return m_pProject->getProjectSettingsFilePath();
-  }
-
-  return {};
-}
-
-bool Application::isProjectLoaded() const {
-  if(m_pProject) {
-    return m_pProject->isLoaded();
-  }
-  return false;
-}
-
-bool Application::hasGUI() const {
-  return m_hasGUI;
 }
 
 int Application::handleDialog(const std::wstring& message) {
@@ -158,38 +193,43 @@ int Application::handleDialog(const std::wstring& message, const std::vector<std
 }
 
 std::shared_ptr<DialogView> Application::getDialogView(DialogView::UseCase useCase) {
-  if(m_mainView) {
-    return m_mainView->getDialogView(useCase);
+  if(mMainView) {
+    return mMainView->getDialogView(useCase);
   }
 
   return std::make_shared<DialogView>(useCase, nullptr);
 }
 
 void Application::updateHistoryMenu(std::shared_ptr<MessageBase> message) {
-  m_mainView->updateHistoryMenu(message);
+  if(!message) {
+    LOG_INFO("The message is empty");
+  }
+  if(mMainView) {
+    mMainView->updateHistoryMenu(std::move(message));
+  }
 }
 
 void Application::handleMessage(MessageActivateWindow* /*pMessage*/) {
-  if(m_hasGUI) {
-    m_mainView->activateWindow();
+  if(mHasGui) {
+    mMainView->activateWindow();
   }
 }
 
 void Application::handleMessage(MessageCloseProject* /*pMessage*/) {
-  if(m_pProject && m_pProject->isIndexing()) {
+  if(mProject && mProject->isIndexing()) {
     MessageStatus(L"Cannot close the project while indexing.", true, false).dispatch();
     return;
   }
 
-  m_pProject.reset();
+  mProject.reset();
   updateTitle();
-  m_mainView->clear();
+  mMainView->clear();
 }
 
 void Application::handleMessage(MessageIndexingFinished* /*pMessage*/) {
   logStorageStats();
 
-  if(m_hasGUI) {
+  if(mHasGui) {
     MessageRefreshUI().afterIndexing().dispatch();
   } else {
     MessageQuitApplication().dispatch();
@@ -197,47 +237,49 @@ void Application::handleMessage(MessageIndexingFinished* /*pMessage*/) {
 }
 
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)
-void Application::handleMessage(MessageLoadProject* pMessage) {
-  TRACE("app load project");
+void Application::handleMessage(MessageLoadProject* message) {
+  if(nullptr == message) {
+    return;
+  }
 
-  const auto projectSettingsFilePath = pMessage->projectSettingsFilePath;
+  const auto projectSettingsFilePath = message->projectSettingsFilePath;
   loadWindow(projectSettingsFilePath.empty());
 
   if(projectSettingsFilePath.empty()) {
     return;
   }
 
-  if(m_pProject && m_pProject->isIndexing()) {
+  if(mProject && mProject->isIndexing()) {
     MessageStatus(L"Cannot load another project while indexing.", true, false).dispatch();
     return;
   }
 
-  if(m_pProject && projectSettingsFilePath == m_pProject->getProjectSettingsFilePath()) {
-    if(pMessage->settingsChanged && m_hasGUI) {
-      m_pProject->setStateOutdated();
-      refreshProject(REFRESH_ALL_FILES, pMessage->shallowIndexingRequested);
+  if(mProject && mProject->getProjectSettingsFilePath() == projectSettingsFilePath) {
+    if(message->settingsChanged && mHasGui) {
+      mProject->setStateOutdated();
+      refreshProject(REFRESH_ALL_FILES, message->shallowIndexingRequested);
     }
   } else {
     MessageStatus(L"Loading Project: " + projectSettingsFilePath.wstr(), false, true).dispatch();
 
-    m_pProject.reset();
+    mProject.reset();
 
-    if(m_hasGUI) {
-      m_mainView->clear();
+    if(mHasGui) {
+      mMainView->clear();
     }
 
     try {
-      updateRecentProjects(projectSettingsFilePath);
+      updateRecentProjects(fs::path {projectSettingsFilePath.wstr()});
 
-      m_storageCache->clear();
+      mStorageCache->clear();
       // TODO: check if this is really required.
-      m_storageCache->setSubject(std::weak_ptr<StorageAccess>());
+      mStorageCache->setSubject(std::weak_ptr<StorageAccess>());
 
-      m_pProject = std::make_shared<Project>(
-          std::make_shared<ProjectSettings>(projectSettingsFilePath), m_storageCache.get(), getUUID(), hasGUI());
+      mProject = mFactory->createProject(
+          std::make_shared<ProjectSettings>(projectSettingsFilePath), mStorageCache.get(), getUUID(), hasGUI());
 
-      if(m_pProject) {
-        m_pProject->load(getDialogView(DialogView::UseCase::GENERAL));
+      if(mProject) {
+        mProject->load(getDialogView(DialogView::UseCase::GENERAL));
       } else {
         LOG_ERROR("Failed to load project.");
         MessageStatus(L"Failed to load project: " + projectSettingsFilePath.wstr(), true).dispatch();
@@ -245,24 +287,25 @@ void Application::handleMessage(MessageLoadProject* pMessage) {
 
       updateTitle();
     } catch(std::exception& e) {
-      const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() + L"\" with exception: " +
-          utility::decodeFromUtf8(e.what());
-      LOG_ERROR_W(message);
-      MessageStatus(message, true).dispatch();
+      auto errorMessage = fmt::format(L"Failed to load project at \"{}\" with exception: {}",
+                                      projectSettingsFilePath.wstr(),
+                                      utility::decodeFromUtf8(e.what()));
+      LOG_ERROR_W(errorMessage);
+      MessageStatus(errorMessage, true).dispatch();
     } catch(CppSQLite3Exception& e) {
-      const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() +
-          L"\" with sqlite exception: " + utility::decodeFromUtf8(e.errorMessage());
-      LOG_ERROR_W(message);
-      MessageStatus(message, true).dispatch();
+      auto errorMessage = fmt::format(L"Failed to load project at \"{}\" with sqlite exception: {}",
+                                      projectSettingsFilePath.wstr(),
+                                      utility::decodeFromUtf8(e.errorMessage()));
+      LOG_ERROR_W(errorMessage);
+      MessageStatus(errorMessage, true).dispatch();
     } catch(...) {
-      const std::wstring message = L"Failed to load project at \"" + projectSettingsFilePath.wstr() +
-          L"\" with unknown exception.";
-      LOG_ERROR_W(message);
-      MessageStatus(message, true).dispatch();
+      auto errorMessage = fmt::format(L"Failed to load project at \"{}\" with unknown exception.", projectSettingsFilePath.wstr());
+      LOG_ERROR_W(errorMessage);
+      MessageStatus(errorMessage, true).dispatch();
     }
 
-    if(pMessage->refreshMode != REFRESH_NONE) {
-      refreshProject(pMessage->refreshMode, pMessage->shallowIndexingRequested);
+    if(REFRESH_NONE != message->refreshMode) {
+      refreshProject(message->refreshMode, message->shallowIndexingRequested);
     }
   }
 }
@@ -276,40 +319,40 @@ void Application::handleMessage(MessageRefresh* pMessage) {
 void Application::handleMessage(MessageRefreshUI* pMessage) {
   TRACE("ui refresh");
 
-  if(m_hasGUI) {
+  if(mHasGui) {
     updateTitle();
 
     if(pMessage->loadStyle) {
-      loadStyle(ApplicationSettings::getInstance()->getColorSchemePath());
+      loadStyle(IApplicationSettings::getInstanceRaw()->getColorSchemePath());
     }
 
-    m_mainView->refreshViews();
+    mMainView->refreshViews();
 
-    m_mainView->refreshUIState(pMessage->isAfterIndexing);
+    mMainView->refreshUIState(pMessage->isAfterIndexing);
   }
 }
 
 void Application::handleMessage(MessageSwitchColorScheme* pMessage) {
   MessageStatus(L"Switch color scheme: " + pMessage->colorSchemePath.wstr()).dispatch();
 
-  loadStyle(pMessage->colorSchemePath);
+  loadStyle(pMessage->colorSchemePath.wstr());
   MessageRefreshUI().noStyleReload().dispatch();
 }
 
 void Application::handleMessage(MessageBookmarkUpdate* message) {
   assert(message != nullptr);
-  if(!m_mainView) {
+  if(!mMainView) {
     LOG_WARNING("MainView isn't initialized");
     return;
   }
-  m_mainView->updateBookmarksMenu(message->mBookmarks);
+  mMainView->updateBookmarksMenu(message->mBookmarks);
 }
 
 void Application::startMessagingAndScheduling() {
-  TaskManager::getScheduler(TabId::app())->startSchedulerLoopThreaded();
-  TaskManager::getScheduler(TabId::background())->startSchedulerLoopThreaded();
+  scheduling::ITaskManager::getInstanceRaw()->getScheduler(TabId::app())->startSchedulerLoopThreaded();
+  scheduling::ITaskManager::getInstanceRaw()->getScheduler(TabId::background())->startSchedulerLoopThreaded();
 
-  MessageQueue* queue = MessageQueue::getInstance().get();
+  IMessageQueue* queue = IMessageQueue::getInstance().get();
   queue->addMessageFilter(std::make_shared<MessageFilterErrorCountUpdate>());
   queue->addMessageFilter(std::make_shared<MessageFilterFocusInOut>());
   queue->addMessageFilter(std::make_shared<MessageFilterSearchAutocomplete>());
@@ -319,41 +362,39 @@ void Application::startMessagingAndScheduling() {
 }
 
 void Application::loadWindow(bool showStartWindow) {
-  if(!m_hasGUI) {
+  if(!mHasGui) {
     return;
   }
 
-  if(!m_loadedWindow) {
-    [[maybe_unused]] ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
+  if(!mLoadedWindow) {
+    [[maybe_unused]] IApplicationSettings* appSettings = IApplicationSettings::getInstanceRaw();
 
     updateTitle();
 
-    m_mainView->loadWindow(showStartWindow);
-    m_loadedWindow = true;
+    mMainView->loadWindow(showStartWindow);
+    mLoadedWindow = true;
   } else if(!showStartWindow) {
-    m_mainView->hideStartScreen();
+    mMainView->hideStartScreen();
   }
 }
 
 void Application::refreshProject(RefreshMode refreshMode, bool shallowIndexingRequested) {
-  if(m_pProject && checkSharedMemory()) {
-    m_pProject->refresh(getDialogView(DialogView::UseCase::INDEXING), refreshMode, shallowIndexingRequested);
+  if(mProject && checkSharedMemory()) {
+    mProject->refresh(getDialogView(DialogView::UseCase::INDEXING), refreshMode, shallowIndexingRequested);
 
-    if(!m_hasGUI && !m_pProject->isIndexing()) {
+    if(!mHasGui && !mProject->isIndexing()) {
       MessageQuitApplication().dispatch();
     }
   }
 }
 
-void Application::updateRecentProjects(const FilePath& projectSettingsFilePath) {
-  if(m_hasGUI) {
-    ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
-    std::vector<FilePath> recentProjects = appSettings->getRecentProjects();
-    if(recentProjects.size()) {
-      std::vector<FilePath>::iterator it = std::find(recentProjects.begin(), recentProjects.end(), projectSettingsFilePath);
-      if(it != recentProjects.end()) {
-        recentProjects.erase(it);
-      }
+void Application::updateRecentProjects(const fs::path& projectSettingsFilePath) {
+  if(mHasGui) {
+    auto appSettings = IApplicationSettings::getInstanceRaw();
+    std::vector<fs::path> recentProjects = appSettings->getRecentProjects();
+    if(auto found = std::find(recentProjects.begin(), recentProjects.end(), projectSettingsFilePath);
+       found != recentProjects.end()) {
+      recentProjects.erase(found);
     }
 
     recentProjects.insert(recentProjects.begin(), projectSettingsFilePath);
@@ -364,67 +405,66 @@ void Application::updateRecentProjects(const FilePath& projectSettingsFilePath) 
     appSettings->setRecentProjects(recentProjects);
     appSettings->save(UserPaths::getAppSettingsFilePath());
 
-    m_mainView->updateRecentProjectMenu();
+    mMainView->updateRecentProjectMenu();
   }
 }
 
 void Application::logStorageStats() const {
-  if(!ApplicationSettings::getInstance()->getLoggingEnabled()) {
+  if(!IApplicationSettings::getInstanceRaw()->getLoggingEnabled()) {
     return;
   }
 
-  std::stringstream ss;
-  StorageStats stats = m_storageCache->getStorageStats();
+  const StorageStats stats = mStorageCache->getStorageStats();
+  const ErrorCountInfo errorCount = mStorageCache->getErrorCount();
 
-  ss << "\nGraph:\n";
-  ss << "\t" << stats.nodeCount << " Nodes\n";
-  ss << "\t" << stats.edgeCount << " Edges\n";
-
-  ss << "\nCode:\n";
-  ss << "\t" << stats.fileCount << " Files\n";
-  ss << "\t" << stats.fileLOCCount << " Lines of Code\n";
-
-
-  ErrorCountInfo errorCount = m_storageCache->getErrorCount();
-
-  ss << "\nErrors:\n";
-  ss << "\t" << errorCount.total << " Errors\n";
-  ss << "\t" << errorCount.fatal << " Fatal Errors\n";
-
-  LOG_INFO(ss.str());
+  LOG_INFO(
+      fmt::format("\nGraph:\n"
+                  "\t{} Nodes\n"
+                  "\t{} Edges\n"
+                  "\nCode:\n"
+                  "\t{} Files\n"
+                  "\t{} Lines of Code\n"
+                  "\nErrors:\n"
+                  "\t{} Errors\n"
+                  "\t{} Fatal Errors\n",
+                  stats.nodeCount,
+                  stats.edgeCount,
+                  stats.fileCount,
+                  stats.fileLOCCount,
+                  errorCount.total,
+                  errorCount.fatal));
 }
 
 void Application::updateTitle() {
-  if(m_hasGUI) {
+  if(mHasGui) {
     std::wstring title = L"Sourcetrail";
 
-    if(m_pProject) {
-      FilePath projectPath = m_pProject->getProjectSettingsFilePath();
+    if(mProject) {
+      FilePath projectPath = mProject->getProjectSettingsFilePath();
 
       if(!projectPath.empty()) {
         title += L" - " + projectPath.fileName();
       }
     }
 
-    m_mainView->setTitle(title);
+    mMainView->setTitle(title);
   }
 }
 
 bool Application::checkSharedMemory() {
   std::wstring error = utility::decodeFromUtf8(SharedMemory::checkSharedMemory(getUUID()));
-  if(error.size()) {
-    MessageStatus(
-        L"Error on accessing shared memory. Indexing not possible. "
-        "Please restart computer or run as admin: " +
-            error,
-        true)
-        .dispatch();
-    handleDialog(L"There was an error accessing shared memory on your computer: " + error +
-                 L"\n\n"
-                 "Project indexing is not possible. Please restart your computer or try running "
-                 "Sourcetrail as admin.");
-    return false;
+  if(error.empty()) {
+    return true;
   }
-
-  return true;
+  MessageStatus(fmt::format(L"Error on accessing shared memory. Indexing not possible. "
+                            "Please restart computer or run as admin: {}",
+                            error),
+                true)
+      .dispatch();
+  handleDialog(
+      fmt::format(L"There was an error accessing shared memory on your computer: {}\n\n"
+                  "Project indexing is not possible. Please restart your computer or try running "
+                  "Sourcetrail as admin.",
+                  error));
+  return false;
 }

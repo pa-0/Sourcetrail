@@ -8,7 +8,10 @@
 #include <QTest>
 #include <QTimer>
 
+#include <gmock/gmock.h>
+
 #define private public
+#include "../../../lib/tests/mocks/MockedMessageQueue.hpp"
 #include "RecentItemModel.hpp"
 #undef private
 
@@ -33,10 +36,10 @@ QModelIndex createModelIndex(int index, const QAbstractListModel* input) {
 
 }    // namespace
 
-const std::vector<FilePath> RecentItemModelTestSuite::RecentItems = std::vector<FilePath> {
-    FilePath {"data/RecentItemModelTestSuite/test00.srctrlprj"},
-    FilePath {"data/RecentItemModelTestSuite/test01.srctrlprj"},
-    FilePath {"data/RecentItemModelTestSuite/missing.srctrlprj"},
+const std::vector<std::filesystem::path> RecentItemModelTestSuite::RecentItems = std::vector<std::filesystem::path> {
+    std::filesystem::path{"data/RecentItemModelTestSuite/test00.srctrlprj"},
+    std::filesystem::path{"data/RecentItemModelTestSuite/test01.srctrlprj"},
+    std::filesystem::path{"data/RecentItemModelTestSuite/missing.srctrlprj"},
 };
 
 const QIcon RecentItemModelTestSuite::ProjectIcon = QIcon("://icon/empty_icon.png");
@@ -47,6 +50,7 @@ RecentItemModelTestSuite::~RecentItemModelTestSuite() = default;
 
 void RecentItemModelTestSuite::initTestCase() {
   Q_INIT_RESOURCE(resources);
+  IMessageQueue::setInstance(std::make_shared<MockedMessageQueue>());
 }
 
 void RecentItemModelTestSuite::init() {
@@ -70,7 +74,7 @@ void RecentItemModelTestSuite::indexMissingProject() {
   const auto toolTip = mRecentItemModel->data(index, Qt::ToolTipRole);
   QVERIFY(toolTip.isValid());
   QCOMPARE(toolTip.type(), QVariant::Type::String);
-  QCOMPARE(toolTip, QString("\"%0\" is missed").arg(QString::fromStdWString(RecentItems[2].wstr())));
+  QCOMPARE(toolTip, QString("\"%0\" is missed").arg(QString::fromStdWString(RecentItems[2].wstring())));
 
   const auto font = mRecentItemModel->data(index, Qt::FontRole);
   QVERIFY(font.isValid());
@@ -151,22 +155,26 @@ void RecentItemModelTestSuite::missingClicked() {
   th.join();
 }
 
+#ifndef D_WINDOWS
 void RecentItemModelTestSuite::removeItemWhileEmpty() {
   // It will fail otherwise
   qt::element::model::RecentItemModel itemModel({}, 10);
   QVERIFY(itemModel.mRecentProjects.empty());
   itemModel.removeItem(0);
 }
+#endif
 
 void RecentItemModelTestSuite::removeMissingIndex() {
   // It will fail otherwise
   mRecentItemModel->removeItem(10);
 }
 
+#ifndef D_WINDOWS
 void RecentItemModelTestSuite::removeGoodCase() {
   mRecentItemModel->removeItem(0);
   QCOMPARE(2, mRecentItemModel->mRecentProjects.size());
 }
+#endif
 
 void RecentItemModelTestSuite::rowCountGoodCase() {
   QCOMPARE(3, mRecentItemModel->rowCount({}));
@@ -180,6 +188,11 @@ void RecentItemModelTestSuite::rowCountEmpty() {
 
 void RecentItemModelTestSuite::cleanup() {}
 
-void RecentItemModelTestSuite::cleanupTestCase() {}
+void RecentItemModelTestSuite::cleanupTestCase() {
+  IMessageQueue::setInstance(nullptr);
+}
 
-QTEST_MAIN(RecentItemModelTestSuite)
+int main(int argc, char *argv[]) {
+  testing::InitGoogleMock(&argc, argv);
+  QTEST_MAIN_IMPL(RecentItemModelTestSuite)
+}

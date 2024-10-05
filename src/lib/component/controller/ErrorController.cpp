@@ -3,12 +3,12 @@
 #include <vector>
 // internal
 #include "Application.h"
-#include "ApplicationSettings.h"
 #include "DialogView.h"
 #include "Project.h"
 #include "QtHelpButtonInfo.h"
 #include "StorageAccess.h"
 #include "TabId.h"
+#include "IApplicationSettings.hpp"
 
 ErrorController::ErrorController(StorageAccess* pStorageAccess) : m_storageAccess(pStorageAccess) {}
 
@@ -94,7 +94,7 @@ void ErrorController::handleMessage(MessageErrorsAll* /*pMessage*/) {
 }
 
 void ErrorController::handleMessage(MessageErrorsForFile* pMessage) {
-  std::shared_ptr<const Project> project = Application::getInstance()->getCurrentProject();
+  auto project = Application::getInstance()->getCurrentProject();
   if(project && project->isIndexing()) {
     Application::getInstance()->handleDialog(L"Showing errors for a file is not possible while indexing.");
     return;
@@ -104,7 +104,7 @@ void ErrorController::handleMessage(MessageErrorsForFile* pMessage) {
 }
 
 void ErrorController::handleMessage(MessageErrorsHelpMessage* pMessage) {
-  ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
+  IApplicationSettings* appSettings = IApplicationSettings::getInstanceRaw();
   if(!pMessage->force) {
     if(appSettings->getSeenErrorHelpMessage()) {
       return;

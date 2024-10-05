@@ -1,8 +1,8 @@
 #include "UndoRedoController.h"
 
 #include "Application.h"
-#include "MessageFlushUpdates.h"
-#include "MessageSearch.h"
+#include "type/MessageFlushUpdates.h"
+#include "type/search/MessageSearch.h"
 #include "Project.h"
 #include "StorageAccess.h"
 #include "UndoRedoView.h"
@@ -418,7 +418,7 @@ void UndoRedoController::replayCommand(std::list<Command>::iterator it) {
       }
     }
   } else if(m->getType() == MessageActivateErrors::getStaticType()) {
-    std::shared_ptr<const Project> currentProject = Application::getInstance()->getCurrentProject();
+    auto currentProject = Application::getInstance()->getCurrentProject();
     if(currentProject && currentProject->isIndexing()) {
       Application::getInstance()->handleDialog(L"Errors cannot be activated while indexing.");
 

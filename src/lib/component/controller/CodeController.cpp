@@ -3,17 +3,17 @@
 #include <memory>
 
 #include "Application.h"
-#include "ApplicationSettings.h"
 #include "FileInfo.h"
-#include "MessageFocusView.h"
-#include "MessageMoveIDECursor.h"
-#include "MessageShowError.h"
-#include "MessageStatus.h"
+#include "type/focus/MessageFocusView.h"
+#include "type/plugin/MessageMoveIDECursor.h"
+#include "type/error/MessageShowError.h"
+#include "type/MessageStatus.h"
 #include "SourceLocation.h"
 #include "SourceLocationCollection.h"
 #include "SourceLocationFile.h"
 #include "StorageAccess.h"
 #include "TextAccess.h"
+#include "IApplicationSettings.hpp"
 #include "logging.h"
 #include "tracing.h"
 #include "utility.h"
@@ -91,7 +91,7 @@ void CodeController::handleMessage(MessageActivateOverview* message) {
   saveOrRestoreViewMode(message);
   clearReferences();
 
-  std::shared_ptr<const Project> currentProject = Application::getInstance()->getCurrentProject();
+  auto currentProject = Application::getInstance()->getCurrentProject();
   if(!currentProject || message->acceptedNodeTypes != NodeTypeSet::all()) {
     clear();
     return;
@@ -636,7 +636,7 @@ std::vector<CodeSnippetParams> CodeController::getSnippetsForFile(std::shared_pt
   atomicRanges = SnippetMerger::Range::mergeAdjacent(atomicRanges);
   std::deque<SnippetMerger::Range> ranges = fileScopedMerger.merge(atomicRanges);
 
-  const int snippetExpandRange = ApplicationSettings::getInstance()->getCodeSnippetExpandRange();
+  const int snippetExpandRange = IApplicationSettings::getInstanceRaw()->getCodeSnippetExpandRange();
   std::vector<CodeSnippetParams> snippets;
 
   for(const SnippetMerger::Range& range : ranges) {
@@ -720,7 +720,7 @@ const SourceLocation* CodeController::getSourceLocationOfParentScope(size_t line
 }
 
 std::vector<std::string> CodeController::getProjectDescription(SourceLocationFile* locationFile) const {
-  std::shared_ptr<const Project> currentProject = Application::getInstance()->getCurrentProject();
+  auto currentProject = Application::getInstance()->getCurrentProject();
   if(!currentProject) {
     return std::vector<std::string>();
   }

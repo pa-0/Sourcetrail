@@ -1,12 +1,12 @@
-#include <type_traits>
-
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/spdlog.h>
+#include <type_traits>
 
-#include "AppPath.h"
 #include "ApplicationSettings.h"
+#include "AppPath.h"
 #include "InterprocessIndexer.h"
 #include "LanguagePackageManager.h"
+#include "IApplicationSettings.hpp"
 #include "includes.h"
 #include "language_packages.h"
 #include "logging.h"
@@ -16,7 +16,11 @@
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
 void setupLogging(const std::string& logFilePath) {
+#ifdef D_WINDOWS
+  auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(utility::decodeFromUtf8(logFilePath));
+#else
   auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFilePath);
+#endif
   fileSink->set_level(spdlog::level::trace);
   spdlog::set_default_logger(std::make_shared<spdlog::logger>("indexer", fileSink));
 }
@@ -63,7 +67,8 @@ int main(int argc, char* argv[]) {
 
   suppressCrashMessage();
 
-  ApplicationSettings* appSettings = ApplicationSettings::getInstance().get();
+  IApplicationSettings::setInstance(std::make_shared<ApplicationSettings>());
+  auto appSettings = IApplicationSettings::getInstanceRaw();
   appSettings->load(UserPaths::getAppSettingsFilePath());
 
   LOG_INFO_W(L"sharedDataPath: " + AppPath::getSharedDataDirectoryPath().wstr());
