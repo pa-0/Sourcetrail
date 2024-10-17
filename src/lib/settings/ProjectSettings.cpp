@@ -1,11 +1,11 @@
 #include "ProjectSettings.h"
 
+#include "logging.h"
 #include "SettingsMigrationDeleteKey.h"
 #include "SettingsMigrationLambda.h"
 #include "SettingsMigrationMoveKey.h"
 #include "SourceGroupSettingsCustomCommand.h"
 #include "SourceGroupSettingsUnloadable.h"
-#include "logging.h"
 #include "utilityFile.h"
 #include "utilityString.h"
 #include "utilityUuid.h"
@@ -14,7 +14,6 @@
 #  include "SourceGroupSettingsCEmpty.h"
 #  include "SourceGroupSettingsCppEmpty.h"
 #  include "SourceGroupSettingsCxxCdb.h"
-#  include "SourceGroupSettingsCxxCodeblocks.h"
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
 
 // clang-format off
@@ -152,9 +151,6 @@ std::vector<std::shared_ptr<SourceGroupSettings>> ProjectSettings::getAllSourceG
       break;
     case SOURCE_GROUP_CXX_CDB:
       settings = std::make_shared<SourceGroupSettingsCxxCdb>(id, this);
-      break;
-    case SOURCE_GROUP_CXX_CODEBLOCKS:
-      settings = std::make_shared<SourceGroupSettingsCxxCodeblocks>(id, this);
       break;
 #endif    // BUILD_CXX_LANGUAGE_PACKAGE
     case SOURCE_GROUP_CUSTOM_COMMAND:

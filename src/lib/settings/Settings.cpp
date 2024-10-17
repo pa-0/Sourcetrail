@@ -3,8 +3,8 @@
 #include <range/v3/to_container.hpp>
 #include <range/v3/view/transform.hpp>
 
-#include "TextAccess.h"
 #include "logging.h"
+#include "TextAccess.h"
 
 Settings::Settings() {
   clear();
@@ -96,12 +96,13 @@ void Settings::setFilePath(const FilePath& filePath) {
 
 std::vector<FilePath> Settings::getPathValues(const std::string& key) const {
   auto values = getValues<std::wstring>(key, {});
-  return values | ranges::cpp20::views::transform([](const auto& value) { return FilePath {value}; }) | ranges::to<std::vector>();
+  return values | ranges::cpp20::views::transform([](const auto& value) { return FilePath{value}; }) | ranges::to<std::vector>();
 }
 
 std::vector<std::filesystem::path> Settings::getPathValuesStl(const std::string& key) const noexcept {
   auto values = getValues<std::wstring>(key, {});
-  return values | ranges::cpp20::views::transform([](const auto& value) -> std::filesystem::path { return value; }) | ranges::to<std::vector>();
+  return values | ranges::cpp20::views::transform([](const auto& value) -> std::filesystem::path { return value; }) |
+      ranges::to<std::vector>();
 }
 
 bool Settings::setPathValues(const std::string& key, const std::vector<FilePath>& paths) {
@@ -122,12 +123,4 @@ bool Settings::isValueDefined(const std::string& key) const {
 
 void Settings::removeValues(const std::string& key) {
   m_config->removeValues(key);
-}
-
-void Settings::enableWarnings() const {
-  m_config->setWarnOnEmptyKey(true);
-}
-
-void Settings::disableWarnings() const {
-  m_config->setWarnOnEmptyKey(false);
 }
